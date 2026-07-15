@@ -1,13 +1,5 @@
 /* ============================================================
    COMBAT.JS
-   ------------------------------------------------------------
-   Enemies now target a random living party member each round —
-   you or any follower — instead of always going after you.
-   Followers with a healing spell will automatically heal
-   whoever's hurt worse (themselves or you) instead of attacking,
-   when someone drops below 60% HP. A follower reduced to 0 HP
-   is "downed" for the rest of that fight, but recovers fully
-   once you're back at Homebase.
    ============================================================ */
 
 let currentCombat = null;
@@ -35,6 +27,10 @@ function rollDamage(attackerTierName) {
   return Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
 }
 
+function getCurrentDifficultySettings() {
+  return DIFFICULTY_SETTINGS[selectedDifficulty] || DIFFICULTY_SETTINGS.normal;
+}
+
 function getEffectRankSum(kind) {
   return currentCombat.activeEffects
     .filter((e) => e.kind === kind)
@@ -42,19 +38,14 @@ function getEffectRankSum(kind) {
 }
 
 function getEffectivePlayerAttackTier(baseTierName) {
-  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus"));
+  const equipBonus = playerCharacter.weaponEnchantment ? 1 : 0;
+  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus);
 }
 
 function getEffectiveEnemyTier() {
   return shiftTierByRank(currentCombat.enemyThreatTier, getEffectRankSum("enemyDebuff"));
 }
 
-/**
- * Works for the player OR a follower. The player's own "guard"
- * buff (from Runes of the Shield etc.) only applies when the
- * player themselves is the target — it's a personal ward, not a
- * party-wide one.
- */
 function getDefendingTierName(attackType, character) {
   let baseTierName;
   if (attackType === "magic") {
@@ -65,15 +56,18 @@ function getDefendingTierName(attackType, character) {
     baseTierName = acTier.min >= dodgeTier.min ? acTier.name : dodgeTier.name;
   }
   if (character === playerCharacter) {
-    return shiftTierByRank(baseTierName, getEffectRankSum("playerDefenseBonus"));
+    const equipBonus = playerCharacter.armorEnchantment ? 1 : 0;
+    return shiftTierByRank(baseTierName, getEffectRankSum("playerDefenseBonus") + equipBonus);
   }
   return baseTierName;
 }
 
 function startCombat(enemyId) {
   const enemyTemplate = ENEMIES[enemyId];
-  const maxHP = getHitPoints(playerCharacter);
+  const diff = getCurrentDifficultySettings();
+  const scaledMaxHP = Math.max(1, Math.round(enemyTemplate.hitPoints * diff.enemyHpMultiplier));
 
+  const maxHP = getHitPoints(playerCharacter);
   if (playerCharacter.currentHP === undefined || playerCharacter.currentHP === null) {
     playerCharacter.currentHP = maxHP;
   } else if (playerCharacter.currentHP > maxHP) {
@@ -96,8 +90,8 @@ function startCombat(enemyId) {
     enemyId: enemyId,
     enemyName: enemyTemplate.name,
     enemyDescription: enemyTemplate.description,
-    enemyMaxHP: enemyTemplate.hitPoints,
-    enemyCurrentHP: enemyTemplate.hitPoints,
+    enemyMaxHP: scaledMaxHP,
+    enemyCurrentHP: scaledMaxHP,
     enemyThreatTier: enemyTemplate.threatTier,
     enemyAttackType: enemyTemplate.attackType,
     playerDefending: false,
@@ -129,10 +123,6 @@ function tickCombatEffects() {
   });
 }
 
-/**
- * Picks a random living party member (player or a follower who
- * isn't downed) for the enemy to attack this round.
- */
 function pickEnemyTarget() {
   const candidates = [playerCharacter];
   followers.forEach((f) => {
@@ -163,10 +153,6 @@ function getFollowerAttackPick(follower) {
   return { skillId: bestSkillId, tierName: bestTier.name };
 }
 
-/**
- * Finds a known "heal" spell among a follower's trained magic
- * lines, if they have one. Returns { skillId, spell } or null.
- */
 function getFollowerHealOption(follower) {
   const magicSkillIds = Object.keys(follower.skills).filter(
     (id) => SKILLS[id] && SKILLS[id].category === "Magic"
@@ -198,17 +184,12 @@ function performFollowerHeal(follower, skillId, spell, target) {
   });
 }
 
-/**
- * Runs each follower's turn: heal (self or the player, whoever
- * needs it more) if they know a heal spell and someone's hurt,
- * otherwise attack normally. Downed followers (0 HP) do nothing.
- */
 function performFollowersTurn() {
   if (!followers || followers.length === 0) return;
 
   followers.forEach((follower) => {
     if (currentCombat.enemyCurrentHP <= 0) return;
-    if (follower.currentHP <= 0) return; // downed, can't act
+    if (follower.currentHP <= 0) return;
 
     const healOption = getFollowerHealOption(follower);
     const followerMax = getHitPoints(follower);
@@ -251,6 +232,7 @@ function resolveEnemyAttack() {
     return;
   }
 
+  const diff = getCurrentDifficultySettings();
   const target = pickEnemyTarget();
   const isPlayerTarget = target === playerCharacter;
   const attackType = currentCombat.enemyAttackType;
@@ -262,7 +244,7 @@ function resolveEnemyAttack() {
   let damage = 0;
 
   if (hit) {
-    damage = rollDamage(enemyEffectiveTier);
+    damage = Math.max(1, Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier));
     target.currentHP = Math.max(0, target.currentHP - damage);
   }
 
@@ -492,7 +474,22 @@ function describeLogEntry(entry) {
 
 function describeRecentRound() {
   if (!currentCombat || currentCombat.log.length === 0) return "";
-  const windowSize = followers.length + 4; // player + each follower + effects + enemy
+  const windowSize = followers.length + 4;
   const recent = currentCombat.log.slice(-windowSize);
   return recent.map(describeLogEntry).filter(Boolean).join(" ");
+}
+
+/**
+ * Same underlying log entries as describeRecentRound, but
+ * returned as a separate array (one string per action) instead
+ * of one joined string — used for voice narration, so each
+ * action (your strike, the enemy's counter, a buff, a follower's
+ * heal) gets read as its own distinct line instead of one
+ * run-on sentence.
+ */
+function getRecentRoundLines() {
+  if (!currentCombat || currentCombat.log.length === 0) return [];
+  const windowSize = followers.length + 4;
+  const recent = currentCombat.log.slice(-windowSize);
+  return recent.map(describeLogEntry).filter(Boolean);
 }
