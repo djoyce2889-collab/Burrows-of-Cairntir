@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Burrows of Cairntír</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+	<div id="game-cabinet">
+		<div id="cabinet-title">BURROWS OF CAIRNTÍR</div>
+		<button id="btn-toggle-music" class="music-toggle">🔊</button>
+
+		<section id="screen-title" class="screen active">
+			<div id="viewport">
+				<img src="assets/images/title-cover.png" alt="A ring of ancient standing stones on a moonlit hilltop, one pair forming a barrow entrance glowing with warm rune-light." />
+			</div>
+			<div id="panel">
+				<div id="story-text">
+					Three peoples. Three magics. One road into the dark below Cairntír.
+				</div>
+				<div id="choices">
+					<button class="choice-button" id="btn-begin">Begin your legend</button>
+				</div>
+			</div>
+		</section>
+
+		<section id="screen-creation" class="screen">
+			<div id="panel">
+
+				<div class="cc-section">
+					<label class="cc-label" for="cc-name">Name</label>
+					<input type="text" id="cc-name" class="cc-name-input" placeholder="What are you called?" maxlength="24" />
+				</div>
+
+				<div class="cc-section">
+					<span class="cc-label">Race</span>
+					<div id="cc-race-grid" class="cc-grid"></div>
+				</div>
+
+				<div class="cc-section">
+					<span class="cc-label">Culture</span>
+					<div id="cc-culture-grid" class="cc-grid"></div>
+				</div>
+
+				<div class="cc-section">
+					<span class="cc-label">Starting Skills</span>
+					<div id="cc-skill-count" class="cc-skill-count">Choose up to 6</div>
+					<div id="cc-skill-grid"></div>
+				</div>
+
+				<div class="cc-section">
+					<span class="cc-label">Traits</span>
+					<div id="cc-trait-count" class="cc-skill-count">Choose 2-3</div>
+					<div id="cc-trait-grid" class="cc-grid"></div>
+				</div>
+
+				<div id="cc-error"></div>
+
+				<div id="choices">
+					<button class="choice-button" id="btn-confirm-character">Set out</button>
+				</div>
+			</div>
+		</section>
+
+		<section id="screen-party" class="screen">
+			<div id="panel">
+				<span class="cc-label">Your Party</span>
+				<div id="cc-follower-list" class="cc-grid"></div>
+				<div id="cc-follower-status" class="cc-skill-count"></div>
+
+				<div id="choices">
+					<button class="choice-button" id="btn-add-follower">Recruit a Follower</button>
+					<button class="choice-button" id="btn-continue-to-homebase">Continue to Homebase</button>
+				</div>
+			</div>
+		</section>
+
+		<section id="screen-homebase" class="screen">
+			<div id="panel">
+				<span class="cc-label">Homebase</span>
+				<div id="story-text">
+					A quiet place to mend gear, take stock, and plan the next descent.
+				</div>
+				<div id="choices">
+					<button class="choice-button" id="btn-go-to-crafting">Forge &amp; Craft</button>
+					<button class="choice-button" id="btn-continue-to-dungeon-select">Set Out to a Dungeon</button>
+				</div>
+			</div>
+		</section>
+
+		<section id="screen-crafting" class="screen">
+			<div id="panel">
+				<span class="cc-label">Forge &amp; Craft</span>
+				<div id="crafting-list" class="cc-grid"></div>
+				<div id="crafting-result" class="cc-skill-count"></div>
+				<div id="choices">
+					<button class="choice-button" id="btn-crafting-back">Return to Homebase</button>
+				</div>
+			</div>
+		</section>
+
+		<section id="screen-dungeon-select" class="screen">
+			<div id="panel">
+				<span class="cc-label">Choose Your Path</span>
+				<div id="dungeon-list" class="cc-grid"></div>
+			</div>
+		</section>
+
+		<section id="screen-game" class="screen">
+			<div id="viewport">
+				<img id="game-viewport-img" style="display: none;" />
+				<div id="game-viewport-placeholder" class="viewport-placeholder">[ Scene art appears here ]</div>
+			</div>
+			<div id="panel">
+				<div id="game-story-text"></div>
+				<div id="game-choices"></div>
+			</div>
+		</section>
+
+	</div>
+
+	<script src="js/data.js"></script>
+	<script src="js/character.js"></script>
+	<script src="js/combat.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>
