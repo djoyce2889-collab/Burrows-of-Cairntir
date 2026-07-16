@@ -473,6 +473,138 @@ function renderSkillsScreen() {
   });
 }
 
+function goToInventoryScreen() {
+  showScreen("screen-inventory");
+  renderInventoryScreen();
+}
+
+/**
+ * Groups the player's inventory into three sections: crafting
+ * materials (Old Ore, Hide, Grave Essence, and any boss-drop
+ * loot items), then weapons/armor pieces, then a summary of
+ * active enchantments and combat style. Item counts are grouped
+ * so duplicates (e.g. three Old Ore) show as one line with a
+ * quantity rather than three separate cards.
+ */
+function renderInventoryScreen() {
+  const list = document.getElementById("inventory-list");
+  list.innerHTML = "";
+
+  const inventory = playerCharacter.inventory || [];
+
+  if (inventory.length === 0 && !playerCharacter.weaponEnchantment && !playerCharacter.armorEnchantment) {
+    const empty = document.createElement("div");
+    empty.className = "cc-skill-count";
+    empty.textContent = "Your pack is empty.";
+    list.appendChild(empty);
+    return;
+  }
+
+  const knownMaterials = ["Old Ore", "Hide", "Grave Essence"];
+  const materialCounts = {};
+  const equipmentCounts = {};
+
+  inventory.forEach((itemName) => {
+    if (knownMaterials.includes(itemName)) {
+      materialCounts[itemName] = (materialCounts[itemName] || 0) + 1;
+    } else {
+      equipmentCounts[itemName] = (equipmentCounts[itemName] || 0) + 1;
+    }
+  });
+
+  if (Object.keys(materialCounts).length > 0) {
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = "Materials";
+    list.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+    Object.keys(materialCounts).forEach((name) => {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      card.innerHTML = `
+        <div class="cc-card-name">${name}</div>
+        <div class="cc-card-desc">Quantity: ${materialCounts[name]}</div>
+      `;
+      grid.appendChild(card);
+    });
+    list.appendChild(grid);
+  }
+
+  if (Object.keys(equipmentCounts).length > 0) {
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = "Weapons & Armor";
+    list.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+    Object.keys(equipmentCounts).forEach((name) => {
+      const count = equipmentCounts[name];
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      card.innerHTML = `
+        <div class="cc-card-name">${name}</div>
+        <div class="cc-card-desc">${count > 1 ? `Quantity: ${count}` : "Carried"}</div>
+      `;
+      grid.appendChild(card);
+    });
+    list.appendChild(grid);
+  }
+
+  if (playerCharacter.weaponEnchantment || playerCharacter.armorEnchantment) {
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = "Active Enchantments";
+    list.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+
+    if (playerCharacter.weaponEnchantment) {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      card.innerHTML = `
+        <div class="cc-card-name">Weapon</div>
+        <div class="cc-card-desc">${playerCharacter.weaponEnchantment.name}-Enchanted</div>
+      `;
+      grid.appendChild(card);
+    }
+
+    if (playerCharacter.armorEnchantment) {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      card.innerHTML = `
+        <div class="cc-card-name">Armor</div>
+        <div class="cc-card-desc">${playerCharacter.armorEnchantment.name}-Enchanted</div>
+      `;
+      grid.appendChild(card);
+    }
+
+    list.appendChild(grid);
+  }
+
+  const style = COMBAT_STYLES[playerCharacter.combatStyle];
+  if (style) {
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = "Combat Style";
+    list.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    card.innerHTML = `
+      <div class="cc-card-name">${style.name}</div>
+      <div class="cc-card-desc">${style.description}</div>
+    `;
+    grid.appendChild(card);
+    list.appendChild(grid);
+  }
+}
+
 function goToDungeonSelectScreen() {
   showScreen("screen-dungeon-select");
   renderDungeonList();
@@ -893,14 +1025,6 @@ function renderCraftingScreen() {
   });
 }
 
-/**
- * Now checks whether the enchantment currently on the pending
- * slot already matches a given type — if so, that type is shown
- * greyed out and un-clickable, so the same flavor can't be
- * re-applied to an item that already carries it. Any OTHER
- * flavor is still fully selectable and will replace whatever
- * was there before.
- */
 function renderEnchantSection(list, resultEl) {
   if (!playerCharacter.skills.enchanting) {
     resultEl.innerHTML = "You haven't trained Enchanting — nothing to do here yet.";
@@ -998,11 +1122,6 @@ function attemptCraft(recipeId) {
   document.getElementById("crafting-result").innerHTML = resultEl.innerHTML;
 }
 
-/**
- * Includes a safety check on top of the UI already blocking the
- * click — if this somehow gets called with a type already active
- * on that slot, it refuses without spending materials.
- */
 function attemptEnchant(slot, typeId) {
   const resultEl = document.getElementById("crafting-result");
 
@@ -1082,6 +1201,10 @@ document.getElementById("btn-continue-to-homebase").addEventListener("click", go
 document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
 
 document.getElementById("btn-skills-back").addEventListener("click", goToHomebaseScreen);
+
+document.getElementById("btn-go-to-inventory").addEventListener("click", goToInventoryScreen);
+
+document.getElementById("btn-inventory-back").addEventListener("click", goToHomebaseScreen);
 
 document.getElementById("btn-continue-to-dungeon-select").addEventListener("click", goToDungeonSelectScreen);
 
