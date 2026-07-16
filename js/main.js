@@ -7,7 +7,8 @@ const creationState = {
   race: null,
   culture: null,
   skills: [],
-  traits: []
+  traits: [],
+  combatStyle: "single"
 };
 
 let selectedDungeonId = null;
@@ -128,18 +129,39 @@ function renderDifficultyGrid() {
   });
 }
 
+function renderCombatStyleGrid() {
+  const grid = document.getElementById("cc-combatstyle-grid");
+  grid.innerHTML = "";
+  Object.values(COMBAT_STYLES).forEach((style) => {
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (creationState.combatStyle === style.id) card.classList.add("selected");
+    card.innerHTML = `
+      <div class="cc-card-name">${style.name}</div>
+      <div class="cc-card-desc">${style.description}</div>
+    `;
+    card.addEventListener("click", () => {
+      creationState.combatStyle = style.id;
+      renderCombatStyleGrid();
+    });
+    grid.appendChild(card);
+  });
+}
+
 function resetCreationState(mode) {
   creationState.mode = mode;
   creationState.race = null;
   creationState.culture = null;
   creationState.skills = [];
   creationState.traits = [];
+  creationState.combatStyle = "single";
   document.getElementById("cc-name").value = "";
 
   renderRaceGrid();
   renderCultureGrid();
   renderSkillGrid();
   renderTraitGrid();
+  renderCombatStyleGrid();
 }
 
 function renderRaceGrid() {
@@ -304,7 +326,8 @@ function attemptConfirmCharacter() {
     creationState.race,
     creationState.culture,
     creationState.skills,
-    creationState.traits
+    creationState.traits,
+    creationState.combatStyle
   );
 
   if (creationState.mode === "player") {
@@ -378,6 +401,78 @@ function goToHomebaseScreen() {
   });
 }
 
+function getNextTierInfo(timesUsed) {
+  for (let i = 0; i < SKILL_TIERS.length; i++) {
+    if (timesUsed < SKILL_TIERS[i].min) {
+      return { tierName: SKILL_TIERS[i].name, usesNeeded: SKILL_TIERS[i].min - timesUsed };
+    }
+  }
+  return null;
+}
+
+function goToSkillsScreen() {
+  showScreen("screen-skills");
+  renderSkillsScreen();
+}
+
+function renderSkillsScreen() {
+  const list = document.getElementById("skills-list");
+  list.innerHTML = "";
+
+  const partyMembers = [playerCharacter, ...followers];
+
+  partyMembers.forEach((member) => {
+    if (!member) return;
+
+    const memberHeading = document.createElement("div");
+    memberHeading.className = "cc-category-heading";
+    memberHeading.textContent = member.name;
+    list.appendChild(memberHeading);
+
+    const trainedSkillIds = Object.keys(member.skills);
+
+    if (trainedSkillIds.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "cc-skill-count";
+      empty.textContent = "No skills trained yet.";
+      list.appendChild(empty);
+      return;
+    }
+
+    SKILL_CATEGORY_ORDER.forEach((categoryName) => {
+      const idsInCategory = trainedSkillIds.filter(
+        (id) => SKILLS[id] && SKILLS[id].category === categoryName
+      );
+      if (idsInCategory.length === 0) return;
+
+      const catLabel = document.createElement("div");
+      catLabel.className = "cc-skill-count";
+      catLabel.textContent = categoryName;
+      list.appendChild(catLabel);
+
+      const grid = document.createElement("div");
+      grid.className = "cc-grid";
+
+      idsInCategory.forEach((skillId) => {
+        const timesUsed = member.skills[skillId].timesUsed;
+        const tier = getCharacterSkillTier(member, skillId);
+        const nextTier = getNextTierInfo(timesUsed);
+
+        const card = document.createElement("div");
+        card.className = "cc-card";
+        card.innerHTML = `
+          <div class="cc-card-name">${SKILLS[skillId].name}</div>
+          <div class="cc-card-desc"><em>${tier.name}</em> &middot; used ${timesUsed} times</div>
+          <div class="cc-card-desc">${nextTier ? `${nextTier.usesNeeded} more uses to reach ${nextTier.tierName}` : "Already at Master."}</div>
+        `;
+        grid.appendChild(card);
+      });
+
+      list.appendChild(grid);
+    });
+  });
+}
+
 function goToDungeonSelectScreen() {
   showScreen("screen-dungeon-select");
   renderDungeonList();
@@ -438,7 +533,7 @@ function renderDungeonRoom(roomId) {
   currentDungeonRoomId = roomId;
 
   showScreen("screen-game");
-  setGameViewportImage(DUNGEONS[selectedDungeonId].image, DUNGEONS[selectedDungeonId].name);
+  setGameViewportImage(getRoomImage(selectedDungeonId, roomId), DUNGEONS[selectedDungeonId].name);
 
   let text = room.text;
   if (room.loot && !room._lootGranted) {
@@ -514,6 +609,8 @@ function getEquipmentStatusLine() {
   const parts = [];
   if (playerCharacter.weaponEnchantment) parts.push(`Weapon: ${playerCharacter.weaponEnchantment.name}-Enchanted`);
   if (playerCharacter.armorEnchantment) parts.push(`Armor: ${playerCharacter.armorEnchantment.name}-Enchanted`);
+  const style = COMBAT_STYLES[playerCharacter.combatStyle];
+  if (style && style.id !== "single") parts.push(`Style: ${style.name}`);
   return parts.join(" &middot; ");
 }
 
@@ -522,25 +619,27 @@ function getActorImageForLogEntry(entry) {
     const enemyTemplate = ENEMIES[currentCombat.enemyId];
     return enemyTemplate ? enemyTemplate.image : null;
   }
+  if (entry.actor === "follower" && entry.followerName) {
+    const follower = followers.find((f) => f.name === entry.followerName);
+    if (follower) {
+      const raceInfo = RACES[follower.raceId];
+      if (raceInfo) return raceInfo.image;
+    }
+  }
   const raceInfo = RACES[playerCharacter.raceId];
   return raceInfo ? raceInfo.image : null;
 }
 
-/**
- * Plays a set of NEW combat log entries one at a time — each
- * gets its own portrait and its own line of text. Unlike before,
- * this now waits for the SPOKEN LINE to actually finish (using
- * the browser's utterance "onend" event) before moving to the
- * next one, instead of a fixed timer that could cut long lines
- * off mid-sentence. A safety fallback timer (scaled to the
- * line's length) still exists in case onend never fires, and if
- * voice is turned off entirely, it falls back to a short fixed
- * pause between lines instead.
- */
 function playRoundSequenceThenRender(entries) {
   if (!entries || entries.length === 0) {
     renderCombatScreen();
     return;
+  }
+
+  if (voiceEnabled && "speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch (e) {}
   }
 
   let i = 0;
@@ -567,7 +666,6 @@ function playRoundSequenceThenRender(entries) {
 
     if (voiceEnabled && "speechSynthesis" in window && plainText) {
       try {
-        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(plainText);
         utterance.rate = 1;
         utterance.pitch = 1;
@@ -584,15 +682,15 @@ function playRoundSequenceThenRender(entries) {
         utterance.onend = advanceOnce;
         utterance.onerror = advanceOnce;
 
-        const fallbackMs = Math.max(1800, plainText.length * 65);
+        const fallbackMs = Math.max(2200, plainText.length * 110);
         setTimeout(advanceOnce, fallbackMs);
 
         window.speechSynthesis.speak(utterance);
       } catch (e) {
-        setTimeout(showNext, 1400);
+        setTimeout(showNext, 1600);
       }
     } else {
-      setTimeout(showNext, 1400);
+      setTimeout(showNext, 1600);
     }
   }
 
@@ -680,6 +778,11 @@ function renderCombatOutcome() {
   choicesEl.innerHTML = "";
 
   if (currentCombat.result === "victory") {
+    const enemyTemplate = ENEMIES[currentCombat.enemyId];
+    if (enemyTemplate.deathImage) {
+      setGameViewportImage(enemyTemplate.deathImage, `${enemyTemplate.name} defeated`);
+    }
+
     const loot = claimVictoryLoot();
     const outcomeText = `${currentCombat.enemyName} falls. You recover: ${loot.join(", ") || "nothing of note"}.`;
     speak(outcomeText);
@@ -766,14 +869,10 @@ function renderCraftingScreen() {
   }
 
   const recipes = Object.values(CRAFTING_RECIPES).filter((r) => r.category === craftingCategory);
-  const usableRecipes = recipes.filter((recipe) => {
-    const hasCraftingSkill = !!playerCharacter.skills[recipe.craftingSkill];
-    const hasLinkedSkill = !recipe.linkedSkill || !!playerCharacter.skills[recipe.linkedSkill];
-    return hasCraftingSkill && hasLinkedSkill;
-  });
+  const usableRecipes = recipes.filter((recipe) => !!playerCharacter.skills[recipe.craftingSkill]);
 
   if (usableRecipes.length === 0) {
-    resultEl.innerHTML = "You don't have the right skills trained yet to craft anything in this category.";
+    resultEl.innerHTML = "You don't have the right Crafting skill trained yet for this category.";
     return;
   }
 
@@ -794,6 +893,14 @@ function renderCraftingScreen() {
   });
 }
 
+/**
+ * Now checks whether the enchantment currently on the pending
+ * slot already matches a given type — if so, that type is shown
+ * greyed out and un-clickable, so the same flavor can't be
+ * re-applied to an item that already carries it. Any OTHER
+ * flavor is still fully selectable and will replace whatever
+ * was there before.
+ */
 function renderEnchantSection(list, resultEl) {
   if (!playerCharacter.skills.enchanting) {
     resultEl.innerHTML = "You haven't trained Enchanting — nothing to do here yet.";
@@ -831,16 +938,31 @@ function renderEnchantSection(list, resultEl) {
     return;
   }
 
+  const currentEnchantment = craftingEnchantSlotPending === "weapon"
+    ? playerCharacter.weaponEnchantment
+    : playerCharacter.armorEnchantment;
+  const currentTypeId = currentEnchantment ? currentEnchantment.type : null;
+
   Object.values(ENCHANTMENT_TYPES).forEach((type) => {
+    const alreadyActive = type.id === currentTypeId;
+
     const card = document.createElement("div");
     card.className = "cc-card";
     card.innerHTML = `
       <div class="cc-card-name">${type.name}</div>
       <div class="cc-card-desc">${type.description}</div>
+      ${alreadyActive ? '<div class="cc-card-desc"><em>Already active on this item</em></div>' : ""}
     `;
-    card.addEventListener("click", () => {
-      attemptEnchant(craftingEnchantSlotPending, type.id);
-    });
+
+    if (alreadyActive) {
+      card.style.opacity = "0.4";
+      card.style.cursor = "not-allowed";
+    } else {
+      card.addEventListener("click", () => {
+        attemptEnchant(craftingEnchantSlotPending, type.id);
+      });
+    }
+
     list.appendChild(card);
   });
 }
@@ -876,8 +998,20 @@ function attemptCraft(recipeId) {
   document.getElementById("crafting-result").innerHTML = resultEl.innerHTML;
 }
 
+/**
+ * Includes a safety check on top of the UI already blocking the
+ * click — if this somehow gets called with a type already active
+ * on that slot, it refuses without spending materials.
+ */
 function attemptEnchant(slot, typeId) {
   const resultEl = document.getElementById("crafting-result");
+
+  const currentEnchantment = slot === "weapon" ? playerCharacter.weaponEnchantment : playerCharacter.armorEnchantment;
+  if (currentEnchantment && currentEnchantment.type === typeId) {
+    resultEl.innerHTML = `This item is already ${ENCHANTMENT_TYPES[typeId].name}-Enchanted — choose a different type to change it.`;
+    return;
+  }
+
   const have = countMaterial(ENCHANT_MATERIAL);
 
   if (have < ENCHANT_MATERIAL_COST) {
@@ -945,6 +1079,10 @@ document.getElementById("btn-add-follower").addEventListener("click", () => {
 
 document.getElementById("btn-continue-to-homebase").addEventListener("click", goToHomebaseScreen);
 
+document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
+
+document.getElementById("btn-skills-back").addEventListener("click", goToHomebaseScreen);
+
 document.getElementById("btn-continue-to-dungeon-select").addEventListener("click", goToDungeonSelectScreen);
 
 document.getElementById("btn-go-to-crafting").addEventListener("click", goToCraftingScreen);
@@ -955,5 +1093,6 @@ renderRaceGrid();
 renderCultureGrid();
 renderSkillGrid();
 renderTraitGrid();
+renderCombatStyleGrid();
 renderDifficultyGrid();
 playMusic(MAIN_THEME_SRC);

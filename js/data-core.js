@@ -170,10 +170,10 @@ const SKILLS = {
   archery: { id: "archery", name: "Archery", category: "Weapon", description: "Accuracy and power with a bow." },
   unarmedCombat: { id: "unarmedCombat", name: "Unarmed Combat", category: "Weapon", description: "Fighting with fists, feet, and improvised force." },
 
-  plateArmor: { id: "plateArmor", name: "Plate", category: "Armor", description: "Moving and fighting effectively in heavy plate." },
-  chainArmor: { id: "chainArmor", name: "Chain", category: "Armor", description: "Wearing chainmail without it slowing you down." },
+  plateArmor: { id: "plateArmor", name: "Plate", category: "Armor", description: "Moving and fighting effectively in heavy plate — the strongest protection there is." },
+  chainArmor: { id: "chainArmor", name: "Chain", category: "Armor", description: "Wearing chainmail without it slowing you down — strong, second only to plate." },
   leatherArmor: { id: "leatherArmor", name: "Leather", category: "Armor", description: "Light, flexible armor that trades protection for speed." },
-  clothArmor: { id: "clothArmor", name: "Cloth", category: "Armor", description: "Light robes and wraps, favored by those who cast." },
+  clothArmor: { id: "clothArmor", name: "Cloth", category: "Armor", description: "Light robes and wraps, favored by those who cast — the least protective armor." },
 
   smithing: { id: "smithing", name: "Smithing", category: "Crafting", description: "Forging weapons and heavy/medium armor from ore and metal." },
   tailoring: { id: "tailoring", name: "Tailoring", category: "Crafting", description: "Working hide and cloth into leather and cloth armor." },
@@ -187,12 +187,18 @@ const SKILLS = {
 
 const SKILL_CATEGORY_ORDER = ["Magic", "Weapon", "Armor", "Crafting", "General"];
 
+// ----------------------------------------------------------
+// SKILL TIERS
+// Thresholds roughly doubled from the original values so
+// leveling up actually takes real, sustained effort rather
+// than happening within the first couple of fights.
+// ----------------------------------------------------------
 const SKILL_TIERS = [
   { min: 0, name: "Untrained" },
-  { min: 5, name: "Novice" },
-  { min: 15, name: "Adept" },
-  { min: 30, name: "Expert" },
-  { min: 50, name: "Master" }
+  { min: 10, name: "Novice" },
+  { min: 30, name: "Adept" },
+  { min: 60, name: "Expert" },
+  { min: 100, name: "Master" }
 ];
 
 const ADVANTAGES = {
@@ -226,6 +232,13 @@ const ADVANTAGES = {
     base: 50,
     tierBonus: { Untrained: 0, Novice: 10, Adept: 20, Expert: 35, Master: 55 }
   }
+};
+
+const ARMOR_PROTECTION_RANK_BONUS = {
+  plateArmor: 3,
+  chainArmor: 2,
+  leatherArmor: 1,
+  clothArmor: 0
 };
 
 const MANA_CONFIG = {

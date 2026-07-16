@@ -1,7 +1,7 @@
-
 /* ============================================================
    DATA-DUNGEONS.JS
-   Dungeon list and all 6 dungeons' room content.
+   Dungeon list, all 6 dungeons' room content, and per-room
+   scene image lookup.
    ============================================================ */
 
 const DUNGEONS = {
@@ -431,7 +431,7 @@ const DUNGEON_CONTENT = {
         ]
       },
       preBoss: {
-        text: "Something moves at the base of the mound — not quite hidden, not quite waiting either. You could try to slip past quietly, or simply meet it head-on.",
+        text: "Something moves at the base of the mound — not quite hidden, not quite waiting either. You could try to slip past, or simply meet it head-on.",
         choices: [
           { label: "Slip past quietly (Stealth)", type: "check", skillId: "stealth", difficulty: "Novice", successTarget: "bossDoor", failureTarget: "extraFight" }
         ]
@@ -803,3 +803,146 @@ const DUNGEON_CONTENT = {
     }
   }
 };
+
+// ----------------------------------------------------------
+// PER-ROOM SCENE IMAGES
+// Maps each dungeon's individual room IDs to their own scene
+// image, so the viewport changes as you move through a dungeon
+// instead of showing one shared image for the whole thing.
+// Rooms that share a physical location (e.g. a fight that
+// happens right where you already are) point to the same image
+// on purpose. Any room ID NOT listed here simply falls back to
+// the dungeon's original single image — see getRoomImage() in
+// main.js — so nothing breaks if a room is ever added without
+// updating this table.
+// ----------------------------------------------------------
+const ROOM_IMAGES = {
+  duncairnKeep: {
+    gateway: "assets/images/duncairn-keep/gateway.png",
+    courtyard: "assets/images/duncairn-keep/courtyard.png",
+    wellFind: "assets/images/duncairn-keep/courtyard.png",
+    houndAmbush: "assets/images/duncairn-keep/courtyard.png",
+    greatHallDoors: "assets/images/duncairn-keep/great-hall-doors.png",
+    greatHallFight: "assets/images/duncairn-keep/great-hall-doors.png",
+    greatHall: "assets/images/duncairn-keep/great-hall.png",
+    armory: "assets/images/duncairn-keep/armory.png",
+    diningHall: "assets/images/duncairn-keep/dining-hall.png",
+    library: "assets/images/duncairn-keep/library.png",
+    bannerHall: "assets/images/duncairn-keep/banner-hall.png",
+    bannerLoot: "assets/images/duncairn-keep/banner-hall.png",
+    corridor: "assets/images/duncairn-keep/corridor.png",
+    stairwell: "assets/images/duncairn-keep/stairwell.png",
+    solarRoom: "assets/images/duncairn-keep/solar-room.png",
+    solarAftermath: "assets/images/duncairn-keep/solar-room.png",
+    cryptEntrance: "assets/images/duncairn-keep/crypt.png",
+    cryptFight: "assets/images/duncairn-keep/crypt.png",
+    cryptPast: "assets/images/duncairn-keep/crypt.png",
+    chiefsDoor: "assets/images/duncairn-keep/chiefs-door.png",
+    bossRoom: "assets/images/duncairn-keep/boss-room.png",
+    epilogue: "assets/images/duncairn-keep/boss-room.png"
+  },
+  sunkenLonghall: {
+    shoreline: "assets/images/sunken-longhall/shoreline.png",
+    entryHall: "assets/images/sunken-longhall/entry-hall.png",
+    driftwoodFind: "assets/images/sunken-longhall/entry-hall.png",
+    wightAmbush: "assets/images/sunken-longhall/entry-hall.png",
+    greatRoomDoors: "assets/images/sunken-longhall/great-room-doors.png",
+    shieldmanFight: "assets/images/sunken-longhall/great-room-doors.png",
+    greatRoom: "assets/images/sunken-longhall/great-room.png",
+    runeArchive: "assets/images/sunken-longhall/rune-archive.png",
+    corridor: "assets/images/sunken-longhall/corridor.png",
+    fork: "assets/images/sunken-longhall/fork.png",
+    secondArchive: "assets/images/sunken-longhall/second-archive.png",
+    oldChamberFight: "assets/images/sunken-longhall/old-chamber.png",
+    converge: "assets/images/sunken-longhall/flooded-stairwell.png",
+    preBoss: "assets/images/sunken-longhall/flooded-stairwell.png",
+    extraFight: "assets/images/sunken-longhall/flooded-stairwell.png",
+    bossDoor: "assets/images/sunken-longhall/boss-door.png",
+    bossRoom: "assets/images/sunken-longhall/boss-room.png",
+    epilogue: "assets/images/sunken-longhall/boss-room.png"
+  },
+  wychrootGrove: {
+    groveEdge: "assets/images/wychroot-grove/grove-edge.png",
+    innerPath: "assets/images/wychroot-grove/inner-path.png",
+    underbrushFind: "assets/images/wychroot-grove/inner-path.png",
+    houndAmbush: "assets/images/wychroot-grove/inner-path.png",
+    clearingDoors: "assets/images/wychroot-grove/clearing.png",
+    clearing: "assets/images/wychroot-grove/clearing.png",
+    markedStone: "assets/images/wychroot-grove/marked-stone.png",
+    deeperPath: "assets/images/wychroot-grove/deeper-path.png",
+    fork: "assets/images/wychroot-grove/fork.png",
+    leftPathFight: "assets/images/wychroot-grove/left-path.png",
+    rightPathStudy: "assets/images/wychroot-grove/right-path-stones.png",
+    converge: "assets/images/wychroot-grove/converge.png",
+    preBoss: "assets/images/wychroot-grove/converge.png",
+    extraFight: "assets/images/wychroot-grove/converge.png",
+    bossDoor: "assets/images/wychroot-grove/boss-door.png",
+    bossRoom: "assets/images/wychroot-grove/boss-room.png",
+    epilogue: "assets/images/wychroot-grove/boss-room.png"
+  },
+  hollowmereCairn: {
+    moorEdge: "assets/images/hollowmere-cairn/moor-edge.png",
+    outerMounds: "assets/images/hollowmere-cairn/outer-mounds.png",
+    sentinelAmbush: "assets/images/hollowmere-cairn/outer-mounds.png",
+    moundPath: "assets/images/hollowmere-cairn/mound-path.png",
+    wispFind: "assets/images/hollowmere-cairn/mound-path.png",
+    wraithEncounter: "assets/images/hollowmere-cairn/wraith-encounter.png",
+    cairnEntrance: "assets/images/hollowmere-cairn/cairn-entrance.png",
+    sideCairn: "assets/images/hollowmere-cairn/side-cairn.png",
+    innerCairn: "assets/images/hollowmere-cairn/inner-cairn.png",
+    deepPassage: "assets/images/hollowmere-cairn/deep-passage.png",
+    fireChamberFight: "assets/images/hollowmere-cairn/fire-chamber.png",
+    hummingChamberStudy: "assets/images/hollowmere-cairn/humming-chamber.png",
+    converge: "assets/images/hollowmere-cairn/converge.png",
+    preBoss: "assets/images/hollowmere-cairn/pre-boss.png",
+    extraFight: "assets/images/hollowmere-cairn/pre-boss.png",
+    bossDoor: "assets/images/hollowmere-cairn/boss-door.png",
+    bossRoom: "assets/images/hollowmere-cairn/boss-room.png",
+    epilogue: "assets/images/hollowmere-cairn/boss-room.png"
+  },
+  frosthollowVault: {
+    glacierEntrance: "assets/images/frosthollow-vault/glacier-entrance.png",
+    outerIce: "assets/images/frosthollow-vault/outer-ice.png",
+    warriorAmbush: "assets/images/frosthollow-vault/outer-ice.png",
+    innerPath: "assets/images/frosthollow-vault/inner-path.png",
+    alcoveFind: "assets/images/frosthollow-vault/inner-path.png",
+    shamanEncounter: "assets/images/frosthollow-vault/shaman-encounter.png",
+    forgeHallDoors: "assets/images/frosthollow-vault/forge-hall-doors.png",
+    sidePassageStudy: "assets/images/frosthollow-vault/side-passage-shrine.png",
+    forgeHall: "assets/images/frosthollow-vault/forge-hall.png",
+    fork: "assets/images/frosthollow-vault/fork.png",
+    archiveStudy: "assets/images/frosthollow-vault/archive.png",
+    coldPassageFight: "assets/images/frosthollow-vault/cold-passage.png",
+    converge: "assets/images/frosthollow-vault/converge.png",
+    preBoss: "assets/images/frosthollow-vault/pre-boss.png",
+    extraFight: "assets/images/frosthollow-vault/pre-boss.png",
+    bossDoor: "assets/images/frosthollow-vault/pre-boss.png",
+    bossRoom: "assets/images/frosthollow-vault/boss-room.png",
+    epilogue: "assets/images/frosthollow-vault/boss-room.png"
+  },
+  hollowVale: {
+    valeEdge: "assets/images/hollow-vale/vale-edge.png",
+    outerRing: "assets/images/hollow-vale/outer-ring.png",
+    stalkerAmbush: "assets/images/hollow-vale/outer-ring.png",
+    innerVale: "assets/images/hollow-vale/inner-vale.png",
+    smallCluster: "assets/images/hollow-vale/small-cluster.png",
+    voiceEncounter: "assets/images/hollow-vale/voice-encounter.png",
+    ringApproach: "assets/images/hollow-vale/ring-approach.png",
+    loneStoneStudy: "assets/images/hollow-vale/lone-stone.png",
+    remnantFight: "assets/images/hollow-vale/remnant-gathering.png",
+    innerRing: "assets/images/hollow-vale/inner-ring.png",
+    preBoss: "assets/images/hollow-vale/pre-boss.png",
+    extraFight: "assets/images/hollow-vale/pre-boss.png",
+    bossDoor: "assets/images/hollow-vale/boss-door.png",
+    bossRoom: "assets/images/hollow-vale/boss-room.png",
+    epilogue: "assets/images/hollow-vale/boss-room.png"
+  }
+};
+
+function getRoomImage(dungeonId, roomId) {
+  const dungeonMap = ROOM_IMAGES[dungeonId];
+  if (dungeonMap && dungeonMap[roomId]) {
+    return dungeonMap[roomId];
+  }
+  return DUNGEONS[dungeonId] ? DUNGEONS[dungeonId].image : null;
+}

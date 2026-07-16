@@ -40,11 +40,15 @@ body {
   width: 100%;
   max-width: 720px;
   background: var(--wood-mid);
-  border: 4px solid var(--wood-dark);
-  border-radius: 6px;
-  box-shadow:
-    0 0 0 2px var(--ember),
-    0 10px 30px rgba(0, 0, 0, 0.6);
+  border-style: solid;
+  border-width: 14px;
+  border-color: var(--wood-dark);
+  border-image-source: url("../assets/images/ui/frame-border.png");
+  border-image-slice: 200;
+  border-image-width: 14px;
+  border-image-repeat: stretch;
+  border-radius: 4px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
   overflow: hidden;
 }
 
@@ -78,9 +82,10 @@ body {
   letter-spacing: 2px;
   text-align: center;
   color: var(--ember);
-  padding: 10px 8px;
-  border-bottom: 2px solid var(--wood-dark);
-  background: var(--ink);
+  padding: 12px 8px;
+  background: linear-gradient(180deg, #120c08, var(--ink) 70%);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 0 8px rgba(201, 123, 63, 0.35);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 #viewport {
@@ -112,7 +117,13 @@ body {
 }
 
 #panel {
-  padding: 16px;
+  padding: 22px;
+  background-color: var(--wood-mid);
+  background-image:
+    linear-gradient(rgba(28, 46, 31, 0.55), rgba(28, 46, 31, 0.55)),
+    url("../assets/images/ui/panel-texture.png");
+  background-repeat: repeat;
+  background-size: 260px 260px;
 }
 
 #story-text,
@@ -120,34 +131,40 @@ body {
   font-size: 20px;
   line-height: 1.4;
   color: var(--parchment);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
   min-height: 60px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 #choices,
 #game-choices {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .choice-button {
   font-family: var(--font-body);
   font-size: 18px;
   text-align: left;
-  background: var(--ink);
   color: var(--parchment);
-  border: 2px solid var(--moss-border);
-  border-radius: 3px;
-  padding: 10px 14px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  border-style: solid;
+  border-width: 6px;
+  background: var(--ink);
+  border-color: var(--moss-border);
+  border-image-source: url("../assets/images/ui/button-texture.png");
+  border-image-slice: 110 fill;
+  border-image-width: 6px;
+  border-image-repeat: stretch;
+  padding: 12px 16px;
+  transition: filter 0.15s ease, transform 0.1s ease;
 }
 
 .choice-button:hover,
 .choice-button:focus-visible {
-  border-color: var(--ember);
-  color: var(--ember);
+  filter: brightness(1.2);
   outline: none;
 }
 
@@ -158,6 +175,7 @@ body {
 .choice-button::before {
   content: "\25B8  ";
   color: var(--ember);
+  text-shadow: 0 0 4px rgba(201, 123, 63, 0.6);
 }
 
 .choice-button:disabled {
@@ -166,7 +184,7 @@ body {
 }
 
 .cc-section {
-  margin-bottom: 20px;
+  margin-bottom: 26px;
 }
 
 .cc-label {
@@ -174,7 +192,7 @@ body {
   font-size: 10px;
   color: var(--ember);
   letter-spacing: 1px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   display: block;
 }
 
@@ -184,9 +202,9 @@ body {
   font-size: 20px;
   background: var(--ink);
   color: var(--parchment);
-  border: 2px solid var(--parchment-dim);
+  border: 1px solid var(--parchment-dim);
   border-radius: 4px;
-  padding: 8px 10px;
+  padding: 10px 12px;
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
@@ -198,8 +216,8 @@ body {
 .cc-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 16px;
+  margin-bottom: 18px;
 }
 
 .cc-category-heading {
@@ -208,8 +226,8 @@ body {
   color: var(--parchment-dim);
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin: 14px 0 8px;
-  padding-bottom: 4px;
+  margin: 18px 0 10px;
+  padding-bottom: 5px;
   border-bottom: 1px solid var(--moss-border);
 }
 
@@ -219,81 +237,42 @@ body {
 
 .cc-card {
   position: relative;
-  background:
+  background-color: var(--ink);
+  background-image:
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2)),
-    var(--ink);
+    linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.35)),
+    url("../assets/images/ui/panel-texture.png");
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: cover, cover, 180px 180px;
   border: 1px solid var(--moss-border);
-  border-radius: 6px;
-  padding: 15px 13px 12px;
+  border-radius: 5px;
+  padding: 16px 15px 14px;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-  transition: border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
 }
 
 .cc-card::before,
 .cc-card::after {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--card-accent, var(--ember));
-  opacity: 0.65;
-  transition: opacity 0.15s ease;
-  pointer-events: none;
-}
-
-.cc-card::before {
-  top: 4px;
-  left: 4px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.cc-card::after {
-  bottom: 4px;
-  right: 4px;
-  border-left: none;
-  border-top: none;
+  content: none;
 }
 
 .cc-card:hover {
   border-color: var(--ember);
   transform: translateY(-2px);
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.45);
-}
-
-.cc-card:hover::before,
-.cc-card:hover::after {
-  opacity: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .cc-card.selected {
   border-color: var(--card-accent, var(--ember));
-  background:
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
-    linear-gradient(160deg, color-mix(in srgb, var(--card-accent, var(--ember)) 22%, transparent), rgba(0, 0, 0, 0.2)),
-    var(--ink);
-  box-shadow:
-    0 0 0 1px var(--card-accent, var(--ember)),
-    0 5px 14px rgba(0, 0, 0, 0.5);
-}
-
-.cc-card.selected::before,
-.cc-card.selected::after {
-  opacity: 1;
+  box-shadow: 0 0 0 1px var(--card-accent, var(--ember)), 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .cc-card.selected::after {
-  border-left: none;
-  border-top: none;
   content: "\2713";
-  width: auto;
-  height: auto;
-  border: none;
-  bottom: auto;
-  top: 6px;
-  right: 9px;
+  position: absolute;
+  top: 8px;
+  right: 10px;
   color: var(--card-accent, var(--ember));
   font-family: var(--font-body);
   font-size: 18px;
@@ -303,8 +282,8 @@ body {
 .cc-card-name {
   font-family: var(--font-display);
   font-size: 10px;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 9px;
   color: var(--parchment);
   letter-spacing: 0.5px;
   padding-right: 16px;
@@ -323,7 +302,7 @@ body {
 
 .cc-card-desc {
   font-size: 16px;
-  line-height: 1.3;
+  line-height: 1.35;
   color: var(--parchment-dim);
 }
 
@@ -336,7 +315,7 @@ body {
 .cc-skill-count {
   font-size: 16px;
   color: var(--parchment-dim);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .cc-skill-count.limit-reached {
@@ -347,7 +326,7 @@ body {
   font-size: 16px;
   color: var(--ember);
   min-height: 20px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .follower-remove-btn {
@@ -380,7 +359,7 @@ body {
     padding: 4px;
   }
   #panel {
-    padding: 12px;
+    padding: 16px;
   }
   #story-text,
   #game-story-text {

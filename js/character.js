@@ -5,7 +5,7 @@
 let playerCharacter = null;
 let followers = [];
 
-function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds) {
+function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, combatStyle) {
   const skills = {};
   startingSkillIds.forEach((skillId) => {
     skills[skillId] = { timesUsed: 0 };
@@ -34,6 +34,7 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds) {
     skills: skills,
     knownSpells: knownSpells,
     traits: traitIds.slice(),
+    combatStyle: combatStyle || "single",
     inventory: inventory,
     flags: {}
   };
@@ -125,7 +126,21 @@ function getAdvantageTier(character, advantageId) {
     drivingSkillIds = drivingSkillIds.concat(culture.magicSkillIds);
   }
 
-  let tier = getHighestTierAmong(character, drivingSkillIds);
+  let tier;
+
+  if (advantageId === "armorClass") {
+    let bestRank = -1;
+    drivingSkillIds.forEach((skillId) => {
+      if (!character.skills[skillId]) return;
+      const rawRank = getTierRankLocal(getCharacterSkillTier(character, skillId).name);
+      const bonus = ARMOR_PROTECTION_RANK_BONUS[skillId] || 0;
+      const effectiveRank = Math.min(SKILL_TIERS.length - 1, rawRank + bonus);
+      if (effectiveRank > bestRank) bestRank = effectiveRank;
+    });
+    tier = bestRank === -1 ? SKILL_TIERS[0] : SKILL_TIERS[bestRank];
+  } else {
+    tier = getHighestTierAmong(character, drivingSkillIds);
+  }
 
   if (advantageId === "dodge" && character.traits && character.traits.includes("quickfooted")) {
     const boostedRank = Math.min(SKILL_TIERS.length - 1, getTierRankLocal(tier.name) + 1);

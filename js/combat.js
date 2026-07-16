@@ -37,13 +37,25 @@ function getEffectRankSum(kind) {
     .reduce((sum, e) => sum + e.rankBonus, 0);
 }
 
+function getPlayerCombatStyleBonus() {
+  const style = COMBAT_STYLES[playerCharacter.combatStyle];
+  return style || { attackBonus: 0, defenseBonus: 0 };
+}
+
 function getEffectivePlayerAttackTier(baseTierName) {
   const equipBonus = playerCharacter.weaponEnchantment ? 1 : 0;
-  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus);
+  const styleBonus = getPlayerCombatStyleBonus().attackBonus;
+  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus);
 }
 
 function getEffectiveEnemyTier() {
   return shiftTierByRank(currentCombat.enemyThreatTier, getEffectRankSum("enemyDebuff"));
+}
+
+function getArmorEnchantDefenseBonus() {
+  if (!playerCharacter.armorEnchantment) return 0;
+  const effect = ARMOR_ENCHANT_EFFECTS[playerCharacter.armorEnchantment.type];
+  return effect ? effect.defenseBonus : 0;
 }
 
 function getDefendingTierName(attackType, character) {
@@ -56,8 +68,9 @@ function getDefendingTierName(attackType, character) {
     baseTierName = acTier.min >= dodgeTier.min ? acTier.name : dodgeTier.name;
   }
   if (character === playerCharacter) {
-    const equipBonus = playerCharacter.armorEnchantment ? 1 : 0;
-    return shiftTierByRank(baseTierName, getEffectRankSum("playerDefenseBonus") + equipBonus);
+    const equipBonus = getArmorEnchantDefenseBonus();
+    const styleBonus = getPlayerCombatStyleBonus().defenseBonus;
+    return shiftTierByRank(baseTierName, getEffectRankSum("playerDefenseBonus") + equipBonus + styleBonus);
   }
   return baseTierName;
 }
@@ -225,6 +238,30 @@ function performFollowersTurn() {
   });
 }
 
+function tryArmorEnchantProc(enemyEffectiveTier) {
+  if (!playerCharacter.armorEnchantment) return false;
+  const effect = ARMOR_ENCHANT_EFFECTS[playerCharacter.armorEnchantment.type];
+  if (!effect || !effect.procType) return false;
+  if (Math.random() >= effect.procChance) return false;
+
+  if (effect.procType === "deflect") {
+    currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "deflect" });
+    return true;
+  }
+  if (effect.procType === "counterBurn") {
+    const burnDmg = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+    currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - burnDmg);
+    currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "counterBurn", damage: burnDmg });
+  } else if (effect.procType === "chill") {
+    currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: 2 });
+    currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "chill" });
+  } else if (effect.procType === "counterCurse") {
+    currentCombat.activeEffects.push({ kind: "dot", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, casterTierName: "Novice" });
+    currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "counterCurse" });
+  }
+  return false;
+}
+
 function resolveEnemyAttack() {
   tickCombatEffects();
   if (currentCombat.enemyCurrentHP <= 0) {
@@ -242,8 +279,13 @@ function resolveEnemyAttack() {
 
   const hit = rollSuccess(enemyEffectiveTier, defenderTier, adjustment);
   let damage = 0;
+  let deflected = false;
 
-  if (hit) {
+  if (hit && isPlayerTarget) {
+    deflected = tryArmorEnchantProc(enemyEffectiveTier);
+  }
+
+  if (hit && !deflected) {
     damage = Math.max(1, Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier));
     target.currentHP = Math.max(0, target.currentHP - damage);
   }
@@ -251,13 +293,13 @@ function resolveEnemyAttack() {
   currentCombat.playerDefending = false;
   currentCombat.log.push({
     actor: "enemy",
-    hit: hit,
+    hit: hit && !deflected,
     damage: damage,
     isPlayerTarget: isPlayerTarget,
     targetName: isPlayerTarget ? playerCharacter.name : target.name
   });
 
-  if (hit && !isPlayerTarget && target.currentHP <= 0) {
+  if (hit && !deflected && !isPlayerTarget && target.currentHP <= 0) {
     currentCombat.log.push({ actor: "effect", kind: "downed", name: target.name });
   }
 
@@ -413,6 +455,13 @@ function describeLogEntry(entry) {
     if (entry.kind === "dot") return `The lingering curse bites again for ${entry.damage} harm.`;
     if (entry.kind === "companion") return `Your companion strikes for ${entry.damage} harm.`;
     if (entry.kind === "downed") return `${entry.name} is knocked out of the fight!`;
+    if (entry.kind === "enchantProc") {
+      if (entry.procType === "deflect") return "Your Storm-enchanted armor crackles and deflects the blow entirely!";
+      if (entry.procType === "counterBurn") return `Your Flame-enchanted armor sears back, burning your foe for ${entry.damage}.`;
+      if (entry.procType === "chill") return "Your Frost-enchanted armor bites back, chilling your foe's next strike.";
+      if (entry.procType === "counterCurse") return "Your Curse-enchanted armor lashes back with a lingering hex.";
+      return "";
+    }
     return "";
   }
 
@@ -461,12 +510,28 @@ function describeLogEntry(entry) {
         ? `You call on ${actionName} and land a solid hit.`
         : `You call on ${actionName}, but it goes wide.`;
     }
+
+    if (playerCharacter.weaponEnchantment) {
+      const enchantType = ENCHANTMENT_TYPES[playerCharacter.weaponEnchantment.type];
+      const flavor = enchantType ? enchantType.name : "";
+      return entry.hit
+        ? `You strike with your ${flavor}-enchanted ${actionName}, and land a solid hit.`
+        : `You strike with your ${flavor}-enchanted ${actionName}, but the blow goes wide.`;
+    }
+
     return entry.hit
       ? `You strike with your ${actionName} and land a solid hit.`
       : `You strike with your ${actionName}, but the blow goes wide.`;
   }
 
   const targetLabel = entry.isPlayerTarget ? "you" : entry.targetName;
+
+  if (entry.isPlayerTarget && !entry.hit && playerCharacter.armorEnchantment) {
+    const enchantType = ENCHANTMENT_TYPES[playerCharacter.armorEnchantment.type];
+    const flavor = enchantType ? enchantType.name : "";
+    return `${currentCombat.enemyName} strikes at you, but your ${flavor}-enchanted armor turns the blow aside.`;
+  }
+
   return entry.hit
     ? `${currentCombat.enemyName} strikes at ${targetLabel} and lands a hit.`
     : `${currentCombat.enemyName} strikes at ${targetLabel}, but misses.`;
@@ -479,14 +544,6 @@ function describeRecentRound() {
   return recent.map(describeLogEntry).filter(Boolean).join(" ");
 }
 
-/**
- * Same underlying log entries as describeRecentRound, but
- * returned as a separate array (one string per action) instead
- * of one joined string — used for voice narration, so each
- * action (your strike, the enemy's counter, a buff, a follower's
- * heal) gets read as its own distinct line instead of one
- * run-on sentence.
- */
 function getRecentRoundLines() {
   if (!currentCombat || currentCombat.log.length === 0) return [];
   const windowSize = followers.length + 4;
