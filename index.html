@@ -35,8 +35,9 @@
       </div>
     </section>
 
-    <section id="screen-creation" class="screen">
+    <section id="screen-creation-step1" class="screen">
       <div id="panel">
+        <span class="cc-label">Step 1 of 6 &mdash; Name, Race &amp; Portrait</span>
 
         <div class="cc-section">
           <label class="cc-label" for="cc-name">Name</label>
@@ -49,30 +50,74 @@
         </div>
 
         <div class="cc-section">
-          <span class="cc-label">Culture</span>
-          <div id="cc-culture-grid" class="cc-grid"></div>
+          <span class="cc-label">Portrait</span>
+          <div id="cc-portrait-grid" class="cc-grid"></div>
         </div>
 
-        <div class="cc-section">
-          <span class="cc-label">Starting Skills</span>
-          <div id="cc-skill-count" class="cc-skill-count">Choose up to 6</div>
-          <div id="cc-skill-grid"></div>
-        </div>
-
-        <div class="cc-section">
-          <span class="cc-label">Traits</span>
-          <div id="cc-trait-count" class="cc-skill-count">Choose 2-3</div>
-          <div id="cc-trait-grid" class="cc-grid"></div>
-        </div>
-
-        <div class="cc-section">
-          <span class="cc-label">Combat Style</span>
-          <div id="cc-combatstyle-grid" class="cc-grid"></div>
-        </div>
-
-        <div id="cc-error"></div>
+        <div id="cc-error-step1"></div>
 
         <div id="choices">
+          <button class="choice-button" id="btn-step1-next">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-creation-step2" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 2 of 6 &mdash; Culture</span>
+        <div id="cc-culture-grid" class="cc-grid"></div>
+        <div id="cc-error-step2"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-step2-back">Back</button>
+          <button class="choice-button" id="btn-step2-next">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-creation-step3" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 3 of 6 &mdash; Starting Skills</span>
+        <div id="cc-skill-count" class="cc-skill-count">Choose up to 6</div>
+        <div id="cc-skill-grid"></div>
+        <div id="cc-error-step3"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-step3-back">Back</button>
+          <button class="choice-button" id="btn-step3-next">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-creation-step4" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 4 of 6 &mdash; Traits</span>
+        <div id="cc-trait-count" class="cc-skill-count">Choose 2-3</div>
+        <div id="cc-trait-grid" class="cc-grid"></div>
+        <div id="cc-error-step4"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-step4-back">Back</button>
+          <button class="choice-button" id="btn-step4-next">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-creation-step5" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 5 of 6 &mdash; Combat Style</span>
+        <div id="cc-combatstyle-grid" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-step5-back">Back</button>
+          <button class="choice-button" id="btn-step5-next">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-creation-review" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 6 of 6 &mdash; Review</span>
+        <div id="review-summary" class="cc-grid"></div>
+        <div id="cc-error"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-review-back">Back</button>
           <button class="choice-button" id="btn-confirm-character">Set out</button>
         </div>
       </div>
@@ -119,7 +164,20 @@
     <section id="screen-inventory" class="screen">
       <div id="panel">
         <span class="cc-label">Your Inventory</span>
+
+        <div class="cc-section">
+          <span class="cc-label">Equipped Weapon</span>
+          <div id="equip-weapon-grid" class="cc-grid"></div>
+        </div>
+
+        <div class="cc-section">
+          <span class="cc-label">Equipped Armor</span>
+          <div id="equip-armor-grid" class="cc-grid"></div>
+        </div>
+
+        <span class="cc-label">Carried Items</span>
         <div id="inventory-list"></div>
+
         <div id="choices">
           <button class="choice-button" id="btn-inventory-back">Return to Homebase</button>
         </div>

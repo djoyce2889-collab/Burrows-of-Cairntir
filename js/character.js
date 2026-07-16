@@ -5,7 +5,7 @@
 let playerCharacter = null;
 let followers = [];
 
-function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, combatStyle) {
+function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, combatStyle, portraitImage) {
   const skills = {};
   startingSkillIds.forEach((skillId) => {
     skills[skillId] = { timesUsed: 0 };
@@ -27,6 +27,13 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     }
   });
 
+  const startingWeaponId = startingSkillIds.find(
+    (id) => SKILLS[id] && SKILLS[id].category === "Weapon"
+  ) || "unarmedCombat";
+  const startingArmorId = startingSkillIds.find(
+    (id) => SKILLS[id] && SKILLS[id].category === "Armor"
+  ) || null;
+
   const character = {
     name: name,
     raceId: raceId,
@@ -35,6 +42,9 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     knownSpells: knownSpells,
     traits: traitIds.slice(),
     combatStyle: combatStyle || "single",
+    portraitImage: portraitImage || null,
+    equippedWeaponSkill: startingWeaponId,
+    equippedArmorSkill: startingArmorId,
     inventory: inventory,
     flags: {}
   };
@@ -42,6 +52,46 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
   character.currentMana = getManaPoolMax(character);
 
   return character;
+}
+
+/**
+ * Changes which weapon skill a character fights with. Only ever
+ * called from the Inventory screen, which is only reachable from
+ * Homebase — so this naturally can't happen mid-dungeon.
+ */
+function setEquippedWeapon(character, skillId) {
+  character.equippedWeaponSkill = skillId;
+}
+
+/**
+ * Changes which armor skill a character defends with. Same
+ * Homebase-only restriction as the weapon slot.
+ */
+function setEquippedArmor(character, skillId) {
+  character.equippedArmorSkill = skillId;
+}
+
+/**
+ * Grants a character an entirely new skill they didn't start
+ * with (used by dungeon "learnSkill" discoveries), starting at
+ * Untrained. Does nothing if they already have it. If it's a
+ * Weapon or Armor skill and the character has no equipped item
+ * of that kind yet, auto-equips it so it's immediately usable.
+ */
+function learnNewSkill(character, skillId) {
+  if (!SKILLS[skillId]) return false;
+  if (character.skills[skillId]) return false;
+
+  character.skills[skillId] = { timesUsed: 0 };
+
+  if (SKILLS[skillId].category === "Weapon" && !character.equippedWeaponSkill) {
+    character.equippedWeaponSkill = skillId;
+  }
+  if (SKILLS[skillId].category === "Armor" && !character.equippedArmorSkill) {
+    character.equippedArmorSkill = skillId;
+  }
+
+  return true;
 }
 
 function getSkillTier(timesUsed) {
@@ -94,10 +144,7 @@ function useSkill(character, skillId) {
 }
 
 function getAvailableStartingSkills(cultureId) {
-  return Object.values(SKILLS).filter((skill) => {
-    if (!skill.cultureLocked) return true;
-    return skill.cultureLocked === cultureId;
-  });
+  return Object.values(SKILLS);
 }
 
 function getCharacterSkillTier(character, skillId) {
@@ -117,6 +164,12 @@ function getHighestTierAmong(character, skillIds) {
   return best;
 }
 
+/**
+ * Armor Class is now driven by whichever single armor skill is
+ * currently EQUIPPED (see equippedArmorSkill), not the best of
+ * everything trained — so carrying both Plate and Chain no
+ * longer silently gives you the better of the two for free.
+ */
 function getAdvantageTier(character, advantageId) {
   const advantage = ADVANTAGES[advantageId];
   let drivingSkillIds = advantage.drivenBy.slice();
@@ -129,15 +182,15 @@ function getAdvantageTier(character, advantageId) {
   let tier;
 
   if (advantageId === "armorClass") {
-    let bestRank = -1;
-    drivingSkillIds.forEach((skillId) => {
-      if (!character.skills[skillId]) return;
-      const rawRank = getTierRankLocal(getCharacterSkillTier(character, skillId).name);
-      const bonus = ARMOR_PROTECTION_RANK_BONUS[skillId] || 0;
+    const equippedId = character.equippedArmorSkill;
+    if (!equippedId || !character.skills[equippedId]) {
+      tier = SKILL_TIERS[0];
+    } else {
+      const rawRank = getTierRankLocal(getCharacterSkillTier(character, equippedId).name);
+      const bonus = ARMOR_PROTECTION_RANK_BONUS[equippedId] || 0;
       const effectiveRank = Math.min(SKILL_TIERS.length - 1, rawRank + bonus);
-      if (effectiveRank > bestRank) bestRank = effectiveRank;
-    });
-    tier = bestRank === -1 ? SKILL_TIERS[0] : SKILL_TIERS[bestRank];
+      tier = SKILL_TIERS[effectiveRank];
+    }
   } else {
     tier = getHighestTierAmong(character, drivingSkillIds);
   }

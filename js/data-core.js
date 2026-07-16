@@ -160,13 +160,13 @@ const SKILLS = {
   runeVision: { id: "runeVision", name: "Runes of the Vision", category: "Magic", cultureLocked: "drakvarr", description: "Seer-runes that unbalance and weaken a foe for a time." },
   runeCurse: { id: "runeCurse", name: "Runes of the Curse", category: "Magic", cultureLocked: "drakvarr", description: "Hex-runes that fester and linger, doing harm over time." },
 
-  pathWild: { id: "pathWild", name: "Path of the Wild", category: "Magic", cultureLocked: "gaeldrim", description: "Calls a beast companion to fight at your side for the rest of the battle." },
+  pathWild: { id: "pathWild", name: "Path of the Wild", category: "Magic", cultureLocked: "gaeldrim", description: "Calls a beast companion to fight at your side for the rest of the dungeon — once per dungeon run." },
   pathGrove: { id: "pathGrove", name: "Path of the Grove", category: "Magic", cultureLocked: "gaeldrim", description: "Growth and healing, mending wounds from root and leaf." },
   pathStorm: { id: "pathStorm", name: "Path of the Storm", category: "Magic", cultureLocked: "gaeldrim", description: "Wind, rain, and lightning, called down from the turning sky." },
   pathBarrow: { id: "pathBarrow", name: "Path of the Barrow", category: "Magic", cultureLocked: "gaeldrim", description: "The dark path — a lingering curse from what rests beneath the land." },
 
-  swords: { id: "swords", name: "Swords", category: "Weapon", description: "Skill with blades in close combat." },
-  axes: { id: "axes", name: "Axes", category: "Weapon", description: "Heavy, cleaving strikes with axes." },
+  swords: { id: "swords", name: "Sword", category: "Weapon", description: "Skill with blades in close combat." },
+  axes: { id: "axes", name: "Axe", category: "Weapon", description: "Heavy, cleaving strikes with an axe." },
   archery: { id: "archery", name: "Archery", category: "Weapon", description: "Accuracy and power with a bow." },
   unarmedCombat: { id: "unarmedCombat", name: "Unarmed Combat", category: "Weapon", description: "Fighting with fists, feet, and improvised force." },
 
@@ -187,12 +187,6 @@ const SKILLS = {
 
 const SKILL_CATEGORY_ORDER = ["Magic", "Weapon", "Armor", "Crafting", "General"];
 
-// ----------------------------------------------------------
-// SKILL TIERS
-// Thresholds roughly doubled from the original values so
-// leveling up actually takes real, sustained effort rather
-// than happening within the first couple of fights.
-// ----------------------------------------------------------
 const SKILL_TIERS = [
   { min: 0, name: "Untrained" },
   { min: 10, name: "Novice" },
@@ -293,3 +287,11 @@ const DAMAGE_RANGE_BY_TIER = {
 
 const DEFEND_SUCCESS_PENALTY = 0.20;
 const SPELL_EFFECT_DURATION = 3;
+
+const ARCHETYPES = [
+  { id: "swordShield", name: "Sword & Shield", fileSlug: "sword-shield" },
+  { id: "axeShield", name: "Axe & Shield", fileSlug: "axe-shield" },
+  { id: "dualWield", name: "Dual-Wield", fileSlug: "dual-wield" },
+  { id: "archer", name: "Archer", fileSlug: "archer" },
+  { id: "spellcaster", name: "Spellcaster", fileSlug: "spellcaster" }
+];

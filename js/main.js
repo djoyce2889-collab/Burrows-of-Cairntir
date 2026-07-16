@@ -4,12 +4,23 @@
 
 const creationState = {
   mode: "player",
+  name: "",
   race: null,
   culture: null,
   skills: [],
   traits: [],
-  combatStyle: "single"
+  combatStyle: "single",
+  portraitImage: null
 };
+
+const CREATION_STEP_SCREENS = [
+  "screen-creation-step1",
+  "screen-creation-step2",
+  "screen-creation-step3",
+  "screen-creation-step4",
+  "screen-creation-step5",
+  "screen-creation-review"
+];
 
 let selectedDungeonId = null;
 let currentDungeonRoomId = null;
@@ -148,16 +159,30 @@ function renderCombatStyleGrid() {
   });
 }
 
+function goToCreationStep(index) {
+  showScreen(CREATION_STEP_SCREENS[index]);
+  if (CREATION_STEP_SCREENS[index] === "screen-creation-review") {
+    renderReviewScreen();
+  }
+}
+
 function resetCreationState(mode) {
   creationState.mode = mode;
+  creationState.name = "";
   creationState.race = null;
   creationState.culture = null;
   creationState.skills = [];
   creationState.traits = [];
   creationState.combatStyle = "single";
+  creationState.portraitImage = null;
   document.getElementById("cc-name").value = "";
+  document.getElementById("cc-error-step1").textContent = "";
+  document.getElementById("cc-error-step2").textContent = "";
+  document.getElementById("cc-error-step3").textContent = "";
+  document.getElementById("cc-error-step4").textContent = "";
 
   renderRaceGrid();
+  renderPortraitGrid();
   renderCultureGrid();
   renderSkillGrid();
   renderTraitGrid();
@@ -179,9 +204,140 @@ function renderRaceGrid() {
     `;
     card.addEventListener("click", () => {
       creationState.race = race.id;
+      creationState.portraitImage = null;
       renderRaceGrid();
+      renderPortraitGrid();
     });
     grid.appendChild(card);
+  });
+}
+
+function buildPortraitOptions(raceId) {
+  const options = [];
+
+  options.push({ path: `assets/images/characters/${raceId}.png`, label: "Classic (Male)" });
+  options.push({ path: `assets/images/characters/${raceId}-female.png`, label: "Classic (Female)" });
+
+  ARCHETYPES.forEach((arch) => {
+    options.push({
+      path: `assets/images/characters/archetypes/${arch.fileSlug}-male.png`,
+      label: `${arch.name} (Male)`
+    });
+    options.push({
+      path: `assets/images/characters/archetypes/${arch.fileSlug}-female.png`,
+      label: `${arch.name} (Female)`
+    });
+  });
+
+  ARCHETYPES.forEach((arch) => {
+    options.push({
+      path: `assets/images/characters/full-set/${raceId}-male-${arch.fileSlug}.png`,
+      label: `${RACES[raceId].name} ${arch.name} (Male)`
+    });
+    options.push({
+      path: `assets/images/characters/full-set/${raceId}-female-${arch.fileSlug}.png`,
+      label: `${RACES[raceId].name} ${arch.name} (Female)`
+    });
+  });
+
+  return options;
+}
+
+function checkImageExists(path) {
+  return new Promise((resolve) => {
+    const testImg = new Image();
+    testImg.onload = () => resolve(true);
+    testImg.onerror = () => resolve(false);
+    testImg.src = path;
+  });
+}
+
+/**
+ * Runs a list of task functions with only a limited number ever
+ * in flight at once, instead of firing them all simultaneously
+ * (which was the actual source of the flicker — a burst of ~20
+ * network requests at the same instant). Keeping this at 4
+ * means the browser is never asked to juggle more than a small
+ * handful of image loads at a time, no matter how large the
+ * overall list is.
+ */
+async function runWithConcurrencyLimit(taskFns, limit) {
+  const results = new Array(taskFns.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < taskFns.length) {
+      const current = nextIndex;
+      nextIndex += 1;
+      results[current] = await taskFns[current]();
+    }
+  }
+
+  const workerCount = Math.min(limit, taskFns.length);
+  const workers = [];
+  for (let i = 0; i < workerCount; i++) {
+    workers.push(worker());
+  }
+  await Promise.all(workers);
+  return results;
+}
+
+const IMAGE_CHECK_CONCURRENCY = 4;
+const portraitOptionsCache = {};
+
+async function getValidPortraitOptions(raceId) {
+  if (portraitOptionsCache[raceId]) return portraitOptionsCache[raceId];
+
+  const candidates = buildPortraitOptions(raceId);
+  const taskFns = candidates.map((opt) => async () => ((await checkImageExists(opt.path)) ? opt : null));
+  const results = await runWithConcurrencyLimit(taskFns, IMAGE_CHECK_CONCURRENCY);
+  const valid = results.filter(Boolean);
+  portraitOptionsCache[raceId] = valid;
+  return valid;
+}
+
+/**
+ * Quietly checks every race's portraits in the background,
+ * starting the moment the page loads — well before the player
+ * ever reaches character creation. Races are warmed one at a
+ * time (each internally still limited to 4 concurrent checks),
+ * so at no point does the browser face a sudden burst, no
+ * matter how many total images exist across all 6 races.
+ */
+async function prewarmAllPortraitCaches() {
+  for (const raceId of Object.keys(RACES)) {
+    await getValidPortraitOptions(raceId);
+  }
+}
+
+async function renderPortraitGrid() {
+  const grid = document.getElementById("cc-portrait-grid");
+  grid.innerHTML = "";
+
+  if (!creationState.race) return;
+
+  const validOptions = await getValidPortraitOptions(creationState.race);
+
+  validOptions.forEach((opt) => {
+    const card = document.createElement("div");
+    card.className = "cc-portrait-card";
+    card.dataset.portraitPath = opt.path;
+    if (creationState.portraitImage === opt.path) card.classList.add("selected");
+    card.innerHTML = `
+      <img src="${opt.path}" class="cc-portrait-thumb" alt="${opt.label}" />
+      <div class="cc-card-desc">${opt.label}</div>
+    `;
+    card.addEventListener("click", () => {
+      selectPortrait(opt.path);
+    });
+    grid.appendChild(card);
+  });
+}
+
+function selectPortrait(path) {
+  creationState.portraitImage = path;
+  document.querySelectorAll("#cc-portrait-grid .cc-portrait-card").forEach((card) => {
+    card.classList.toggle("selected", card.dataset.portraitPath === path);
   });
 }
 
@@ -201,11 +357,7 @@ function renderCultureGrid() {
     `;
     card.addEventListener("click", () => {
       creationState.culture = culture.id;
-      const legalIds = getAvailableStartingSkills(culture.id).map((s) => s.id);
-      creationState.skills = creationState.skills.filter((id) => legalIds.includes(id));
-
       renderCultureGrid();
-      renderSkillGrid();
     });
     grid.appendChild(card);
   });
@@ -216,9 +368,7 @@ function renderSkillGrid() {
   const countLabel = document.getElementById("cc-skill-count");
   container.innerHTML = "";
 
-  const availableSkills = creationState.culture
-    ? getAvailableStartingSkills(creationState.culture)
-    : Object.values(SKILLS).filter((s) => !s.cultureLocked);
+  const availableSkills = Object.values(SKILLS);
 
   const atLimit = creationState.skills.length >= MAX_STARTING_SKILLS;
   countLabel.textContent = `Chosen ${creationState.skills.length} / ${MAX_STARTING_SKILLS}`;
@@ -241,9 +391,19 @@ function renderSkillGrid() {
       const isSelected = creationState.skills.includes(skill.id);
       card.className = "cc-card";
       if (isSelected) card.classList.add("selected");
+
+      let cultureLabel = "";
+      if (skill.category === "Magic") {
+        const owningCulture = Object.values(CULTURES).find((c) => c.magicSkillIds.includes(skill.id));
+        if (owningCulture) {
+          cultureLabel = `<div class="cc-card-desc"><em>Associated with the ${owningCulture.name}</em></div>`;
+        }
+      }
+
       card.innerHTML = `
         <div class="cc-card-name">${skill.name}</div>
         <div class="cc-card-desc">${skill.description}</div>
+        ${cultureLabel}
       `;
 
       card.addEventListener("click", () => {
@@ -294,40 +454,38 @@ function renderTraitGrid() {
   });
 }
 
+function renderReviewScreen() {
+  const container = document.getElementById("review-summary");
+  container.innerHTML = "";
+
+  const race = RACES[creationState.race];
+  const culture = CULTURES[creationState.culture];
+  const style = COMBAT_STYLES[creationState.combatStyle];
+  const skillNames = creationState.skills.map((id) => SKILLS[id].name).join(", ") || "None";
+  const traitNames = creationState.traits.map((id) => TRAITS[id].name).join(", ") || "None";
+
+  const card = document.createElement("div");
+  card.className = "cc-card";
+  card.innerHTML = `
+    ${creationState.portraitImage ? `<img src="${creationState.portraitImage}" class="cc-portrait-thumb" alt="Portrait" />` : ""}
+    <div class="cc-card-name">${creationState.name}</div>
+    <div class="cc-card-desc">${race ? race.name : ""} of the ${culture ? culture.name : ""}</div>
+    <div class="cc-card-desc">Skills: ${skillNames}</div>
+    <div class="cc-card-desc">Traits: ${traitNames}</div>
+    <div class="cc-card-desc">Combat Style: ${style ? style.name : ""}</div>
+  `;
+  container.appendChild(card);
+}
+
 function attemptConfirmCharacter() {
-  const errorEl = document.getElementById("cc-error");
-  const name = document.getElementById("cc-name").value.trim();
-
-  if (!name) {
-    errorEl.textContent = "Your character needs a name.";
-    return;
-  }
-  if (!creationState.race) {
-    errorEl.textContent = "Choose a race.";
-    return;
-  }
-  if (!creationState.culture) {
-    errorEl.textContent = "Choose a culture.";
-    return;
-  }
-  if (creationState.skills.length === 0) {
-    errorEl.textContent = "Choose at least one starting skill.";
-    return;
-  }
-  if (creationState.traits.length < TRAIT_SELECTION_MIN) {
-    errorEl.textContent = `Choose at least ${TRAIT_SELECTION_MIN} traits.`;
-    return;
-  }
-
-  errorEl.textContent = "";
-
   const newCharacter = createCharacter(
-    name,
+    creationState.name,
     creationState.race,
     creationState.culture,
     creationState.skills,
     creationState.traits,
-    creationState.combatStyle
+    creationState.combatStyle,
+    creationState.portraitImage
   );
 
   if (creationState.mode === "player") {
@@ -390,6 +548,8 @@ function renderPartyScreen() {
 function goToHomebaseScreen() {
   showScreen("screen-homebase");
   playMusic(MAIN_THEME_SRC);
+
+  resetDungeonCompanionState();
 
   if (playerCharacter) {
     playerCharacter.currentHP = getHitPoints(playerCharacter);
@@ -478,15 +638,53 @@ function goToInventoryScreen() {
   renderInventoryScreen();
 }
 
-/**
- * Groups the player's inventory into three sections: crafting
- * materials (Old Ore, Hide, Grave Essence, and any boss-drop
- * loot items), then weapons/armor pieces, then a summary of
- * active enchantments and combat style. Item counts are grouped
- * so duplicates (e.g. three Old Ore) show as one line with a
- * quantity rather than three separate cards.
- */
+function renderEquipSection() {
+  const weaponGrid = document.getElementById("equip-weapon-grid");
+  const armorGrid = document.getElementById("equip-armor-grid");
+  weaponGrid.innerHTML = "";
+  armorGrid.innerHTML = "";
+
+  const trainedWeaponIds = Object.keys(playerCharacter.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Weapon"
+  );
+  if (!trainedWeaponIds.includes("unarmedCombat")) {
+    trainedWeaponIds.push("unarmedCombat");
+  }
+  trainedWeaponIds.forEach((skillId) => {
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (playerCharacter.equippedWeaponSkill === skillId) card.classList.add("selected");
+    card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
+    card.addEventListener("click", () => {
+      setEquippedWeapon(playerCharacter, skillId);
+      renderEquipSection();
+    });
+    weaponGrid.appendChild(card);
+  });
+
+  const trainedArmorIds = Object.keys(playerCharacter.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Armor"
+  );
+  if (trainedArmorIds.length === 0) {
+    armorGrid.innerHTML = '<div class="cc-skill-count">No armor trained yet.</div>';
+  } else {
+    trainedArmorIds.forEach((skillId) => {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      if (playerCharacter.equippedArmorSkill === skillId) card.classList.add("selected");
+      card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
+      card.addEventListener("click", () => {
+        setEquippedArmor(playerCharacter, skillId);
+        renderEquipSection();
+      });
+      armorGrid.appendChild(card);
+    });
+  }
+}
+
 function renderInventoryScreen() {
+  renderEquipSection();
+
   const list = document.getElementById("inventory-list");
   list.innerHTML = "";
 
@@ -624,6 +822,7 @@ function renderDungeonList() {
     `;
     card.addEventListener("click", () => {
       selectedDungeonId = dungeon.id;
+      resetDungeonCompanionState();
       if (DUNGEON_CONTENT[dungeon.id]) {
         enterDungeon(dungeon.id);
       } else {
@@ -706,6 +905,11 @@ function renderDungeonRoom(roomId) {
         discoverSpell(playerCharacter, choice.skillId, choice.spellId);
         renderDungeonRoom(choice.target);
       });
+    } else if (choice.type === "learnSkill") {
+      addChoiceButton(choicesEl, choice.label, () => {
+        learnNewSkill(playerCharacter, choice.skillId);
+        renderDungeonRoom(choice.target);
+      });
     } else if (choice.type === "end") {
       addChoiceButton(choicesEl, choice.label, () => {
         goToHomebaseScreen();
@@ -754,12 +958,10 @@ function getActorImageForLogEntry(entry) {
   if (entry.actor === "follower" && entry.followerName) {
     const follower = followers.find((f) => f.name === entry.followerName);
     if (follower) {
-      const raceInfo = RACES[follower.raceId];
-      if (raceInfo) return raceInfo.image;
+      return follower.portraitImage || (RACES[follower.raceId] ? RACES[follower.raceId].image : null);
     }
   }
-  const raceInfo = RACES[playerCharacter.raceId];
-  return raceInfo ? raceInfo.image : null;
+  return playerCharacter.portraitImage || (RACES[playerCharacter.raceId] ? RACES[playerCharacter.raceId].image : null);
 }
 
 function playRoundSequenceThenRender(entries) {
@@ -856,20 +1058,14 @@ function renderCombatScreen() {
 
   choicesEl.innerHTML = "";
 
-  const trainedSkillIds = Object.keys(playerCharacter.skills);
-
-  const weaponSkillIds = trainedSkillIds.filter((id) => SKILLS[id].category === "Weapon");
-  if (!weaponSkillIds.includes("unarmedCombat")) {
-    weaponSkillIds.push("unarmedCombat");
-  }
-  weaponSkillIds.forEach((skillId) => {
-    addChoiceButton(choicesEl, `Attack - ${SKILLS[skillId].name}`, () => {
-      const startIndex = currentCombat.log.length;
-      performPlayerAction(skillId);
-      playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-    });
+  const equippedWeaponId = playerCharacter.equippedWeaponSkill || "unarmedCombat";
+  addChoiceButton(choicesEl, `Attack - ${SKILLS[equippedWeaponId].name}`, () => {
+    const startIndex = currentCombat.log.length;
+    performPlayerAction(equippedWeaponId);
+    playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
 
+  const trainedSkillIds = Object.keys(playerCharacter.skills);
   const magicSkillIds = trainedSkillIds.filter((id) => SKILLS[id].category === "Magic");
   const hasEnoughMana = playerCharacter.currentMana >= MANA_CONFIG.costPerCast;
 
@@ -879,6 +1075,9 @@ function renderCombatScreen() {
     const knownSpells = allSpellsForLine.filter((spell) => knownIds.includes(spell.id));
 
     knownSpells.forEach((spell) => {
+      if (spell.type === "companion" && dungeonCompanionUsed) {
+        return;
+      }
       if (hasEnoughMana) {
         addChoiceButton(choicesEl, `Cast - ${spell.name} (${MANA_CONFIG.costPerCast} mana): ${spell.description}`, () => {
           const startIndex = currentCombat.log.length;
@@ -1186,14 +1385,69 @@ document.getElementById("btn-toggle-voice").addEventListener("click", () => {
 document.getElementById("btn-begin").addEventListener("click", () => {
   playMusic(MAIN_THEME_SRC);
   resetCreationState("player");
-  showScreen("screen-creation");
+  goToCreationStep(0);
 });
 
+document.getElementById("btn-step1-next").addEventListener("click", () => {
+  const errorEl = document.getElementById("cc-error-step1");
+  const name = document.getElementById("cc-name").value.trim();
+  if (!name) {
+    errorEl.textContent = "Your character needs a name.";
+    return;
+  }
+  if (!creationState.race) {
+    errorEl.textContent = "Choose a race.";
+    return;
+  }
+  errorEl.textContent = "";
+  creationState.name = name;
+  goToCreationStep(1);
+});
+
+document.getElementById("btn-step2-back").addEventListener("click", () => goToCreationStep(0));
+document.getElementById("btn-step2-next").addEventListener("click", () => {
+  const errorEl = document.getElementById("cc-error-step2");
+  if (!creationState.culture) {
+    errorEl.textContent = "Choose a culture.";
+    return;
+  }
+  errorEl.textContent = "";
+  goToCreationStep(2);
+});
+
+document.getElementById("btn-step3-back").addEventListener("click", () => goToCreationStep(1));
+document.getElementById("btn-step3-next").addEventListener("click", () => {
+  const errorEl = document.getElementById("cc-error-step3");
+  if (creationState.skills.length === 0) {
+    errorEl.textContent = "Choose at least one starting skill.";
+    return;
+  }
+  errorEl.textContent = "";
+  goToCreationStep(3);
+});
+
+document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(2));
+document.getElementById("btn-step4-next").addEventListener("click", () => {
+  const errorEl = document.getElementById("cc-error-step4");
+  if (creationState.traits.length < TRAIT_SELECTION_MIN) {
+    errorEl.textContent = `Choose at least ${TRAIT_SELECTION_MIN} traits.`;
+    return;
+  }
+  errorEl.textContent = "";
+  goToCreationStep(4);
+});
+
+document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(3));
+document.getElementById("btn-step5-next").addEventListener("click", () => {
+  goToCreationStep(5);
+});
+
+document.getElementById("btn-review-back").addEventListener("click", () => goToCreationStep(4));
 document.getElementById("btn-confirm-character").addEventListener("click", attemptConfirmCharacter);
 
 document.getElementById("btn-add-follower").addEventListener("click", () => {
   resetCreationState("follower");
-  showScreen("screen-creation");
+  goToCreationStep(0);
 });
 
 document.getElementById("btn-continue-to-homebase").addEventListener("click", goToHomebaseScreen);
@@ -1213,9 +1467,11 @@ document.getElementById("btn-go-to-crafting").addEventListener("click", goToCraf
 document.getElementById("btn-crafting-back").addEventListener("click", goToHomebaseScreen);
 
 renderRaceGrid();
+renderPortraitGrid();
 renderCultureGrid();
 renderSkillGrid();
 renderTraitGrid();
 renderCombatStyleGrid();
 renderDifficultyGrid();
 playMusic(MAIN_THEME_SRC);
+prewarmAllPortraitCaches();

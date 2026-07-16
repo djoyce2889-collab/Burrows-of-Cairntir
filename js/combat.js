@@ -4,6 +4,24 @@
 
 let currentCombat = null;
 
+// ----------------------------------------------------------
+// DUNGEON-LEVEL COMPANION STATE
+// A companion, once summoned, now lives at the DUNGEON level
+// rather than inside a single fight — it survives from battle
+// to battle until the player leaves the dungeon (win, lose, or
+// return to Homebase). dungeonCompanion holds its stats;
+// dungeonCompanionUsed locks out summoning a second one in the
+// same run. Both are reset by resetDungeonCompanionState(),
+// called whenever a fresh dungeon is entered.
+// ----------------------------------------------------------
+let dungeonCompanion = null;
+let dungeonCompanionUsed = false;
+
+function resetDungeonCompanionState() {
+  dungeonCompanion = null;
+  dungeonCompanionUsed = false;
+}
+
 function getTierRank(tierName) {
   return SKILL_TIERS.findIndex((tier) => tier.name === tierName);
 }
@@ -29,6 +47,34 @@ function rollDamage(attackerTierName) {
 
 function getCurrentDifficultySettings() {
   return DIFFICULTY_SETTINGS[selectedDifficulty] || DIFFICULTY_SETTINGS.normal;
+}
+
+function getPlayerPowerRank() {
+  const relevantIds = Object.keys(playerCharacter.skills).filter(
+    (id) => SKILLS[id] && (SKILLS[id].category === "Weapon" || SKILLS[id].category === "Magic")
+  );
+
+  let bestRank = 0;
+  relevantIds.forEach((id) => {
+    const rank = getTierRank(getCharacterSkillTier(playerCharacter, id).name);
+    if (rank > bestRank) bestRank = rank;
+  });
+
+  let bonusRank = 0;
+  if (playerCharacter.weaponEnchantment) bonusRank += 1;
+  if (playerCharacter.armorEnchantment) bonusRank += 1;
+  const style = COMBAT_STYLES[playerCharacter.combatStyle];
+  if (style) bonusRank += style.attackBonus + style.defenseBonus;
+
+  return bestRank + bonusRank;
+}
+
+function getAdaptiveScaling() {
+  const powerRank = getPlayerPowerRank();
+  return {
+    hpMultiplier: 1 + powerRank * 0.3,
+    damageMultiplier: 1 + powerRank * 0.12
+  };
 }
 
 function getEffectRankSum(kind) {
@@ -78,7 +124,11 @@ function getDefendingTierName(attackType, character) {
 function startCombat(enemyId) {
   const enemyTemplate = ENEMIES[enemyId];
   const diff = getCurrentDifficultySettings();
-  const scaledMaxHP = Math.max(1, Math.round(enemyTemplate.hitPoints * diff.enemyHpMultiplier));
+  const adaptive = getAdaptiveScaling();
+  const scaledMaxHP = Math.max(
+    1,
+    Math.round(enemyTemplate.hitPoints * diff.enemyHpMultiplier * adaptive.hpMultiplier)
+  );
 
   const maxHP = getHitPoints(playerCharacter);
   if (playerCharacter.currentHP === undefined || playerCharacter.currentHP === null) {
@@ -99,6 +149,16 @@ function startCombat(enemyId) {
     }
   });
 
+  const initialEffects = [];
+  if (dungeonCompanion) {
+    initialEffects.push({
+      kind: "companion",
+      rankBonus: 0,
+      roundsRemaining: null,
+      casterTierName: dungeonCompanion.casterTierName
+    });
+  }
+
   currentCombat = {
     enemyId: enemyId,
     enemyName: enemyTemplate.name,
@@ -108,7 +168,7 @@ function startCombat(enemyId) {
     enemyThreatTier: enemyTemplate.threatTier,
     enemyAttackType: enemyTemplate.attackType,
     playerDefending: false,
-    activeEffects: [],
+    activeEffects: initialEffects,
     log: [],
     result: null
   };
@@ -123,7 +183,7 @@ function tickCombatEffects() {
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
       currentCombat.log.push({ actor: "effect", kind: "dot", damage: dmg });
     } else if (effect.kind === "companion") {
-      const dmg = rollDamage("Novice");
+      const dmg = rollDamage(effect.casterTierName || "Novice");
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
       currentCombat.log.push({ actor: "effect", kind: "companion", damage: dmg });
     }
@@ -145,25 +205,9 @@ function pickEnemyTarget() {
 }
 
 function getFollowerAttackPick(follower) {
-  const weaponSkillIds = Object.keys(follower.skills).filter(
-    (id) => SKILLS[id] && SKILLS[id].category === "Weapon"
-  );
-
-  if (weaponSkillIds.length === 0) {
-    return { skillId: "unarmedCombat", tierName: getCharacterSkillTier(follower, "unarmedCombat").name };
-  }
-
-  let bestSkillId = weaponSkillIds[0];
-  let bestTier = getCharacterSkillTier(follower, bestSkillId);
-  weaponSkillIds.forEach((id) => {
-    const t = getCharacterSkillTier(follower, id);
-    if (t.min > bestTier.min) {
-      bestTier = t;
-      bestSkillId = id;
-    }
-  });
-
-  return { skillId: bestSkillId, tierName: bestTier.name };
+  const skillId = follower.equippedWeaponSkill || "unarmedCombat";
+  const tierName = getCharacterSkillTier(follower, skillId).name;
+  return { skillId, tierName };
 }
 
 function getFollowerHealOption(follower) {
@@ -270,6 +314,7 @@ function resolveEnemyAttack() {
   }
 
   const diff = getCurrentDifficultySettings();
+  const adaptive = getAdaptiveScaling();
   const target = pickEnemyTarget();
   const isPlayerTarget = target === playerCharacter;
   const attackType = currentCombat.enemyAttackType;
@@ -286,7 +331,10 @@ function resolveEnemyAttack() {
   }
 
   if (hit && !deflected) {
-    damage = Math.max(1, Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier));
+    damage = Math.max(
+      1,
+      Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier * adaptive.damageMultiplier)
+    );
     target.currentHP = Math.max(0, target.currentHP - damage);
   }
 
@@ -378,6 +426,8 @@ function performPlayerCast(skillId, spell) {
   } else if (spell.type === "dot") {
     currentCombat.activeEffects.push({ kind: "dot", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, casterTierName: tierBefore });
   } else if (spell.type === "companion") {
+    dungeonCompanion = { casterTierName: tierBefore };
+    dungeonCompanionUsed = true;
     currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "companion");
     currentCombat.activeEffects.push({ kind: "companion", rankBonus: 0, roundsRemaining: null, casterTierName: tierBefore });
   }
@@ -444,7 +494,7 @@ function getActiveEffectsSummary() {
     if (e.kind === "playerDefenseBonus") return `Braced defense (${e.roundsRemaining} rounds left)`;
     if (e.kind === "enemyDebuff") return `Foe weakened (${e.roundsRemaining} rounds left)`;
     if (e.kind === "dot") return `Curse lingers (${e.roundsRemaining} rounds left)`;
-    if (e.kind === "companion") return "Beast companion at your side";
+    if (e.kind === "companion") return "Beast companion at your side (with you for the rest of this dungeon)";
     return "";
   });
   return parts.filter(Boolean).join(" &middot; ");
@@ -502,7 +552,7 @@ function describeLogEntry(entry) {
       return `You call on ${actionName}, a curse taking hold.`;
     }
     if (entry.spellType === "companion") {
-      return `You call on ${actionName}, and a beast answers your call.`;
+      return `You call on ${actionName}, and a beast answers your call — it will fight at your side for the rest of this dungeon.`;
     }
 
     if (entry.spellName) {

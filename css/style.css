@@ -322,7 +322,11 @@ body {
   color: var(--ember);
 }
 
-#cc-error {
+#cc-error,
+#cc-error-step1,
+#cc-error-step2,
+#cc-error-step3,
+#cc-error-step4 {
   font-size: 16px;
   color: var(--ember);
   min-height: 20px;
@@ -344,6 +348,46 @@ body {
 .follower-remove-btn:hover {
   background: var(--ember);
   color: var(--ink);
+}
+
+/* ------------------------------------------------------------
+   Portrait picker cards — deliberately separate from .cc-card.
+   Uses the PLAIN stone texture (not the ornate bronze frame) as
+   a border-image, square corners, single unified border instead
+   of the old double-border (card ring + image's own edge)
+   that was causing the visual glitch.
+   ------------------------------------------------------------ */
+.cc-portrait-card {
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border-style: solid;
+  border-width: 10px;
+  border-image-source: url("../assets/images/ui/panel-texture.png");
+  border-image-slice: 100 fill;
+  border-image-width: 10px;
+  border-image-repeat: round;
+  border-radius: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: box-shadow 0.15s ease;
+}
+
+.cc-portrait-card:hover {
+  box-shadow: 0 0 0 2px rgba(201, 123, 63, 0.45), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.cc-portrait-card.selected {
+  box-shadow: 0 0 0 3px var(--ember), 0 0 16px rgba(201, 123, 63, 0.55), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.cc-portrait-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0;
+  margin-bottom: 8px;
+  display: block;
+  border: none;
 }
 
 .screen {

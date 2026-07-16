@@ -92,10 +92,18 @@ const DUNGEON_CONTENT = {
         ]
       },
       courtyard: {
-        text: "Weeds have split the flagstones of the courtyard, and a dry well sits crooked near the far wall. The great doors to the hall stand ahead, banded in iron gone the color of old blood.",
+        text: "Weeds have split the flagstones of the courtyard, and a dry well sits crooked near the far wall. The great doors to the hall stand ahead, banded in iron gone the color of old blood. A rusted side-chest lies half-buried near the wall, its lock long seized.",
         choices: [
           { label: "Cross to the hall doors", type: "goto", target: "greatHallDoors" },
-          { label: "Search the old well (Survival)", type: "check", skillId: "survival", difficulty: "Novice", successTarget: "wellFind", failureTarget: "houndAmbush" }
+          { label: "Search the old well (Survival)", type: "check", skillId: "survival", difficulty: "Novice", successTarget: "wellFind", failureTarget: "houndAmbush" },
+          { label: "Pick the lock on the side-chest (Lockpicking)", type: "check", skillId: "lockpicking", difficulty: "Novice", successTarget: "sideChestLoot", failureTarget: "greatHallDoors" }
+        ]
+      },
+      sideChestLoot: {
+        text: "The old lock finally gives way. Inside, wedged among rotted cloth, you find a scrap of good ore someone hid long before the keep fell silent.",
+        loot: ["Old Ore"],
+        choices: [
+          { label: "Head to the hall doors", type: "goto", target: "greatHallDoors" }
         ]
       },
       wellFind: {
@@ -145,9 +153,10 @@ const DUNGEON_CONTENT = {
         ]
       },
       library: {
-        text: "Most of the books have rotted to pulp, but one journal, sealed in wax, has survived — a wizard's notes, still legible.",
+        text: "Most of the books have rotted to pulp, but one journal, sealed in wax, has survived — a wizard's notes, still legible. Tucked on a lower shelf, a battered lockpick's manual has somehow stayed dry.",
         choices: [
           { label: "Study the notes (Line of Emyrs)", type: "discover", skillId: "ancestralEmyrs", spellId: "frostbolt", target: "bannerHall" },
+          { label: "Study the lockpick's manual (Learn Lockpicking)", type: "learnSkill", skillId: "lockpicking", target: "bannerHall" },
           { label: "Leave it and move on", type: "goto", target: "bannerHall" }
         ]
       },
@@ -241,10 +250,18 @@ const DUNGEON_CONTENT = {
         ]
       },
       entryHall: {
-        text: "The entry hall is waterlogged and dim. Driftwood and old fishing nets have washed in with the tide. Something shifts beneath the water near the far wall.",
+        text: "The entry hall is waterlogged and dim. Driftwood and old fishing nets have washed in with the tide. Something shifts beneath the water near the far wall. A sealed chest, lashed shut with corroded chain, sits half-submerged near the entrance.",
         choices: [
           { label: "Cross the hall", type: "goto", target: "greatRoomDoors" },
-          { label: "Search the driftwood (Survival)", type: "check", skillId: "survival", difficulty: "Novice", successTarget: "driftwoodFind", failureTarget: "wightAmbush" }
+          { label: "Search the driftwood (Survival)", type: "check", skillId: "survival", difficulty: "Novice", successTarget: "driftwoodFind", failureTarget: "wightAmbush" },
+          { label: "Pick the chain-lock on the chest (Lockpicking)", type: "check", skillId: "lockpicking", difficulty: "Novice", successTarget: "chestFind", failureTarget: "greatRoomDoors" }
+        ]
+      },
+      chestFind: {
+        text: "The corroded chain finally snaps. Inside, dry despite the flood, a scrap of good hide waits untouched.",
+        loot: ["Hide"],
+        choices: [
+          { label: "Continue to the doors", type: "goto", target: "greatRoomDoors" }
         ]
       },
       driftwoodFind: {
@@ -280,9 +297,10 @@ const DUNGEON_CONTENT = {
         ]
       },
       runeArchive: {
-        text: "The shaman's alcove is dry, somehow, untouched by the flood. Carved tablets line the walls — one still legible.",
+        text: "The shaman's alcove is dry, somehow, untouched by the flood. Carved tablets line the walls — one still legible. Nearby, a waterlogged journal holds a shipwrecked sailor's notes on surviving the bog.",
         choices: [
           { label: "Study the tablet (Runes of the Blade)", type: "discover", skillId: "runeBlade", spellId: "bloodfuryMark", target: "corridor" },
+          { label: "Study the sailor's notes (Learn Survival)", type: "learnSkill", skillId: "survival", target: "corridor" },
           { label: "Leave it and move on", type: "goto", target: "corridor" }
         ]
       },
@@ -386,16 +404,25 @@ const DUNGEON_CONTENT = {
         ]
       },
       clearing: {
-        text: "The clearing is ringed with old carved stones, half-swallowed by moss. One stone bears markings still readable, if you look closely.",
+        text: "The clearing is ringed with old carved stones, half-swallowed by moss. One stone bears markings still readable, if you look closely. Half-buried at the base of a mound, an iron-bound chest sits shut behind a rusted lock.",
         choices: [
           { label: "Read the marked stone", type: "goto", target: "markedStone" },
+          { label: "Move deeper into the grove", type: "goto", target: "deeperPath" },
+          { label: "Pick the lock on the buried chest (Lockpicking)", type: "check", skillId: "lockpicking", difficulty: "Novice", successTarget: "clearingChestLoot", failureTarget: "deeperPath" }
+        ]
+      },
+      clearingChestLoot: {
+        text: "The lock gives with a final grinding crack. Inside, a bundle of grave-warm essence pulses faintly in the dark.",
+        loot: ["Grave Essence"],
+        choices: [
           { label: "Move deeper into the grove", type: "goto", target: "deeperPath" }
         ]
       },
       markedStone: {
-        text: "The marking is old druidic knotwork, half a spell captured in stone.",
+        text: "The marking is old druidic knotwork, half a spell captured in stone. Beside it, scratched into a flatter rock, is a druid's guide to moving unseen through undergrowth.",
         choices: [
           { label: "Learn what remains (Path of the Wild)", type: "discover", skillId: "pathWild", spellId: "stagsCharge", target: "deeperPath" },
+          { label: "Study the druid's guide (Learn Stealth)", type: "learnSkill", skillId: "stealth", target: "deeperPath" },
           { label: "Leave it and move on", type: "goto", target: "deeperPath" }
         ]
       },
@@ -486,10 +513,18 @@ const DUNGEON_CONTENT = {
         ]
       },
       moundPath: {
-        text: "A path winds between the mounds toward the central cairn. Wisps of colored light drift along the ground here, unnaturally bright.",
+        text: "A path winds between the mounds toward the central cairn. Wisps of colored light drift along the ground here, unnaturally bright. Half-hidden among the heather, a small grave-chest sits behind a rusted lock.",
         choices: [
           { label: "Continue toward the central cairn", type: "goto", target: "wraithEncounter" },
-          { label: "Follow the light-wisps (Survival)", type: "check", skillId: "survival", difficulty: "Adept", successTarget: "wispFind", failureTarget: "wraithEncounter" }
+          { label: "Follow the light-wisps (Survival)", type: "check", skillId: "survival", difficulty: "Adept", successTarget: "wispFind", failureTarget: "wraithEncounter" },
+          { label: "Pick the lock on the grave-chest (Lockpicking)", type: "check", skillId: "lockpicking", difficulty: "Adept", successTarget: "moundChestLoot", failureTarget: "wraithEncounter" }
+        ]
+      },
+      moundChestLoot: {
+        text: "The old lock breaks free at last. Inside, a scrap of good ore rests among scattered clan tokens.",
+        loot: ["Old Ore"],
+        choices: [
+          { label: "Continue toward the central cairn", type: "goto", target: "wraithEncounter" }
         ]
       },
       wispFind: {
@@ -513,9 +548,10 @@ const DUNGEON_CONTENT = {
         ]
       },
       sideCairn: {
-        text: "The side-cairn holds old grave goods, mostly ruined — except for one scrap of ancestral writing, still whole.",
+        text: "The side-cairn holds old grave goods, mostly ruined — except for one scrap of ancestral writing, still whole, and a clan-speaker's notes on winning over a hostile crowd.",
         choices: [
           { label: "Study the writing (Line of Averick)", type: "discover", skillId: "ancestralAverick", spellId: "frostbiteEdge", target: "innerCairn" },
+          { label: "Study the speaker's notes (Learn Persuasion)", type: "learnSkill", skillId: "persuasion", target: "innerCairn" },
           { label: "Leave it and enter the central cairn", type: "goto", target: "innerCairn" }
         ]
       },
@@ -606,10 +642,18 @@ const DUNGEON_CONTENT = {
         ]
       },
       innerPath: {
-        text: "The passage narrows, walls veined with frozen rune-light. A side alcove looks less disturbed than the rest of the tunnel.",
+        text: "The passage narrows, walls veined with frozen rune-light. A side alcove looks less disturbed than the rest of the tunnel. A frozen strongbox sits wedged in the ice nearby, its lock rimed over.",
         choices: [
           { label: "Continue deeper", type: "goto", target: "shamanEncounter" },
-          { label: "Check the alcove (Survival)", type: "check", skillId: "survival", difficulty: "Adept", successTarget: "alcoveFind", failureTarget: "shamanEncounter" }
+          { label: "Check the alcove (Survival)", type: "check", skillId: "survival", difficulty: "Adept", successTarget: "alcoveFind", failureTarget: "shamanEncounter" },
+          { label: "Pick the frozen strongbox's lock (Lockpicking)", type: "check", skillId: "lockpicking", difficulty: "Adept", successTarget: "strongboxLoot", failureTarget: "shamanEncounter" }
+        ]
+      },
+      strongboxLoot: {
+        text: "The frozen lock finally cracks and gives way. Inside, a scrap of good ore sits untouched by the cold.",
+        loot: ["Old Ore"],
+        choices: [
+          { label: "Continue deeper", type: "goto", target: "shamanEncounter" }
         ]
       },
       alcoveFind: {
@@ -633,9 +677,10 @@ const DUNGEON_CONTENT = {
         ]
       },
       sidePassageStudy: {
-        text: "The side passage ends in a small shrine, one rune-tablet still legible beneath the frost.",
+        text: "The side passage ends in a small shrine, one rune-tablet still legible beneath the frost. Beside it, a smith's journal holds hard-won notes on surviving the vault's endless cold.",
         choices: [
           { label: "Study the tablet (Runes of the Shield)", type: "discover", skillId: "runeShield", spellId: "stonewallRune", target: "forgeHall" },
+          { label: "Study the smith's journal (Learn Survival)", type: "learnSkill", skillId: "survival", target: "forgeHall" },
           { label: "Leave it and enter the forge hall", type: "goto", target: "forgeHall" }
         ]
       },
@@ -726,16 +771,25 @@ const DUNGEON_CONTENT = {
         ]
       },
       innerVale: {
-        text: "Closer to the ring, the grass gives way to bare, cracked earth. A faint green-white light pulses from the center of the stone circle. A smaller cluster of stones stands off to one side.",
+        text: "Closer to the ring, the grass gives way to bare, cracked earth. A faint green-white light pulses from the center of the stone circle. A smaller cluster of stones stands off to one side. Half-buried nearby, an old offering-chest sits behind a corroded lock.",
         choices: [
           { label: "Move toward the smaller cluster", type: "goto", target: "smallCluster" },
+          { label: "Head straight for the ring", type: "goto", target: "voiceEncounter" },
+          { label: "Pick the lock on the offering-chest (Lockpicking)", type: "check", skillId: "lockpicking", difficulty: "Expert", successTarget: "offeringChestLoot", failureTarget: "voiceEncounter" }
+        ]
+      },
+      offeringChestLoot: {
+        text: "The ancient lock breaks apart in your hands. Inside, a bundle of grave-warm essence still pulses faintly, undisturbed for generations.",
+        loot: ["Grave Essence"],
+        choices: [
           { label: "Head straight for the ring", type: "goto", target: "voiceEncounter" }
         ]
       },
       smallCluster: {
-        text: "The smaller stones are older, their knotwork worn nearly smooth — except for one line, still sharp.",
+        text: "The smaller stones are older, their knotwork worn nearly smooth — except for one line, still sharp. Scratched beneath it, almost hidden, a seer's notes on picking apart a stubborn lock.",
         choices: [
           { label: "Read the line (Path of the Barrow)", type: "discover", skillId: "pathBarrow", spellId: "bonewhisper", target: "voiceEncounter" },
+          { label: "Read the seer's notes (Learn Lockpicking)", type: "learnSkill", skillId: "lockpicking", target: "voiceEncounter" },
           { label: "Leave it and continue", type: "goto", target: "voiceEncounter" }
         ]
       },
@@ -811,15 +865,18 @@ const DUNGEON_CONTENT = {
 // instead of showing one shared image for the whole thing.
 // Rooms that share a physical location (e.g. a fight that
 // happens right where you already are) point to the same image
-// on purpose. Any room ID NOT listed here simply falls back to
-// the dungeon's original single image — see getRoomImage() in
-// main.js — so nothing breaks if a room is ever added without
-// updating this table.
+// on purpose. New bonus rooms (lockpicked chests, skill-learning
+// finds) reuse the image of the room they branch from, since
+// they're the same physical space. Any room ID NOT listed here
+// simply falls back to the dungeon's original single image —
+// see getRoomImage() in main.js — so nothing breaks if a room
+// is ever added without updating this table.
 // ----------------------------------------------------------
 const ROOM_IMAGES = {
   duncairnKeep: {
     gateway: "assets/images/duncairn-keep/gateway.png",
     courtyard: "assets/images/duncairn-keep/courtyard.png",
+    sideChestLoot: "assets/images/duncairn-keep/courtyard.png",
     wellFind: "assets/images/duncairn-keep/courtyard.png",
     houndAmbush: "assets/images/duncairn-keep/courtyard.png",
     greatHallDoors: "assets/images/duncairn-keep/great-hall-doors.png",
@@ -844,6 +901,7 @@ const ROOM_IMAGES = {
   sunkenLonghall: {
     shoreline: "assets/images/sunken-longhall/shoreline.png",
     entryHall: "assets/images/sunken-longhall/entry-hall.png",
+    chestFind: "assets/images/sunken-longhall/entry-hall.png",
     driftwoodFind: "assets/images/sunken-longhall/entry-hall.png",
     wightAmbush: "assets/images/sunken-longhall/entry-hall.png",
     greatRoomDoors: "assets/images/sunken-longhall/great-room-doors.png",
@@ -868,6 +926,7 @@ const ROOM_IMAGES = {
     houndAmbush: "assets/images/wychroot-grove/inner-path.png",
     clearingDoors: "assets/images/wychroot-grove/clearing.png",
     clearing: "assets/images/wychroot-grove/clearing.png",
+    clearingChestLoot: "assets/images/wychroot-grove/clearing.png",
     markedStone: "assets/images/wychroot-grove/marked-stone.png",
     deeperPath: "assets/images/wychroot-grove/deeper-path.png",
     fork: "assets/images/wychroot-grove/fork.png",
@@ -885,6 +944,7 @@ const ROOM_IMAGES = {
     outerMounds: "assets/images/hollowmere-cairn/outer-mounds.png",
     sentinelAmbush: "assets/images/hollowmere-cairn/outer-mounds.png",
     moundPath: "assets/images/hollowmere-cairn/mound-path.png",
+    moundChestLoot: "assets/images/hollowmere-cairn/mound-path.png",
     wispFind: "assets/images/hollowmere-cairn/mound-path.png",
     wraithEncounter: "assets/images/hollowmere-cairn/wraith-encounter.png",
     cairnEntrance: "assets/images/hollowmere-cairn/cairn-entrance.png",
@@ -905,6 +965,7 @@ const ROOM_IMAGES = {
     outerIce: "assets/images/frosthollow-vault/outer-ice.png",
     warriorAmbush: "assets/images/frosthollow-vault/outer-ice.png",
     innerPath: "assets/images/frosthollow-vault/inner-path.png",
+    strongboxLoot: "assets/images/frosthollow-vault/inner-path.png",
     alcoveFind: "assets/images/frosthollow-vault/inner-path.png",
     shamanEncounter: "assets/images/frosthollow-vault/shaman-encounter.png",
     forgeHallDoors: "assets/images/frosthollow-vault/forge-hall-doors.png",
@@ -925,6 +986,7 @@ const ROOM_IMAGES = {
     outerRing: "assets/images/hollow-vale/outer-ring.png",
     stalkerAmbush: "assets/images/hollow-vale/outer-ring.png",
     innerVale: "assets/images/hollow-vale/inner-vale.png",
+    offeringChestLoot: "assets/images/hollow-vale/inner-vale.png",
     smallCluster: "assets/images/hollow-vale/small-cluster.png",
     voiceEncounter: "assets/images/hollow-vale/voice-encounter.png",
     ringApproach: "assets/images/hollow-vale/ring-approach.png",
