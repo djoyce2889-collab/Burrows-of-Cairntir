@@ -31,6 +31,8 @@ let craftingEnchantSlotPending = null;
 let voiceEnabled = true;
 let cachedVoice = null;
 
+const SPECTRAL_COMPANION_IMAGE = "assets/images/effects/spectral-companion.png";
+
 const MAIN_THEME_SRC = "assets/audio/main-theme.mp3";
 const gameMusic = new Audio();
 gameMusic.loop = true;
@@ -252,15 +254,6 @@ function checkImageExists(path) {
   });
 }
 
-/**
- * Runs a list of task functions with only a limited number ever
- * in flight at once, instead of firing them all simultaneously
- * (which was the actual source of the flicker — a burst of ~20
- * network requests at the same instant). Keeping this at 4
- * means the browser is never asked to juggle more than a small
- * handful of image loads at a time, no matter how large the
- * overall list is.
- */
 async function runWithConcurrencyLimit(taskFns, limit) {
   const results = new Array(taskFns.length);
   let nextIndex = 0;
@@ -296,14 +289,6 @@ async function getValidPortraitOptions(raceId) {
   return valid;
 }
 
-/**
- * Quietly checks every race's portraits in the background,
- * starting the moment the page loads — well before the player
- * ever reaches character creation. Races are warmed one at a
- * time (each internally still limited to 4 concurrent checks),
- * so at no point does the browser face a sudden burst, no
- * matter how many total images exist across all 6 races.
- */
 async function prewarmAllPortraitCaches() {
   for (const raceId of Object.keys(RACES)) {
     await getValidPortraitOptions(raceId);
@@ -858,6 +843,98 @@ function getManaStatusLine() {
   return `Mana: ${playerCharacter.currentMana} / ${manaMax}`;
 }
 
+function getAttemptLabel(choice) {
+  const used = choice._attempts || 0;
+  if (used > 0 && used < 3) {
+    const remaining = 3 - used;
+    return `${choice.label} (${remaining} ${remaining === 1 ? "try" : "tries"} left)`;
+  }
+  return choice.label;
+}
+
+function buildRoomChoices(room) {
+  const choicesEl = document.getElementById("game-choices");
+  choicesEl.innerHTML = "";
+
+  room.choices.forEach((choice) => {
+    if (choice.type === "goto") {
+      addChoiceButton(choicesEl, choice.label, () => renderDungeonRoom(choice.target));
+    } else if (choice.type === "check") {
+      addChoiceButton(choicesEl, choice.label, () => {
+        const tierBeforeName = getCharacterSkillTier(playerCharacter, choice.skillId).name;
+        useSkill(playerCharacter, choice.skillId);
+        const success = rollSuccess(tierBeforeName, choice.difficulty);
+        renderDungeonRoom(success ? choice.successTarget : choice.failureTarget);
+      });
+    } else if (choice.type === "combat") {
+      addChoiceButton(choicesEl, choice.label, () => {
+        goToCombatScreen(choice.enemyId, choice.target);
+      });
+    } else if (choice.type === "discover" || choice.type === "learnSkill") {
+      addChoiceButton(choicesEl, getAttemptLabel(choice), () => attemptDiscoverOrLearn(room, choice));
+    } else if (choice.type === "end") {
+      addChoiceButton(choicesEl, choice.label, () => {
+        goToHomebaseScreen();
+      });
+    }
+  });
+}
+
+function attemptDiscoverOrLearn(room, choice) {
+  choice._attempts = (choice._attempts || 0) + 1;
+
+  let tierName;
+  let difficulty;
+  if (choice.type === "discover") {
+    tierName = getCharacterSkillTier(playerCharacter, choice.skillId).name;
+    difficulty = "Adept";
+  } else {
+    tierName = "Untrained";
+    difficulty = "Novice";
+  }
+
+  const success = rollSuccess(tierName, difficulty);
+
+  if (success) {
+    let message;
+    if (choice.type === "discover") {
+      const spell = discoverSpell(playerCharacter, choice.skillId, choice.spellId);
+      message = spell
+        ? `After several attempts, it finally clicks — you have learned ${spell.name}.`
+        : "You study it again, though you already know what it teaches.";
+    } else {
+      learnNewSkill(playerCharacter, choice.skillId);
+      message = `After several attempts, it finally clicks — you have learned ${SKILLS[choice.skillId].name}.`;
+    }
+    renderDiscoveryOutcome(message, choice.target);
+    return;
+  }
+
+  if (choice._attempts >= 3) {
+    const message =
+      choice.type === "discover"
+        ? "After three failed attempts, the technique still eludes you. You give up for now and move on."
+        : "After three failed attempts, it still doesn't click. You give up for now and move on.";
+    renderDiscoveryOutcome(message, choice.target);
+    return;
+  }
+
+  const remaining = 3 - choice._attempts;
+  const failMessage = `You fail to grasp it this time. (${remaining} ${remaining === 1 ? "attempt" : "attempts"} left.)`;
+  speak(failMessage);
+  document.getElementById("game-story-text").innerHTML = `${room.text}<br /><br /><em>${failMessage}</em>`;
+  buildRoomChoices(room);
+}
+
+function renderDiscoveryOutcome(message, targetRoomId) {
+  const storyEl = document.getElementById("game-story-text");
+  const choicesEl = document.getElementById("game-choices");
+  speak(message);
+  storyEl.innerHTML = message;
+  choicesEl.innerHTML = "";
+  addChoiceButton(choicesEl, "Continue", () => renderDungeonRoom(targetRoomId));
+}
+
 function renderDungeonRoom(roomId) {
   const dungeonData = DUNGEON_CONTENT[selectedDungeonId];
   const room = dungeonData.rooms[roomId];
@@ -883,39 +960,7 @@ function renderDungeonRoom(roomId) {
 
   document.getElementById("game-story-text").innerHTML = text;
 
-  const choicesEl = document.getElementById("game-choices");
-  choicesEl.innerHTML = "";
-
-  room.choices.forEach((choice) => {
-    if (choice.type === "goto") {
-      addChoiceButton(choicesEl, choice.label, () => renderDungeonRoom(choice.target));
-    } else if (choice.type === "check") {
-      addChoiceButton(choicesEl, choice.label, () => {
-        const tierBeforeName = getCharacterSkillTier(playerCharacter, choice.skillId).name;
-        useSkill(playerCharacter, choice.skillId);
-        const success = rollSuccess(tierBeforeName, choice.difficulty);
-        renderDungeonRoom(success ? choice.successTarget : choice.failureTarget);
-      });
-    } else if (choice.type === "combat") {
-      addChoiceButton(choicesEl, choice.label, () => {
-        goToCombatScreen(choice.enemyId, choice.target);
-      });
-    } else if (choice.type === "discover") {
-      addChoiceButton(choicesEl, choice.label, () => {
-        discoverSpell(playerCharacter, choice.skillId, choice.spellId);
-        renderDungeonRoom(choice.target);
-      });
-    } else if (choice.type === "learnSkill") {
-      addChoiceButton(choicesEl, choice.label, () => {
-        learnNewSkill(playerCharacter, choice.skillId);
-        renderDungeonRoom(choice.target);
-      });
-    } else if (choice.type === "end") {
-      addChoiceButton(choicesEl, choice.label, () => {
-        goToHomebaseScreen();
-      });
-    }
-  });
+  buildRoomChoices(room);
 }
 
 function goToCombatScreen(enemyId, returnRoomId) {
@@ -950,10 +995,20 @@ function getEquipmentStatusLine() {
   return parts.join(" &middot; ");
 }
 
+/**
+ * The spectral companion (effect entries with kind "companion")
+ * now gets its own dedicated image instead of falling back to
+ * the player's portrait — checked before the generic "effect"
+ * fallback so it takes priority whenever it's the companion
+ * specifically striking.
+ */
 function getActorImageForLogEntry(entry) {
   if (entry.actor === "enemy") {
     const enemyTemplate = ENEMIES[currentCombat.enemyId];
     return enemyTemplate ? enemyTemplate.image : null;
+  }
+  if (entry.actor === "effect" && entry.kind === "companion") {
+    return SPECTRAL_COMPANION_IMAGE;
   }
   if (entry.actor === "follower" && entry.followerName) {
     const follower = followers.find((f) => f.name === entry.followerName);

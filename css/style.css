@@ -4,6 +4,7 @@
   --parchment: #e8dcc0;
   --parchment-dim: #a8b8a0;
   --ember: #c97b3f;
+  --glow-green: #5fbf6f;
   --ink: #0a120c;
   --moss-border: #3a5240;
 
@@ -11,8 +12,9 @@
   --drakvarr: #4f7ca6;
   --gaeldrim: #5a8f5a;
 
-  --font-display: "Press Start 2P", monospace;
-  --font-body: "VT323", monospace;
+  --font-display: "Uncial Antiqua", cursive;
+  --font-body: "Uncial Antiqua", cursive;
+  --font-readable: "VT323", monospace;
 }
 
 * {
@@ -43,10 +45,10 @@ body {
   border-style: solid;
   border-width: 14px;
   border-color: var(--wood-dark);
-  border-image-source: url("../assets/images/ui/frame-border.png");
-  border-image-slice: 200;
+  border-image-source: url("../assets/images/ui/panel-texture.png");
+  border-image-slice: 100;
   border-image-width: 14px;
-  border-image-repeat: stretch;
+  border-image-repeat: round;
   border-radius: 4px;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
   overflow: hidden;
@@ -78,11 +80,11 @@ body {
 
 #cabinet-title {
   font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 2px;
+  font-size: 22px;
+  letter-spacing: 1px;
   text-align: center;
   color: var(--ember);
-  padding: 12px 8px;
+  padding: 14px 8px;
   background: linear-gradient(180deg, #120c08, var(--ink) 70%);
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 0 8px rgba(201, 123, 63, 0.35);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -109,7 +111,7 @@ body {
 
 #viewport .viewport-placeholder {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 16px;
   color: var(--parchment-dim);
   text-align: center;
   padding: 20px;
@@ -128,6 +130,7 @@ body {
 
 #story-text,
 #game-story-text {
+  font-family: var(--font-readable);
   font-size: 20px;
   line-height: 1.4;
   color: var(--parchment);
@@ -144,21 +147,21 @@ body {
 }
 
 .choice-button {
-  font-family: var(--font-body);
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 17px;
   text-align: left;
   color: var(--parchment);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
   cursor: pointer;
   border-style: solid;
-  border-width: 6px;
+  border-width: 14px 8px;
   background: var(--ink);
   border-color: var(--moss-border);
-  border-image-source: url("../assets/images/ui/button-texture.png");
-  border-image-slice: 110 fill;
-  border-image-width: 6px;
-  border-image-repeat: stretch;
-  padding: 12px 16px;
+  border-image-source: url("../assets/images/ui/long-button-texture.png");
+  border-image-slice: 130 60 130 60 fill;
+  border-image-width: 14px 8px;
+  border-image-repeat: round;
+  padding: 10px 16px;
   transition: filter 0.15s ease, transform 0.1s ease;
 }
 
@@ -189,7 +192,7 @@ body {
 
 .cc-label {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 16px;
   color: var(--ember);
   letter-spacing: 1px;
   margin-bottom: 12px;
@@ -198,7 +201,7 @@ body {
 
 .cc-name-input {
   width: 100%;
-  font-family: var(--font-body);
+  font-family: var(--font-readable);
   font-size: 20px;
   background: var(--ink);
   color: var(--parchment);
@@ -221,11 +224,10 @@ body {
 }
 
 .cc-category-heading {
-  font-family: var(--font-body);
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 17px;
   color: var(--parchment-dim);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   margin: 18px 0 10px;
   padding-bottom: 5px;
   border-bottom: 1px solid var(--moss-border);
@@ -274,14 +276,14 @@ body {
   top: 8px;
   right: 10px;
   color: var(--card-accent, var(--ember));
-  font-family: var(--font-body);
+  font-family: var(--font-readable);
   font-size: 18px;
   line-height: 1;
 }
 
 .cc-card-name {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 15px;
   margin-bottom: 10px;
   padding-bottom: 9px;
   color: var(--parchment);
@@ -296,11 +298,12 @@ body {
 .cc-card-name::before {
   content: "\2756";
   color: var(--card-accent, var(--ember));
-  font-size: 10px;
+  font-size: 12px;
   flex-shrink: 0;
 }
 
 .cc-card-desc {
+  font-family: var(--font-readable);
   font-size: 16px;
   line-height: 1.35;
   color: var(--parchment-dim);
@@ -313,6 +316,7 @@ body {
 }
 
 .cc-skill-count {
+  font-family: var(--font-readable);
   font-size: 16px;
   color: var(--parchment-dim);
   margin-bottom: 10px;
@@ -327,6 +331,7 @@ body {
 #cc-error-step2,
 #cc-error-step3,
 #cc-error-step4 {
+  font-family: var(--font-readable);
   font-size: 16px;
   color: var(--ember);
   min-height: 20px;
@@ -335,7 +340,7 @@ body {
 
 .follower-remove-btn {
   margin-top: 8px;
-  font-family: var(--font-body);
+  font-family: var(--font-readable);
   font-size: 14px;
   background: transparent;
   color: var(--ember);
@@ -350,13 +355,6 @@ body {
   color: var(--ink);
 }
 
-/* ------------------------------------------------------------
-   Portrait picker cards — deliberately separate from .cc-card.
-   Uses the PLAIN stone texture (not the ornate bronze frame) as
-   a border-image, square corners, single unified border instead
-   of the old double-border (card ring + image's own edge)
-   that was causing the visual glitch.
-   ------------------------------------------------------------ */
 .cc-portrait-card {
   padding: 10px;
   text-align: center;
@@ -373,11 +371,11 @@ body {
 }
 
 .cc-portrait-card:hover {
-  box-shadow: 0 0 0 2px rgba(201, 123, 63, 0.45), 0 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 2px rgba(95, 191, 111, 0.45), 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .cc-portrait-card.selected {
-  box-shadow: 0 0 0 3px var(--ember), 0 0 16px rgba(201, 123, 63, 0.55), 0 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px var(--glow-green), 0 0 16px rgba(95, 191, 111, 0.55), 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .cc-portrait-thumb {
@@ -390,6 +388,11 @@ body {
   border: none;
 }
 
+.cc-portrait-card .cc-card-desc {
+  font-family: var(--font-readable);
+  font-size: 14px;
+}
+
 .screen {
   display: none;
 }
@@ -398,7 +401,7 @@ body {
   display: block;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 480px) {
   body {
     padding: 4px;
   }
@@ -408,5 +411,8 @@ body {
   #story-text,
   #game-story-text {
     font-size: 18px;
+  }
+  .cc-grid {
+    grid-template-columns: 1fr;
   }
 }
