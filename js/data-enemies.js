@@ -12,6 +12,7 @@ const ENEMIES = {
     hitPoints: 22,
     attackType: "physical",
     threatTier: "Novice",
+    soundCategory: "zombie",
     lootTable: ["Old Ore", "Grave Essence"]
   },
   wailingWraith: {
@@ -22,6 +23,7 @@ const ENEMIES = {
     hitPoints: 16,
     attackType: "magic",
     threatTier: "Novice",
+    soundCategory: "spectral",
     lootTable: ["Grave Essence", "Grave Essence"]
   },
   graveBoundHound: {
@@ -32,6 +34,7 @@ const ENEMIES = {
     hitPoints: 14,
     attackType: "physical",
     threatTier: "Novice",
+    soundCategory: "zombie",
     lootTable: ["Hide"]
   },
   hollowRetainer: {
@@ -42,6 +45,7 @@ const ENEMIES = {
     hitPoints: 18,
     attackType: "magic",
     threatTier: "Novice",
+    soundCategory: "spectral",
     lootTable: ["Grave Essence"]
   },
   rotHandedSteward: {
@@ -52,6 +56,7 @@ const ENEMIES = {
     hitPoints: 20,
     attackType: "physical",
     threatTier: "Novice",
+    soundCategory: "zombie",
     lootTable: ["Old Ore"]
   },
   chiefsShade: {
@@ -59,9 +64,11 @@ const ENEMIES = {
     name: "The Chief's Shade",
     description: "Wearing the shape of a Deveran chief, its ancestral magic curdled into something that answers to no bloodline at all.",
     image: "assets/images/enemies/chiefs-shade.png",
+    deathImage: "assets/images/deaths/chiefs-shade-death.png",
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Adept",
+    soundCategory: "spectral",
     lootTable: ["Chief's Signet", "Grave Essence", "Grave Essence"]
   },
 
@@ -73,6 +80,7 @@ const ENEMIES = {
     hitPoints: 18,
     attackType: "physical",
     threatTier: "Novice",
+    soundCategory: "zombie",
     lootTable: ["Hide"]
   },
   drownedShieldman: {
@@ -83,6 +91,7 @@ const ENEMIES = {
     hitPoints: 20,
     attackType: "physical",
     threatTier: "Novice",
+    soundCategory: "zombie",
     lootTable: ["Old Ore"]
   },
   runehauntedThrall: {
@@ -93,6 +102,7 @@ const ENEMIES = {
     hitPoints: 16,
     attackType: "magic",
     threatTier: "Novice",
+    soundCategory: "spectral",
     lootTable: ["Grave Essence"]
   },
   tidewrackedDraugr: {
@@ -100,9 +110,11 @@ const ENEMIES = {
     name: "Tidewracked Draugr",
     description: "Once the hall's own chieftain, now something the tide never quite finished taking.",
     image: "assets/images/enemies/tidewracked-draugr.png",
+    deathImage: "assets/images/deaths/tidewracked-draugr-death.png",
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Adept",
+    soundCategory: "zombie",
     lootTable: ["Draugr Rune-Ring", "Grave Essence", "Grave Essence"]
   },
 
@@ -114,6 +126,7 @@ const ENEMIES = {
     hitPoints: 18,
     attackType: "physical",
     threatTier: "Novice",
+    soundCategory: "zombie",
     lootTable: ["Hide"]
   },
   whisperingBriar: {
@@ -124,6 +137,7 @@ const ENEMIES = {
     hitPoints: 15,
     attackType: "magic",
     threatTier: "Novice",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   mossHound: {
@@ -134,6 +148,7 @@ const ENEMIES = {
     hitPoints: 16,
     attackType: "physical",
     threatTier: "Novice",
+    soundCategory: "zombie",
     lootTable: ["Hide"]
   },
   theBarrowKeeper: {
@@ -141,9 +156,11 @@ const ENEMIES = {
     name: "The Barrow Keeper",
     description: "Once a druid who tended these grave-mounds, now something the mounds tend in return.",
     image: "assets/images/enemies/the-barrow-keeper.png",
+    deathImage: "assets/images/deaths/barrow-keeper-death.png",
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Adept",
+    soundCategory: "zombie",
     lootTable: ["Barrow Sigil", "Grave Essence", "Grave Essence"]
   },
 
@@ -155,6 +172,7 @@ const ENEMIES = {
     hitPoints: 30,
     attackType: "physical",
     threatTier: "Adept",
+    soundCategory: "stone",
     lootTable: ["Old Ore"]
   },
   emberTouchedWraith: {
@@ -165,6 +183,7 @@ const ENEMIES = {
     hitPoints: 26,
     attackType: "magic",
     threatTier: "Adept",
+    soundCategory: "fire",
     lootTable: ["Grave Essence"]
   },
   kinlessShade: {
@@ -175,6 +194,7 @@ const ENEMIES = {
     hitPoints: 28,
     attackType: "magic",
     threatTier: "Adept",
+    soundCategory: "spectral",
     lootTable: ["Grave Essence"]
   },
   theUnnamedAncestor: {
@@ -182,9 +202,11 @@ const ENEMIES = {
     name: "The Unnamed Ancestor",
     description: "Whatever bloodline this once belonged to, no living clan will claim it now.",
     image: "assets/images/enemies/the-unnamed-ancestor.png",
+    deathImage: "assets/images/deaths/unnamed-ancestor-death.png",
     hitPoints: 50,
     attackType: "magic",
     threatTier: "Expert",
+    soundCategory: "fire",
     lootTable: ["Ancestor's Ember", "Grave Essence", "Grave Essence"]
   },
 
@@ -196,6 +218,7 @@ const ENEMIES = {
     hitPoints: 32,
     attackType: "physical",
     threatTier: "Adept",
+    soundCategory: "ice",
     lootTable: ["Old Ore"]
   },
   iceboundShaman: {
@@ -206,6 +229,7 @@ const ENEMIES = {
     hitPoints: 27,
     attackType: "magic",
     threatTier: "Adept",
+    soundCategory: "ice",
     lootTable: ["Grave Essence"]
   },
   rimeforgedGolem: {
@@ -216,6 +240,7 @@ const ENEMIES = {
     hitPoints: 36,
     attackType: "physical",
     threatTier: "Adept",
+    soundCategory: "stone",
     lootTable: ["Old Ore"]
   },
   theFrozenSmith: {
@@ -223,9 +248,11 @@ const ENEMIES = {
     name: "The Frozen Smith",
     description: "The vault's greatest rune-smith, still at their anvil, still not quite finished with whatever they were making.",
     image: "assets/images/enemies/the-frozen-smith.png",
+    deathImage: "assets/images/deaths/frozen-smith-death.png",
     hitPoints: 52,
     attackType: "magic",
     threatTier: "Expert",
+    soundCategory: "ice",
     lootTable: ["Frostforged Rune", "Grave Essence", "Grave Essence"]
   },
 
@@ -237,6 +264,7 @@ const ENEMIES = {
     hitPoints: 34,
     attackType: "physical",
     threatTier: "Expert",
+    soundCategory: "physical",
     lootTable: ["Hide"]
   },
   stoneboundVoice: {
@@ -247,6 +275,7 @@ const ENEMIES = {
     hitPoints: 30,
     attackType: "magic",
     threatTier: "Expert",
+    soundCategory: "spectral",
     lootTable: ["Grave Essence"]
   },
   tuathRemnant: {
@@ -257,6 +286,7 @@ const ENEMIES = {
     hitPoints: 36,
     attackType: "physical",
     threatTier: "Expert",
+    soundCategory: "spectral",
     lootTable: ["Hide"]
   },
   theConsensus: {
@@ -264,9 +294,11 @@ const ENEMIES = {
     name: "The Consensus",
     description: "Not one voice but many, fused together into something that no longer needs to agree with anyone.",
     image: "assets/images/enemies/the-consensus.png",
+    deathImage: "assets/images/deaths/the-consensus-death.png",
     hitPoints: 60,
     attackType: "magic",
     threatTier: "Master",
+    soundCategory: "spectral",
     lootTable: ["Vale Sigil", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };

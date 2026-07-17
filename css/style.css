@@ -118,6 +118,68 @@ body {
   line-height: 1.8;
 }
 
+#viewport img.companion-glow {
+  animation: companionGlowPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes companionGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(95, 191, 111, 0.35)) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 22px rgba(95, 191, 111, 0.85)) brightness(1.08);
+  }
+}
+
+#viewport img.hit-shake {
+  animation: hitShake 0.35s ease-out;
+}
+
+@keyframes hitShake {
+  0% { filter: brightness(1); transform: translateX(0); }
+  15% { filter: brightness(2.2) saturate(0.3); transform: translateX(-6px); }
+  30% { transform: translateX(5px); }
+  45% { transform: translateX(-4px); }
+  60% { filter: brightness(1); transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+#viewport img.spell-flash {
+  animation: spellFlash 0.4s ease-out;
+}
+
+@keyframes spellFlash {
+  0% { filter: brightness(1) saturate(1); }
+  20% { filter: brightness(2.4) saturate(1.6); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
+#viewport img.victory-pulse {
+  animation: victoryPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes victoryPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(255, 200, 90, 0.35)) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 24px rgba(255, 200, 90, 0.85)) brightness(1.12);
+  }
+}
+
+#viewport img.defeat-fade {
+  animation: defeatFade 2.2s ease-out forwards;
+}
+
+@keyframes defeatFade {
+  0% {
+    filter: brightness(1) saturate(1);
+  }
+  100% {
+    filter: brightness(0.5) saturate(0);
+  }
+}
+
 #panel {
   padding: 22px;
   background-color: var(--wood-mid);

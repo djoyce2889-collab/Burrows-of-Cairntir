@@ -1,3 +1,4 @@
+
 /* ============================================================
    MAIN.JS
    ============================================================ */
@@ -32,6 +33,8 @@ let voiceEnabled = true;
 let cachedVoice = null;
 
 const SPECTRAL_COMPANION_IMAGE = "assets/images/effects/spectral-companion.png";
+const ATTACK_MISS_SFX = "assets/audio/sfx/attack-miss.mp3";
+const HEAL_CAST_SFX = "assets/audio/sfx/heal-cast.mp3";
 
 const MAIN_THEME_SRC = "assets/audio/main-theme.mp3";
 const gameMusic = new Audio();
@@ -46,6 +49,43 @@ function playMusic(src) {
     }
     gameMusic.play().catch(() => {});
   } catch (e) {}
+}
+
+function playSfx(path) {
+  if (!path) return;
+  try {
+    const sfx = new Audio(path);
+    sfx.volume = 0.6;
+    sfx.play().catch(() => {});
+  } catch (e) {}
+}
+
+function playWeaponSfx(skillId) {
+  if (skillId === "swords" || skillId === "axes") {
+    playSfx("assets/audio/sfx/weapon-slash.mp3");
+  }
+}
+
+function getSpellSfxPath(spellName) {
+  if (!spellName) return null;
+  const text = spellName.toLowerCase();
+  if (/fire|flame|ember|burn|blaze/.test(text)) return "assets/audio/sfx/fire-cast.mp3";
+  if (/frost|ice|chill|freeze|winter/.test(text)) return "assets/audio/sfx/frost-cast.mp3";
+  if (/storm|thunder|lightning|spark|bolt|shock/.test(text)) return "assets/audio/sfx/lightning-cast.mp3";
+  return null;
+}
+
+function getEnemySoundCategory(enemyId) {
+  const enemyTemplate = ENEMIES[enemyId];
+  return (enemyTemplate && enemyTemplate.soundCategory) || "physical";
+}
+
+function getEnemyHitSfxPath(enemyId) {
+  return `assets/audio/sfx/hit-${getEnemySoundCategory(enemyId)}.mp3`;
+}
+
+function getEnemyDeathSfxPath(enemyId) {
+  return `assets/audio/sfx/death-${getEnemySoundCategory(enemyId)}.mp3`;
 }
 
 function getPreferredVoice() {
@@ -66,12 +106,46 @@ function getPreferredVoice() {
   return cachedVoice;
 }
 
+// ----------------------------------------------------------
+// PRE-RECORDED ROOM NARRATION
+// narrationAudio plays real recorded room narration files when
+// they exist, falling back to the browser's built-in voice
+// (via speak()) when they don't. stopAllNarration() is the
+// single choke point that kills BOTH sources at once — the
+// recorded audio AND the browser voice — plus invalidates any
+// in-flight file-existence check via narrationRequestId. It's
+// called at the start of every place new speech is about to
+// happen (room narration, combat lines, discovery outcomes,
+// combat outcomes), so a lingering recording from a room the
+// player just left can never keep playing underneath something
+// new — which was the actual cause of narration "overriding."
+// ----------------------------------------------------------
+const narrationAudio = new Audio();
+let narrationRequestId = 0;
+
+function stopAllNarration() {
+  narrationRequestId += 1;
+  try {
+    narrationAudio.pause();
+    narrationAudio.currentTime = 0;
+  } catch (e) {}
+  if ("speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch (e) {}
+  }
+}
+
 function speak(text) {
   if (!voiceEnabled || !text) return;
   if (!("speechSynthesis" in window)) return;
 
   const plainText = text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   if (!plainText) return;
+
+  try {
+    narrationAudio.pause();
+  } catch (e) {}
 
   try {
     window.speechSynthesis.cancel();
@@ -90,7 +164,59 @@ if ("speechSynthesis" in window) {
   };
 }
 
-function setGameViewportImage(src, altText) {
+function toKebabCase(str) {
+  return str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+function getNarrationAudioPath(dungeonId, roomId) {
+  return `assets/audio/narration/${toKebabCase(dungeonId)}/${toKebabCase(roomId)}.mp3`;
+}
+
+function checkAudioExists(path) {
+  return new Promise((resolve) => {
+    const testAudio = new Audio();
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      resolve(result);
+    };
+    testAudio.addEventListener("canplaythrough", () => finish(true), { once: true });
+    testAudio.addEventListener("error", () => finish(false), { once: true });
+    testAudio.src = path;
+    testAudio.load();
+    setTimeout(() => finish(false), 4000);
+  });
+}
+
+function playRoomNarration(dungeonId, roomId, fallbackText) {
+  if (!voiceEnabled) return;
+
+  stopAllNarration();
+  const thisRequestId = narrationRequestId;
+
+  const path = getNarrationAudioPath(dungeonId, roomId);
+
+  checkAudioExists(path).then((exists) => {
+    if (thisRequestId !== narrationRequestId) return;
+    if (!voiceEnabled) return;
+
+    if (exists) {
+      try {
+        narrationAudio.src = path;
+        narrationAudio.play().catch(() => {
+          if (thisRequestId === narrationRequestId) speak(fallbackText);
+        });
+      } catch (e) {
+        speak(fallbackText);
+      }
+    } else {
+      speak(fallbackText);
+    }
+  });
+}
+
+function setGameViewportImage(src, altText, glow, shake, flash) {
   const img = document.getElementById("game-viewport-img");
   const placeholder = document.getElementById("game-viewport-placeholder");
   if (src) {
@@ -102,6 +228,36 @@ function setGameViewportImage(src, altText) {
     img.style.display = "none";
     placeholder.style.display = "flex";
   }
+
+  img.classList.toggle("companion-glow", !!glow);
+
+  img.classList.remove("hit-shake");
+  if (shake) {
+    void img.offsetWidth;
+    img.classList.add("hit-shake");
+  }
+
+  img.classList.remove("spell-flash");
+  if (flash) {
+    void img.offsetWidth;
+    img.classList.add("spell-flash");
+  }
+
+  img.classList.remove("victory-pulse");
+  img.classList.remove("defeat-fade");
+}
+
+function applyVictoryPulse() {
+  const img = document.getElementById("game-viewport-img");
+  img.classList.remove("companion-glow", "hit-shake", "spell-flash", "defeat-fade");
+  img.classList.add("victory-pulse");
+}
+
+function applyDefeatFade() {
+  const img = document.getElementById("game-viewport-img");
+  img.classList.remove("companion-glow", "hit-shake", "spell-flash", "victory-pulse");
+  void img.offsetWidth;
+  img.classList.add("defeat-fade");
 }
 
 function showScreen(screenId) {
@@ -950,7 +1106,7 @@ function renderDungeonRoom(roomId) {
     room._lootGranted = true;
   }
 
-  speak(text);
+  playRoomNarration(selectedDungeonId, roomId, room.text);
 
   const maxHP = getHitPoints(playerCharacter);
   const hpLine = `Hit Points: ${playerCharacter.currentHP} / ${maxHP}`;
@@ -970,6 +1126,7 @@ function goToCombatScreen(enemyId, returnRoomId) {
 
   const enemyTemplate = ENEMIES[enemyId];
   setGameViewportImage(enemyTemplate.image, enemyTemplate.name);
+  stopAllNarration();
   speak(`${enemyTemplate.name}. ${enemyTemplate.description}`);
 
   renderCombatScreen();
@@ -995,13 +1152,6 @@ function getEquipmentStatusLine() {
   return parts.join(" &middot; ");
 }
 
-/**
- * The spectral companion (effect entries with kind "companion")
- * now gets its own dedicated image instead of falling back to
- * the player's portrait — checked before the generic "effect"
- * fallback so it takes priority whenever it's the companion
- * specifically striking.
- */
 function getActorImageForLogEntry(entry) {
   if (entry.actor === "enemy") {
     const enemyTemplate = ENEMIES[currentCombat.enemyId];
@@ -1025,11 +1175,7 @@ function playRoundSequenceThenRender(entries) {
     return;
   }
 
-  if (voiceEnabled && "speechSynthesis" in window) {
-    try {
-      window.speechSynthesis.cancel();
-    } catch (e) {}
-  }
+  stopAllNarration();
 
   let i = 0;
 
@@ -1047,7 +1193,52 @@ function playRoundSequenceThenRender(entries) {
       return;
     }
 
-    setGameViewportImage(getActorImageForLogEntry(entry), "");
+    const isCompanionTurn = entry.actor === "effect" && entry.kind === "companion";
+
+    let isMeleeHit = false;
+    if (entry.hit) {
+      if (entry.actor === "player" && !entry.spellName && !entry.action) isMeleeHit = true;
+      if (entry.actor === "follower" && !entry.action) isMeleeHit = true;
+      if (entry.actor === "enemy" && currentCombat.enemyAttackType === "physical") isMeleeHit = true;
+    }
+
+    const isSpellCast = entry.actor === "player" && !!entry.spellName;
+
+    setGameViewportImage(getActorImageForLogEntry(entry), "", isCompanionTurn, isMeleeHit, isSpellCast);
+
+    if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
+      playWeaponSfx(entry.skillId);
+    } else if (entry.actor === "enemy" && entry.hit) {
+      const enemySfx = currentCombat.enemyAttackType === "physical"
+        ? "assets/audio/sfx/weapon-slash.mp3"
+        : getSpellSfxPath(currentCombat.enemyName);
+      playSfx(enemySfx);
+    }
+
+    if (isSpellCast) {
+      if (entry.spellType === "heal") {
+        playSfx(HEAL_CAST_SFX);
+      } else {
+        playSfx(getSpellSfxPath(entry.spellName));
+      }
+    }
+
+    if (entry.actor === "follower" && entry.action === "heal") {
+      playSfx(HEAL_CAST_SFX);
+    }
+
+    if (entry.hit === false) {
+      playSfx(ATTACK_MISS_SFX);
+    }
+
+    const enemyTookDamage =
+      ((entry.actor === "player" || entry.actor === "follower") && entry.hit === true) ||
+      (entry.actor === "effect" && (entry.kind === "companion" || entry.kind === "dot"));
+
+    if (enemyTookDamage && currentCombat && currentCombat.enemyId) {
+      playSfx(getEnemyHitSfxPath(currentCombat.enemyId));
+    }
+
     document.getElementById("game-story-text").innerHTML = line;
     document.getElementById("game-choices").innerHTML = "";
 
@@ -1168,9 +1359,12 @@ function renderCombatOutcome() {
     if (enemyTemplate.deathImage) {
       setGameViewportImage(enemyTemplate.deathImage, `${enemyTemplate.name} defeated`);
     }
+    applyVictoryPulse();
+    playSfx(getEnemyDeathSfxPath(currentCombat.enemyId));
 
     const loot = claimVictoryLoot();
     const outcomeText = `${currentCombat.enemyName} falls. You recover: ${loot.join(", ") || "nothing of note"}.`;
+    stopAllNarration();
     speak(outcomeText);
     storyEl.innerHTML = `
       <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
@@ -1185,7 +1379,10 @@ function renderCombatOutcome() {
       }
     });
   } else if (currentCombat.result === "defeat") {
+    applyDefeatFade();
+
     const outcomeText = `Everything goes dark. ${playerCharacter.name} falls before ${currentCombat.enemyName}. You wake later, battered but alive, back at Homebase.`;
+    stopAllNarration();
     speak(outcomeText);
     storyEl.innerHTML = `
       Everything goes dark. <strong>${playerCharacter.name}</strong> falls before ${currentCombat.enemyName}.<br /><br />
@@ -1198,6 +1395,7 @@ function renderCombatOutcome() {
     });
   } else if (currentCombat.result === "fled") {
     const outcomeText = `You break away from ${currentCombat.enemyName} and don't look back.`;
+    stopAllNarration();
     speak(outcomeText);
     storyEl.innerHTML = `
       You break away from ${currentCombat.enemyName} and don't look back.
@@ -1432,8 +1630,8 @@ document.getElementById("btn-toggle-music").addEventListener("click", () => {
 document.getElementById("btn-toggle-voice").addEventListener("click", () => {
   voiceEnabled = !voiceEnabled;
   document.getElementById("btn-toggle-voice").textContent = voiceEnabled ? "\uD83D\uDDE3" : "\uD83D\uDEAB";
-  if (!voiceEnabled && "speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
+  if (!voiceEnabled) {
+    stopAllNarration();
   }
 });
 
