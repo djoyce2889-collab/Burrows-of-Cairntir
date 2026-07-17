@@ -300,5 +300,62 @@ const ENEMIES = {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Vale Sigil", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
+  duergarReaver: {
+    id: "duergarReaver",
+    name: "Duergar Reaver",
+    description: "A corrupted dwarf warrior, ashen grey and hollow-eyed, wielding a notched axe with a hunger no ore ever satisfied.",
+    image: "assets/images/enemies/duergar-reaver.png",
+    hitPoints: 30,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  duergarDeepWarden: {
+    id: "duergarDeepWarden",
+    name: "Duergar Deep-Warden",
+    description: "A hulking sentinel, armor fused with dark stone, standing guard over halls that no longer need guarding.",
+    image: "assets/images/enemies/duergar-deep-warden.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "stone",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  duergarBloodShaman: {
+    id: "duergarBloodShaman",
+    name: "Duergar Blood-Shaman",
+    description: "A gaunt figure marked with crude blood-dark runes, hands wreathed in a corrupted echo of what dwarven magic once was.",
+    image: "assets/images/enemies/duergar-blood-shaman.png",
+    hitPoints: 28,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  duergarAshblade: {
+    id: "duergarAshblade",
+    name: "Duergar Ashblade",
+    description: "A lean, feral raider, twin jagged blades always moving, faster than anything wearing dwarven steel has any right to be.",
+    image: "assets/images/enemies/duergar-ashblade.png",
+    hitPoints: 26,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  ashenSovereign: {
+    id: "ashenSovereign",
+    name: "The Ashen Sovereign",
+    description: "Once a dwarven king, now a crown fused into ashen flesh, wielding a rune-corrupted warhammer atop a throne of fused stone and dark iron.",
+    image: "assets/images/enemies/ashen-sovereign.png",
+    deathImage: "assets/images/deaths/ashen-sovereign-death.png",
+    hitPoints: 60,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "stone",
+    lootTable: ["Sovereign's Crown Shard", "Grave Essence", "Grave Essence"]
   }
 };

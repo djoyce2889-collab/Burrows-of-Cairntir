@@ -205,6 +205,14 @@ body {
     filter: brightness(0.5) saturate(0);
   }
 }
+#viewport img.room-fade {
+  animation: roomFade 0.5s ease-in;
+}
+
+@keyframes roomFade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
 
 #panel {
   padding: 22px;

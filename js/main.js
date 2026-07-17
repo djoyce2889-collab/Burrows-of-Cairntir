@@ -201,7 +201,7 @@ function playRoomNarration(dungeonId, roomId, fallbackText) {
   });
 }
 
-function setGameViewportImage(src, altText, glow, shake, flash) {
+function setGameViewportImage(src, altText, glow, shake, flash, roomFade) {
   const img = document.getElementById("game-viewport-img");
   const placeholder = document.getElementById("game-viewport-placeholder");
   if (src) {
@@ -228,6 +228,12 @@ function setGameViewportImage(src, altText, glow, shake, flash) {
     img.classList.add("spell-flash");
   }
 
+  img.classList.remove("room-fade");
+  if (roomFade) {
+    void img.offsetWidth;
+    img.classList.add("room-fade");
+  }
+
   img.classList.remove("victory-pulse");
   img.classList.remove("defeat-fade");
 }
@@ -245,11 +251,24 @@ function applyDefeatFade() {
   img.classList.add("defeat-fade");
 }
 
+/**
+ * Now always scrolls back to the very top of the page whenever
+ * the active screen changes. This is the real fix for the
+ * mobile "jump" bug: without it, if the player had scrolled
+ * down on a tall screen (like Traits) and then moved to a much
+ * shorter screen (like Combat Style), their leftover scroll
+ * position no longer fit the new, shorter page — forcing the
+ * browser to snap the viewport back to fit, which is what
+ * showed up as a visible jump/scroll on real mobile hardware.
+ * Resetting scroll proactively means that mismatch never has a
+ * chance to occur in the first place.
+ */
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach((el) => {
     el.classList.remove("active");
   });
   document.getElementById(screenId).classList.add("active");
+  window.scrollTo(0, 0);
 }
 
 function addChoiceButton(container, label, onClick, disabled) {
@@ -1081,7 +1100,7 @@ function renderDungeonRoom(roomId) {
   currentDungeonRoomId = roomId;
 
   showScreen("screen-game");
-  setGameViewportImage(getRoomImage(selectedDungeonId, roomId), DUNGEONS[selectedDungeonId].name);
+setGameViewportImage(getRoomImage(selectedDungeonId, roomId), DUNGEONS[selectedDungeonId].name, false, false, false, true);
 
   let text = room.text;
   if (room.loot && !room._lootGranted) {
