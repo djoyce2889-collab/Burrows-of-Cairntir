@@ -1,4 +1,3 @@
-
 /* ============================================================
    MAIN.JS
    ============================================================ */
@@ -106,20 +105,6 @@ function getPreferredVoice() {
   return cachedVoice;
 }
 
-// ----------------------------------------------------------
-// PRE-RECORDED ROOM NARRATION
-// narrationAudio plays real recorded room narration files when
-// they exist, falling back to the browser's built-in voice
-// (via speak()) when they don't. stopAllNarration() is the
-// single choke point that kills BOTH sources at once — the
-// recorded audio AND the browser voice — plus invalidates any
-// in-flight file-existence check via narrationRequestId. It's
-// called at the start of every place new speech is about to
-// happen (room narration, combat lines, discovery outcomes,
-// combat outcomes), so a lingering recording from a room the
-// player just left can never keep playing underneath something
-// new — which was the actual cause of narration "overriding."
-// ----------------------------------------------------------
 const narrationAudio = new Audio();
 let narrationRequestId = 0;
 
@@ -495,6 +480,7 @@ function renderCultureGrid() {
       <div class="cc-card-name">${culture.name}</div>
       <div class="cc-card-desc">${culture.tagline}</div>
       <div class="cc-card-desc">${culture.magicName} &middot; ${culture.socialStructure}</div>
+      <div class="cc-card-desc"><em>Skills tied to the ${culture.magicName} come more naturally to you — gaining progress faster with every use, and strengthening your resistance to magical harm.</em></div>
     `;
     card.addEventListener("click", () => {
       creationState.culture = culture.id;
@@ -1077,7 +1063,6 @@ function attemptDiscoverOrLearn(room, choice) {
 
   const remaining = 3 - choice._attempts;
   const failMessage = `You fail to grasp it this time. (${remaining} ${remaining === 1 ? "attempt" : "attempts"} left.)`;
-  speak(failMessage);
   document.getElementById("game-story-text").innerHTML = `${room.text}<br /><br /><em>${failMessage}</em>`;
   buildRoomChoices(room);
 }
@@ -1085,7 +1070,6 @@ function attemptDiscoverOrLearn(room, choice) {
 function renderDiscoveryOutcome(message, targetRoomId) {
   const storyEl = document.getElementById("game-story-text");
   const choicesEl = document.getElementById("game-choices");
-  speak(message);
   storyEl.innerHTML = message;
   choicesEl.innerHTML = "";
   addChoiceButton(choicesEl, "Continue", () => renderDungeonRoom(targetRoomId));
@@ -1127,7 +1111,6 @@ function goToCombatScreen(enemyId, returnRoomId) {
   const enemyTemplate = ENEMIES[enemyId];
   setGameViewportImage(enemyTemplate.image, enemyTemplate.name);
   stopAllNarration();
-  speak(`${enemyTemplate.name}. ${enemyTemplate.description}`);
 
   renderCombatScreen();
 }
@@ -1243,35 +1226,8 @@ function playRoundSequenceThenRender(entries) {
     document.getElementById("game-choices").innerHTML = "";
 
     const plainText = line.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-
-    if (voiceEnabled && "speechSynthesis" in window && plainText) {
-      try {
-        const utterance = new SpeechSynthesisUtterance(plainText);
-        utterance.rate = 1;
-        utterance.pitch = 1;
-        const voice = getPreferredVoice();
-        if (voice) utterance.voice = voice;
-
-        let advanced = false;
-        const advanceOnce = () => {
-          if (advanced) return;
-          advanced = true;
-          showNext();
-        };
-
-        utterance.onend = advanceOnce;
-        utterance.onerror = advanceOnce;
-
-        const fallbackMs = Math.max(2200, plainText.length * 110);
-        setTimeout(advanceOnce, fallbackMs);
-
-        window.speechSynthesis.speak(utterance);
-      } catch (e) {
-        setTimeout(showNext, 1600);
-      }
-    } else {
-      setTimeout(showNext, 1600);
-    }
+    const pacingMs = Math.max(1800, plainText.length * 65);
+    setTimeout(showNext, pacingMs);
   }
 
   showNext();
@@ -1363,9 +1319,6 @@ function renderCombatOutcome() {
     playSfx(getEnemyDeathSfxPath(currentCombat.enemyId));
 
     const loot = claimVictoryLoot();
-    const outcomeText = `${currentCombat.enemyName} falls. You recover: ${loot.join(", ") || "nothing of note"}.`;
-    stopAllNarration();
-    speak(outcomeText);
     storyEl.innerHTML = `
       <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
       You recover: ${loot.join(", ") || "nothing of note"}.
@@ -1381,9 +1334,6 @@ function renderCombatOutcome() {
   } else if (currentCombat.result === "defeat") {
     applyDefeatFade();
 
-    const outcomeText = `Everything goes dark. ${playerCharacter.name} falls before ${currentCombat.enemyName}. You wake later, battered but alive, back at Homebase.`;
-    stopAllNarration();
-    speak(outcomeText);
     storyEl.innerHTML = `
       Everything goes dark. <strong>${playerCharacter.name}</strong> falls before ${currentCombat.enemyName}.<br /><br />
       You wake later, battered but alive, back at Homebase.
@@ -1394,9 +1344,6 @@ function renderCombatOutcome() {
       goToHomebaseScreen();
     });
   } else if (currentCombat.result === "fled") {
-    const outcomeText = `You break away from ${currentCombat.enemyName} and don't look back.`;
-    stopAllNarration();
-    speak(outcomeText);
     storyEl.innerHTML = `
       You break away from ${currentCombat.enemyName} and don't look back.
     `;

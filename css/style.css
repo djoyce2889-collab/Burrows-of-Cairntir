@@ -37,6 +37,13 @@ body {
   padding: 12px;
 }
 
+/* ------------------------------------------------------------
+   Cabinet frame — flat solid color now, NOT a border-image.
+   A flat border never needs recalculating when the content
+   height changes between screens, which is what was causing
+   the flash on mobile during big content jumps (Traits ->
+   Combat Style, Dungeon Select -> the dungeon room screen).
+   ------------------------------------------------------------ */
 #game-cabinet {
   position: relative;
   width: 100%;
@@ -45,14 +52,33 @@ body {
   border-style: solid;
   border-width: 14px;
   border-color: var(--wood-dark);
-  border-image-source: url("../assets/images/ui/panel-texture.png");
-  border-image-slice: 100;
-  border-image-width: 14px;
-  border-image-repeat: round;
   border-radius: 4px;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
   overflow: hidden;
 }
+
+/* ------------------------------------------------------------
+   Decorative corners — fixed pixel size, pinned to each corner
+   with position: absolute. Because their size never depends on
+   the cabinet's height, they never need to recompute anything
+   when a screen swap changes that height. This is what gives
+   back the carved-stone look without reintroducing the flash.
+   ------------------------------------------------------------ */
+.cabinet-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background-image: url("../assets/images/ui/panel-texture.png");
+  background-size: 120px 120px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6), 0 0 4px rgba(0, 0, 0, 0.5);
+  z-index: 11;
+  pointer-events: none;
+}
+
+.corner-tl { top: 0; left: 0; }
+.corner-tr { top: 0; right: 0; }
+.corner-bl { bottom: 0; left: 0; }
+.corner-br { bottom: 0; right: 0; }
 
 .music-toggle {
   position: absolute;
@@ -222,7 +248,7 @@ body {
   border-image-source: url("../assets/images/ui/long-button-texture.png");
   border-image-slice: 130 60 130 60 fill;
   border-image-width: 14px 8px;
-  border-image-repeat: round;
+  border-image-repeat: stretch;
   padding: 10px 16px;
   transition: filter 0.15s ease, transform 0.1s ease;
 }
@@ -426,7 +452,7 @@ body {
   border-image-source: url("../assets/images/ui/panel-texture.png");
   border-image-slice: 100 fill;
   border-image-width: 10px;
-  border-image-repeat: round;
+  border-image-repeat: stretch;
   border-radius: 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   transition: box-shadow 0.15s ease;

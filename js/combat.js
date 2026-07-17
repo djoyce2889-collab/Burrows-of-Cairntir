@@ -4,16 +4,6 @@
 
 let currentCombat = null;
 
-// ----------------------------------------------------------
-// DUNGEON-LEVEL COMPANION STATE
-// A companion, once summoned, now lives at the DUNGEON level
-// rather than inside a single fight — it survives from battle
-// to battle until the player leaves the dungeon (win, lose, or
-// return to Homebase). dungeonCompanion holds its stats;
-// dungeonCompanionUsed locks out summoning a second one in the
-// same run. Both are reset by resetDungeonCompanionState(),
-// called whenever a fresh dungeon is entered.
-// ----------------------------------------------------------
 let dungeonCompanion = null;
 let dungeonCompanionUsed = false;
 
@@ -85,13 +75,33 @@ function getEffectRankSum(kind) {
 
 function getPlayerCombatStyleBonus() {
   const style = COMBAT_STYLES[playerCharacter.combatStyle];
-  return style || { attackBonus: 0, defenseBonus: 0 };
+  return style || { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0 };
 }
 
 function getEffectivePlayerAttackTier(baseTierName) {
   const equipBonus = playerCharacter.weaponEnchantment ? 1 : 0;
   const styleBonus = getPlayerCombatStyleBonus().attackBonus;
   return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus);
+}
+
+/**
+ * Same base calculation as a weapon attack (weapon enchant still
+ * applies, matching existing behavior), but with an additional
+ * shift from the Spellcaster combat style's spellDamageBonus.
+ */
+function getEffectivePlayerSpellDamageTier(baseTierName) {
+  const baseAttackTier = getEffectivePlayerAttackTier(baseTierName);
+  const spellBonus = getPlayerCombatStyleBonus().spellDamageBonus || 0;
+  return shiftTierByRank(baseAttackTier, spellBonus);
+}
+
+/**
+ * Applies the Healer combat style's healBonus on top of the
+ * caster's raw skill tier before rolling heal amount.
+ */
+function getEffectivePlayerHealTier(baseTierName) {
+  const healBonus = getPlayerCombatStyleBonus().healBonus || 0;
+  return shiftTierByRank(baseTierName, healBonus);
 }
 
 function getEffectiveEnemyTier() {
@@ -402,7 +412,7 @@ function performPlayerCast(skillId, spell) {
   };
 
   if (spell.type === "damage") {
-    const attackTier = getEffectivePlayerAttackTier(tierBefore);
+    const attackTier = getEffectivePlayerSpellDamageTier(tierBefore);
     const enemyTier = getEffectiveEnemyTier();
     const hit = rollSuccess(attackTier, enemyTier);
     let damage = 0;
@@ -413,7 +423,8 @@ function performPlayerCast(skillId, spell) {
     logEntry.hit = hit;
     logEntry.damage = damage;
   } else if (spell.type === "heal") {
-    const healAmount = rollDamage(tierBefore);
+    const healTier = getEffectivePlayerHealTier(tierBefore);
+    const healAmount = rollDamage(healTier);
     const maxHP = getHitPoints(playerCharacter);
     playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + healAmount);
     logEntry.healAmount = healAmount;
@@ -494,7 +505,7 @@ function getActiveEffectsSummary() {
     if (e.kind === "playerDefenseBonus") return `Braced defense (${e.roundsRemaining} rounds left)`;
     if (e.kind === "enemyDebuff") return `Foe weakened (${e.roundsRemaining} rounds left)`;
     if (e.kind === "dot") return `Curse lingers (${e.roundsRemaining} rounds left)`;
-    if (e.kind === "companion") return "Beast companion at your side (with you for the rest of this dungeon)";
+    if (e.kind === "companion") return "Beast companion at your side";
     return "";
   });
   return parts.filter(Boolean).join(" &middot; ");

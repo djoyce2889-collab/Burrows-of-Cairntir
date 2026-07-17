@@ -54,30 +54,14 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
   return character;
 }
 
-/**
- * Changes which weapon skill a character fights with. Only ever
- * called from the Inventory screen, which is only reachable from
- * Homebase — so this naturally can't happen mid-dungeon.
- */
 function setEquippedWeapon(character, skillId) {
   character.equippedWeaponSkill = skillId;
 }
 
-/**
- * Changes which armor skill a character defends with. Same
- * Homebase-only restriction as the weapon slot.
- */
 function setEquippedArmor(character, skillId) {
   character.equippedArmorSkill = skillId;
 }
 
-/**
- * Grants a character an entirely new skill they didn't start
- * with (used by dungeon "learnSkill" discoveries), starting at
- * Untrained. Does nothing if they already have it. If it's a
- * Weapon or Armor skill and the character has no equipped item
- * of that kind yet, auto-equips it so it's immediately usable.
- */
 function learnNewSkill(character, skillId) {
   if (!SKILLS[skillId]) return false;
   if (character.skills[skillId]) return false;
@@ -123,6 +107,22 @@ function discoverSpell(character, skillId, spellId) {
   return spell;
 }
 
+/**
+ * Skills matching the character's own culture (their culture's
+ * magic line) now gain progress a bit faster on every single use
+ * — not just a one-time head start — reflecting that it comes
+ * more naturally to them throughout the whole game. Non-matching
+ * skills, and anyone without a culture set, gain progress at the
+ * normal +1 rate.
+ */
+function getSkillUseGain(character, skillId) {
+  const culture = CULTURES[character.cultureId];
+  if (culture && culture.magicSkillIds && culture.magicSkillIds.includes(skillId)) {
+    return 2;
+  }
+  return 1;
+}
+
 function useSkill(character, skillId) {
   if (!character) return null;
 
@@ -132,7 +132,7 @@ function useSkill(character, skillId) {
 
   const skill = character.skills[skillId];
   const tierBefore = getSkillTier(skill.timesUsed);
-  skill.timesUsed += 1;
+  skill.timesUsed += getSkillUseGain(character, skillId);
   const tierAfter = getSkillTier(skill.timesUsed);
 
   return {
@@ -164,12 +164,6 @@ function getHighestTierAmong(character, skillIds) {
   return best;
 }
 
-/**
- * Armor Class is now driven by whichever single armor skill is
- * currently EQUIPPED (see equippedArmorSkill), not the best of
- * everything trained — so carrying both Plate and Chain no
- * longer silently gives you the better of the two for free.
- */
 function getAdvantageTier(character, advantageId) {
   const advantage = ADVANTAGES[advantageId];
   let drivingSkillIds = advantage.drivenBy.slice();
@@ -210,15 +204,32 @@ function getHitPoints(character) {
   return hpAdvantage.base + bonus;
 }
 
+/**
+ * Now also adds any flat mana bonus from traits (currently just
+ * Deep Well, +15) on top of the normal tier-based pool.
+ */
 function getManaPoolMax(character) {
   const magicSkillIds = Object.keys(character.skills).filter(
     (id) => SKILLS[id] && SKILLS[id].category === "Magic"
   );
-  if (magicSkillIds.length === 0) return 0;
 
-  const bestTier = getHighestTierAmong(character, magicSkillIds);
-  const bonus = MANA_CONFIG.tierBonus[bestTier.name] || 0;
-  return MANA_CONFIG.base + bonus;
+  let base = 0;
+  if (magicSkillIds.length > 0) {
+    const bestTier = getHighestTierAmong(character, magicSkillIds);
+    base = MANA_CONFIG.base + (MANA_CONFIG.tierBonus[bestTier.name] || 0);
+  }
+
+  let traitBonus = 0;
+  if (character.traits) {
+    character.traits.forEach((traitId) => {
+      if (TRAIT_MANA_BONUS[traitId]) {
+        traitBonus += TRAIT_MANA_BONUS[traitId];
+      }
+    });
+  }
+
+  if (base === 0 && traitBonus === 0) return 0;
+  return base + traitBonus;
 }
 
 function refillMana(character) {

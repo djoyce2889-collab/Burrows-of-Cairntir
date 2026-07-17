@@ -112,9 +112,12 @@ const RACES = {
     name: "Sídhe",
     origin: "Old blood of the Gaeldrim",
     description:
-      "Kin to the hidden folk who dwell beneath the hollow hills and " +
-      "deep groves of Cairntír — strange, fair, and only loosely " +
-      "bound by the rules that govern mortal folk.",
+      "Kin to a deposed and elder people who, the old stories say, " +
+      "lost their claim to Cairntír long ago and withdrew beneath " +
+      "its hollow hills rather than yield entirely. Uncanny rather " +
+      "than simply fair, the Sídhe are said to strike bargains as " +
+      "easily as they break them, and old habit still keeps most " +
+      "mortals from naming them plainly.",
     image: "assets/images/characters/sidhe.png"
   },
   giant: {
@@ -142,7 +145,8 @@ const TRAITS = {
   surefooted: { id: "surefooted", name: "Sure-Footed", description: "Steady on cliffs, ice, and ground that shifts underfoot." },
   nightsight: { id: "nightsight", name: "Nightsight", description: "Sees clearly in near-darkness, where others go blind." },
   beastkinship: { id: "beastkinship", name: "Kinship with Beasts", description: "Animals read as calm, trusting, or wary around you — rarely hostile without cause." },
-  quickfooted: { id: "quickfooted", name: "Quickfooted", description: "Instinct and agility let you slip free of blows before they land — a permanent boost to your Dodge." }
+  quickfooted: { id: "quickfooted", name: "Quickfooted", description: "Instinct and agility let you slip free of blows before they land — a permanent boost to your Dodge." },
+  deepWell: { id: "deepWell", name: "Deep Well", description: "A reservoir of magical strength deeper than most carry — permanently increases your maximum mana." }
 };
 
 const TRAIT_SELECTION_MIN = 2;
@@ -233,6 +237,15 @@ const ARMOR_PROTECTION_RANK_BONUS = {
   chainArmor: 2,
   leatherArmor: 1,
   clothArmor: 0
+};
+
+// ----------------------------------------------------------
+// TRAIT MANA BONUS
+// Flat max-mana bonuses granted by specific traits. Applied on
+// top of the normal tier-based mana pool in getManaPoolMax().
+// ----------------------------------------------------------
+const TRAIT_MANA_BONUS = {
+  deepWell: 15
 };
 
 const MANA_CONFIG = {
