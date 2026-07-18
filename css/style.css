@@ -92,6 +92,17 @@ body {
   z-index: 10;
 }
 
+.music-volume-slider {
+  position: absolute;
+  top: 12px;
+  right: 32px;
+  width: 60px;
+  height: 4px;
+  accent-color: var(--ember);
+  cursor: pointer;
+  z-index: 10;
+}
+
 .voice-toggle {
   position: absolute;
   top: 8px;

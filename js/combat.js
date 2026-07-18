@@ -253,29 +253,53 @@ function tickCombatEffects() {
     if (effect.kind === "dot") {
       const dmg = Math.max(1, Math.floor(rollDamage(effect.casterTierName) / 2));
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
-      currentCombat.log.push({ actor: "effect", kind: "dot", damage: dmg });
+      currentCombat.log.push({ actor: "effect", kind: "dot", damage: dmg, spellName: effect.spellName });
     } else if (effect.kind === "companion") {
       const heavyTier = shiftTierByRank(effect.casterTierName || "Novice", 2);
       const dmg = rollDamage(heavyTier);
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
       currentCombat.log.push({ actor: "effect", kind: "companion", damage: dmg });
     } else if (effect.kind === "hot") {
-      const healAmt = Math.max(1, Math.floor(rollDamage(effect.casterTierName || "Novice") / 2));
       const maxHP = getHitPoints(playerCharacter);
-      playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + healAmt);
-      currentCombat.log.push({ actor: "effect", kind: "hot", healAmount: healAmt });
+      if (playerCharacter.currentHP < maxHP) {
+        const healAmt = Math.max(1, Math.floor(rollDamage(effect.casterTierName || "Novice") / 2));
+        playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + healAmt);
+        currentCombat.log.push({ actor: "effect", kind: "hot", healAmount: healAmt, spellName: effect.spellName });
+      }
     } else if (effect.kind === "manaRegen") {
       const manaMax = getManaPoolMax(playerCharacter);
       const before = playerCharacter.currentMana;
       playerCharacter.currentMana = Math.min(manaMax, playerCharacter.currentMana + 8);
       const actualGain = playerCharacter.currentMana - before;
       if (actualGain > 0) {
-        currentCombat.log.push({ actor: "effect", kind: "manaRegen", manaAmount: actualGain });
+        currentCombat.log.push({ actor: "effect", kind: "manaRegen", manaAmount: actualGain, spellName: effect.spellName });
+      }
+    } else if (
+      effect.source === "song" &&
+      (effect.kind === "playerAttackBonus" || effect.kind === "fortify" || effect.kind === "spellDamageBuff")
+    ) {
+      currentCombat.log.push({ actor: "effect", kind: "songContinues", spellName: effect.spellName });
+    }
+
+    if (effect.source === "song") {
+      const songDrainAmount = 3;
+      if (playerCharacter.currentMana >= songDrainAmount) {
+        playerCharacter.currentMana -= songDrainAmount;
+      } else {
+        playerCharacter.currentMana = 0;
+        effect._outOfMana = true;
       }
     }
   });
 
   currentCombat.activeEffects = currentCombat.activeEffects.filter((effect) => {
+    if (effect._outOfMana) {
+      if (effect.kind === "fortify" && effect.bonusHP) {
+        playerCharacter.currentHP = Math.max(0, playerCharacter.currentHP - effect.bonusHP);
+      }
+      currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: effect.spellName, outOfMana: true });
+      return false;
+    }
     if (effect.roundsRemaining === null) return true;
     effect.roundsRemaining -= 1;
     if (effect.roundsRemaining <= 0) {
@@ -503,9 +527,11 @@ function performPlayerAction(skillId) {
   useSkill(playerCharacter, skillId);
 
   const attackTier = getEffectivePlayerAttackTier(tierBefore);
+  const isArcherShot = playerCharacter.combatStyle === "archer" && skillId === "archery";
+  const accuracyTier = isArcherShot ? shiftTierByRank(attackTier, 2) : attackTier;
   const enemyTier = getEffectiveEnemyTier();
   const hasGuaranteedHit = consumeGuaranteedEffect("guaranteedHit");
-  const hit = hasGuaranteedHit || rollSuccess(attackTier, enemyTier);
+  const hit = hasGuaranteedHit || rollSuccess(accuracyTier, enemyTier);
   let damage = 0;
 
   if (hit) {
@@ -800,15 +826,20 @@ function getActiveEffectsSummary() {
 
 function describeLogEntry(entry) {
   if (entry.actor === "effect") {
-    if (entry.kind === "dot") return `The lingering curse bites again for ${entry.damage} harm.`;
+    if (entry.kind === "dot") return `${entry.spellName || "The lingering curse"} bites again for ${entry.damage} harm.`;
     if (entry.kind === "companion") return `Your companion strikes for ${entry.damage} harm.`;
     if (entry.kind === "downed") return `${entry.name} is knocked out of the fight!`;
     if (entry.kind === "feared") return `${currentCombat.enemyName} freezes, too shaken by fear to strike.`;
     if (entry.kind === "stunned") return `${currentCombat.enemyName} is still reeling, knocked off balance and unable to act.`;
-    if (entry.kind === "hot") return `Nature's Bounty mends you further, restoring ${entry.healAmount} Hit Points.`;
+    if (entry.kind === "hot") return `${entry.spellName || "The lingering magic"} mends you further, restoring ${entry.healAmount} Hit Points.`;
     if (entry.kind === "thornProc") return `Your thorns lash back at ${currentCombat.enemyName} for ${entry.damage}.`;
-    if (entry.kind === "manaRegen") return `The song's melody restores ${entry.manaAmount} mana.`;
-    if (entry.kind === "songStopped") return `You let ${entry.spellName} fade to silence.`;
+    if (entry.kind === "manaRegen") return `${entry.spellName || "The song's melody"} restores ${entry.manaAmount} mana.`;
+    if (entry.kind === "songStopped") {
+      return entry.outOfMana
+        ? `${entry.spellName} fades as your mana runs dry.`
+        : `You let ${entry.spellName} fade to silence.`;
+    }
+    if (entry.kind === "songContinues") return `${entry.spellName} continues to play, its magic humming steadily.`;
     if (entry.kind === "enchantProc") {
       if (entry.procType === "deflect") return "Your Storm-enchanted armor crackles and deflects the blow entirely!";
       if (entry.procType === "counterBurn") return `Your Flame-enchanted armor sears back, burning your foe for ${entry.damage}.`;

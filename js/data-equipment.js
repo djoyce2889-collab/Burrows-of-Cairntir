@@ -106,5 +106,14 @@ const COMBAT_STYLES = {
     defenseBonus: 0,
     spellDamageBonus: 0,
     healBonus: 1
+  },
+  archer: {
+    id: "archer",
+    name: "Archer",
+    description: "Focuses on precision with a bow — you'll rarely miss, though each shot lands a touch softer than a dedicated melee strike.",
+    attackBonus: 0,
+    defenseBonus: 0,
+    spellDamageBonus: 0,
+    healBonus: 0
   }
 };

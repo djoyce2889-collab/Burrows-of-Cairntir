@@ -4,6 +4,9 @@
 
 const SAVE_KEY = "burrowsOfCairntirSave";
 
+const MAX_SAVE_SLOTS = 3;
+let currentSaveSlot = null;
+
 const creationState = {
   mode: "player",
   name: "",
@@ -47,10 +50,12 @@ const SPECTRAL_COMPANION_IMAGE = "assets/images/effects/spectral-companion.png";
 const ATTACK_MISS_SFX = "assets/audio/sfx/attack-miss.mp3";
 const HEAL_CAST_SFX = "assets/audio/sfx/heal-cast.mp3";
 
+let musicVolume = 0.4;
+
 const MAIN_THEME_SRC = "assets/audio/main-theme.mp3";
 const gameMusic = new Audio();
 gameMusic.loop = true;
-gameMusic.volume = 0.4;
+gameMusic.volume = musicVolume;
 
 function playMusic(src) {
   if (!src || !musicEnabled) return;
@@ -84,6 +89,18 @@ function getSpellSfxPath(spellName) {
   if (/frost|ice|chill|freeze|winter/.test(text)) return "assets/audio/sfx/frost-cast.mp3";
   if (/storm|thunder|lightning|spark|bolt|shock/.test(text)) return "assets/audio/sfx/lightning-cast.mp3";
   return null;
+}
+
+function getSongSfxPath(spellName) {
+  const songSfxMap = {
+    "Lay of Mending": "assets/audio/sfx/song-lay-of-mending.mp3",
+    "War-Chant": "assets/audio/sfx/song-war-chant.mp3",
+    "Ballad of Vigor": "assets/audio/sfx/song-ballad-of-vigor.mp3",
+    "Hymn of Power": "assets/audio/sfx/song-hymn-of-power.mp3",
+    "Lute-Song of the Deep Well": "assets/audio/sfx/song-lute-deep-well.mp3",
+    "Dirge of Ruin": "assets/audio/sfx/song-dirge-of-ruin.mp3"
+  };
+  return songSfxMap[spellName] || null;
 }
 
 function getEnemySoundCategory(enemyId) {
@@ -227,8 +244,31 @@ function playRoomNarration(dungeonId, roomId, fallbackText) {
  * everything else fully intact.
  * ------------------------------------------------------------
  */
+function getSaveKey(slot) {
+  return `burrowsOfCairntirSave_${slot}`;
+}
+
+function getAllSaveSummaries() {
+  const summaries = [];
+  for (let slot = 1; slot <= MAX_SAVE_SLOTS; slot++) {
+    try {
+      const raw = localStorage.getItem(getSaveKey(slot));
+      if (!raw) continue;
+      const data = JSON.parse(raw);
+      if (data && data.playerCharacter) {
+        summaries.push({
+          slot: slot,
+          name: data.playerCharacter.name,
+          raceId: data.playerCharacter.raceId
+        });
+      }
+    } catch (e) {}
+  }
+  return summaries;
+}
+
 function saveGameState() {
-  if (!playerCharacter) return;
+  if (!playerCharacter || !currentSaveSlot) return;
   try {
     const saveData = {
       playerCharacter: playerCharacter,
@@ -237,15 +277,16 @@ function saveGameState() {
       selectedDungeonId: currentCombat ? null : selectedDungeonId,
       currentDungeonRoomId: currentCombat ? null : currentDungeonRoomId,
       voiceEnabled: voiceEnabled,
-      musicEnabled: musicEnabled
+      musicEnabled: musicEnabled,
+      musicVolume: musicVolume
     };
-    localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+    localStorage.setItem(getSaveKey(currentSaveSlot), JSON.stringify(saveData));
   } catch (e) {}
 }
 
-function loadGameState() {
+function loadGameStateFromSlot(slot) {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
+    const raw = localStorage.getItem(getSaveKey(slot));
     if (!raw) return false;
 
     const saveData = JSON.parse(raw);
@@ -258,6 +299,10 @@ function loadGameState() {
     currentDungeonRoomId = saveData.currentDungeonRoomId || null;
     voiceEnabled = saveData.voiceEnabled !== undefined ? saveData.voiceEnabled : true;
     musicEnabled = saveData.musicEnabled !== undefined ? saveData.musicEnabled : true;
+    musicVolume = saveData.musicVolume !== undefined ? saveData.musicVolume : 0.4;
+    gameMusic.volume = musicVolume;
+    document.getElementById("music-volume-slider").value = Math.round(musicVolume * 100);
+    currentSaveSlot = slot;
 
     return true;
   } catch (e) {
@@ -265,15 +310,124 @@ function loadGameState() {
   }
 }
 
-function clearGameState() {
+function clearGameStateSlot(slot) {
   try {
-    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(getSaveKey(slot));
   } catch (e) {}
 }
 
 function syncToggleIcons() {
   document.getElementById("btn-toggle-voice").textContent = voiceEnabled ? "\uD83D\uDDE3" : "\uD83D\uDEAB";
   document.getElementById("btn-toggle-music").textContent = musicEnabled ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+}
+
+function goToChooseHeroScreen() {
+  showScreen("screen-choose-hero");
+  renderChooseHeroScreen();
+}
+
+function renderChooseHeroScreen() {
+  const list = document.getElementById("choose-hero-list");
+  list.innerHTML = "";
+  const summaries = getAllSaveSummaries();
+
+  summaries.forEach((summary) => {
+    const race = RACES[summary.raceId];
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    card.innerHTML = `
+      <div class="cc-card-name">${summary.name}</div>
+      <div class="cc-card-desc">${race ? race.name : ""}</div>
+    `;
+
+    const continueBtn = document.createElement("button");
+    continueBtn.className = "follower-remove-btn";
+    continueBtn.textContent = "Continue";
+    continueBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      continueHeroFromSlot(summary.slot);
+    });
+    card.appendChild(continueBtn);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "follower-remove-btn";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const confirmed = window.confirm(`Delete ${summary.name}? This cannot be undone.`);
+      if (!confirmed) return;
+      clearGameStateSlot(summary.slot);
+      renderChooseHeroScreen();
+    });
+    card.appendChild(deleteBtn);
+
+    list.appendChild(card);
+  });
+
+  const startNewBtn = document.getElementById("btn-start-new-hero");
+  const atLimit = summaries.length >= MAX_SAVE_SLOTS;
+  startNewBtn.disabled = atLimit;
+  startNewBtn.style.display = atLimit ? "none" : "block";
+}
+
+function continueHeroFromSlot(slot) {
+  if (!loadGameStateFromSlot(slot)) return;
+  syncToggleIcons();
+  if (!musicEnabled) {
+    gameMusic.pause();
+  }
+  if (selectedDungeonId && currentDungeonRoomId && DUNGEON_CONTENT[selectedDungeonId]) {
+    playMusic(DUNGEONS[selectedDungeonId].musicSrc);
+    renderDungeonRoom(currentDungeonRoomId);
+  } else {
+    goToHomebaseScreen();
+  }
+}
+
+function beginNewHeroCreation() {
+  playMusic(MAIN_THEME_SRC);
+  showScreen("screen-title");
+  renderDifficultyGrid();
+}
+
+function confirmDifficultyAndStartCreation() {
+  const usedSlots = getAllSaveSummaries().map((s) => s.slot);
+  let freeSlot = null;
+  for (let slot = 1; slot <= MAX_SAVE_SLOTS; slot++) {
+    if (!usedSlots.includes(slot)) {
+      freeSlot = slot;
+      break;
+    }
+  }
+  if (freeSlot === null) return;
+
+  currentSaveSlot = freeSlot;
+  resetCreationState("player");
+  goToCreationStep(0);
+}
+
+function deleteCurrentHero() {
+  if (!currentSaveSlot) return;
+  const heroName = playerCharacter ? playerCharacter.name : "this hero";
+  const confirmed = window.confirm(`Delete ${heroName}? This cannot be undone.`);
+  if (!confirmed) return;
+
+  clearGameStateSlot(currentSaveSlot);
+  currentSaveSlot = null;
+  playerCharacter = null;
+  followers = [];
+  currentCombat = null;
+  selectedDungeonId = null;
+  currentDungeonRoomId = null;
+  selectedDifficulty = "normal";
+
+  const remaining = getAllSaveSummaries();
+  if (remaining.length > 0) {
+    goToChooseHeroScreen();
+  } else {
+    showScreen("screen-title");
+    renderDifficultyGrid();
+  }
 }
 
 function setGameViewportImage(src, altText, glow, shake, flash, roomFade) {
@@ -822,6 +976,38 @@ function renderPartyScreen() {
       saveGameState();
     });
     card.appendChild(toggleBtn);
+
+    const teachBtn = document.createElement("button");
+    teachBtn.className = "follower-remove-btn";
+    teachBtn.textContent = "Teach a Skill";
+    teachBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      goToTeachSkillScreen(index);
+    });
+    card.appendChild(teachBtn);
+
+    const teachSpellBtn = document.createElement("button");
+    teachSpellBtn.className = "follower-remove-btn";
+    teachSpellBtn.textContent = "Teach a Spell";
+    teachSpellBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      goToTeachSpellScreen(index);
+    });
+    card.appendChild(teachSpellBtn);
+
+    const hasMagicSkill = Object.keys(follower.skills).some(
+      (id) => SKILLS[id] && SKILLS[id].category === "Magic"
+    );
+    if (hasMagicSkill) {
+      const spellsBtn = document.createElement("button");
+      spellsBtn.className = "follower-remove-btn";
+      spellsBtn.textContent = "Manage Spells";
+      spellsBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        goToManageSpellsScreen(follower, true);
+      });
+      card.appendChild(spellsBtn);
+    }
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "follower-remove-btn";
@@ -1469,11 +1655,19 @@ function playRoundSequenceThenRender(entries) {
     }
 
     if (isSpellCast) {
-      if (entry.spellType === "heal") {
+      const songSfx = entry.skillId === "ancestralSiuloir" ? getSongSfxPath(entry.spellName) : null;
+      if (songSfx) {
+        playSfx(songSfx);
+      } else if (entry.spellType === "heal") {
         playSfx(HEAL_CAST_SFX);
       } else {
         playSfx(getSpellSfxPath(entry.spellName));
       }
+    }
+
+    if (entry.actor === "effect" && entry.spellName) {
+      const tickSongSfx = getSongSfxPath(entry.spellName);
+      if (tickSongSfx) playSfx(tickSongSfx);
     }
 
     if (entry.actor === "follower" && entry.action === "heal") {
@@ -2001,6 +2195,12 @@ function attemptGiveItem(followerIndex) {
   saveGameState();
 }
 
+document.getElementById("music-volume-slider").addEventListener("input", (event) => {
+  musicVolume = Number(event.target.value) / 100;
+  gameMusic.volume = musicVolume;
+  saveGameState();
+});
+
 document.getElementById("btn-toggle-music").addEventListener("click", () => {
   musicEnabled = !musicEnabled;
   if (musicEnabled) {
@@ -2021,11 +2221,7 @@ document.getElementById("btn-toggle-voice").addEventListener("click", () => {
   saveGameState();
 });
 
-document.getElementById("btn-begin").addEventListener("click", () => {
-  playMusic(MAIN_THEME_SRC);
-  resetCreationState("player");
-  goToCreationStep(0);
-});
+document.getElementById("btn-begin").addEventListener("click", confirmDifficultyAndStartCreation);
 
 document.getElementById("btn-step1-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step1");
@@ -2109,6 +2305,12 @@ document.getElementById("btn-continue-to-dungeon-select").addEventListener("clic
 document.getElementById("btn-go-to-crafting").addEventListener("click", goToCraftingScreen);
 
 document.getElementById("btn-crafting-back").addEventListener("click", goToHomebaseScreen);
+
+document.getElementById("btn-start-another-game").addEventListener("click", beginNewHeroCreation);
+
+document.getElementById("btn-delete-game").addEventListener("click", deleteCurrentHero);
+
+document.getElementById("btn-start-new-hero").addEventListener("click", beginNewHeroCreation);
 
 
 
@@ -2230,18 +2432,147 @@ function renderLearnSkillScreen() {
     container.appendChild(grid);
   });
 }
-if (loadGameState()) {
-  syncToggleIcons();
-  if (!musicEnabled) {
-    gameMusic.pause();
+let teachSkillFollowerIndex = null;
+
+function goToTeachSkillScreen(followerIndex) {
+  teachSkillFollowerIndex = followerIndex;
+  showScreen("screen-teach-skill");
+  renderTeachSkillScreen();
+}
+
+function renderTeachSkillScreen() {
+  const follower = followers[teachSkillFollowerIndex];
+  const resultEl = document.getElementById("teach-skill-result");
+  const nameEl = document.getElementById("teach-skill-name");
+  const container = document.getElementById("teach-skill-grid");
+  nameEl.textContent = follower.name;
+  container.innerHTML = "";
+  resultEl.textContent = "";
+
+  const availableSkills = Object.values(SKILLS).filter((s) => s.category !== "Magic" && !follower.skills[s.id]);
+
+  if (availableSkills.length === 0) {
+    container.innerHTML = '<div class="cc-skill-count">They already know every skill.</div>';
+    return;
   }
 
-  if (selectedDungeonId && currentDungeonRoomId && DUNGEON_CONTENT[selectedDungeonId]) {
-    playMusic(DUNGEONS[selectedDungeonId].musicSrc);
-    renderDungeonRoom(currentDungeonRoomId);
-  } else {
-    goToHomebaseScreen();
+  SKILL_CATEGORY_ORDER.forEach((categoryName) => {
+    if (categoryName === "Magic") return;
+    const skillsInCategory = availableSkills.filter((s) => s.category === categoryName);
+    if (skillsInCategory.length === 0) return;
+
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = categoryName;
+    container.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+
+    skillsInCategory.forEach((skill) => {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      card.innerHTML = `
+        <div class="cc-card-name">${skill.name}</div>
+        <div class="cc-card-desc">${skill.description}</div>
+      `;
+      card.addEventListener("click", () => {
+        learnNewSkill(follower, skill.id);
+        resultEl.textContent = `${follower.name} has learned ${skill.name}.`;
+        renderTeachSkillScreen();
+        saveGameState();
+      });
+      grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
+  });
+}
+
+let teachSpellFollowerIndex = null;
+
+function goToTeachSpellScreen(followerIndex) {
+  teachSpellFollowerIndex = followerIndex;
+  showScreen("screen-teach-spell");
+  renderTeachSpellScreen();
+}
+
+function renderTeachSpellScreen() {
+  const follower = followers[teachSpellFollowerIndex];
+  const nameEl = document.getElementById("teach-spell-name");
+  const resultEl = document.getElementById("teach-spell-result");
+  const container = document.getElementById("teach-spell-grid");
+  nameEl.textContent = follower.name;
+  container.innerHTML = "";
+  resultEl.textContent = "";
+
+  Object.values(CULTURES).forEach((culture) => {
+    culture.magicSkillIds.forEach((skillId) => {
+      const skill = SKILLS[skillId];
+      const allSpells = SPELLS[skillId] || [];
+      const knownIds = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+      const unknownSpells = allSpells.filter((s) => !knownIds.includes(s.id));
+      if (!skill || unknownSpells.length === 0) return;
+
+      const subHeading = document.createElement("div");
+      subHeading.className = "cc-culture-subheading";
+      subHeading.style.setProperty("--card-accent", culture.accentColor);
+      subHeading.innerHTML = `<span>${skill.name}</span>`;
+      container.appendChild(subHeading);
+
+      const grid = document.createElement("div");
+      grid.className = "cc-grid";
+
+      unknownSpells.forEach((spell) => {
+        const card = document.createElement("div");
+        card.className = "cc-card";
+        card.style.setProperty("--card-accent", culture.accentColor);
+        card.innerHTML = `
+          <div class="cc-card-name">${spell.name}</div>
+          <div class="cc-card-desc">${spell.description}</div>
+        `;
+        card.addEventListener("click", () => {
+          if (!follower.skills[skillId]) {
+            follower.skills[skillId] = { timesUsed: 0 };
+          }
+          if (!follower.knownSpells) follower.knownSpells = {};
+          if (!follower.knownSpells[skillId]) follower.knownSpells[skillId] = [];
+          follower.knownSpells[skillId].push(spell.id);
+
+          if ((follower.activeSpellIds || []).length < 4) {
+            toggleActiveSpell(follower, spell.id);
+          }
+
+          resultEl.textContent = `${follower.name} has learned ${spell.name}.`;
+          renderTeachSpellScreen();
+          saveGameState();
+        });
+        grid.appendChild(card);
+      });
+
+      container.appendChild(grid);
+    });
+  });
+
+  if (container.innerHTML === "") {
+    container.innerHTML = '<div class="cc-skill-count">They already know every spell.</div>';
   }
+}
+
+document.getElementById("btn-teach-skill-back").addEventListener("click", goToPartyScreen);
+document.getElementById("btn-teach-spell-back").addEventListener("click", goToPartyScreen);
+
+try {
+  const oldSave = localStorage.getItem("burrowsOfCairntirSave");
+  if (oldSave && !localStorage.getItem(getSaveKey(1))) {
+    localStorage.setItem(getSaveKey(1), oldSave);
+    localStorage.removeItem("burrowsOfCairntirSave");
+  }
+} catch (e) {}
+
+const existingSaveSummaries = getAllSaveSummaries();
+if (existingSaveSummaries.length > 0) {
+  goToChooseHeroScreen();
 } else {
   renderRaceGrid();
   renderPortraitGrid();

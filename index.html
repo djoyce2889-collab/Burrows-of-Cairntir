@@ -20,6 +20,7 @@
     <div id="cabinet-title">BURROWS OF CAIRNTÍR</div>
     <button id="btn-toggle-voice" class="voice-toggle">🗣</button>
     <button id="btn-toggle-music" class="music-toggle">🔊</button>
+    <input type="range" id="music-volume-slider" class="music-volume-slider" min="0" max="100" value="40" />
 
     <section id="screen-title" class="screen active">
       <div id="viewport">
@@ -35,6 +36,19 @@
         </div>
         <div id="choices">
           <button class="choice-button" id="btn-begin">Begin your legend</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-choose-hero" class="screen">
+      <div id="viewport">
+        <img src="assets/images/choose-hero.png" alt="A dim stone hall lined with pillars, three empty plinths waiting to be claimed." />
+      </div>
+      <div id="panel">
+        <span class="cc-label">Choose Your Hero</span>
+        <div id="choose-hero-list" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-start-new-hero">Start a New Hero</button>
         </div>
       </div>
     </section>
@@ -70,7 +84,7 @@
       <div id="panel">
         <span class="cc-label">Step 2 of 6 &mdash; Starting Spells</span>
         <div id="story-text">
-          Every spell you pick here grows faster for you, and strengthens your resistance to magical harm — no matter which people's magic it comes from. Mix and match freely.
+          Choose freely from all three peoples' magic — Deveran, Drakvarr, and Gaeldrim alike. Whichever cultures you draw spells from, those skills will grow faster for you and strengthen your resistance to magical harm.
         </div>
         <div id="cc-spell-count" class="cc-skill-count"></div>
         <div id="cc-spell-grid"></div>
@@ -159,6 +173,8 @@
           <button class="choice-button" id="btn-go-to-give-items">Give Items to a Follower</button>
           <button class="choice-button" id="btn-your-spells">Your Spells</button>
           <button class="choice-button" id="btn-continue-to-dungeon-select">Set Out to a Dungeon</button>
+          <button class="choice-button" id="btn-start-another-game">Start Another Game</button>
+          <button class="choice-button" id="btn-delete-game">Delete Game</button>
         </div>
       </div>
     </section>
@@ -225,6 +241,18 @@
         <div id="manage-spells-grid" class="cc-grid"></div>
         <div id="choices">
           <button class="choice-button" id="btn-manage-spells-back">Back</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-teach-spell" class="screen">
+      <div id="panel">
+        <span class="cc-label">Teach a Spell</span>
+        <div id="teach-spell-name" class="cc-skill-count"></div>
+        <div id="teach-spell-result" class="cc-skill-count"></div>
+        <div id="teach-spell-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-teach-spell-back">Back</button>
         </div>
       </div>
     </section>
