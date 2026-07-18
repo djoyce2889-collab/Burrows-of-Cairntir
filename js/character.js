@@ -124,8 +124,7 @@ function discoverSpell(character, skillId, spellId) {
  * normal +1 rate.
  */
 function getSkillUseGain(character, skillId) {
-  const culture = CULTURES[character.cultureId];
-  if (culture && culture.magicSkillIds && culture.magicSkillIds.includes(skillId)) {
+  if (SKILLS[skillId] && SKILLS[skillId].category === "Magic") {
     return 2;
   }
   return 1;
@@ -177,8 +176,10 @@ function getAdvantageTier(character, advantageId) {
   let drivingSkillIds = advantage.drivenBy.slice();
 
   if (advantageId === "magicResistance") {
-    const culture = CULTURES[character.cultureId];
-    drivingSkillIds = drivingSkillIds.concat(culture.magicSkillIds);
+    const allMagicSkillIds = Object.keys(character.skills).filter(
+      (id) => SKILLS[id] && SKILLS[id].category === "Magic"
+    );
+    drivingSkillIds = drivingSkillIds.concat(allMagicSkillIds);
   }
 
   let tier;

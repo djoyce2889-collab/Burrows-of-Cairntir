@@ -18,13 +18,19 @@ const creationState = {
 
 const CREATION_STEP_SCREENS = [
   "screen-creation-step1",
-  "screen-creation-step2",
   "screen-creation-step3b",
   "screen-creation-step3",
   "screen-creation-step4",
   "screen-creation-step5",
   "screen-creation-review"
 ];
+
+const RACE_TO_CULTURE = {
+  alfar: "drakvarr",
+  dwarf: "drakvarr",
+  wulver: "deveran",
+  sidhe: "gaeldrim"
+};
 
 let selectedDungeonId = null;
 let currentDungeonRoomId = null;
@@ -405,13 +411,11 @@ function resetCreationState(mode) {
   creationState.startingSpellIds = [];
   document.getElementById("cc-name").value = "";
   document.getElementById("cc-error-step1").textContent = "";
-  document.getElementById("cc-error-step2").textContent = "";
   document.getElementById("cc-error-step3").textContent = "";
   document.getElementById("cc-error-step4").textContent = "";
 
   renderRaceGrid();
   renderPortraitGrid();
-  renderCultureGrid();
   renderSkillGrid();
   renderStartingSpellsGrid();
   renderTraitGrid();
@@ -433,6 +437,7 @@ function renderRaceGrid() {
     `;
     card.addEventListener("click", () => {
       creationState.race = race.id;
+      creationState.culture = RACE_TO_CULTURE[race.id] || null;
       creationState.portraitImage = null;
       renderRaceGrid();
       renderPortraitGrid();
@@ -550,28 +555,6 @@ function selectPortrait(path) {
   creationState.portraitImage = path;
   document.querySelectorAll("#cc-portrait-grid .cc-portrait-card").forEach((card) => {
     card.classList.toggle("selected", card.dataset.portraitPath === path);
-  });
-}
-
-function renderCultureGrid() {
-  const grid = document.getElementById("cc-culture-grid");
-  grid.innerHTML = "";
-
-  Object.values(CULTURES).forEach((culture) => {
-    const card = document.createElement("div");
-    card.className = "cc-card";
-    card.style.setProperty("--card-accent", culture.accentColor);
-    if (creationState.culture === culture.id) card.classList.add("selected");
-    card.innerHTML = `
-      <div class="cc-card-name">${culture.name}</div>
-      <div class="cc-card-desc">${culture.tagline}</div>
-      <div class="cc-card-desc">${culture.magicName} &middot; ${culture.socialStructure}</div>
-    `;
-    card.addEventListener("click", () => {
-      creationState.culture = culture.id;
-      renderCultureGrid();
-    });
-    grid.appendChild(card);
   });
 }
 
@@ -769,7 +752,7 @@ function renderReviewScreen() {
   card.innerHTML = `
     ${creationState.portraitImage ? `<img src="${creationState.portraitImage}" class="cc-portrait-thumb" alt="Portrait" />` : ""}
     <div class="cc-card-name">${creationState.name}</div>
-    <div class="cc-card-desc">${race ? race.name : ""} of the ${culture ? culture.name : ""}</div>
+    <div class="cc-card-desc">${race ? race.name : ""}${culture ? ` of the ${culture.name}` : ""}</div>
     <div class="cc-card-desc">Skills: ${skillNames}</div>
     <div class="cc-card-desc">Traits: ${traitNames}</div>
     <div class="cc-card-desc">Combat Style: ${style ? style.name : ""}</div>
@@ -820,10 +803,10 @@ function renderPartyScreen() {
 
     const card = document.createElement("div");
     card.className = "cc-card";
-    card.style.setProperty("--card-accent", culture.accentColor);
+    if (culture) card.style.setProperty("--card-accent", culture.accentColor);
     card.innerHTML = `
       <div class="cc-card-name">${follower.name}</div>
-      <div class="cc-card-desc">${race.name} of the ${culture.name}</div>
+      <div class="cc-card-desc">${race.name}${culture ? ` of the ${culture.name}` : ""}</div>
       <div class="cc-card-desc">Skills: ${skillNames}</div>
       <div class="cc-card-desc">Traits: ${traitNames}</div>
       <div class="cc-card-desc"><em>${isActive ? "Traveling with you" : "Left at Homebase"}</em></div>
@@ -2060,23 +2043,12 @@ document.getElementById("btn-step1-next").addEventListener("click", () => {
   goToCreationStep(1);
 });
 
-document.getElementById("btn-step2-back").addEventListener("click", () => goToCreationStep(0));
-document.getElementById("btn-step2-next").addEventListener("click", () => {
-  const errorEl = document.getElementById("cc-error-step2");
-  if (!creationState.culture) {
-    errorEl.textContent = "Choose a culture.";
-    return;
-  }
-  errorEl.textContent = "";
+document.getElementById("btn-step3b-back").addEventListener("click", () => goToCreationStep(0));
+document.getElementById("btn-step3b-next").addEventListener("click", () => {
   goToCreationStep(2);
 });
 
-document.getElementById("btn-step3b-back").addEventListener("click", () => goToCreationStep(1));
-document.getElementById("btn-step3b-next").addEventListener("click", () => {
-  goToCreationStep(3);
-});
-
-document.getElementById("btn-step3-back").addEventListener("click", () => goToCreationStep(2));
+document.getElementById("btn-step3-back").addEventListener("click", () => goToCreationStep(1));
 document.getElementById("btn-step3-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step3");
   if (creationState.skills.length === 0) {
@@ -2084,10 +2056,10 @@ document.getElementById("btn-step3-next").addEventListener("click", () => {
     return;
   }
   errorEl.textContent = "";
-  goToCreationStep(4);
+  goToCreationStep(3);
 });
 
-document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(3));
+document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(2));
 document.getElementById("btn-step4-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step4");
   if (creationState.traits.length < TRAIT_SELECTION_MIN) {
@@ -2095,15 +2067,15 @@ document.getElementById("btn-step4-next").addEventListener("click", () => {
     return;
   }
   errorEl.textContent = "";
+  goToCreationStep(4);
+});
+
+document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(3));
+document.getElementById("btn-step5-next").addEventListener("click", () => {
   goToCreationStep(5);
 });
 
-document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(4));
-document.getElementById("btn-step5-next").addEventListener("click", () => {
-  goToCreationStep(6);
-});
-
-document.getElementById("btn-review-back").addEventListener("click", () => goToCreationStep(5));
+document.getElementById("btn-review-back").addEventListener("click", () => goToCreationStep(4));
 document.getElementById("btn-confirm-character").addEventListener("click", attemptConfirmCharacter);
 
 document.getElementById("btn-add-follower").addEventListener("click", () => {
@@ -2273,7 +2245,6 @@ if (loadGameState()) {
 } else {
   renderRaceGrid();
   renderPortraitGrid();
-  renderCultureGrid();
   renderSkillGrid();
   renderStartingSpellsGrid();
   renderTraitGrid();
