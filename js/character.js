@@ -5,19 +5,25 @@
 let playerCharacter = null;
 let followers = [];
 
-function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, combatStyle, portraitImage) {
+function getSkillIdForSpellId(spellId) {
+  for (const skillId of Object.keys(SPELLS)) {
+    if (SPELLS[skillId].some((s) => s.id === spellId)) return skillId;
+  }
+  return null;
+}
+
+function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, combatStyle, portraitImage, startingSpellIds) {
   const skills = {};
   startingSkillIds.forEach((skillId) => {
     skills[skillId] = { timesUsed: 0 };
   });
 
   const knownSpells = {};
-  startingSkillIds.forEach((skillId) => {
-    if (SKILLS[skillId] && SKILLS[skillId].category === "Magic" && SPELLS[skillId]) {
-      const allSpells = SPELLS[skillId];
-      const starter = allSpells[Math.floor(Math.random() * allSpells.length)];
-      knownSpells[skillId] = [starter.id];
-    }
+  (startingSpellIds || []).forEach((spellId) => {
+    const skillId = getSkillIdForSpellId(spellId);
+    if (!skillId || !startingSkillIds.includes(skillId)) return;
+    if (!knownSpells[skillId]) knownSpells[skillId] = [];
+    knownSpells[skillId].push(spellId);
   });
 
   const inventory = [];
@@ -40,12 +46,14 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     cultureId: cultureId,
     skills: skills,
     knownSpells: knownSpells,
+    activeSpellIds: (startingSpellIds || []).slice(0, 4),
     traits: traitIds.slice(),
     combatStyle: combatStyle || "single",
     portraitImage: portraitImage || null,
     equippedWeaponSkill: startingWeaponId,
     equippedArmorSkill: startingArmorId,
     inventory: inventory,
+    active: true,
     flags: {}
   };
 
@@ -234,4 +242,73 @@ function getManaPoolMax(character) {
 
 function refillMana(character) {
   character.currentMana = getManaPoolMax(character);
+}
+
+function getAllKnownSpells(character) {
+  const result = [];
+  Object.keys(character.knownSpells || {}).forEach((skillId) => {
+    const ids = character.knownSpells[skillId] || [];
+    const allForSkill = SPELLS[skillId] || [];
+    ids.forEach((spellId) => {
+      const spell = allForSkill.find((s) => s.id === spellId);
+      if (spell) result.push({ skillId: skillId, spell: spell });
+    });
+  });
+  return result;
+}
+
+function isSpellActive(character, spellId) {
+  return !!(character.activeSpellIds && character.activeSpellIds.includes(spellId));
+}
+
+function toggleActiveSpell(character, spellId) {
+  if (!character.activeSpellIds) character.activeSpellIds = [];
+  const idx = character.activeSpellIds.indexOf(spellId);
+  if (idx !== -1) {
+    character.activeSpellIds.splice(idx, 1);
+    return true;
+  }
+  if (character.activeSpellIds.length >= 4) return false;
+  character.activeSpellIds.push(spellId);
+  return true;
+}
+
+/**
+ * Flattens a character's knownSpells object into a simple list
+ * of { skillId, spell } pairs, for easy display on a spell
+ * management screen.
+ */
+function getAllKnownSpells(character) {
+  const result = [];
+  Object.keys(character.knownSpells || {}).forEach((skillId) => {
+    const ids = character.knownSpells[skillId] || [];
+    const allForSkill = SPELLS[skillId] || [];
+    ids.forEach((spellId) => {
+      const spell = allForSkill.find((s) => s.id === spellId);
+      if (spell) result.push({ skillId: skillId, spell: spell });
+    });
+  });
+  return result;
+}
+
+function isSpellActive(character, spellId) {
+  return !!(character.activeSpellIds && character.activeSpellIds.includes(spellId));
+}
+
+/**
+ * Toggles a spell in/out of a character's active loadout.
+ * Returns false (and leaves state unchanged) if trying to
+ * activate a 5th spell past the cap of 4 — the caller can use
+ * that to show a "loadout full" message.
+ */
+function toggleActiveSpell(character, spellId) {
+  if (!character.activeSpellIds) character.activeSpellIds = [];
+  const idx = character.activeSpellIds.indexOf(spellId);
+  if (idx !== -1) {
+    character.activeSpellIds.splice(idx, 1);
+    return true;
+  }
+  if (character.activeSpellIds.length >= 4) return false;
+  character.activeSpellIds.push(spellId);
+  return true;
 }

@@ -645,7 +645,7 @@ const DUNGEON_CONTENT = {
       sidePassageStudy: {
         text: "The side passage ends in a small shrine, one rune-tablet still legible beneath the frost.",
         choices: [
-          { label: "Study the tablet (Runes of the Shield)", type: "discover", skillId: "runeShield", spellId: "stonewallRune", target: "forgeHall" },
+          { label: "Study the tablet (Runes of the Blade)", type: "discover", skillId: "runeBlade", spellId: "stonewallRune", target: "forgeHall" },
           { label: "Leave it and enter the forge hall", type: "goto", target: "forgeHall" }
         ]
       },

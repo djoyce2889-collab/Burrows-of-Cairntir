@@ -12,7 +12,7 @@ const ENEMIES = {
     hitPoints: 22,
     attackType: "physical",
     threatTier: "Novice",
-    soundCategory: "zombie",
+    soundCategory: "wolf",
     lootTable: ["Old Ore", "Grave Essence"]
   },
   wailingWraith: {

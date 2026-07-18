@@ -35,11 +35,11 @@ const CULTURES = {
     magicName: "Rune Magic",
     magicDescription:
       "Power drawn from carved and spoken runes. The Blade fuels a " +
-      "warrior's own fury, the Shield hardens their stance, the " +
+      "warrior's own fury and hardens their stance alike, the " +
       "Vision unbalances a foe, and the Curse is spoken of more " +
       "quietly — a hex that lingers and festers.",
     socialStructure: "Warrior-Caste Shamanic Society",
-    magicSkillIds: ["runeBlade", "runeShield", "runeVision", "runeCurse"],
+    magicSkillIds: ["runeBlade", "runeVision", "runeCurse"],
     accentColor: "#4f7ca6"
   },
   gaeldrim: {
@@ -160,7 +160,6 @@ const SKILLS = {
   ancestralEmyrs: { id: "ancestralEmyrs", name: "Line of Emyrs", category: "Magic", cultureLocked: "deveran", description: "The wizard line — rare and volatile, commanding fire, water, earth, and air directly." },
 
   runeBlade: { id: "runeBlade", name: "Runes of the Blade", category: "Magic", cultureLocked: "drakvarr", description: "Battle-runes that fuel your own strength and fury for a time." },
-  runeShield: { id: "runeShield", name: "Runes of the Shield", category: "Magic", cultureLocked: "drakvarr", description: "Ward-runes that harden your stance against harm for a time." },
   runeVision: { id: "runeVision", name: "Runes of the Vision", category: "Magic", cultureLocked: "drakvarr", description: "Seer-runes that unbalance and weaken a foe for a time." },
   runeCurse: { id: "runeCurse", name: "Runes of the Curse", category: "Magic", cultureLocked: "drakvarr", description: "Hex-runes that fester and linger, doing harm over time." },
 
@@ -227,7 +226,7 @@ const ADVANTAGES = {
     description: "How much harm you can take before you're out of the fight.",
     drivenBy: ["survival"],
     displayAsNumber: true,
-    base: 50,
+    base: 60,
     tierBonus: { Untrained: 0, Novice: 10, Adept: 20, Expert: 35, Master: 55 }
   }
 };
@@ -249,7 +248,7 @@ const TRAIT_MANA_BONUS = {
 };
 
 const MANA_CONFIG = {
-  base: 60,
+  base: 70,
   tierBonus: { Untrained: 0, Novice: 10, Adept: 20, Expert: 35, Master: 50 },
   costPerCast: 10
 };

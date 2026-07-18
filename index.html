@@ -41,7 +41,7 @@
 
     <section id="screen-creation-step1" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 1 of 6 &mdash; Name, Race &amp; Portrait</span>
+        <span class="cc-label">Step 1 of 7 &mdash; Name, Race &amp; Portrait</span>
 
         <div class="cc-section">
           <label class="cc-label" for="cc-name">Name</label>
@@ -68,7 +68,7 @@
 
     <section id="screen-creation-step2" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 2 of 6 &mdash; Culture</span>
+        <span class="cc-label">Step 2 of 7 &mdash; Culture</span>
         <div id="cc-culture-grid" class="cc-grid"></div>
         <div id="cc-error-step2"></div>
         <div id="choices">
@@ -80,7 +80,7 @@
 
     <section id="screen-creation-step3" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 3 of 6 &mdash; Starting Skills</span>
+        <span class="cc-label">Step 4 of 7 &mdash; Starting Skills</span>
         <div id="cc-skill-count" class="cc-skill-count">Choose up to 6</div>
         <div id="cc-skill-grid"></div>
         <div id="cc-error-step3"></div>
@@ -91,9 +91,22 @@
       </div>
     </section>
 
+    <section id="screen-creation-step3b" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 4 of 7 &mdash; Starting Spells</span>
+        <div id="cc-spell-count" class="cc-skill-count"></div>
+        <div id="cc-spell-grid"></div>
+        <div id="cc-error-step3b"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-step3b-back">Back</button>
+          <button class="choice-button" id="btn-step3b-next">Next</button>
+        </div>
+      </div>
+    </section>
+
     <section id="screen-creation-step4" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 4 of 6 &mdash; Traits</span>
+        <span class="cc-label">Step 5 of 7 &mdash; Traits</span>
         <div id="cc-trait-count" class="cc-skill-count">Choose 2-3</div>
         <div id="cc-trait-grid" class="cc-grid"></div>
         <div id="cc-error-step4"></div>
@@ -106,7 +119,7 @@
 
     <section id="screen-creation-step5" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 5 of 6 &mdash; Combat Style</span>
+        <span class="cc-label">Step 6 of 7 &mdash; Combat Style</span>
         <div id="cc-combatstyle-grid" class="cc-grid"></div>
         <div id="choices">
           <button class="choice-button" id="btn-step5-back">Back</button>
@@ -117,7 +130,7 @@
 
     <section id="screen-creation-review" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 6 of 6 &mdash; Review</span>
+        <span class="cc-label">Step 7 of 7 &mdash; Review</span>
         <div id="review-summary" class="cc-grid"></div>
         <div id="cc-error"></div>
         <div id="choices">
@@ -150,6 +163,10 @@
           <button class="choice-button" id="btn-go-to-crafting">Forge &amp; Craft</button>
           <button class="choice-button" id="btn-go-to-skills">Your Skills</button>
           <button class="choice-button" id="btn-go-to-inventory">Your Inventory</button>
+          <button class="choice-button" id="btn-recruit-homebase">Recruit a Follower</button>
+          <button class="choice-button" id="btn-manage-party">Manage Your Party</button>
+          <button class="choice-button" id="btn-go-to-give-items">Give Items to a Follower</button>
+          <button class="choice-button" id="btn-your-spells">Your Spells</button>
           <button class="choice-button" id="btn-continue-to-dungeon-select">Set Out to a Dungeon</button>
         </div>
       </div>
@@ -184,6 +201,75 @@
 
         <div id="choices">
           <button class="choice-button" id="btn-inventory-back">Return to Homebase</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-give-items" class="screen">
+      <div id="panel">
+        <span class="cc-label">Give Items to a Follower</span>
+        <div id="give-items-result" class="cc-skill-count"></div>
+
+        <div class="cc-section">
+          <span class="cc-label">Your Weapons &amp; Armor</span>
+          <div id="give-items-inventory-grid" class="cc-grid"></div>
+        </div>
+
+        <div class="cc-section">
+          <span class="cc-label">Give To</span>
+          <div id="give-items-follower-grid" class="cc-grid"></div>
+        </div>
+
+        <div id="choices">
+          <button class="choice-button" id="btn-give-items-back">Return to Homebase</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-manage-spells" class="screen">
+      <div id="panel">
+        <span class="cc-label">Manage Spells</span>
+        <div id="manage-spells-name" class="cc-skill-count"></div>
+        <div id="manage-spells-count" class="cc-skill-count"></div>
+        <div id="manage-spells-grid" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-manage-spells-back">Back</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-teach-skill" class="screen">
+      <div id="panel">
+        <span class="cc-label">Teach a Skill</span>
+        <div id="teach-skill-name" class="cc-skill-count"></div>
+        <div id="teach-skill-result" class="cc-skill-count"></div>
+        <div id="teach-skill-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-teach-skill-back">Back</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-manage-spells" class="screen">
+      <div id="panel">
+        <span class="cc-label">Manage Spells</span>
+        <div id="manage-spells-name" class="cc-skill-count"></div>
+        <div id="manage-spells-count" class="cc-skill-count"></div>
+        <div id="manage-spells-grid" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-manage-spells-back">Back</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-teach-skill" class="screen">
+      <div id="panel">
+        <span class="cc-label">Teach a Skill</span>
+        <div id="teach-skill-name" class="cc-skill-count"></div>
+        <div id="teach-skill-result" class="cc-skill-count"></div>
+        <div id="teach-skill-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-teach-skill-back">Back</button>
         </div>
       </div>
     </section>

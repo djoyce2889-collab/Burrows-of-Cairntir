@@ -2,6 +2,8 @@
    MAIN.JS
    ============================================================ */
 
+const SAVE_KEY = "burrowsOfCairntirSave";
+
 const creationState = {
   mode: "player",
   name: "",
@@ -10,12 +12,14 @@ const creationState = {
   skills: [],
   traits: [],
   combatStyle: "single",
-  portraitImage: null
+  portraitImage: null,
+  startingSpellIds: []
 };
 
 const CREATION_STEP_SCREENS = [
   "screen-creation-step1",
   "screen-creation-step2",
+  "screen-creation-step3b",
   "screen-creation-step3",
   "screen-creation-step4",
   "screen-creation-step5",
@@ -28,7 +32,9 @@ let combatReturnRoomId = null;
 let selectedDifficulty = "normal";
 let craftingCategory = "weapon";
 let craftingEnchantSlotPending = null;
+let selectedGiveItemName = null;
 let voiceEnabled = true;
+let musicEnabled = true;
 let cachedVoice = null;
 
 const SPECTRAL_COMPANION_IMAGE = "assets/images/effects/spectral-companion.png";
@@ -41,7 +47,7 @@ gameMusic.loop = true;
 gameMusic.volume = 0.4;
 
 function playMusic(src) {
-  if (!src) return;
+  if (!src || !musicEnabled) return;
   try {
     if (gameMusic.getAttribute("src") !== src) {
       gameMusic.src = src;
@@ -201,6 +207,69 @@ function playRoomNarration(dungeonId, roomId, fallbackText) {
   });
 }
 
+/**
+ * ------------------------------------------------------------
+ * SAVE / LOAD SYSTEM
+ * Persists to localStorage so beta testers keep their progress
+ * across visits, without needing any backend. Saves everything
+ * needed to resume: player character, followers, inventory,
+ * settings, and (when outside combat) the exact room they're
+ * in. Deliberately does NOT persist mid-combat state (spell
+ * effects, round log, etc.) — restoring a live fight safely is
+ * too risky, so if someone leaves mid-battle, on return they
+ * resume at the room that led into that fight instead, with
+ * everything else fully intact.
+ * ------------------------------------------------------------
+ */
+function saveGameState() {
+  if (!playerCharacter) return;
+  try {
+    const saveData = {
+      playerCharacter: playerCharacter,
+      followers: followers,
+      selectedDifficulty: selectedDifficulty,
+      selectedDungeonId: currentCombat ? null : selectedDungeonId,
+      currentDungeonRoomId: currentCombat ? null : currentDungeonRoomId,
+      voiceEnabled: voiceEnabled,
+      musicEnabled: musicEnabled
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+  } catch (e) {}
+}
+
+function loadGameState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+
+    const saveData = JSON.parse(raw);
+    if (!saveData || !saveData.playerCharacter) return false;
+
+    playerCharacter = saveData.playerCharacter;
+    followers = saveData.followers || [];
+    selectedDifficulty = saveData.selectedDifficulty || "normal";
+    selectedDungeonId = saveData.selectedDungeonId || null;
+    currentDungeonRoomId = saveData.currentDungeonRoomId || null;
+    voiceEnabled = saveData.voiceEnabled !== undefined ? saveData.voiceEnabled : true;
+    musicEnabled = saveData.musicEnabled !== undefined ? saveData.musicEnabled : true;
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function clearGameState() {
+  try {
+    localStorage.removeItem(SAVE_KEY);
+  } catch (e) {}
+}
+
+function syncToggleIcons() {
+  document.getElementById("btn-toggle-voice").textContent = voiceEnabled ? "\uD83D\uDDE3" : "\uD83D\uDEAB";
+  document.getElementById("btn-toggle-music").textContent = musicEnabled ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+}
+
 function setGameViewportImage(src, altText, glow, shake, flash, roomFade) {
   const img = document.getElementById("game-viewport-img");
   const placeholder = document.getElementById("game-viewport-placeholder");
@@ -238,31 +307,26 @@ function setGameViewportImage(src, altText, glow, shake, flash, roomFade) {
   img.classList.remove("defeat-fade");
 }
 
-function applyVictoryPulse() {
+function applyAmbientGlows(isEnemyPortrait) {
   const img = document.getElementById("game-viewport-img");
-  img.classList.remove("companion-glow", "hit-shake", "spell-flash", "defeat-fade");
-  img.classList.add("victory-pulse");
+  img.classList.remove(
+    "enchant-glow-flame", "enchant-glow-frost", "enchant-glow-storm",
+    "enchant-glow-ward", "enchant-glow-curse", "enchant-glow-vision",
+    "spectral-glow", "averick-glow"
+  );
+
+  if (isEnemyPortrait) {
+    const spectralClass = getEnemyAmbientGlowClass();
+    if (spectralClass) img.classList.add(spectralClass);
+  } else {
+    const enchantClass = getEnchantGlowClass();
+    if (enchantClass) img.classList.add(enchantClass);
+
+    const averickClass = getAverickGlowClass();
+    if (averickClass) img.classList.add(averickClass);
+  }
 }
 
-function applyDefeatFade() {
-  const img = document.getElementById("game-viewport-img");
-  img.classList.remove("companion-glow", "hit-shake", "spell-flash", "victory-pulse");
-  void img.offsetWidth;
-  img.classList.add("defeat-fade");
-}
-
-/**
- * Now always scrolls back to the very top of the page whenever
- * the active screen changes. This is the real fix for the
- * mobile "jump" bug: without it, if the player had scrolled
- * down on a tall screen (like Traits) and then moved to a much
- * shorter screen (like Combat Style), their leftover scroll
- * position no longer fit the new, shorter page — forcing the
- * browser to snap the viewport back to fit, which is what
- * showed up as a visible jump/scroll on real mobile hardware.
- * Resetting scroll proactively means that mismatch never has a
- * chance to occur in the first place.
- */
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach((el) => {
     el.classList.remove("active");
@@ -297,6 +361,7 @@ function renderDifficultyGrid() {
     card.addEventListener("click", () => {
       selectedDifficulty = diff.id;
       renderDifficultyGrid();
+      saveGameState();
     });
     grid.appendChild(card);
   });
@@ -337,6 +402,7 @@ function resetCreationState(mode) {
   creationState.traits = [];
   creationState.combatStyle = "single";
   creationState.portraitImage = null;
+  creationState.startingSpellIds = [];
   document.getElementById("cc-name").value = "";
   document.getElementById("cc-error-step1").textContent = "";
   document.getElementById("cc-error-step2").textContent = "";
@@ -347,6 +413,7 @@ function resetCreationState(mode) {
   renderPortraitGrid();
   renderCultureGrid();
   renderSkillGrid();
+  renderStartingSpellsGrid();
   renderTraitGrid();
   renderCombatStyleGrid();
 }
@@ -499,7 +566,6 @@ function renderCultureGrid() {
       <div class="cc-card-name">${culture.name}</div>
       <div class="cc-card-desc">${culture.tagline}</div>
       <div class="cc-card-desc">${culture.magicName} &middot; ${culture.socialStructure}</div>
-      <div class="cc-card-desc"><em>Skills tied to the ${culture.magicName} come more naturally to you — gaining progress faster with every use, and strengthening your resistance to magical harm.</em></div>
     `;
     card.addEventListener("click", () => {
       creationState.culture = culture.id;
@@ -514,13 +580,34 @@ function renderSkillGrid() {
   const countLabel = document.getElementById("cc-skill-count");
   container.innerHTML = "";
 
-  const availableSkills = Object.values(SKILLS);
+  const availableSkills = Object.values(SKILLS).filter((s) => s.category !== "Magic");
 
   const atLimit = creationState.skills.length >= MAX_STARTING_SKILLS;
   countLabel.textContent = `Chosen ${creationState.skills.length} / ${MAX_STARTING_SKILLS}`;
   countLabel.classList.toggle("limit-reached", atLimit);
 
+  function buildSkillCard(skill) {
+    const card = document.createElement("div");
+    const isSelected = creationState.skills.includes(skill.id);
+    card.className = "cc-card";
+    if (isSelected) card.classList.add("selected");
+    card.innerHTML = `
+      <div class="cc-card-name">${skill.name}</div>
+      <div class="cc-card-desc">${skill.description}</div>
+    `;
+    card.addEventListener("click", () => {
+      if (isSelected) {
+        creationState.skills = creationState.skills.filter((id) => id !== skill.id);
+      } else if (!atLimit) {
+        creationState.skills.push(skill.id);
+      }
+      renderSkillGrid();
+    });
+    return card;
+  }
+
   SKILL_CATEGORY_ORDER.forEach((categoryName) => {
+    if (categoryName === "Magic") return;
     const skillsInCategory = availableSkills.filter((s) => s.category === categoryName);
     if (skillsInCategory.length === 0) return;
 
@@ -531,40 +618,107 @@ function renderSkillGrid() {
 
     const grid = document.createElement("div");
     grid.className = "cc-grid";
-
     skillsInCategory.forEach((skill) => {
-      const card = document.createElement("div");
-      const isSelected = creationState.skills.includes(skill.id);
-      card.className = "cc-card";
-      if (isSelected) card.classList.add("selected");
+      grid.appendChild(buildSkillCard(skill));
+    });
+    container.appendChild(grid);
+  });
+}
 
-      let cultureLabel = "";
-      if (skill.category === "Magic") {
-        const owningCulture = Object.values(CULTURES).find((c) => c.magicSkillIds.includes(skill.id));
-        if (owningCulture) {
-          cultureLabel = `<div class="cc-card-desc"><em>Associated with the ${owningCulture.name}</em></div>`;
-        }
-      }
+/**
+ * Adds or removes derived magic skill IDs on creationState.skills
+ * to match whatever magic lines are currently represented among
+ * the chosen starting spells — magic skills are never picked
+ * directly anymore, only implied by which spells you've chosen.
+ * Non-magic skills already chosen are left untouched.
+ */
+function syncDerivedMagicSkills() {
+  const impliedSkillIds = new Set();
+  creationState.startingSpellIds.forEach((spellId) => {
+    const skillId = getSkillIdForSpellId(spellId);
+    if (skillId) impliedSkillIds.add(skillId);
+  });
 
-      card.innerHTML = `
-        <div class="cc-card-name">${skill.name}</div>
-        <div class="cc-card-desc">${skill.description}</div>
-        ${cultureLabel}
-      `;
+  creationState.skills = creationState.skills.filter((id) => {
+    const isMagic = SKILLS[id] && SKILLS[id].category === "Magic";
+    return !isMagic || impliedSkillIds.has(id);
+  });
 
-      card.addEventListener("click", () => {
-        if (isSelected) {
-          creationState.skills = creationState.skills.filter((id) => id !== skill.id);
-        } else if (!atLimit) {
-          creationState.skills.push(skill.id);
-        }
-        renderSkillGrid();
+  impliedSkillIds.forEach((id) => {
+    if (!creationState.skills.includes(id)) {
+      creationState.skills.push(id);
+    }
+  });
+}
+
+/**
+ * Shows every spell across all three cultures' magic lines,
+ * with a short description of each culture's magic system up
+ * top, so the player can browse and mix-and-match up to 4
+ * starting spells with full context — before ever having to
+ * pick a magic skill directly. Picking a spell automatically
+ * grants its underlying skill line via syncDerivedMagicSkills().
+ */
+function renderStartingSpellsGrid() {
+  const container = document.getElementById("cc-spell-grid");
+  const countLabel = document.getElementById("cc-spell-count");
+  container.innerHTML = "";
+
+  const atLimit = creationState.startingSpellIds.length >= 4;
+  countLabel.textContent = `Chosen ${creationState.startingSpellIds.length} / 4`;
+  countLabel.classList.toggle("limit-reached", atLimit);
+
+  Object.values(CULTURES).forEach((culture) => {
+    const cultureHeading = document.createElement("div");
+    cultureHeading.className = "cc-category-heading";
+    cultureHeading.textContent = `${culture.name} — ${culture.magicName}`;
+    container.appendChild(cultureHeading);
+
+    const cultureDesc = document.createElement("div");
+    cultureDesc.className = "cc-card-desc";
+    cultureDesc.style.marginBottom = "14px";
+    cultureDesc.textContent = culture.magicDescription;
+    container.appendChild(cultureDesc);
+
+    culture.magicSkillIds.forEach((skillId) => {
+      const skill = SKILLS[skillId];
+      const allSpells = SPELLS[skillId] || [];
+      if (!skill || allSpells.length === 0) return;
+
+      const subHeading = document.createElement("div");
+      subHeading.className = "cc-culture-subheading";
+      subHeading.style.setProperty("--card-accent", culture.accentColor);
+      subHeading.innerHTML = `<span>${skill.name}</span>`;
+      container.appendChild(subHeading);
+
+      const grid = document.createElement("div");
+      grid.className = "cc-grid";
+
+      allSpells.forEach((spell) => {
+        const isSelected = creationState.startingSpellIds.includes(spell.id);
+        const card = document.createElement("div");
+        card.className = "cc-card";
+        if (isSelected) card.classList.add("selected");
+        card.style.setProperty("--card-accent", culture.accentColor);
+        card.innerHTML = `
+          <div class="cc-card-name">${spell.name}</div>
+          <div class="cc-card-desc">${spell.description}</div>
+        `;
+        card.addEventListener("click", () => {
+          if (isSelected) {
+            creationState.startingSpellIds = creationState.startingSpellIds.filter((id) => id !== spell.id);
+          } else if (!atLimit) {
+            creationState.startingSpellIds.push(spell.id);
+          }
+          syncDerivedMagicSkills();
+          renderStartingSpellsGrid();
+          renderSkillGrid();
+        });
+        grid.appendChild(card);
       });
 
-      grid.appendChild(card);
+      container.appendChild(grid);
     });
-
-    container.appendChild(grid);
   });
 }
 
@@ -631,7 +785,8 @@ function attemptConfirmCharacter() {
     creationState.skills,
     creationState.traits,
     creationState.combatStyle,
-    creationState.portraitImage
+    creationState.portraitImage,
+    creationState.startingSpellIds
   );
 
   if (creationState.mode === "player") {
@@ -640,6 +795,7 @@ function attemptConfirmCharacter() {
     followers.push(newCharacter);
   }
 
+  saveGameState();
   goToPartyScreen();
 }
 
@@ -660,6 +816,8 @@ function renderPartyScreen() {
     const skillNames = Object.keys(follower.skills).map((id) => SKILLS[id].name).join(", ");
     const traitNames = follower.traits.map((id) => TRAITS[id].name).join(", ");
 
+    const isActive = follower.active !== false;
+
     const card = document.createElement("div");
     card.className = "cc-card";
     card.style.setProperty("--card-accent", culture.accentColor);
@@ -668,15 +826,30 @@ function renderPartyScreen() {
       <div class="cc-card-desc">${race.name} of the ${culture.name}</div>
       <div class="cc-card-desc">Skills: ${skillNames}</div>
       <div class="cc-card-desc">Traits: ${traitNames}</div>
+      <div class="cc-card-desc"><em>${isActive ? "Traveling with you" : "Left at Homebase"}</em></div>
     `;
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.className = "follower-remove-btn";
+    toggleBtn.textContent = isActive ? "Leave at Homebase" : "Bring Along";
+    toggleBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      follower.active = !isActive;
+      renderPartyScreen();
+      saveGameState();
+    });
+    card.appendChild(toggleBtn);
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "follower-remove-btn";
-    removeBtn.textContent = "Remove";
+    removeBtn.textContent = "Disband";
     removeBtn.addEventListener("click", (event) => {
       event.stopPropagation();
+      const confirmed = window.confirm(`Disband ${follower.name}? This cannot be undone.`);
+      if (!confirmed) return;
       followers.splice(index, 1);
       renderPartyScreen();
+      saveGameState();
     });
     card.appendChild(removeBtn);
 
@@ -705,6 +878,10 @@ function goToHomebaseScreen() {
     follower.currentHP = getHitPoints(follower);
     refillMana(follower);
   });
+
+  selectedDungeonId = null;
+  currentDungeonRoomId = null;
+  saveGameState();
 }
 
 function getNextTierInfo(timesUsed) {
@@ -804,6 +981,7 @@ function renderEquipSection() {
     card.addEventListener("click", () => {
       setEquippedWeapon(playerCharacter, skillId);
       renderEquipSection();
+      saveGameState();
     });
     weaponGrid.appendChild(card);
   });
@@ -822,6 +1000,7 @@ function renderEquipSection() {
       card.addEventListener("click", () => {
         setEquippedArmor(playerCharacter, skillId);
         renderEquipSection();
+        saveGameState();
       });
       armorGrid.appendChild(card);
     });
@@ -1067,6 +1246,7 @@ function attemptDiscoverOrLearn(room, choice) {
       learnNewSkill(playerCharacter, choice.skillId);
       message = `After several attempts, it finally clicks — you have learned ${SKILLS[choice.skillId].name}.`;
     }
+    saveGameState();
     renderDiscoveryOutcome(message, choice.target);
     return;
   }
@@ -1100,7 +1280,7 @@ function renderDungeonRoom(roomId) {
   currentDungeonRoomId = roomId;
 
   showScreen("screen-game");
-setGameViewportImage(getRoomImage(selectedDungeonId, roomId), DUNGEONS[selectedDungeonId].name, false, false, false, true);
+  setGameViewportImage(getRoomImage(selectedDungeonId, roomId), DUNGEONS[selectedDungeonId].name, false, false, false, true);
 
   let text = room.text;
   if (room.loot && !room._lootGranted) {
@@ -1120,6 +1300,7 @@ setGameViewportImage(getRoomImage(selectedDungeonId, roomId), DUNGEONS[selectedD
   document.getElementById("game-story-text").innerHTML = text;
 
   buildRoomChoices(room);
+  saveGameState();
 }
 
 function goToCombatScreen(enemyId, returnRoomId) {
@@ -1129,14 +1310,17 @@ function goToCombatScreen(enemyId, returnRoomId) {
 
   const enemyTemplate = ENEMIES[enemyId];
   setGameViewportImage(enemyTemplate.image, enemyTemplate.name);
+  applyAmbientGlows(true);
   stopAllNarration();
 
   renderCombatScreen();
+  saveGameState();
 }
 
 function getFollowerStatusLine() {
-  if (!followers || followers.length === 0) return "";
-  return followers
+  const activeFollowers = getActiveFollowers();
+  if (!activeFollowers || activeFollowers.length === 0) return "";
+  return activeFollowers
     .map((f) => {
       const max = getHitPoints(f);
       const cur = f.currentHP !== undefined ? f.currentHP : max;
@@ -1154,6 +1338,60 @@ function getEquipmentStatusLine() {
   return parts.join(" &middot; ");
 }
 
+function getHealthBarHTML(current, max) {
+  const safeMax = max > 0 ? max : 1;
+  const safeCurrent = Math.max(0, current);
+  const pct = Math.max(0, Math.min(100, Math.round((safeCurrent / safeMax) * 100)));
+
+  let fillClass = "hp-fill-high";
+  if (pct <= 25) fillClass = "hp-fill-low";
+  else if (pct <= 60) fillClass = "hp-fill-mid";
+
+  const pulseClass = pct <= 25 ? "hp-pulse" : "";
+
+  return `
+    <div class="health-bar">
+      <div class="health-bar-fill ${fillClass} ${pulseClass}" style="width: ${pct}%;"></div>
+      <div class="health-bar-label">${safeCurrent} / ${max}</div>
+    </div>
+  `;
+}
+
+function getManaBarHTML(current, max) {
+  const safeMax = max > 0 ? max : 1;
+  const safeCurrent = Math.max(0, current);
+  const pct = Math.max(0, Math.min(100, Math.round((safeCurrent / safeMax) * 100)));
+
+  return `
+    <div class="mana-bar">
+      <div class="mana-bar-fill" style="width: ${pct}%;"></div>
+      <div class="mana-bar-label">${safeCurrent} / ${max}</div>
+    </div>
+  `;
+}
+
+function getEnchantGlowClass() {
+  if (!playerCharacter.weaponEnchantment) return "";
+  return `enchant-glow-${playerCharacter.weaponEnchantment.type}`;
+}
+
+function getAverickGlowClass() {
+  if (!currentCombat) return "";
+  const hasAverickBuff = currentCombat.activeEffects.some(
+    (e) => e.kind === "playerAttackBonus" && e.skillId === "ancestralAverick"
+  );
+  return hasAverickBuff ? "averick-glow" : "";
+}
+
+function getEnemyAmbientGlowClass() {
+  if (!currentCombat) return "";
+  const enemyTemplate = ENEMIES[currentCombat.enemyId];
+  if (enemyTemplate && enemyTemplate.soundCategory === "spectral") {
+    return "spectral-glow";
+  }
+  return "";
+}
+
 function getActorImageForLogEntry(entry) {
   if (entry.actor === "enemy") {
     const enemyTemplate = ENEMIES[currentCombat.enemyId];
@@ -1169,6 +1407,34 @@ function getActorImageForLogEntry(entry) {
     }
   }
   return playerCharacter.portraitImage || (RACES[playerCharacter.raceId] ? RACES[playerCharacter.raceId].image : null);
+}
+
+/**
+ * Which race, if any, belongs to whoever's portrait is showing
+ * for this log entry — used so the Sídhe glow can be applied to
+ * whichever party member actually has that race, player or
+ * follower alike, not just the player specifically.
+ */
+function getActorRaceId(entry) {
+  if (entry.actor === "enemy" || entry.actor === "effect") return null;
+  if (entry.actor === "follower" && entry.followerName) {
+    const follower = followers.find((f) => f.name === entry.followerName);
+    return follower ? follower.raceId : null;
+  }
+  return playerCharacter.raceId;
+}
+
+/**
+ * Sídhe glow is a natural racial trait, not tied to gear or a
+ * cast spell — it simply applies whenever a Sídhe character's
+ * portrait is the one currently shown.
+ */
+function applySidheGlow(raceId) {
+  const img = document.getElementById("game-viewport-img");
+  img.classList.remove("sidhe-glow");
+  if (raceId === "sidhe") {
+    img.classList.add("sidhe-glow");
+  }
 }
 
 function playRoundSequenceThenRender(entries) {
@@ -1207,6 +1473,8 @@ function playRoundSequenceThenRender(entries) {
     const isSpellCast = entry.actor === "player" && !!entry.spellName;
 
     setGameViewportImage(getActorImageForLogEntry(entry), "", isCompanionTurn, isMeleeHit, isSpellCast);
+    applyAmbientGlows(entry.actor === "enemy");
+    applySidheGlow(getActorRaceId(entry));
 
     if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
       playWeaponSfx(entry.skillId);
@@ -1264,15 +1532,27 @@ function renderCombatScreen() {
   const manaMax = getManaPoolMax(playerCharacter);
   const enemyCondition = getEnemyConditionText();
   const effectsSummary = getActiveEffectsSummary();
-  const followerLine = getFollowerStatusLine();
   const equipmentLine = getEquipmentStatusLine();
+
+  let followerBarsHTML = "";
+  getActiveFollowers().forEach((f) => {
+    const fMax = getHitPoints(f);
+    const fCur = f.currentHP !== undefined ? f.currentHP : fMax;
+    followerBarsHTML += `
+      <div class="cc-skill-count">${f.name}${fCur <= 0 ? " (downed)" : ""}</div>
+      ${getHealthBarHTML(fCur, fMax)}
+    `;
+  });
 
   storyEl.innerHTML = `
     <strong>${currentCombat.enemyName}</strong> (${enemyCondition})<br />
     ${currentCombat.enemyDescription}<br /><br />
-    Your Hit Points: ${playerCharacter.currentHP} / ${maxHP}
-    ${manaMax > 0 ? "<br />Your Mana: " + playerCharacter.currentMana + " / " + manaMax : ""}
-    ${followerLine ? "<br />Party: " + followerLine : ""}
+    <div class="cc-skill-count">${currentCombat.enemyName}'s Hit Points</div>
+    ${getHealthBarHTML(currentCombat.enemyCurrentHP, currentCombat.enemyMaxHP)}
+    <div class="cc-skill-count">Your Hit Points</div>
+    ${getHealthBarHTML(playerCharacter.currentHP, maxHP)}
+    ${manaMax > 0 ? '<div class="cc-skill-count">Your Mana</div>' + getManaBarHTML(playerCharacter.currentMana, manaMax) : ""}
+    ${followerBarsHTML}
     ${equipmentLine ? "<br />" + equipmentLine : ""}
     ${effectsSummary ? "<br />" + effectsSummary : ""}
   `;
@@ -1283,6 +1563,7 @@ function renderCombatScreen() {
   addChoiceButton(choicesEl, `Attack - ${SKILLS[equippedWeaponId].name}`, () => {
     const startIndex = currentCombat.log.length;
     performPlayerAction(equippedWeaponId);
+    saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
 
@@ -1290,23 +1571,41 @@ function renderCombatScreen() {
   const magicSkillIds = trainedSkillIds.filter((id) => SKILLS[id].category === "Magic");
   const hasEnoughMana = playerCharacter.currentMana >= MANA_CONFIG.costPerCast;
 
+  currentCombat.activeEffects.filter((e) => e.source === "song").forEach((songEffect) => {
+    addChoiceButton(choicesEl, `Stop Song - ${songEffect.spellName}`, () => {
+      stopSong(songEffect.spellName);
+      renderCombatScreen();
+      saveGameState();
+    });
+  });
+
   magicSkillIds.forEach((skillId) => {
     const knownIds = (playerCharacter.knownSpells && playerCharacter.knownSpells[skillId]) || [];
     const allSpellsForLine = SPELLS[skillId] || [];
     const knownSpells = allSpellsForLine.filter((spell) => knownIds.includes(spell.id));
 
     knownSpells.forEach((spell) => {
+      if (!isSpellActive(playerCharacter, spell.id)) return;
       if (spell.type === "companion" && dungeonCompanionUsed) {
         return;
       }
+      const isSong = skillId === "ancestralSiuloir";
+      const songCapped = isSong && getActiveSongCount() >= 2;
+      const verb = isSong ? "Sing" : "Cast";
+
+      if (songCapped) {
+        addChoiceButton(choicesEl, `${verb} - ${spell.name} (stop a song first)`, null, true);
+        return;
+      }
       if (hasEnoughMana) {
-        addChoiceButton(choicesEl, `Cast - ${spell.name} (${MANA_CONFIG.costPerCast} mana): ${spell.description}`, () => {
+        addChoiceButton(choicesEl, `${verb} - ${spell.name} (${MANA_CONFIG.costPerCast} mana): ${spell.description}`, () => {
           const startIndex = currentCombat.log.length;
           performPlayerCast(skillId, spell);
+          saveGameState();
           playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
         });
       } else {
-        addChoiceButton(choicesEl, `Cast - ${spell.name} (not enough mana)`, null, true);
+        addChoiceButton(choicesEl, `${verb} - ${spell.name} (not enough mana)`, null, true);
       }
     });
   });
@@ -1314,12 +1613,14 @@ function renderCombatScreen() {
   addChoiceButton(choicesEl, "Defend", () => {
     const startIndex = currentCombat.log.length;
     performPlayerDefend();
+    saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
 
   addChoiceButton(choicesEl, "Flee", () => {
     const startIndex = currentCombat.log.length;
     performPlayerFlee();
+    saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
 }
@@ -1372,6 +1673,21 @@ function renderCombatOutcome() {
       goToHomebaseScreen();
     });
   }
+
+  saveGameState();
+}
+
+function applyVictoryPulse() {
+  const img = document.getElementById("game-viewport-img");
+  img.classList.remove("companion-glow", "hit-shake", "spell-flash", "defeat-fade");
+  img.classList.add("victory-pulse");
+}
+
+function applyDefeatFade() {
+  const img = document.getElementById("game-viewport-img");
+  img.classList.remove("companion-glow", "hit-shake", "spell-flash", "victory-pulse");
+  void img.offsetWidth;
+  img.classList.add("defeat-fade");
 }
 
 function goToCraftingScreen() {
@@ -1538,6 +1854,7 @@ function attemptCraft(recipeId) {
 
   renderCraftingScreen();
   document.getElementById("crafting-result").innerHTML = resultEl.innerHTML;
+  saveGameState();
 }
 
 function attemptEnchant(slot, typeId) {
@@ -1581,24 +1898,144 @@ function attemptEnchant(slot, typeId) {
   craftingEnchantSlotPending = null;
   renderCraftingScreen();
   document.getElementById("crafting-result").innerHTML = resultEl.innerHTML;
+  saveGameState();
+}
+
+function getItemRequiredSkill(itemName) {
+  const startingEntry = Object.entries(STARTING_EQUIPMENT).find(
+    ([skillId, name]) => name === itemName
+  );
+  if (startingEntry) return startingEntry[0];
+
+  const recipeMatch = Object.values(CRAFTING_RECIPES).find((recipe) =>
+    itemName.startsWith(`${recipe.name} (`)
+  );
+  if (recipeMatch) return recipeMatch.linkedSkill;
+
+  return null;
+}
+
+function goToGiveItemsScreen() {
+  showScreen("screen-give-items");
+  selectedGiveItemName = null;
+  renderGiveItemsScreen();
+}
+
+function renderGiveItemsScreen() {
+  const resultEl = document.getElementById("give-items-result");
+  const inventoryGrid = document.getElementById("give-items-inventory-grid");
+  const followerGrid = document.getElementById("give-items-follower-grid");
+
+  inventoryGrid.innerHTML = "";
+  followerGrid.innerHTML = "";
+
+  const knownMaterials = ["Old Ore", "Hide", "Grave Essence"];
+  const giveableItems = playerCharacter.inventory.filter(
+    (itemName) => !knownMaterials.includes(itemName)
+  );
+
+  if (giveableItems.length === 0) {
+    inventoryGrid.innerHTML = '<div class="cc-skill-count">You have no weapons or armor to give.</div>';
+  } else {
+    const uniqueItems = [...new Set(giveableItems)];
+    uniqueItems.forEach((itemName) => {
+      const count = giveableItems.filter((n) => n === itemName).length;
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      if (selectedGiveItemName === itemName) card.classList.add("selected");
+      card.innerHTML = `
+        <div class="cc-card-name">${itemName}</div>
+        <div class="cc-card-desc">${count > 1 ? `Quantity: ${count}` : "Carried"}</div>
+      `;
+      card.addEventListener("click", () => {
+        selectedGiveItemName = itemName;
+        renderGiveItemsScreen();
+      });
+      inventoryGrid.appendChild(card);
+    });
+  }
+
+  if (followers.length === 0) {
+    followerGrid.innerHTML = '<div class="cc-skill-count">You have no followers yet.</div>';
+  } else {
+    followers.forEach((follower, index) => {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      card.innerHTML = `
+        <div class="cc-card-name">${follower.name}</div>
+        <div class="cc-card-desc">${RACES[follower.raceId] ? RACES[follower.raceId].name : ""}</div>
+      `;
+      card.addEventListener("click", () => {
+        attemptGiveItem(index);
+      });
+      followerGrid.appendChild(card);
+    });
+  }
+
+  if (!selectedGiveItemName) {
+    resultEl.textContent = "Choose an item, then choose who to give it to.";
+  }
+}
+
+function attemptGiveItem(followerIndex) {
+  const resultEl = document.getElementById("give-items-result");
+
+  if (!selectedGiveItemName) {
+    resultEl.textContent = "Choose an item first.";
+    return;
+  }
+
+  const follower = followers[followerIndex];
+  const requiredSkill = getItemRequiredSkill(selectedGiveItemName);
+
+  if (requiredSkill && !follower.skills[requiredSkill]) {
+    resultEl.textContent = `${follower.name} hasn't trained ${SKILLS[requiredSkill] ? SKILLS[requiredSkill].name : requiredSkill} and can't use this.`;
+    return;
+  }
+
+  const idx = playerCharacter.inventory.indexOf(selectedGiveItemName);
+  if (idx === -1) {
+    resultEl.textContent = "That item is no longer available.";
+    selectedGiveItemName = null;
+    renderGiveItemsScreen();
+    return;
+  }
+
+  playerCharacter.inventory.splice(idx, 1);
+  follower.inventory.push(selectedGiveItemName);
+
+  if (requiredSkill) {
+    if (SKILLS[requiredSkill].category === "Weapon") {
+      follower.equippedWeaponSkill = requiredSkill;
+    } else if (SKILLS[requiredSkill].category === "Armor") {
+      follower.equippedArmorSkill = requiredSkill;
+    }
+  }
+
+  resultEl.textContent = `${follower.name} now carries ${selectedGiveItemName}${requiredSkill ? " and has it equipped" : ""}.`;
+  selectedGiveItemName = null;
+  renderGiveItemsScreen();
+  saveGameState();
 }
 
 document.getElementById("btn-toggle-music").addEventListener("click", () => {
-  if (gameMusic.paused) {
-    gameMusic.play();
-    document.getElementById("btn-toggle-music").textContent = "\uD83D\uDD0A";
+  musicEnabled = !musicEnabled;
+  if (musicEnabled) {
+    gameMusic.play().catch(() => {});
   } else {
     gameMusic.pause();
-    document.getElementById("btn-toggle-music").textContent = "\uD83D\uDD07";
   }
+  syncToggleIcons();
+  saveGameState();
 });
 
 document.getElementById("btn-toggle-voice").addEventListener("click", () => {
   voiceEnabled = !voiceEnabled;
-  document.getElementById("btn-toggle-voice").textContent = voiceEnabled ? "\uD83D\uDDE3" : "\uD83D\uDEAB";
+  syncToggleIcons();
   if (!voiceEnabled) {
     stopAllNarration();
   }
+  saveGameState();
 });
 
 document.getElementById("btn-begin").addEventListener("click", () => {
@@ -1634,18 +2071,23 @@ document.getElementById("btn-step2-next").addEventListener("click", () => {
   goToCreationStep(2);
 });
 
-document.getElementById("btn-step3-back").addEventListener("click", () => goToCreationStep(1));
-document.getElementById("btn-step3-next").addEventListener("click", () => {
-  const errorEl = document.getElementById("cc-error-step3");
-  if (creationState.skills.length === 0) {
-    errorEl.textContent = "Choose at least one starting skill.";
-    return;
-  }
-  errorEl.textContent = "";
+document.getElementById("btn-step3b-back").addEventListener("click", () => goToCreationStep(1));
+document.getElementById("btn-step3b-next").addEventListener("click", () => {
   goToCreationStep(3);
 });
 
-document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(2));
+document.getElementById("btn-step3-back").addEventListener("click", () => goToCreationStep(2));
+document.getElementById("btn-step3-next").addEventListener("click", () => {
+  const errorEl = document.getElementById("cc-error-step3");
+  if (creationState.skills.length === 0) {
+    errorEl.textContent = "Choose at least one starting skill or spell.";
+    return;
+  }
+  errorEl.textContent = "";
+  goToCreationStep(4);
+});
+
+document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(3));
 document.getElementById("btn-step4-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step4");
   if (creationState.traits.length < TRAIT_SELECTION_MIN) {
@@ -1653,15 +2095,15 @@ document.getElementById("btn-step4-next").addEventListener("click", () => {
     return;
   }
   errorEl.textContent = "";
-  goToCreationStep(4);
-});
-
-document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(3));
-document.getElementById("btn-step5-next").addEventListener("click", () => {
   goToCreationStep(5);
 });
 
-document.getElementById("btn-review-back").addEventListener("click", () => goToCreationStep(4));
+document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(4));
+document.getElementById("btn-step5-next").addEventListener("click", () => {
+  goToCreationStep(6);
+});
+
+document.getElementById("btn-review-back").addEventListener("click", () => goToCreationStep(5));
 document.getElementById("btn-confirm-character").addEventListener("click", attemptConfirmCharacter);
 
 document.getElementById("btn-add-follower").addEventListener("click", () => {
@@ -1671,6 +2113,13 @@ document.getElementById("btn-add-follower").addEventListener("click", () => {
 
 document.getElementById("btn-continue-to-homebase").addEventListener("click", goToHomebaseScreen);
 
+document.getElementById("btn-recruit-homebase").addEventListener("click", () => {
+  resetCreationState("follower");
+  goToCreationStep(0);
+});
+
+document.getElementById("btn-manage-party").addEventListener("click", goToPartyScreen);
+
 document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
 
 document.getElementById("btn-skills-back").addEventListener("click", goToHomebaseScreen);
@@ -1679,18 +2128,157 @@ document.getElementById("btn-go-to-inventory").addEventListener("click", goToInv
 
 document.getElementById("btn-inventory-back").addEventListener("click", goToHomebaseScreen);
 
+document.getElementById("btn-go-to-give-items").addEventListener("click", goToGiveItemsScreen);
+
+document.getElementById("btn-give-items-back").addEventListener("click", goToHomebaseScreen);
+
 document.getElementById("btn-continue-to-dungeon-select").addEventListener("click", goToDungeonSelectScreen);
 
 document.getElementById("btn-go-to-crafting").addEventListener("click", goToCraftingScreen);
 
 document.getElementById("btn-crafting-back").addEventListener("click", goToHomebaseScreen);
 
-renderRaceGrid();
-renderPortraitGrid();
-renderCultureGrid();
-renderSkillGrid();
-renderTraitGrid();
-renderCombatStyleGrid();
-renderDifficultyGrid();
-playMusic(MAIN_THEME_SRC);
-prewarmAllPortraitCaches();
+
+
+/**
+ * ------------------------------------------------------------
+ * STARTUP
+ * If a save exists, restore it and jump straight to wherever
+ * the player left off (Homebase, or the exact dungeon room they
+ * were in). Otherwise, show the title screen as normal.
+ * ------------------------------------------------------------
+ */
+
+let manageSpellsCharacter = null;
+let manageSpellsIsFollower = false;
+
+function goToManageSpellsScreen(character, isFollower) {
+  manageSpellsCharacter = character;
+  manageSpellsIsFollower = !!isFollower;
+  showScreen("screen-manage-spells");
+  renderManageSpellsScreen();
+}
+
+function renderManageSpellsScreen() {
+  const character = manageSpellsCharacter;
+  document.getElementById("manage-spells-name").textContent = character.name;
+
+  const grid = document.getElementById("manage-spells-grid");
+  grid.innerHTML = "";
+
+  const allKnown = getAllKnownSpells(character);
+  const activeCount = (character.activeSpellIds || []).length;
+  document.getElementById("manage-spells-count").textContent = `Active: ${activeCount} / 4`;
+
+  if (allKnown.length === 0) {
+    grid.innerHTML = '<div class="cc-skill-count">No spells known yet.</div>';
+    return;
+  }
+
+  allKnown.forEach(({ skillId, spell }) => {
+    const isActive = isSpellActive(character, spell.id);
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (isActive) card.classList.add("selected");
+    card.innerHTML = `
+      <div class="cc-card-name">${spell.name}</div>
+      <div class="cc-card-desc">${spell.description}</div>
+      <div class="cc-card-desc"><em>${SKILLS[skillId] ? SKILLS[skillId].name : skillId}</em></div>
+    `;
+    card.addEventListener("click", () => {
+      const changed = toggleActiveSpell(character, spell.id);
+      if (!changed && !isActive) {
+        document.getElementById("manage-spells-count").textContent = "Active: 4 / 4 (remove one first)";
+        return;
+      }
+      renderManageSpellsScreen();
+      saveGameState();
+    });
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById("btn-your-spells").addEventListener("click", () => {
+  goToManageSpellsScreen(playerCharacter, false);
+});
+
+document.getElementById("btn-manage-spells-back").addEventListener("click", () => {
+  if (manageSpellsIsFollower) {
+    goToPartyScreen();
+  } else {
+    goToHomebaseScreen();
+  }
+});
+function goToLearnSkillScreen() {
+  showScreen("screen-learn-skill");
+  renderLearnSkillScreen();
+}
+
+function renderLearnSkillScreen() {
+  const resultEl = document.getElementById("learn-skill-result");
+  const container = document.getElementById("learn-skill-grid");
+  container.innerHTML = "";
+  resultEl.textContent = "";
+
+  const availableSkills = Object.values(SKILLS).filter((s) => !playerCharacter.skills[s.id]);
+
+  if (availableSkills.length === 0) {
+    container.innerHTML = '<div class="cc-skill-count">You already know every skill.</div>';
+    return;
+  }
+
+  SKILL_CATEGORY_ORDER.forEach((categoryName) => {
+    const skillsInCategory = availableSkills.filter((s) => s.category === categoryName);
+    if (skillsInCategory.length === 0) return;
+
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = categoryName;
+    container.appendChild(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+
+    skillsInCategory.forEach((skill) => {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      card.innerHTML = `
+        <div class="cc-card-name">${skill.name}</div>
+        <div class="cc-card-desc">${skill.description}</div>
+      `;
+      card.addEventListener("click", () => {
+        learnNewSkill(playerCharacter, skill.id);
+        resultEl.textContent = `You have learned ${skill.name}.`;
+        renderLearnSkillScreen();
+        saveGameState();
+      });
+      grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
+  });
+}
+if (loadGameState()) {
+  syncToggleIcons();
+  if (!musicEnabled) {
+    gameMusic.pause();
+  }
+
+  if (selectedDungeonId && currentDungeonRoomId && DUNGEON_CONTENT[selectedDungeonId]) {
+    playMusic(DUNGEONS[selectedDungeonId].musicSrc);
+    renderDungeonRoom(currentDungeonRoomId);
+  } else {
+    goToHomebaseScreen();
+  }
+} else {
+  renderRaceGrid();
+  renderPortraitGrid();
+  renderCultureGrid();
+  renderSkillGrid();
+  renderStartingSpellsGrid();
+  renderTraitGrid();
+  renderCombatStyleGrid();
+  renderDifficultyGrid();
+  playMusic(MAIN_THEME_SRC);
+  prewarmAllPortraitCaches();
+}

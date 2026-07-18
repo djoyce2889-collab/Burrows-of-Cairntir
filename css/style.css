@@ -512,3 +512,157 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* ------------------------------------------------------------
+   HEALTH BARS
+   ------------------------------------------------------------ */
+.health-bar {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  background: var(--ink);
+  border: 1px solid var(--moss-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 4px 0;
+}
+
+.health-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.hp-fill-high {
+  background: #5fbf6f;
+}
+
+.hp-fill-mid {
+  background: #c9a83f;
+}
+
+.hp-fill-low {
+  background: #c9503f;
+}
+
+.hp-pulse {
+  animation: hpPulse 1s ease-in-out infinite;
+}
+
+@keyframes hpPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.health-bar-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--parchment);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+/* ------------------------------------------------------------
+   AMBIENT GLOWS
+   Persistent glows on the viewport portrait — separate from the
+   one-shot animation classes like hit-shake or spell-flash.
+   Enchant glow reflects your equipped weapon's enchant type;
+   spectral glow marks enemies in the "spectral" sound category.
+   ------------------------------------------------------------ */
+#viewport img.enchant-glow-flame {
+  filter: drop-shadow(0 0 14px rgba(230, 110, 40, 0.65));
+}
+#viewport img.enchant-glow-frost {
+  filter: drop-shadow(0 0 14px rgba(110, 190, 230, 0.65));
+}
+#viewport img.enchant-glow-storm {
+  filter: drop-shadow(0 0 14px rgba(180, 160, 255, 0.65));
+}
+#viewport img.enchant-glow-ward {
+  filter: drop-shadow(0 0 14px rgba(230, 200, 100, 0.65));
+}
+#viewport img.enchant-glow-curse {
+  filter: drop-shadow(0 0 14px rgba(150, 60, 160, 0.65));
+}
+#viewport img.enchant-glow-vision {
+  filter: drop-shadow(0 0 14px rgba(120, 220, 200, 0.65));
+}
+
+#viewport img.spectral-glow {
+  animation: spectralGlowPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes spectralGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(230, 240, 255, 0.6)) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 28px rgba(230, 240, 255, 0.9)) brightness(1.1);
+  }
+}
+.mana-bar {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  background: var(--ink);
+  border: 1px solid var(--moss-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 4px 0;
+}
+
+.mana-bar-fill {
+  height: 100%;
+  background: #4f8fc9;
+  transition: width 0.3s ease;
+}
+
+.mana-bar-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--parchment);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+#viewport img.averick-glow {
+  animation: averickGlowPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes averickGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 16px rgba(230, 140, 60, 0.75)) brightness(1.03);
+  }
+  50% {
+    filter: drop-shadow(0 0 36px rgba(230, 140, 60, 1)) brightness(1.15);
+  }
+}
+
+#viewport img.sidhe-glow {
+  animation: sidheGlowPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes sidheGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 16px rgba(200, 170, 255, 0.75)) brightness(1.03);
+  }
+  50% {
+    filter: drop-shadow(0 0 36px rgba(200, 170, 255, 1)) brightness(1.15);
+  }
+}
