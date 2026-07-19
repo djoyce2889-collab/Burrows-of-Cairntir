@@ -50,7 +50,7 @@ const SPECTRAL_COMPANION_IMAGE = "assets/images/effects/spectral-companion.png";
 const ATTACK_MISS_SFX = "assets/audio/sfx/attack-miss.mp3";
 const HEAL_CAST_SFX = "assets/audio/sfx/heal-cast.mp3";
 
-let musicVolume = 0.4;
+let musicVolume = 0.18;
 
 const MAIN_THEME_SRC = "assets/audio/main-theme.mp3";
 const gameMusic = new Audio();
@@ -166,6 +166,7 @@ function speak(text) {
     const utterance = new SpeechSynthesisUtterance(plainText);
     utterance.rate = 1;
     utterance.pitch = 1;
+    utterance.volume = 1;
     const voice = getPreferredVoice();
     if (voice) utterance.voice = voice;
     window.speechSynthesis.speak(utterance);
@@ -218,6 +219,7 @@ function playRoomNarration(dungeonId, roomId, fallbackText) {
     if (exists) {
       try {
         narrationAudio.src = path;
+        narrationAudio.volume = 1;
         narrationAudio.play().catch(() => {
           if (thisRequestId === narrationRequestId) speak(fallbackText);
         });
@@ -299,7 +301,7 @@ function loadGameStateFromSlot(slot) {
     currentDungeonRoomId = saveData.currentDungeonRoomId || null;
     voiceEnabled = saveData.voiceEnabled !== undefined ? saveData.voiceEnabled : true;
     musicEnabled = saveData.musicEnabled !== undefined ? saveData.musicEnabled : true;
-    musicVolume = saveData.musicVolume !== undefined ? saveData.musicVolume : 0.4;
+    musicVolume = saveData.musicVolume !== undefined ? saveData.musicVolume : 0.18;
     gameMusic.volume = musicVolume;
     currentSaveSlot = slot;
 
@@ -1186,6 +1188,80 @@ function renderEquipSection() {
  * their combat style bonus (checked in getPlayerCombatStyleBonus
  * in combat.js) actually applies.
  */
+const RING_ITEMS = ["Chief's Signet", "Draugr Rune-Ring"];
+const AMULET_ITEMS = [
+  "Sovereign's Crown Shard", "Balor's Eye Shard", "Barrow Sigil",
+  "Ancestor's Ember", "Frostforged Rune", "Vale Sigil"
+];
+
+const TROPHY_DESCRIPTIONS = {
+  "Chief's Signet": "A chief's authority lingers in the band — strengthens your resistance to magical harm.",
+  "Draugr Rune-Ring": "A dead chieftain's grip still remembers battle — strengthens your physical strikes.",
+  "Sovereign's Crown Shard": "A fragment of a king's unshakeable defense — hardens your bearing against harm.",
+  "Balor's Eye Shard": "A sliver of the eye that never missed — sharpens your aim.",
+  "Barrow Sigil": "A grave-keeper's endurance, pressed into stone — strengthens your vitality.",
+  "Ancestor's Ember": "A fire that never quite went out — strengthens your magic.",
+  "Frostforged Rune": "A master smith's own touch, one last time — improves your crafting and enchanting.",
+  "Vale Sigil": "A fragment of a fused, unified voice — strengthens your ability to persuade."
+};
+
+/**
+ * Ring and Amulet sections only appear once you actually own a
+ * matching boss trophy — clicking one toggles it equipped/
+ * unequipped. Unlike Shield/Offhand, these aren't gated by
+ * combat style, since any character can wear jewelry.
+ */
+function renderRingAmuletSections() {
+  const ringSection = document.getElementById("equip-ring-section");
+  const amuletSection = document.getElementById("equip-amulet-section");
+  const ringGrid = document.getElementById("equip-ring-grid");
+  const amuletGrid = document.getElementById("equip-amulet-grid");
+  ringGrid.innerHTML = "";
+  amuletGrid.innerHTML = "";
+
+  const ownedRings = RING_ITEMS.filter((name) => playerCharacter.inventory.includes(name));
+  const ownedAmulets = AMULET_ITEMS.filter((name) => playerCharacter.inventory.includes(name));
+
+  ringSection.style.display = ownedRings.length > 0 ? "block" : "none";
+  amuletSection.style.display = ownedAmulets.length > 0 ? "block" : "none";
+
+  ownedRings.forEach((name) => {
+    const isEquipped = playerCharacter.equippedRing === name;
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (isEquipped) card.classList.add("selected");
+    card.innerHTML = `
+      <div class="cc-card-name">${name}</div>
+      <div class="cc-card-desc">${TROPHY_DESCRIPTIONS[name] || ""}</div>
+      <div class="cc-card-desc"><em>${isEquipped ? "Equipped" : "Not equipped"}</em></div>
+    `;
+    card.addEventListener("click", () => {
+      playerCharacter.equippedRing = isEquipped ? null : name;
+      renderEquipSection();
+      saveGameState();
+    });
+    ringGrid.appendChild(card);
+  });
+
+  ownedAmulets.forEach((name) => {
+    const isEquipped = playerCharacter.equippedAmulet === name;
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (isEquipped) card.classList.add("selected");
+    card.innerHTML = `
+      <div class="cc-card-name">${name}</div>
+      <div class="cc-card-desc">${TROPHY_DESCRIPTIONS[name] || ""}</div>
+      <div class="cc-card-desc"><em>${isEquipped ? "Equipped" : "Not equipped"}</em></div>
+    `;
+    card.addEventListener("click", () => {
+      playerCharacter.equippedAmulet = isEquipped ? null : name;
+      renderEquipSection();
+      saveGameState();
+    });
+    amuletGrid.appendChild(card);
+  });
+}
+
 function renderShieldOffhandSections() {
   const shieldSection = document.getElementById("equip-shield-section");
   const offhandSection = document.getElementById("equip-offhand-section");
@@ -1291,6 +1367,7 @@ function renderEquipSection() {
   }
 
   renderShieldOffhandSections();
+  renderRingAmuletSections();
 }
 
 /**
@@ -1620,6 +1697,19 @@ function attemptDiscoverOrLearn(room, choice) {
   }
 
   if (choice._attempts >= 3) {
+    if (choice.type === "persuade" && choice.enemyId) {
+      const message = choice.finalFailDialogue
+        ? `${choice.finalFailDialogue} They won't be reasoned with any further.`
+        : "After three failed attempts, they refuse to be swayed any further.";
+      document.getElementById("game-story-text").innerHTML = message;
+      const choicesEl = document.getElementById("game-choices");
+      choicesEl.innerHTML = "";
+      addChoiceButton(choicesEl, "Fight", () => {
+        goToCombatScreen(choice.enemyId, choice.target);
+      });
+      return;
+    }
+
     let message;
     if (choice.type === "discover") {
       message = "After three failed attempts, the technique still eludes you. You give up for now and move on.";
@@ -1706,7 +1796,13 @@ function renderDungeonRoom(roomId) {
 
   let text = room.text;
   if (room.loot && !room._lootGranted) {
-    room.loot.forEach((itemName) => playerCharacter.inventory.push(itemName));
+    const BOOSTED_MATERIALS = ["Old Ore", "Grave Essence"];
+    room.loot.forEach((itemName) => {
+      playerCharacter.inventory.push(itemName);
+      if (BOOSTED_MATERIALS.includes(itemName)) {
+        playerCharacter.inventory.push(itemName);
+      }
+    });
     text += `<br /><br />You find: ${room.loot.join(", ")}.`;
     room._lootGranted = true;
   }
@@ -2050,7 +2146,7 @@ function renderCombatScreen() {
   const magicSkillIds = trainedSkillIds.filter((id) => SKILLS[id].category === "Magic");
   const hasEnoughMana = playerCharacter.currentMana >= MANA_CONFIG.costPerCast;
 
-  currentCombat.activeEffects.filter((e) => e.source === "song").forEach((songEffect) => {
+  currentCombat.activeEffects.filter((e) => e.source === "song" && (e.owner || playerCharacter) === playerCharacter).forEach((songEffect) => {
     addChoiceButton(choicesEl, `Stop Song - ${songEffect.spellName}`, () => {
       stopSong(songEffect.spellName);
       renderCombatScreen();

@@ -54,6 +54,8 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     equippedArmorSkill: startingArmorId,
     equippedShield: false,
     equippedOffhandSkill: null,
+    equippedRing: null,
+    equippedAmulet: null,
     inventory: inventory,
     active: true,
     flags: {}

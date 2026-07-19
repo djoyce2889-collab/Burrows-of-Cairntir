@@ -178,7 +178,9 @@ function getActiveSongCount() {
 }
 
 function stopSong(spellName) {
-  const idx = currentCombat.activeEffects.findIndex((e) => e.source === "song" && e.spellName === spellName);
+  const idx = currentCombat.activeEffects.findIndex(
+    (e) => e.source === "song" && e.spellName === spellName && (e.owner || playerCharacter) === playerCharacter
+  );
   if (idx === -1) return false;
   const effect = currentCombat.activeEffects[idx];
   if (effect.kind === "fortify" && effect.bonusHP) {
@@ -622,9 +624,18 @@ function getFollowerAttackSpellOption(follower) {
   for (const skillId of magicSkillIds) {
     const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
     const allSpells = SPELLS[skillId] || [];
-    const attackSpell = allSpells.find(
-      (s) => FOLLOWER_ATTACK_SPELL_TYPES.includes(s.type) && known.includes(s.id) && isSpellActive(follower, s.id)
-    );
+    const attackSpell = allSpells.find((s) => {
+      if (!FOLLOWER_ATTACK_SPELL_TYPES.includes(s.type)) return false;
+      if (!known.includes(s.id)) return false;
+      if (!isSpellActive(follower, s.id)) return false;
+      if (s.type === "dot") {
+        const alreadyActive = currentCombat.activeEffects.some(
+          (e) => e.kind === "dot" && e.spellName === s.name
+        );
+        if (alreadyActive) return false;
+      }
+      return true;
+    });
     if (attackSpell) return { skillId, spell: attackSpell };
   }
   return null;
@@ -1193,7 +1204,13 @@ function performPlayerFlee() {
 function claimVictoryLoot() {
   const enemyTemplate = ENEMIES[currentCombat.enemyId];
   const loot = enemyTemplate.lootTable || [];
-  loot.forEach((itemName) => playerCharacter.inventory.push(itemName));
+  const BOOSTED_MATERIALS = ["Old Ore", "Grave Essence"];
+  loot.forEach((itemName) => {
+    playerCharacter.inventory.push(itemName);
+    if (BOOSTED_MATERIALS.includes(itemName)) {
+      playerCharacter.inventory.push(itemName);
+    }
+  });
   return loot;
 }
 
@@ -1422,8 +1439,7 @@ function describeLogEntry(entry) {
     if (entry.backfired) {
       return `${currentCombat.enemyName} calls on ${entry.spellName} at you — but ill fortune turns it back on them for ${entry.damage}!`;
     }
-    const resistLine = entry.culturallyResisted ? " Training in that same magic softens the blow." : "";
-    return `${currentCombat.enemyName} calls on ${entry.spellName}, striking ${targetLabel} for ${entry.damage}.${resistLine}`;
+    return `${currentCombat.enemyName} calls on ${entry.spellName}, striking ${targetLabel} for ${entry.damage}.`;
   }
 
   return entry.hit

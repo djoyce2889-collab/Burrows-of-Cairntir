@@ -155,6 +155,7 @@ const DUNGEON_CONTENT = {
             type: "persuade",
             skillId: "ancestralAverick",
             spellId: "warbloodFury",
+            enemyId: "restlessGuardsman",
             target: "greatHall",
             failDialogue: [
               "\"The post,\" he mutters, \"is not yours to relieve.\"",
@@ -317,6 +318,7 @@ const DUNGEON_CONTENT = {
             type: "persuade",
             skillId: "runeVision",
             spellId: "foreseenOpening",
+            enemyId: "drownedShieldman",
             target: "greatRoom",
             failDialogue: [
               "The shieldman's rotted jaw works soundlessly, but the shield does not lower.",
@@ -437,6 +439,7 @@ const DUNGEON_CONTENT = {
             type: "persuade",
             skillId: "pathWild",
             spellId: "wolfsCall",
+            enemyId: "mossHound",
             target: "clearingDoors",
             failDialogue: [
               "The hound's hollow eyes fix on you, and whatever once answered to a gentle hand is long gone from them.",
@@ -576,6 +579,7 @@ const DUNGEON_CONTENT = {
             type: "persuade",
             skillId: "ancestralSiuloir",
             spellId: "layOfMending",
+            enemyId: "emberTouchedWraith",
             target: "cairnEntrance",
             failDialogue: [
               "The flame flares brighter at the names, but no recognition follows.",
@@ -683,6 +687,7 @@ const DUNGEON_CONTENT = {
             type: "persuade",
             skillId: "runeBlade",
             spellId: "bloodfuryMark",
+            enemyId: "frostboundWarrior",
             target: "innerPath",
             failDialogue: [
               "The ice over its armor cracks, but the warrior does not stir from its stance.",
@@ -842,6 +847,7 @@ const DUNGEON_CONTENT = {
             type: "persuade",
             skillId: "pathStorm",
             spellId: "lightningLash",
+            enemyId: "stoneboundVoice",
             target: "ringApproach",
             failDialogue: [
               "The voice answers, but not in words — only a pressure, weighing your claim and finding it wanting.",
@@ -930,6 +936,7 @@ const DUNGEON_CONTENT = {
             label: "Call out to the kin buried beneath the corruption (Persuasion)",
             skillId: "runeCurse",
             spellId: "witheringHex",
+            enemyId: "duergarReaver",
             target: "forgeChestLoot",
             failDialogue: [
               "The sickly green eyes flicker at the words, but the axe does not lower.",
