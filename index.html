@@ -18,9 +18,11 @@
     <div class="cabinet-corner corner-bl"></div>
     <div class="cabinet-corner corner-br"></div>
     <div id="cabinet-title">BURROWS OF CAIRNTÍR</div>
-    <button id="btn-toggle-voice" class="voice-toggle">🗣</button>
-    <button id="btn-toggle-music" class="music-toggle">🔊</button>
-    <input type="range" id="music-volume-slider" class="music-volume-slider" min="0" max="100" value="40" />
+    <div class="cabinet-controls">
+      <button id="btn-toggle-voice" class="voice-toggle">🗣</button>
+      <button id="btn-toggle-music" class="music-toggle">🔊</button>
+      <input type="range" id="music-volume-slider" class="music-volume-slider" min="0" max="100" value="40" />
+    </div>
 
     <section id="screen-title" class="screen active">
       <div id="viewport">
@@ -201,6 +203,16 @@
         <div class="cc-section">
           <span class="cc-label">Equipped Armor</span>
           <div id="equip-armor-grid" class="cc-grid"></div>
+        </div>
+
+        <div class="cc-section" id="equip-shield-section" style="display: none;">
+          <span class="cc-label">Equipped Shield</span>
+          <div id="equip-shield-grid" class="cc-grid"></div>
+        </div>
+
+        <div class="cc-section" id="equip-offhand-section" style="display: none;">
+          <span class="cc-label">Equipped Offhand Weapon</span>
+          <div id="equip-offhand-grid" class="cc-grid"></div>
         </div>
 
         <span class="cc-label">Carried Items</span>

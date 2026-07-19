@@ -80,27 +80,47 @@ body {
 .corner-bl { bottom: 0; left: 0; }
 .corner-br { bottom: 0; right: 0; }
 
-.music-toggle {
+.cabinet-controls {
   position: absolute;
   top: 8px;
   right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+}
+
+.music-toggle {
   background: transparent;
   border: none;
   color: var(--ember);
   font-size: 18px;
   cursor: pointer;
-  z-index: 10;
 }
 
 .music-volume-slider {
-  position: absolute;
-  top: 12px;
-  right: 32px;
   width: 60px;
-  height: 4px;
+  height: 22px;
   accent-color: var(--ember);
   cursor: pointer;
-  z-index: 10;
+}
+
+@media (max-width: 480px) {
+  .cabinet-controls {
+    gap: 12px;
+  }
+  .music-volume-slider {
+    width: 60px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .music-volume-slider {
+    width: 70px;
+    height: 28px;
+    right: 34px;
+  }
 }
 
 .voice-toggle {
@@ -433,6 +453,18 @@ body {
   color: var(--ember);
 }
 
+.craft-result-success {
+  color: var(--glow-green);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.craft-result-fail {
+  color: var(--ember);
+  font-weight: 700;
+  font-size: 18px;
+}
+
 #cc-error,
 #cc-error-step1,
 #cc-error-step2,
@@ -588,22 +620,22 @@ body {
    spectral glow marks enemies in the "spectral" sound category.
    ------------------------------------------------------------ */
 #viewport img.enchant-glow-flame {
-  filter: drop-shadow(0 0 14px rgba(230, 110, 40, 0.65));
+  filter: drop-shadow(0 0 22px rgba(230, 140, 60, 0.9)) brightness(1.06);
 }
 #viewport img.enchant-glow-frost {
-  filter: drop-shadow(0 0 14px rgba(110, 190, 230, 0.65));
+  filter: drop-shadow(0 0 22px rgba(110, 190, 230, 0.9)) brightness(1.06);
 }
 #viewport img.enchant-glow-storm {
-  filter: drop-shadow(0 0 14px rgba(180, 160, 255, 0.65));
+  filter: drop-shadow(0 0 22px rgba(180, 160, 255, 0.9)) brightness(1.06);
 }
 #viewport img.enchant-glow-ward {
-  filter: drop-shadow(0 0 14px rgba(230, 200, 100, 0.65));
+  filter: drop-shadow(0 0 22px rgba(230, 200, 100, 0.9)) brightness(1.06);
 }
 #viewport img.enchant-glow-curse {
-  filter: drop-shadow(0 0 14px rgba(150, 60, 160, 0.65));
+  filter: drop-shadow(0 0 22px rgba(150, 60, 160, 0.9)) brightness(1.06);
 }
 #viewport img.enchant-glow-vision {
-  filter: drop-shadow(0 0 14px rgba(120, 220, 200, 0.65));
+  filter: drop-shadow(0 0 22px rgba(120, 220, 200, 0.9)) brightness(1.06);
 }
 
 #viewport img.spectral-glow {
@@ -612,10 +644,10 @@ body {
 
 @keyframes spectralGlowPulse {
   0%, 100% {
-    filter: drop-shadow(0 0 12px rgba(230, 240, 255, 0.6)) brightness(1);
+    filter: drop-shadow(0 0 20px rgba(230, 240, 255, 0.8)) brightness(1.05);
   }
   50% {
-    filter: drop-shadow(0 0 28px rgba(230, 240, 255, 0.9)) brightness(1.1);
+    filter: drop-shadow(0 0 44px rgba(230, 240, 255, 1)) brightness(1.18);
   }
 }
 .mana-bar {
@@ -671,9 +703,9 @@ body {
 
 @keyframes sidheGlowPulse {
   0%, 100% {
-    filter: drop-shadow(0 0 16px rgba(200, 170, 255, 0.75)) brightness(1.03);
+    filter: drop-shadow(0 0 22px rgba(200, 170, 255, 0.9)) brightness(1.08);
   }
   50% {
-    filter: drop-shadow(0 0 36px rgba(200, 170, 255, 1)) brightness(1.15);
+    filter: drop-shadow(0 0 48px rgba(200, 170, 255, 1)) brightness(1.22);
   }
 }

@@ -52,6 +52,8 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     portraitImage: portraitImage || null,
     equippedWeaponSkill: startingWeaponId,
     equippedArmorSkill: startingArmorId,
+    equippedShield: false,
+    equippedOffhandSkill: null,
     inventory: inventory,
     active: true,
     flags: {}
@@ -124,10 +126,11 @@ function discoverSpell(character, skillId, spellId) {
  * normal +1 rate.
  */
 function getSkillUseGain(character, skillId) {
-  if (SKILLS[skillId] && SKILLS[skillId].category === "Magic") {
-    return 2;
+  let gain = SKILLS[skillId] && SKILLS[skillId].category === "Magic" ? 2 : 1;
+  if (character.traits && character.traits.includes("adaptable")) {
+    gain += 1;
   }
-  return 1;
+  return gain;
 }
 
 function useSkill(character, skillId) {
@@ -191,7 +194,8 @@ function getAdvantageTier(character, advantageId) {
     } else {
       const rawRank = getTierRankLocal(getCharacterSkillTier(character, equippedId).name);
       const bonus = ARMOR_PROTECTION_RANK_BONUS[equippedId] || 0;
-      const effectiveRank = Math.min(SKILL_TIERS.length - 1, rawRank + bonus);
+      const craftedBonus = getCraftedItemBonus(character, equippedId);
+      const effectiveRank = Math.min(SKILL_TIERS.length - 1, rawRank + bonus + craftedBonus);
       tier = SKILL_TIERS[effectiveRank];
     }
   } else {
@@ -243,6 +247,34 @@ function getManaPoolMax(character) {
 
 function refillMana(character) {
   character.currentMana = getManaPoolMax(character);
+}
+
+/**
+ * Crafted weapons/armor are genuinely better than starting gear —
+ * the better the craftsmanship (Adept/Expert/Master), the bigger
+ * the bonus. Checks the character's whole inventory for the best
+ * crafted item matching the given skill, regardless of which
+ * exact copy is technically "equipped" (since equip is skill-based,
+ * not item-based, in this game).
+ */
+function getCraftedItemBonus(character, skillId) {
+  if (!character.inventory || !skillId) return 0;
+  const recipe = Object.values(CRAFTING_RECIPES).find((r) => r.linkedSkill === skillId);
+  if (!recipe) return 0;
+
+  const tierBonusMap = { Novice: 0, Adept: 1, Expert: 2, Master: 3 };
+  let bestBonus = 0;
+
+  character.inventory.forEach((item) => {
+    if (item.startsWith(`${recipe.name} (`)) {
+      const match = item.match(/\(([A-Za-z]+)-crafted\)/);
+      if (match && tierBonusMap[match[1]] !== undefined) {
+        bestBonus = Math.max(bestBonus, tierBonusMap[match[1]]);
+      }
+    }
+  });
+
+  return bestBonus;
 }
 
 function getAllKnownSpells(character) {

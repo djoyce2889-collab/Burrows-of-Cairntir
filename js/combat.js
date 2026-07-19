@@ -49,6 +49,15 @@ function getCurrentDifficultySettings() {
   return DIFFICULTY_SETTINGS[selectedDifficulty] || DIFFICULTY_SETTINGS.normal;
 }
 
+/**
+ * Now also accounts for: crafted gear quality (Adept/Expert/
+ * Master weapons and armor were invisible to this before), each
+ * active follower traveling with you (a fuller party fights
+ * meaningfully harder than a solo character), and combat-relevant
+ * traits (Keen Senses, Thick Hide, Predator's Instinct, Iron
+ * Will) — all of which previously had zero effect on difficulty
+ * scaling despite meaningfully strengthening the player.
+ */
 function getPlayerPowerRank() {
   const relevantIds = Object.keys(playerCharacter.skills).filter(
     (id) => SKILLS[id] && (SKILLS[id].category === "Weapon" || SKILLS[id].category === "Magic")
@@ -66,6 +75,17 @@ function getPlayerPowerRank() {
   const style = COMBAT_STYLES[playerCharacter.combatStyle];
   if (style) bonusRank += style.attackBonus + style.defenseBonus;
 
+  const craftedWeaponBonus = getCraftedItemBonus(playerCharacter, playerCharacter.equippedWeaponSkill);
+  const craftedArmorBonus = getCraftedItemBonus(playerCharacter, playerCharacter.equippedArmorSkill);
+  bonusRank += craftedWeaponBonus + craftedArmorBonus;
+
+  bonusRank += getActiveFollowers().length;
+
+  const combatTraitIds = ["keenSenses", "thickHide", "predatorInstinct", "ironWill"];
+  if (playerCharacter.traits) {
+    bonusRank += playerCharacter.traits.filter((t) => combatTraitIds.includes(t)).length;
+  }
+
   return bestRank + bonusRank;
 }
 
@@ -77,10 +97,76 @@ function getAdaptiveScaling() {
   };
 }
 
-function getEffectRankSum(kind) {
+/**
+ * Now accepts an optional owner (defaults to playerCharacter).
+ * Effects without an explicit "owner" field are treated as
+ * belonging to the player — so every existing player spell
+ * still works exactly as before, with zero changes needed on
+ * their end. Follower-owned effects (added starting this batch)
+ * are the only ones that ever set owner explicitly.
+ */
+/**
+ * Casting a curse (dot-type effect) that's already active on the
+ * enemy replaces the old copy instead of stacking a second one —
+ * only one instance of any specific curse can ever be active at
+ * once, no matter who cast it or how many times it's recast.
+ */
+function pushDotEffect(newEffect) {
+  currentCombat.activeEffects = currentCombat.activeEffects.filter(
+    (e) => !(e.kind === "dot" && e.spellName === newEffect.spellName)
+  );
+  currentCombat.activeEffects.push(newEffect);
+}
+
+function getEffectRankSum(kind, owner) {
+  const targetOwner = owner || playerCharacter;
   return currentCombat.activeEffects
-    .filter((e) => e.kind === kind)
+    .filter((e) => e.kind === kind && (e.partyWide || (e.owner || playerCharacter) === targetOwner))
     .reduce((sum, e) => sum + e.rankBonus, 0);
+}
+
+/**
+ * Generic version of getPlayerCombatStyleBonus() that works for
+ * any character, not just the player. Shield/offhand-equipment
+ * gating only applies to the player for now, since followers
+ * don't yet have their own shield/offhand equip UI.
+ */
+function getCombatStyleBonusFor(character) {
+  const style = COMBAT_STYLES[character.combatStyle];
+  if (!style) return { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0 };
+
+  const result = Object.assign({}, style);
+
+  if (character === playerCharacter) {
+    const needsShield = character.combatStyle === "swordShield" || character.combatStyle === "axeShield";
+    if (needsShield && !character.equippedShield) {
+      result.defenseBonus = 0;
+    }
+    if (character.combatStyle === "dual" && !character.equippedOffhandSkill) {
+      result.attackBonus = 0;
+    }
+  }
+
+  return result;
+}
+
+function getEffectiveAttackTierFor(character, baseTierName) {
+  const equipBonus = character.weaponEnchantment ? 1 : 0;
+  const styleBonus = getCombatStyleBonusFor(character).attackBonus;
+  const craftedBonus = getCraftedItemBonus(character, character.equippedWeaponSkill);
+  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus", character) + equipBonus + styleBonus + craftedBonus);
+}
+
+function getEffectiveSpellDamageTierFor(character, baseTierName) {
+  const baseAttackTier = getEffectiveAttackTierFor(character, baseTierName);
+  const spellBonus = getCombatStyleBonusFor(character).spellDamageBonus || 0;
+  const songBonus = getEffectRankSum("spellDamageBuff", character);
+  return shiftTierByRank(baseAttackTier, spellBonus + songBonus);
+}
+
+function getEffectiveHealTierFor(character, baseTierName) {
+  const healBonus = getCombatStyleBonusFor(character).healBonus || 0;
+  return shiftTierByRank(baseTierName, healBonus);
 }
 
 /**
@@ -103,15 +189,36 @@ function stopSong(spellName) {
   return true;
 }
 
+/**
+ * Sword & Shield / Axe & Shield only grant their defense bonus
+ * if a Shield is actually equipped, and Dual Wielding only
+ * grants its attack bonus if a second weapon is actually
+ * equipped in the offhand — picking the style alone is no
+ * longer enough on its own.
+ */
 function getPlayerCombatStyleBonus() {
   const style = COMBAT_STYLES[playerCharacter.combatStyle];
-  return style || { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0 };
+  if (!style) return { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0 };
+
+  const result = Object.assign({}, style);
+
+  const needsShield = playerCharacter.combatStyle === "swordShield" || playerCharacter.combatStyle === "axeShield";
+  if (needsShield && !playerCharacter.equippedShield) {
+    result.defenseBonus = 0;
+  }
+
+  if (playerCharacter.combatStyle === "dual" && !playerCharacter.equippedOffhandSkill) {
+    result.attackBonus = 0;
+  }
+
+  return result;
 }
 
 function getEffectivePlayerAttackTier(baseTierName) {
   const equipBonus = playerCharacter.weaponEnchantment ? 1 : 0;
   const styleBonus = getPlayerCombatStyleBonus().attackBonus;
-  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus);
+  const craftedBonus = getCraftedItemBonus(playerCharacter, playerCharacter.equippedWeaponSkill);
+  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus + craftedBonus);
 }
 
 function getEffectivePlayerSpellDamageTier(baseTierName) {
@@ -144,6 +251,41 @@ function getArmorEnchantDefenseBonus() {
  * subtracted from the final damage number, not folded into a
  * success-chance tier shift.
  */
+/**
+ * Keen Senses: your very first action each fight (melee or
+ * spell) gets a sharp accuracy bonus, as you spot the opening
+ * before the enemy is ready. Consumes itself once used.
+ */
+function consumeKeenSensesBonus() {
+  if (currentCombat.firstPlayerActionTaken) return 0;
+  currentCombat.firstPlayerActionTaken = true;
+  if (playerCharacter.traits && playerCharacter.traits.includes("keenSenses")) return 2;
+  return 0;
+}
+
+/**
+ * Thick Hide: flat damage reduction on every PHYSICAL hit you
+ * personally take — doesn't apply to magic attacks, and doesn't
+ * apply to followers.
+ */
+function getThickHideReduction(target, attackType) {
+  if (target !== playerCharacter || attackType !== "physical") return 0;
+  if (playerCharacter.traits && playerCharacter.traits.includes("thickHide")) return 2;
+  return 0;
+}
+
+const NIGHTSIGHT_DUNGEON_IDS = ["frosthollowVault", "blackforgeDeep"];
+
+/**
+ * Nightsight grants a small accuracy bonus specifically while
+ * fighting inside your colder, darker dungeons.
+ */
+function getNightsightBonus() {
+  if (!playerCharacter.traits || !playerCharacter.traits.includes("nightsight")) return 0;
+  if (!NIGHTSIGHT_DUNGEON_IDS.includes(selectedDungeonId)) return 0;
+  return 1;
+}
+
 function getFlatDamageAbsorb(character) {
   let total = 0;
   currentCombat.activeEffects.forEach((e) => {
@@ -174,6 +316,14 @@ function consumeGuaranteedEffect(kind) {
  * one without the other, then the higher of the two still wins
  * as your effective physical defense, same as before.
  */
+/**
+ * Now applies buffs to WHOEVER is defending, not just the
+ * player — a follower's own Ironrune Guard, acBuff, dodgeBuff,
+ * or defensive song now correctly protects her when an enemy
+ * targets her specifically. Armor enchantment bonuses stay
+ * player-only, since followers don't have their own enchant
+ * slots yet.
+ */
 function getDefendingTierName(attackType, character) {
   if (attackType === "magic") {
     return getAdvantageTier(character, "magicResistance").name;
@@ -182,13 +332,11 @@ function getDefendingTierName(attackType, character) {
   let acTierName = getAdvantageTier(character, "armorClass").name;
   let dodgeTierName = getAdvantageTier(character, "dodge").name;
 
-  if (character === playerCharacter) {
-    const equipBonus = getArmorEnchantDefenseBonus();
-    const styleBonus = getPlayerCombatStyleBonus().defenseBonus;
-    const generalBonus = getEffectRankSum("playerDefenseBonus") + equipBonus + styleBonus;
-    acTierName = shiftTierByRank(acTierName, generalBonus + getEffectRankSum("acBuff"));
-    dodgeTierName = shiftTierByRank(dodgeTierName, generalBonus + getEffectRankSum("dodgeBuff"));
-  }
+  const equipBonus = character === playerCharacter ? getArmorEnchantDefenseBonus() : 0;
+  const styleBonus = getCombatStyleBonusFor(character).defenseBonus;
+  const generalBonus = getEffectRankSum("playerDefenseBonus", character) + equipBonus + styleBonus;
+  acTierName = shiftTierByRank(acTierName, generalBonus + getEffectRankSum("acBuff", character));
+  dodgeTierName = shiftTierByRank(dodgeTierName, generalBonus + getEffectRankSum("dodgeBuff", character));
 
   return getTierRank(acTierName) >= getTierRank(dodgeTierName) ? acTierName : dodgeTierName;
 }
@@ -241,6 +389,7 @@ function startCombat(enemyId) {
     enemyAttackType: enemyTemplate.attackType,
     playerDefending: false,
     activeEffects: initialEffects,
+    firstPlayerActionTaken: false,
     log: [],
     result: null
   };
@@ -250,61 +399,70 @@ function startCombat(enemyId) {
 
 function tickCombatEffects() {
   currentCombat.activeEffects.forEach((effect) => {
+    const owner = effect.owner || playerCharacter;
+
     if (effect.kind === "dot") {
       const dmg = Math.max(1, Math.floor(rollDamage(effect.casterTierName) / 2));
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
       currentCombat.log.push({ actor: "effect", kind: "dot", damage: dmg, spellName: effect.spellName });
     } else if (effect.kind === "companion") {
-      const heavyTier = shiftTierByRank(effect.casterTierName || "Novice", 2);
+      const kinshipBonus = playerCharacter.traits && playerCharacter.traits.includes("beastkinship") ? 1 : 0;
+      const heavyTier = shiftTierByRank(effect.casterTierName || "Novice", 2 + kinshipBonus);
       const dmg = rollDamage(heavyTier);
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
       currentCombat.log.push({ actor: "effect", kind: "companion", damage: dmg });
     } else if (effect.kind === "hot") {
-      const maxHP = getHitPoints(playerCharacter);
-      if (playerCharacter.currentHP < maxHP) {
-        const healAmt = Math.max(1, Math.floor(rollDamage(effect.casterTierName || "Novice") / 2));
-        playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + healAmt);
-        currentCombat.log.push({ actor: "effect", kind: "hot", healAmount: healAmt, spellName: effect.spellName });
-      }
+      const healTargets = effect.partyWide ? [playerCharacter, ...getActiveFollowers()] : [owner];
+      healTargets.forEach((target) => {
+        const maxHP = getHitPoints(target);
+        if (target.currentHP < maxHP) {
+          const healAmt = Math.max(1, Math.floor(rollDamage(effect.casterTierName || "Novice") / 2));
+          target.currentHP = Math.min(maxHP, target.currentHP + healAmt);
+          currentCombat.log.push({ actor: "effect", kind: "hot", healAmount: healAmt, spellName: effect.spellName, ownerName: target.name });
+        }
+      });
     } else if (effect.kind === "manaRegen") {
-      const manaMax = getManaPoolMax(playerCharacter);
-      const before = playerCharacter.currentMana;
-      playerCharacter.currentMana = Math.min(manaMax, playerCharacter.currentMana + 8);
-      const actualGain = playerCharacter.currentMana - before;
+      const manaMax = getManaPoolMax(owner);
+      const before = owner.currentMana;
+      owner.currentMana = Math.min(manaMax, owner.currentMana + 8);
+      const actualGain = owner.currentMana - before;
       if (actualGain > 0) {
-        currentCombat.log.push({ actor: "effect", kind: "manaRegen", manaAmount: actualGain, spellName: effect.spellName });
+        currentCombat.log.push({ actor: "effect", kind: "manaRegen", manaAmount: actualGain, spellName: effect.spellName, ownerName: owner.name });
       }
     } else if (
       effect.source === "song" &&
       (effect.kind === "playerAttackBonus" || effect.kind === "fortify" || effect.kind === "spellDamageBuff")
     ) {
-      currentCombat.log.push({ actor: "effect", kind: "songContinues", spellName: effect.spellName });
+      currentCombat.log.push({ actor: "effect", kind: "songContinues", spellName: effect.spellName, ownerName: owner.name });
     }
 
     if (effect.source === "song") {
       const songDrainAmount = 3;
-      if (playerCharacter.currentMana >= songDrainAmount) {
-        playerCharacter.currentMana -= songDrainAmount;
+      if (owner.currentMana >= songDrainAmount) {
+        owner.currentMana -= songDrainAmount;
       } else {
-        playerCharacter.currentMana = 0;
+        owner.currentMana = 0;
         effect._outOfMana = true;
       }
     }
   });
 
   currentCombat.activeEffects = currentCombat.activeEffects.filter((effect) => {
+    const owner = effect.owner || playerCharacter;
+    const fortifyTargets = effect.partyWide ? [playerCharacter, ...getActiveFollowers()] : [owner];
+
     if (effect._outOfMana) {
       if (effect.kind === "fortify" && effect.bonusHP) {
-        playerCharacter.currentHP = Math.max(0, playerCharacter.currentHP - effect.bonusHP);
+        fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
       }
-      currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: effect.spellName, outOfMana: true });
+      currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: effect.spellName, outOfMana: true, ownerName: owner.name });
       return false;
     }
     if (effect.roundsRemaining === null) return true;
     effect.roundsRemaining -= 1;
     if (effect.roundsRemaining <= 0) {
       if (effect.kind === "fortify" && effect.bonusHP) {
-        playerCharacter.currentHP = Math.max(0, playerCharacter.currentHP - effect.bonusHP);
+        fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
       }
       return false;
     }
@@ -341,6 +499,108 @@ function getFollowerHealOption(follower) {
   return null;
 }
 
+/**
+ * How many songs this specific follower currently has active —
+ * mirrors the player's 2-song cap, but counted per-follower so
+ * one follower singing doesn't block another from singing too.
+ */
+function getFollowerSongCount(follower) {
+  return currentCombat.activeEffects.filter((e) => e.source === "song" && e.owner === follower).length;
+}
+
+/**
+ * Finds a Line of Siuloir song this follower knows, has active,
+ * and isn't already singing — she won't try to sing the same
+ * song twice in one fight.
+ */
+function getFollowerSongOption(follower) {
+  const skillId = "ancestralSiuloir";
+  if (!follower.skills[skillId]) return null;
+  const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+  const allSpells = SPELLS[skillId] || [];
+  const alreadySinging = currentCombat.activeEffects
+    .filter((e) => e.source === "song" && e.owner === follower)
+    .map((e) => e.spellName);
+
+  const songSpell = allSpells.find(
+    (s) => known.includes(s.id) && isSpellActive(follower, s.id) && !alreadySinging.includes(s.name)
+  );
+  return songSpell ? { skillId, spell: songSpell } : null;
+}
+
+/**
+ * Actually sings the song — mirrors the relevant branches of
+ * performPlayerCast, but every effect is tagged with
+ * owner: follower, so sub-pieces 1-3's owner-aware functions
+ * correctly apply it to HER stats, not the player's.
+ */
+function performFollowerSongCast(follower, skillId, spell) {
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  useSkill(follower, skillId);
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+
+  const logEntry = {
+    actor: "follower",
+    followerName: follower.name,
+    action: "sing",
+    spellName: spell.name
+  };
+
+  if (spell.type === "hot") {
+    currentCombat.activeEffects.push({
+      kind: "hot", rankBonus: 0, roundsRemaining: null, casterTierName: tierBefore,
+      source: "song", spellName: spell.name, owner: follower, partyWide: true
+    });
+  } else if (spell.type === "buff") {
+    currentCombat.activeEffects.push({
+      kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: null,
+      source: "song", spellName: spell.name, owner: follower, partyWide: true
+    });
+  } else if (spell.type === "fortify") {
+    const bonusAmount = rollDamage(tierBefore);
+    [playerCharacter, ...getActiveFollowers()].forEach((t) => { t.currentHP += bonusAmount; });
+    currentCombat.activeEffects.push({
+      kind: "fortify", rankBonus: 0, roundsRemaining: null, bonusHP: bonusAmount,
+      source: "song", spellName: spell.name, owner: follower, partyWide: true
+    });
+    logEntry.healAmount = bonusAmount;
+  } else if (spell.type === "spellDamageBuff") {
+    currentCombat.activeEffects.push({
+      kind: "spellDamageBuff", rankBonus: 1, roundsRemaining: null,
+      source: "song", spellName: spell.name, owner: follower, partyWide: true
+    });
+  } else if (spell.type === "manaRegen") {
+    currentCombat.activeEffects.push({
+      kind: "manaRegen", rankBonus: 0, roundsRemaining: null,
+      source: "song", spellName: spell.name, owner: follower
+    });
+  } else if (spell.type === "dot") {
+    pushDotEffect({
+      kind: "dot", rankBonus: 0, roundsRemaining: null, casterTierName: tierBefore,
+      source: "song", spellName: spell.name, owner: follower
+    });
+  }
+
+  currentCombat.log.push(logEntry);
+}
+
+const FOLLOWER_ATTACK_SPELL_TYPES = ["damage", "burst", "undeadSlayer", "execute", "lifetap", "dot"];
+
+function getFollowerAttackSpellOption(follower) {
+  const magicSkillIds = Object.keys(follower.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Magic"
+  );
+  for (const skillId of magicSkillIds) {
+    const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+    const allSpells = SPELLS[skillId] || [];
+    const attackSpell = allSpells.find(
+      (s) => FOLLOWER_ATTACK_SPELL_TYPES.includes(s.type) && known.includes(s.id) && isSpellActive(follower, s.id)
+    );
+    if (attackSpell) return { skillId, spell: attackSpell };
+  }
+  return null;
+}
+
 function performFollowerHeal(follower, skillId, spell, target) {
   const tierBefore = getCharacterSkillTier(follower, skillId).name;
   useSkill(follower, skillId);
@@ -356,6 +616,66 @@ function performFollowerHeal(follower, skillId, spell, target) {
     action: "heal",
     targetName: target === playerCharacter ? playerCharacter.name : follower.name,
     healAmount: healAmount
+  });
+}
+
+function performFollowerAttackSpell(follower, skillId, spell) {
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  useSkill(follower, skillId);
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+
+  if (spell.type === "dot") {
+    pushDotEffect({
+      kind: "dot",
+      rankBonus: 0,
+      roundsRemaining: SPELL_EFFECT_DURATION,
+      casterTierName: tierBefore,
+      spellName: spell.name
+    });
+    currentCombat.log.push({
+      actor: "follower",
+      followerName: follower.name,
+      action: "cast",
+      spellName: spell.name
+    });
+    return;
+  }
+
+  let attackTierName = getEffectiveSpellDamageTierFor(follower, tierBefore);
+  if (spell.type === "burst") {
+    attackTierName = shiftTierByRank(attackTierName, 2);
+  }
+
+  const hit = rollSuccess(attackTierName, getEffectiveEnemyTier());
+  let damage = 0;
+
+  if (hit) {
+    damage = rollDamage(attackTierName);
+
+    if (spell.type === "undeadSlayer") {
+      const enemyTemplate = ENEMIES[currentCombat.enemyId];
+      const isUndead = enemyTemplate && (enemyTemplate.soundCategory === "zombie" || enemyTemplate.soundCategory === "spectral");
+      if (isUndead) damage = damage * 2;
+    } else if (spell.type === "execute") {
+      const missingHpPct = 1 - currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
+      damage = Math.round(damage * (1 + missingHpPct * 1.5));
+    }
+
+    currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+
+    if (spell.type === "lifetap") {
+      const followerMax = getHitPoints(follower);
+      follower.currentHP = Math.min(followerMax, follower.currentHP + damage);
+    }
+  }
+
+  currentCombat.log.push({
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    spellName: spell.name,
+    hit: hit,
+    damage: damage
   });
 }
 
@@ -381,14 +701,27 @@ function performFollowersTurn() {
       return;
     }
 
+    const songOption = getFollowerSongOption(follower);
+    if (songOption && follower.currentMana >= MANA_CONFIG.costPerCast && getFollowerSongCount(follower) < 2) {
+      performFollowerSongCast(follower, songOption.skillId, songOption.spell);
+      return;
+    }
+
+    const attackSpellOption = getFollowerAttackSpellOption(follower);
+    if (attackSpellOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
+      performFollowerAttackSpell(follower, attackSpellOption.skillId, attackSpellOption.spell);
+      return;
+    }
+
     const pick = getFollowerAttackPick(follower);
     useSkill(follower, pick.skillId);
 
+    const attackTierName = getEffectiveAttackTierFor(follower, pick.tierName);
     const hasGuaranteedFollowerAction = consumeGuaranteedEffect("guaranteedFollowerAction");
-    const hit = hasGuaranteedFollowerAction || rollSuccess(pick.tierName, getEffectiveEnemyTier());
+    const hit = hasGuaranteedFollowerAction || rollSuccess(attackTierName, getEffectiveEnemyTier());
     let damage = 0;
     if (hit) {
-      damage = rollDamage(pick.tierName);
+      damage = rollDamage(attackTierName);
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
     }
 
@@ -433,7 +766,7 @@ function resolveEnemyAttack() {
     return;
   }
 
-  const isStunned = currentCombat.activeEffects.some((e) => e.kind === "stun");
+  const isStunned = currentCombat.activeEffects.some((e) => e.kind === "stun" && e.target !== "player");
   const isVisionStunned = consumeGuaranteedEffect("guaranteedStun");
   if (isStunned || isVisionStunned) {
     currentCombat.playerDefending = false;
@@ -441,7 +774,7 @@ function resolveEnemyAttack() {
     return;
   }
 
-  const isFeared = currentCombat.activeEffects.some((e) => e.kind === "fear");
+  const isFeared = currentCombat.activeEffects.some((e) => e.kind === "fear" && e.target !== "player");
   if (isFeared && Math.random() < 0.4) {
     currentCombat.playerDefending = false;
     currentCombat.log.push({ actor: "effect", kind: "feared" });
@@ -479,7 +812,7 @@ function resolveEnemyAttack() {
       1,
       Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier * adaptive.damageMultiplier)
     );
-    const absorbed = getFlatDamageAbsorb(target);
+    const absorbed = getFlatDamageAbsorb(target) + getThickHideReduction(target, attackType);
     if (absorbed > 0) {
       damage = Math.max(0, damage - absorbed);
     }
@@ -503,6 +836,19 @@ function resolveEnemyAttack() {
   });
 
   if (hit && !deflected && isPlayerTarget) {
+    const hasIronWill = playerCharacter.traits && playerCharacter.traits.includes("ironWill");
+    const procChance = hasIronWill ? 0.06 : 0.15;
+    if (Math.random() < procChance) {
+      const inflictFear = Math.random() < 0.5;
+      currentCombat.activeEffects.push({
+        kind: inflictFear ? "fear" : "stun",
+        rankBonus: 0,
+        roundsRemaining: inflictFear ? SPELL_EFFECT_DURATION : 1,
+        target: "player"
+      });
+      currentCombat.log.push({ actor: "effect", kind: "enemyInflicted", inflictType: inflictFear ? "fear" : "stun" });
+    }
+
     const hasThornward = currentCombat.activeEffects.some((e) => e.kind === "thornward");
     if (hasThornward) {
       const counterDmg = Math.max(1, Math.floor(rollDamage("Novice") / 2));
@@ -528,7 +874,8 @@ function performPlayerAction(skillId) {
 
   const attackTier = getEffectivePlayerAttackTier(tierBefore);
   const isArcherShot = playerCharacter.combatStyle === "archer" && skillId === "archery";
-  const accuracyTier = isArcherShot ? shiftTierByRank(attackTier, 2) : attackTier;
+  const keenSensesBonus = consumeKeenSensesBonus();
+  const accuracyTier = shiftTierByRank(attackTier, (isArcherShot ? 2 : 0) + keenSensesBonus + getNightsightBonus());
   const enemyTier = getEffectiveEnemyTier();
   const hasGuaranteedHit = consumeGuaranteedEffect("guaranteedHit");
   const hit = hasGuaranteedHit || rollSuccess(accuracyTier, enemyTier);
@@ -537,6 +884,15 @@ function performPlayerAction(skillId) {
   if (hit) {
     damage = rollDamage(attackTier);
     currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+  }
+
+  if (hit && playerCharacter.traits && playerCharacter.traits.includes("predatorInstinct")) {
+    const woundedPct = 1 - currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
+    if (woundedPct >= 0.5) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.25));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
   }
 
   currentCombat.log.push({ actor: "player", skillId: skillId, spellName: null, hit: hit, damage: damage });
@@ -573,9 +929,11 @@ function performPlayerCast(skillId, spell) {
 
   if (spell.type === "damage") {
     const attackTier = getEffectivePlayerSpellDamageTier(tierBefore);
+    const keenSensesBonus = consumeKeenSensesBonus();
+    const accuracyTier = shiftTierByRank(attackTier, keenSensesBonus + getNightsightBonus());
     const enemyTier = getEffectiveEnemyTier();
     const hasGuaranteedSpellHit = consumeGuaranteedEffect("guaranteedSpellHit");
-    const hit = hasGuaranteedSpellHit || rollSuccess(attackTier, enemyTier);
+    const hit = hasGuaranteedSpellHit || rollSuccess(accuracyTier, enemyTier);
     let damage = 0;
     if (hit) {
       damage = rollDamage(attackTier);
@@ -615,19 +973,19 @@ function performPlayerCast(skillId, spell) {
       rankBonus: 1,
       roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
       source: isSong ? "song" : undefined,
-      spellName: spell.name
+      spellName: spell.name,
+      partyWide: isSong
     });
   } else if (spell.type === "guard") {
     currentCombat.activeEffects.push({ kind: "playerDefenseBonus", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "debuff") {
     currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "dot") {
-    currentCombat.activeEffects.push({
+    pushDotEffect({
       kind: "dot",
       rankBonus: 0,
-      roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
+      roundsRemaining: SPELL_EFFECT_DURATION,
       casterTierName: tierBefore,
-      source: isSong ? "song" : undefined,
       spellName: spell.name
     });
   } else if (spell.type === "stun") {
@@ -672,14 +1030,16 @@ function performPlayerCast(skillId, spell) {
     currentCombat.activeEffects.push({ kind: "thornward", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "fortify") {
     const bonusAmount = rollDamage(tierBefore);
-    playerCharacter.currentHP += bonusAmount;
+    const fortifyTargets = isSong ? [playerCharacter, ...getActiveFollowers()] : [playerCharacter];
+    fortifyTargets.forEach((t) => { t.currentHP += bonusAmount; });
     currentCombat.activeEffects.push({
       kind: "fortify",
       rankBonus: 0,
       roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
       bonusHP: bonusAmount,
       source: isSong ? "song" : undefined,
-      spellName: spell.name
+      spellName: spell.name,
+      partyWide: isSong
     });
     logEntry.healAmount = bonusAmount;
   } else if (spell.type === "hot") {
@@ -689,7 +1049,8 @@ function performPlayerCast(skillId, spell) {
       roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
       casterTierName: tierBefore,
       source: isSong ? "song" : undefined,
-      spellName: spell.name
+      spellName: spell.name,
+      partyWide: isSong
     });
   } else if (spell.type === "spellDamageBuff") {
     currentCombat.activeEffects.push({
@@ -697,7 +1058,8 @@ function performPlayerCast(skillId, spell) {
       rankBonus: 1,
       roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
       source: isSong ? "song" : undefined,
-      spellName: spell.name
+      spellName: spell.name,
+      partyWide: isSong
     });
   } else if (spell.type === "manaRegen") {
     currentCombat.activeEffects.push({
@@ -771,7 +1133,8 @@ function performPlayerFlee() {
   if (!currentCombat || currentCombat.result) return currentCombat;
 
   const dodgeTier = getAdvantageTier(playerCharacter, "dodge").name;
-  const success = rollSuccess(dodgeTier, currentCombat.enemyThreatTier);
+  const faeCunningBonus = playerCharacter.traits && playerCharacter.traits.includes("faeCunning") ? 0.15 : 0;
+  const success = rollSuccess(dodgeTier, currentCombat.enemyThreatTier, faeCunningBonus);
   currentCombat.log.push({ actor: "player", action: "flee", success: success });
 
   if (success) {
@@ -802,7 +1165,7 @@ function getEnemyConditionText() {
 function getActiveEffectsSummary() {
   if (!currentCombat.activeEffects.length) return "";
   const parts = currentCombat.activeEffects.map((e) => {
-    if (e.source === "song") return `${e.spellName} playing`;
+    if (e.source === "song") return `${e.spellName} playing${e.owner && e.owner !== playerCharacter ? ` (${e.owner.name})` : ""}`;
     if (e.kind === "playerAttackBonus") return `Empowered strikes (${e.roundsRemaining} rounds left)`;
     if (e.kind === "playerDefenseBonus") return `Braced defense (${e.roundsRemaining} rounds left)`;
     if (e.kind === "enemyDebuff") return `Foe weakened (${e.roundsRemaining} rounds left)`;
@@ -814,7 +1177,7 @@ function getActiveEffectsSummary() {
     if (e.kind === "dodgeBuff") return `Evasive grace (${e.roundsRemaining} rounds left)`;
     if (e.kind === "acBuff") return `Hardened bearing (${e.roundsRemaining} rounds left)`;
     if (e.kind === "spellDamageBuff") return `Empowered magic (${e.roundsRemaining} rounds left)`;
-    if (e.kind === "manaRegen") return "Mana regenerating";
+    if (e.kind === "manaRegen") return `Mana regenerating${e.owner && e.owner !== playerCharacter ? ` (${e.owner.name})` : ""}`;
     if (e.kind === "absorb") return `Warded against harm (${e.roundsRemaining} rounds left)`;
     if (e.kind === "curseBack") return `Foe's fortune turned (${e.roundsRemaining} rounds left)`;
     if (e.kind === "stun") return "Foe knocked down, losing their next turn";
@@ -831,9 +1194,20 @@ function describeLogEntry(entry) {
     if (entry.kind === "downed") return `${entry.name} is knocked out of the fight!`;
     if (entry.kind === "feared") return `${currentCombat.enemyName} freezes, too shaken by fear to strike.`;
     if (entry.kind === "stunned") return `${currentCombat.enemyName} is still reeling, knocked off balance and unable to act.`;
-    if (entry.kind === "hot") return `${entry.spellName || "The lingering magic"} mends you further, restoring ${entry.healAmount} Hit Points.`;
+    if (entry.kind === "enemyInflicted") {
+      return entry.inflictType === "fear"
+        ? `${currentCombat.enemyName}'s onslaught leaves you badly shaken.`
+        : `${currentCombat.enemyName}'s blow leaves you reeling, off balance.`;
+    }
+    if (entry.kind === "hot") {
+      const who = entry.ownerName && entry.ownerName !== playerCharacter.name ? entry.ownerName : "you";
+      return `${entry.spellName || "The lingering magic"} mends ${who} further, restoring ${entry.healAmount} Hit Points.`;
+    }
     if (entry.kind === "thornProc") return `Your thorns lash back at ${currentCombat.enemyName} for ${entry.damage}.`;
-    if (entry.kind === "manaRegen") return `${entry.spellName || "The song's melody"} restores ${entry.manaAmount} mana.`;
+    if (entry.kind === "manaRegen") {
+      const who = entry.ownerName && entry.ownerName !== playerCharacter.name ? `${entry.ownerName}'s` : "your";
+      return `${entry.spellName || "The song's melody"} restores ${entry.manaAmount} mana to ${who} pool.`;
+    }
     if (entry.kind === "songStopped") {
       return entry.outOfMana
         ? `${entry.spellName} fades as your mana runs dry.`
@@ -854,12 +1228,30 @@ function describeLogEntry(entry) {
     if (entry.action === "heal") {
       return `${entry.followerName} calls on healing magic, restoring ${entry.healAmount} Hit Points to ${entry.targetName}.`;
     }
+    if (entry.action === "cast") {
+      if (entry.hit === undefined) {
+        return `${entry.followerName} calls on ${entry.spellName}, a curse taking hold.`;
+      }
+      return entry.hit
+        ? `${entry.followerName} calls on ${entry.spellName} and lands a solid hit for ${entry.damage}.`
+        : `${entry.followerName} calls on ${entry.spellName}, but it goes wide.`;
+    }
+    if (entry.action === "sing") {
+      return entry.healAmount
+        ? `${entry.followerName} strikes up ${entry.spellName}, gaining ${entry.healAmount} temporary Hit Points.`
+        : `${entry.followerName} strikes up ${entry.spellName}, its melody taking hold.`;
+    }
     return entry.hit
       ? `${entry.followerName} strikes and lands a hit for ${entry.damage}.`
       : `${entry.followerName} strikes, but misses.`;
   }
 
   if (entry.actor === "player") {
+    if (entry.action === "incapacitated") {
+      return entry.incapacitateType === "stun"
+        ? "You're still too rattled to act — the moment slips past you."
+        : "Fear holds you rooted in place, and the moment passes.";
+    }
     if (entry.action === "defend") {
       return "You brace yourself, ready to turn aside the next blow.";
     }

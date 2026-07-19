@@ -130,7 +130,20 @@ const DUNGEON_CONTENT = {
       greatHallFight: {
         text: "A guardsman in tarnished mail turns at the sound of the doors — too slowly, too stiffly, his eyes fixed on a war that ended long ago.",
         choices: [
-          { label: "Fight", type: "combat", enemyId: "restlessGuardsman", target: "greatHall" }
+          { label: "Fight", type: "combat", enemyId: "restlessGuardsman", target: "greatHall" },
+          {
+            label: "Try to reason with him (Persuasion)",
+            type: "persuade",
+            skillId: "ancestralAverick",
+            spellId: "warbloodFury",
+            target: "greatHall",
+            failDialogue: [
+              "\"The post,\" he mutters, \"is not yours to relieve.\"",
+              "\"I know no colors of yours,\" he says. \"Stand down, or be stood down.\"",
+              "\"The war does not end,\" he says, \"because you say it does.\""
+            ],
+            finalFailDialogue: "His eyes never truly settle on you — only on a battle that never left him."
+          }
         ]
       },
       greatHall: {
@@ -143,7 +156,7 @@ const DUNGEON_CONTENT = {
       armory: {
         text: "Racks of rusted weapons line the armory walls. Wedged behind a fallen shield, a scrap of old writing — a bloodline technique, half-remembered.",
         choices: [
-          { label: "Study the technique (Line of Averick)", type: "discover", skillId: "ancestralAverick", spellId: "stormedge", target: "diningHall" },
+          { label: "Study the technique (Line of Averick)", type: "discover", skillId: "ancestralAverick", spellId: "warbloodFury", target: "diningHall" },
           { label: "Leave it and move on", type: "goto", target: "diningHall" }
         ]
       },
@@ -157,7 +170,7 @@ const DUNGEON_CONTENT = {
       library: {
         text: "Most of the books have rotted to pulp, but one journal, sealed in wax, has survived — a wizard's notes, still legible.",
         choices: [
-          { label: "Study the notes (Line of Emyrs)", type: "discover", skillId: "ancestralEmyrs", spellId: "frostbolt", target: "bannerHall" },
+          { label: "Study the notes (Line of Emyrs)", type: "discover", skillId: "ancestralEmyrs", spellId: "mindshatter", target: "bannerHall" },
           { label: "Leave it and move on", type: "goto", target: "bannerHall" }
         ]
       },
@@ -279,7 +292,20 @@ const DUNGEON_CONTENT = {
       shieldmanFight: {
         text: "A drowned shieldman turns at the sound, shield raised, rot-green and slow but still remembering how to fight.",
         choices: [
-          { label: "Fight", type: "combat", enemyId: "drownedShieldman", target: "greatRoom" }
+          { label: "Fight", type: "combat", enemyId: "drownedShieldman", target: "greatRoom" },
+          {
+            label: "Invoke the old oaths of the hall (Persuasion)",
+            type: "persuade",
+            skillId: "runeVision",
+            spellId: "foreseenOpening",
+            target: "greatRoom",
+            failDialogue: [
+              "The shieldman's rotted jaw works soundlessly, but the shield does not lower.",
+              "Something in the ruined eyes almost seems to recognize the old words — almost.",
+              "The shield rises higher instead, as if the oath itself offends him now."
+            ],
+            finalFailDialogue: "Whatever oath once bound him, it has long since drowned with everything else."
+          }
         ]
       },
       greatRoom: {
@@ -386,7 +412,20 @@ const DUNGEON_CONTENT = {
       houndAmbush: {
         text: "The rustling was a moss-grown hound after all — dead a long time, moving like it still remembers the hunt.",
         choices: [
-          { label: "Fight", type: "combat", enemyId: "mossHound", target: "clearingDoors" }
+          { label: "Fight", type: "combat", enemyId: "mossHound", target: "clearingDoors" },
+          {
+            label: "Try to calm it, kin to kin (Persuasion)",
+            type: "persuade",
+            skillId: "pathWild",
+            spellId: "wolfsCall",
+            target: "clearingDoors",
+            failDialogue: [
+              "The hound's hollow eyes fix on you, and whatever once answered to a gentle hand is long gone from them.",
+              "It circles instead of settling, moss-thick fur rising along its spine.",
+              "The old bond you're reaching for was buried with it, and stays buried."
+            ],
+            finalFailDialogue: "Whatever kinship the grove once granted it has long since rotted away with the rest."
+          }
         ]
       },
       clearingDoors: {
@@ -405,7 +444,7 @@ const DUNGEON_CONTENT = {
       markedStone: {
         text: "The marking is old druidic knotwork, half a spell captured in stone.",
         choices: [
-          { label: "Learn what remains (Path of the Wild)", type: "discover", skillId: "pathWild", spellId: "stagsCharge", target: "deeperPath" },
+          { label: "Learn what remains (Path of the Wild)", type: "discover", skillId: "pathWild", spellId: "thornward", target: "deeperPath" },
           { label: "Leave it and move on", type: "goto", target: "deeperPath" }
         ]
       },
@@ -512,7 +551,20 @@ const DUNGEON_CONTENT = {
       wraithEncounter: {
         text: "An ember-touched wraith drifts across the path, wreathed in fire that shouldn't still be burning after all this time.",
         choices: [
-          { label: "Fight", type: "combat", enemyId: "emberTouchedWraith", target: "cairnEntrance" }
+          { label: "Fight", type: "combat", enemyId: "emberTouchedWraith", target: "cairnEntrance" },
+          {
+            label: "Speak the old bloodline names (Persuasion)",
+            type: "persuade",
+            skillId: "ancestralSiuloir",
+            spellId: "layOfMending",
+            target: "cairnEntrance",
+            failDialogue: [
+              "The flame flares brighter at the names, but no recognition follows.",
+              "\"Blood,\" it seems to hiss, without a mouth to shape the word properly.",
+              "Whatever clan once claimed it has been burned out of whatever it is now."
+            ],
+            finalFailDialogue: "The names mean nothing to it anymore — only the fire remains, and the fire does not listen."
+          }
         ]
       },
       cairnEntrance: {
@@ -525,7 +577,7 @@ const DUNGEON_CONTENT = {
       sideCairn: {
         text: "The side-cairn holds old grave goods, mostly ruined — except for one scrap of ancestral writing, still whole.",
         choices: [
-          { label: "Study the writing (Line of Averick)", type: "discover", skillId: "ancestralAverick", spellId: "frostbiteEdge", target: "innerCairn" },
+          { label: "Study the writing (Line of Averick)", type: "discover", skillId: "ancestralAverick", spellId: "glacialEdge", target: "innerCairn" },
           { label: "Leave it and enter the central cairn", type: "goto", target: "innerCairn" }
         ]
       },
@@ -551,7 +603,7 @@ const DUNGEON_CONTENT = {
       hummingChamberStudy: {
         text: "The humming chamber holds a wizard's cache, one page of notes still intact despite everything.",
         choices: [
-          { label: "Study the notes (Line of Emyrs)", type: "discover", skillId: "ancestralEmyrs", spellId: "stoneshard", target: "converge" }
+          { label: "Study the notes (Line of Emyrs)", type: "discover", skillId: "ancestralEmyrs", spellId: "arcaneCataclysm", target: "converge" }
         ]
       },
       converge: {
@@ -606,7 +658,20 @@ const DUNGEON_CONTENT = {
         text: "The outer chamber is thick with frost, old forge-tools half-buried in snowdrift. A frostbound warrior stands motionless nearby, ice thick over old armor.",
         choices: [
           { label: "Fight", type: "combat", enemyId: "frostboundWarrior", target: "innerPath" },
-          { label: "Move quietly around it (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "innerPath", failureTarget: "warriorAmbush" }
+          { label: "Move quietly around it (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "innerPath", failureTarget: "warriorAmbush" },
+          {
+            label: "Speak the old rune-oaths of battle (Persuasion)",
+            type: "persuade",
+            skillId: "runeBlade",
+            spellId: "bloodfuryMark",
+            target: "innerPath",
+            failDialogue: [
+              "The ice over its armor cracks, but the warrior does not stir from its stance.",
+              "Frost-blue eyes turn toward you, unreadable, and do not soften.",
+              "Whatever oath once bound it to a shield-wall, it answers to something colder now."
+            ],
+            finalFailDialogue: "The runes it once carved for others mean nothing to it now — only stillness, and the cold."
+          }
         ]
       },
       warriorAmbush: {
@@ -665,7 +730,7 @@ const DUNGEON_CONTENT = {
       archiveStudy: {
         text: "The archive holds rows of frozen tablets. One, cracked but readable, catches your eye.",
         choices: [
-          { label: "Study the tablet (Runes of the Curse)", type: "discover", skillId: "runeCurse", spellId: "blightmark", target: "converge" }
+          { label: "Study the tablet (Runes of the Curse)", type: "discover", skillId: "runeCurse", spellId: "doomrune", target: "converge" }
         ]
       },
       coldPassageFight: {
@@ -752,7 +817,20 @@ const DUNGEON_CONTENT = {
       voiceEncounter: {
         text: "One of the standing stones speaks — or something speaking through it — as you draw near, and the air itself seems to answer.",
         choices: [
-          { label: "Fight", type: "combat", enemyId: "stoneboundVoice", target: "ringApproach" }
+          { label: "Fight", type: "combat", enemyId: "stoneboundVoice", target: "ringApproach" },
+          {
+            label: "Speak as one seeking consensus (Persuasion)",
+            type: "persuade",
+            skillId: "pathStorm",
+            spellId: "lightningLash",
+            target: "ringApproach",
+            failDialogue: [
+              "The voice answers, but not in words — only a pressure, weighing your claim and finding it wanting.",
+              "\"Consensus,\" it echoes, hollow, \"was the first thing lost here.\"",
+              "The stone falls silent again, as if the very idea of agreement offends it now."
+            ],
+            finalFailDialogue: "Whatever process once bound the Túath together, this voice has long since outgrown the need for it."
+          }
         ]
       },
       ringApproach: {
@@ -765,7 +843,7 @@ const DUNGEON_CONTENT = {
       loneStoneStudy: {
         text: "The lone stone's carving is different from the rest — a storm-pattern, still humming faintly with old weather.",
         choices: [
-          { label: "Study the pattern (Path of the Storm)", type: "discover", skillId: "pathStorm", spellId: "thunderclap", target: "remnantFight" }
+          { label: "Study the pattern (Path of the Storm)", type: "discover", skillId: "pathStorm", spellId: "wildfireBolt", target: "remnantFight" }
         ]
       },
       remnantFight: {
@@ -826,7 +904,22 @@ const DUNGEON_CONTENT = {
       },
       reaverAmbush: {
         text: "Something moves among the dead tools and cold ash — a corrupted dwarf warrior, ashen grey and eyes glowing sickly green, turning toward you with a notched axe already raised.",
-        choices: [{ type: "combat", label: "Fight the Reaver", enemyId: "duergarReaver", target: "forgeChestLoot" }]
+        choices: [
+          { type: "combat", label: "Fight the Reaver", enemyId: "duergarReaver", target: "forgeChestLoot" },
+          {
+            type: "persuade",
+            label: "Call out to the kin buried beneath the corruption (Persuasion)",
+            skillId: "runeCurse",
+            spellId: "witheringHex",
+            target: "forgeChestLoot",
+            failDialogue: [
+              "The sickly green eyes flicker at the words, but the axe does not lower.",
+              "Whatever dwarf it once was does not answer — only the hunger does.",
+              "The corruption has gone too deep for kinship to reach whatever remains."
+            ],
+            finalFailDialogue: "Whoever it once was is gone — only the Blackforge's hunger wears its shape now."
+          }
+        ]
       },
       forgeChestLoot: {
         text: "A dwarven strongbox lies forced open, ore and old coin spilled across the stone floor, untouched since whatever happened here.",

@@ -402,6 +402,7 @@ function confirmDifficultyAndStartCreation() {
   if (freeSlot === null) return;
 
   currentSaveSlot = freeSlot;
+  playMusic(MAIN_THEME_SRC);
   resetCreationState("player");
   goToCreationStep(0);
 }
@@ -1174,6 +1175,187 @@ function renderEquipSection() {
       armorGrid.appendChild(card);
     });
   }
+
+  renderShieldOffhandSections();
+}
+
+/**
+ * Shield and Offhand equip sections only appear when your
+ * chosen combat style actually needs them (Sword/Axe & Shield
+ * need a Shield; Dual Wielding needs a second weapon skill).
+ * Both must be crafted/trained and then equipped here before
+ * their combat style bonus (checked in getPlayerCombatStyleBonus
+ * in combat.js) actually applies.
+ */
+function renderShieldOffhandSections() {
+  const shieldSection = document.getElementById("equip-shield-section");
+  const offhandSection = document.getElementById("equip-offhand-section");
+  const shieldGrid = document.getElementById("equip-shield-grid");
+  const offhandGrid = document.getElementById("equip-offhand-grid");
+  shieldGrid.innerHTML = "";
+  offhandGrid.innerHTML = "";
+
+  const needsShield = playerCharacter.combatStyle === "swordShield" || playerCharacter.combatStyle === "axeShield";
+  const needsOffhand = playerCharacter.combatStyle === "dual";
+
+  shieldSection.style.display = needsShield ? "block" : "none";
+  offhandSection.style.display = needsOffhand ? "block" : "none";
+
+  if (needsShield) {
+    const hasShieldItem = playerCharacter.inventory.some((item) => item.startsWith("Shield ("));
+    if (!hasShieldItem) {
+      shieldGrid.innerHTML = '<div class="cc-skill-count">Craft a Shield at the forge to equip one.</div>';
+    } else {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      if (playerCharacter.equippedShield) card.classList.add("selected");
+      card.innerHTML = `
+        <div class="cc-card-name">Shield</div>
+        <div class="cc-card-desc">${playerCharacter.equippedShield ? "Equipped" : "Not equipped"}</div>
+      `;
+      card.addEventListener("click", () => {
+        playerCharacter.equippedShield = !playerCharacter.equippedShield;
+        renderEquipSection();
+        saveGameState();
+      });
+      shieldGrid.appendChild(card);
+    }
+  }
+
+  if (needsOffhand) {
+    const trainedWeaponIds = Object.keys(playerCharacter.skills).filter(
+      (id) => SKILLS[id] && SKILLS[id].category === "Weapon" && id !== playerCharacter.equippedWeaponSkill
+    );
+    if (trainedWeaponIds.length === 0) {
+      offhandGrid.innerHTML = '<div class="cc-skill-count">Train a second weapon skill to dual-wield.</div>';
+    } else {
+      trainedWeaponIds.forEach((skillId) => {
+        const card = document.createElement("div");
+        card.className = "cc-card";
+        if (playerCharacter.equippedOffhandSkill === skillId) card.classList.add("selected");
+        card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
+        card.addEventListener("click", () => {
+          playerCharacter.equippedOffhandSkill =
+            playerCharacter.equippedOffhandSkill === skillId ? null : skillId;
+          renderEquipSection();
+          saveGameState();
+        });
+        offhandGrid.appendChild(card);
+      });
+    }
+  }
+}
+
+function renderEquipSection() {
+  const weaponGrid = document.getElementById("equip-weapon-grid");
+  const armorGrid = document.getElementById("equip-armor-grid");
+  weaponGrid.innerHTML = "";
+  armorGrid.innerHTML = "";
+
+  const trainedWeaponIds = Object.keys(playerCharacter.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Weapon"
+  );
+  if (!trainedWeaponIds.includes("unarmedCombat")) {
+    trainedWeaponIds.push("unarmedCombat");
+  }
+  trainedWeaponIds.forEach((skillId) => {
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (playerCharacter.equippedWeaponSkill === skillId) card.classList.add("selected");
+    card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
+    card.addEventListener("click", () => {
+      setEquippedWeapon(playerCharacter, skillId);
+      renderEquipSection();
+      saveGameState();
+    });
+    weaponGrid.appendChild(card);
+  });
+
+  const trainedArmorIds = Object.keys(playerCharacter.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Armor"
+  );
+  if (trainedArmorIds.length === 0) {
+    armorGrid.innerHTML = '<div class="cc-skill-count">No armor trained yet.</div>';
+  } else {
+    trainedArmorIds.forEach((skillId) => {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      if (playerCharacter.equippedArmorSkill === skillId) card.classList.add("selected");
+      card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
+      card.addEventListener("click", () => {
+        setEquippedArmor(playerCharacter, skillId);
+        renderEquipSection();
+        saveGameState();
+      });
+      armorGrid.appendChild(card);
+    });
+  }
+
+  renderShieldOffhandSections();
+}
+
+/**
+ * Shield and Offhand equip sections only appear when your
+ * chosen combat style actually needs them (Sword/Axe & Shield
+ * need a Shield; Dual Wielding needs a second weapon skill).
+ */
+function renderShieldOffhandSections() {
+  const shieldSection = document.getElementById("equip-shield-section");
+  const offhandSection = document.getElementById("equip-offhand-section");
+  const shieldGrid = document.getElementById("equip-shield-grid");
+  const offhandGrid = document.getElementById("equip-offhand-grid");
+  shieldGrid.innerHTML = "";
+  offhandGrid.innerHTML = "";
+
+  const needsShield = playerCharacter.combatStyle === "swordShield" || playerCharacter.combatStyle === "axeShield";
+  const needsOffhand = playerCharacter.combatStyle === "dual";
+
+  shieldSection.style.display = needsShield ? "block" : "none";
+  offhandSection.style.display = needsOffhand ? "block" : "none";
+
+  if (needsShield) {
+    const hasShieldItem = playerCharacter.inventory.some((item) => item.startsWith("Shield ("));
+    if (!hasShieldItem) {
+      shieldGrid.innerHTML = '<div class="cc-skill-count">Craft a Shield at the forge to equip one.</div>';
+    } else {
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      if (playerCharacter.equippedShield) card.classList.add("selected");
+      card.innerHTML = `
+        <div class="cc-card-name">Shield</div>
+        <div class="cc-card-desc">${playerCharacter.equippedShield ? "Equipped" : "Not equipped"}</div>
+      `;
+      card.addEventListener("click", () => {
+        playerCharacter.equippedShield = !playerCharacter.equippedShield;
+        renderEquipSection();
+        saveGameState();
+      });
+      shieldGrid.appendChild(card);
+    }
+  }
+
+  if (needsOffhand) {
+    const trainedWeaponIds = Object.keys(playerCharacter.skills).filter(
+      (id) => SKILLS[id] && SKILLS[id].category === "Weapon" && id !== playerCharacter.equippedWeaponSkill
+    );
+    if (trainedWeaponIds.length === 0) {
+      offhandGrid.innerHTML = '<div class="cc-skill-count">Train a second weapon skill to dual-wield.</div>';
+    } else {
+      trainedWeaponIds.forEach((skillId) => {
+        const card = document.createElement("div");
+        card.className = "cc-card";
+        if (playerCharacter.equippedOffhandSkill === skillId) card.classList.add("selected");
+        card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
+        card.addEventListener("click", () => {
+          playerCharacter.equippedOffhandSkill =
+            playerCharacter.equippedOffhandSkill === skillId ? null : skillId;
+          renderEquipSection();
+          saveGameState();
+        });
+        offhandGrid.appendChild(card);
+      });
+    }
+  }
 }
 
 function renderInventoryScreen() {
@@ -1234,12 +1416,36 @@ function renderInventoryScreen() {
     grid.className = "cc-grid";
     Object.keys(equipmentCounts).forEach((name) => {
       const count = equipmentCounts[name];
+      const requiredSkill = getItemRequiredSkill(name);
       const card = document.createElement("div");
       card.className = "cc-card";
+      const isEquipped = requiredSkill &&
+        (playerCharacter.equippedWeaponSkill === requiredSkill || playerCharacter.equippedArmorSkill === requiredSkill);
+      if (isEquipped) card.classList.add("selected");
       card.innerHTML = `
         <div class="cc-card-name">${name}</div>
-        <div class="cc-card-desc">${count > 1 ? `Quantity: ${count}` : "Carried"}</div>
+        <div class="cc-card-desc">${count > 1 ? `Quantity: ${count}` : "Carried"}${isEquipped ? " &middot; Equipped" : ""}</div>
       `;
+      if (requiredSkill) {
+        card.addEventListener("click", () => {
+          if (!playerCharacter.skills[requiredSkill]) {
+            playerCharacter.skills[requiredSkill] = { timesUsed: 0 };
+          }
+          if (SKILLS[requiredSkill].category === "Weapon") {
+            setEquippedWeapon(playerCharacter, requiredSkill);
+          } else if (SKILLS[requiredSkill].category === "Armor") {
+            setEquippedArmor(playerCharacter, requiredSkill);
+          }
+          renderInventoryScreen();
+          saveGameState();
+        });
+      } else if (name.startsWith("Shield (")) {
+        card.addEventListener("click", () => {
+          playerCharacter.equippedShield = !playerCharacter.equippedShield;
+          renderInventoryScreen();
+          saveGameState();
+        });
+      }
       grid.appendChild(card);
     });
     list.appendChild(grid);
@@ -1353,12 +1559,101 @@ function getManaStatusLine() {
 }
 
 function getAttemptLabel(choice) {
+  let label = choice.label;
+  if ((choice.type === "discover" || choice.type === "persuade") && choice.spellId) {
+    const skillSpells = SPELLS[choice.skillId] || [];
+    const spell = skillSpells.find((s) => s.id === choice.spellId);
+    if (spell) label = label.replace(/\([^)]*\)$/, `(${spell.name})`);
+  }
+
   const used = choice._attempts || 0;
   if (used > 0 && used < 3) {
     const remaining = 3 - used;
-    return `${choice.label} (${remaining} ${remaining === 1 ? "try" : "tries"} left)`;
+    return `${label} (${remaining} ${remaining === 1 ? "try" : "tries"} left)`;
   }
-  return choice.label;
+  return label;
+}
+
+function attemptDiscoverOrLearn(room, choice) {
+  choice._attempts = (choice._attempts || 0) + 1;
+
+  let tierName;
+  let difficulty;
+  let adjustment = 0;
+  if (choice.type === "discover") {
+    tierName = getCharacterSkillTier(playerCharacter, choice.skillId).name;
+    difficulty = "Adept";
+  } else if (choice.type === "persuade") {
+    tierName = getCharacterSkillTier(playerCharacter, "persuasion").name;
+    difficulty = "Adept";
+    if (playerCharacter.traits && playerCharacter.traits.includes("silverTongue")) {
+      adjustment = 0.15;
+    }
+  } else {
+    tierName = "Untrained";
+    difficulty = "Novice";
+  }
+
+  const success = rollSuccess(tierName, difficulty, adjustment);
+
+  if (success) {
+    let message;
+    if (choice.type === "discover" || choice.type === "persuade") {
+      if (!playerCharacter.skills[choice.skillId]) {
+        playerCharacter.skills[choice.skillId] = { timesUsed: 0 };
+      }
+      const spell = discoverSpell(playerCharacter, choice.skillId, choice.spellId);
+      if (spell && (playerCharacter.activeSpellIds || []).length < 4) {
+        toggleActiveSpell(playerCharacter, spell.id);
+      }
+      message = spell
+        ? choice.type === "persuade"
+          ? `Your words finally land — you have learned ${spell.name}.`
+          : `After several attempts, it finally clicks — you have learned ${spell.name}.`
+        : "You already know what they have to teach.";
+    } else {
+      learnNewSkill(playerCharacter, choice.skillId);
+      message = `After several attempts, it finally clicks — you have learned ${SKILLS[choice.skillId].name}.`;
+    }
+    saveGameState();
+    renderDiscoveryOutcome(message, choice.target);
+    return;
+  }
+
+  if (choice._attempts >= 3) {
+    let message;
+    if (choice.type === "discover") {
+      message = "After three failed attempts, the technique still eludes you. You give up for now and move on.";
+    } else if (choice.type === "persuade") {
+      message = choice.finalFailDialogue
+        ? `${choice.finalFailDialogue} You give up for now and move on.`
+        : "After three failed attempts, they refuse to be swayed any further. You give up for now and move on.";
+    } else {
+      message = "After three failed attempts, it still doesn't click. You give up for now and move on.";
+    }
+    renderDiscoveryOutcome(message, choice.target);
+    return;
+  }
+
+  const remaining = 3 - choice._attempts;
+  let failMessage;
+  if (choice.type === "persuade") {
+    const dialogueLine = choice.failDialogue && choice.failDialogue[choice._attempts - 1];
+    const baseLine = dialogueLine || "They aren't convinced yet.";
+    failMessage = `${baseLine} (${remaining} ${remaining === 1 ? "attempt" : "attempts"} left.)`;
+  } else {
+    failMessage = `You fail to grasp it this time. (${remaining} ${remaining === 1 ? "attempt" : "attempts"} left.)`;
+  }
+  document.getElementById("game-story-text").innerHTML = `${room.text}<br /><br /><em>${failMessage}</em>`;
+  buildRoomChoices(room);
+}
+
+function renderDiscoveryOutcome(message, targetRoomId) {
+  const storyEl = document.getElementById("game-story-text");
+  const choicesEl = document.getElementById("game-choices");
+  storyEl.innerHTML = message;
+  choicesEl.innerHTML = "";
+  addChoiceButton(choicesEl, "Continue", () => renderDungeonRoom(targetRoomId));
 }
 
 function buildRoomChoices(room) {
@@ -1372,14 +1667,19 @@ function buildRoomChoices(room) {
       addChoiceButton(choicesEl, choice.label, () => {
         const tierBeforeName = getCharacterSkillTier(playerCharacter, choice.skillId).name;
         useSkill(playerCharacter, choice.skillId);
-        const success = rollSuccess(tierBeforeName, choice.difficulty);
+        const hasSureFooted = choice.skillId === "survival" &&
+          playerCharacter.traits && playerCharacter.traits.includes("surefooted");
+        const hasSilverTongue = choice.skillId === "persuasion" &&
+          playerCharacter.traits && playerCharacter.traits.includes("silverTongue");
+        const bonus = (hasSureFooted || hasSilverTongue) ? 0.15 : 0;
+        const success = rollSuccess(tierBeforeName, choice.difficulty, bonus);
         renderDungeonRoom(success ? choice.successTarget : choice.failureTarget);
       });
     } else if (choice.type === "combat") {
       addChoiceButton(choicesEl, choice.label, () => {
         goToCombatScreen(choice.enemyId, choice.target);
       });
-    } else if (choice.type === "discover" || choice.type === "learnSkill") {
+    } else if (choice.type === "discover" || choice.type === "learnSkill" || choice.type === "persuade") {
       addChoiceButton(choicesEl, getAttemptLabel(choice), () => attemptDiscoverOrLearn(room, choice));
     } else if (choice.type === "end") {
       addChoiceButton(choicesEl, choice.label, () => {
@@ -1387,52 +1687,6 @@ function buildRoomChoices(room) {
       });
     }
   });
-}
-
-function attemptDiscoverOrLearn(room, choice) {
-  choice._attempts = (choice._attempts || 0) + 1;
-
-  let tierName;
-  let difficulty;
-  if (choice.type === "discover") {
-    tierName = getCharacterSkillTier(playerCharacter, choice.skillId).name;
-    difficulty = "Adept";
-  } else {
-    tierName = "Untrained";
-    difficulty = "Novice";
-  }
-
-  const success = rollSuccess(tierName, difficulty);
-
-  if (success) {
-    let message;
-    if (choice.type === "discover") {
-      const spell = discoverSpell(playerCharacter, choice.skillId, choice.spellId);
-      message = spell
-        ? `After several attempts, it finally clicks — you have learned ${spell.name}.`
-        : "You study it again, though you already know what it teaches.";
-    } else {
-      learnNewSkill(playerCharacter, choice.skillId);
-      message = `After several attempts, it finally clicks — you have learned ${SKILLS[choice.skillId].name}.`;
-    }
-    saveGameState();
-    renderDiscoveryOutcome(message, choice.target);
-    return;
-  }
-
-  if (choice._attempts >= 3) {
-    const message =
-      choice.type === "discover"
-        ? "After three failed attempts, the technique still eludes you. You give up for now and move on."
-        : "After three failed attempts, it still doesn't click. You give up for now and move on.";
-    renderDiscoveryOutcome(message, choice.target);
-    return;
-  }
-
-  const remaining = 3 - choice._attempts;
-  const failMessage = `You fail to grasp it this time. (${remaining} ${remaining === 1 ? "attempt" : "attempts"} left.)`;
-  document.getElementById("game-story-text").innerHTML = `${room.text}<br /><br /><em>${failMessage}</em>`;
-  buildRoomChoices(room);
 }
 
 function renderDiscoveryOutcome(message, targetRoomId) {
@@ -1674,6 +1928,14 @@ function playRoundSequenceThenRender(entries) {
       playSfx(HEAL_CAST_SFX);
     }
 
+    if (entry.actor === "follower" && entry.action === "cast") {
+      playSfx(getSpellSfxPath(entry.spellName));
+    }
+
+    if (entry.actor === "follower" && entry.action === "sing") {
+      playSfx(getSongSfxPath(entry.spellName));
+    }
+
     if (entry.hit === false) {
       playSfx(ATTACK_MISS_SFX);
     }
@@ -1697,9 +1959,50 @@ function playRoundSequenceThenRender(entries) {
   showNext();
 }
 
+function isPlayerIncapacitated() {
+  const stunEffect = currentCombat.activeEffects.find((e) => e.kind === "stun" && e.target === "player");
+  if (stunEffect) return "stun";
+
+  const fearEffect = currentCombat.activeEffects.find((e) => e.kind === "fear" && e.target === "player");
+  if (fearEffect && Math.random() < 0.4) return "fear";
+
+  return null;
+}
+
+function performPlayerIncapacitatedTurn(incapacitateType) {
+  currentCombat.log.push({ actor: "player", action: "incapacitated", incapacitateType: incapacitateType });
+
+  performFollowersTurn();
+
+  if (currentCombat.enemyCurrentHP <= 0) {
+    currentCombat.result = "victory";
+    return currentCombat;
+  }
+
+  resolveEnemyAttack();
+  return currentCombat;
+}
+
 function renderCombatScreen() {
   if (currentCombat.result) {
     renderCombatOutcome();
+    return;
+  }
+
+  const incapacitateType = isPlayerIncapacitated();
+  if (incapacitateType) {
+    const choicesEl = document.getElementById("game-choices");
+    document.getElementById("game-story-text").innerHTML =
+      incapacitateType === "stun"
+        ? "You're still reeling from the blow, unable to act this round."
+        : "Fear grips you tight — you can't bring yourself to act this round.";
+    choicesEl.innerHTML = "";
+    addChoiceButton(choicesEl, "Continue", () => {
+      const startIndex = currentCombat.log.length;
+      performPlayerIncapacitatedTurn(incapacitateType);
+      saveGameState();
+      playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
+    });
     return;
   }
 
@@ -2004,11 +2307,11 @@ function renderEnchantSection(list, resultEl) {
 
 function attemptCraft(recipeId) {
   const recipe = CRAFTING_RECIPES[recipeId];
-  const resultEl = document.getElementById("crafting-result");
   const have = countMaterial(recipe.material);
 
   if (have < recipe.materialCost) {
-    resultEl.innerHTML = `You need ${recipe.materialCost} &times; ${recipe.material} to attempt this — you only have ${have}.`;
+    document.getElementById("crafting-result").innerHTML =
+      `<span class="craft-result-fail">You need ${recipe.materialCost} &times; ${recipe.material} to attempt this — you only have ${have}.</span>`;
     return;
   }
 
@@ -2016,6 +2319,7 @@ function attemptCraft(recipeId) {
   useSkill(playerCharacter, recipe.craftingSkill);
 
   const success = rollSuccess(craftingTierBefore, "Adept");
+  let resultMessage;
 
   if (success) {
     for (let i = 0; i < recipe.materialCost; i++) {
@@ -2024,29 +2328,29 @@ function attemptCraft(recipeId) {
     }
     const craftedName = `${recipe.name} (${craftingTierBefore}-crafted)`;
     playerCharacter.inventory.push(craftedName);
-    resultEl.innerHTML = `Success! You craft: <strong>${craftedName}</strong>.`;
+    resultMessage = `<span class="craft-result-success">Success! You craft: <strong>${craftedName}</strong>.</span>`;
   } else {
-    resultEl.innerHTML = `The attempt fails. No materials lost — but you've learned something from the mistake.`;
+    resultMessage = `<span class="craft-result-fail">The attempt fails. No materials lost — but you've learned something from the mistake.</span>`;
   }
 
   renderCraftingScreen();
-  document.getElementById("crafting-result").innerHTML = resultEl.innerHTML;
+  document.getElementById("crafting-result").innerHTML = resultMessage;
   saveGameState();
 }
 
 function attemptEnchant(slot, typeId) {
-  const resultEl = document.getElementById("crafting-result");
-
   const currentEnchantment = slot === "weapon" ? playerCharacter.weaponEnchantment : playerCharacter.armorEnchantment;
   if (currentEnchantment && currentEnchantment.type === typeId) {
-    resultEl.innerHTML = `This item is already ${ENCHANTMENT_TYPES[typeId].name}-Enchanted — choose a different type to change it.`;
+    document.getElementById("crafting-result").innerHTML =
+      `<span class="craft-result-fail">This item is already ${ENCHANTMENT_TYPES[typeId].name}-Enchanted — choose a different type to change it.</span>`;
     return;
   }
 
   const have = countMaterial(ENCHANT_MATERIAL);
 
   if (have < ENCHANT_MATERIAL_COST) {
-    resultEl.innerHTML = `You need ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL} to attempt this — you only have ${have}.`;
+    document.getElementById("crafting-result").innerHTML =
+      `<span class="craft-result-fail">You need ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL} to attempt this — you only have ${have}.</span>`;
     return;
   }
 
@@ -2055,6 +2359,7 @@ function attemptEnchant(slot, typeId) {
 
   const success = rollSuccess(craftingTierBefore, "Adept");
   const typeInfo = ENCHANTMENT_TYPES[typeId];
+  let resultMessage;
 
   if (success) {
     for (let i = 0; i < ENCHANT_MATERIAL_COST; i++) {
@@ -2067,14 +2372,14 @@ function attemptEnchant(slot, typeId) {
     } else {
       playerCharacter.armorEnchantment = enchantment;
     }
-    resultEl.innerHTML = `Success! Your ${slot} is now <strong>${typeInfo.name}-Enchanted</strong>.`;
+    resultMessage = `<span class="craft-result-success">Success! Your ${slot} is now <strong>${typeInfo.name}-Enchanted</strong>.</span>`;
   } else {
-    resultEl.innerHTML = `The enchantment fails to take hold. No materials lost — but you've learned something from the mistake.`;
+    resultMessage = `<span class="craft-result-fail">The enchantment fails to take hold. No materials lost — but you've learned something from the mistake.</span>`;
   }
 
   craftingEnchantSlotPending = null;
   renderCraftingScreen();
-  document.getElementById("crafting-result").innerHTML = resultEl.innerHTML;
+  document.getElementById("crafting-result").innerHTML = resultMessage;
   saveGameState();
 }
 
@@ -2181,15 +2486,22 @@ function attemptGiveItem(followerIndex) {
   playerCharacter.inventory.splice(idx, 1);
   follower.inventory.push(selectedGiveItemName);
 
+  let autoEquipped = false;
+
   if (requiredSkill) {
     if (SKILLS[requiredSkill].category === "Weapon") {
       follower.equippedWeaponSkill = requiredSkill;
+      autoEquipped = true;
     } else if (SKILLS[requiredSkill].category === "Armor") {
       follower.equippedArmorSkill = requiredSkill;
+      autoEquipped = true;
     }
+  } else if (selectedGiveItemName.startsWith("Shield (")) {
+    follower.equippedShield = true;
+    autoEquipped = true;
   }
 
-  resultEl.textContent = `${follower.name} now carries ${selectedGiveItemName}${requiredSkill ? " and has it equipped" : ""}.`;
+  resultEl.textContent = `${follower.name} now carries ${selectedGiveItemName}${autoEquipped ? " and has it equipped" : ""}.`;
   selectedGiveItemName = null;
   renderGiveItemsScreen();
   saveGameState();
