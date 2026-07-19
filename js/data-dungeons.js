@@ -10,6 +10,7 @@ const DUNGEONS = {
     name: "Duncairn Keep",
     difficulty: "Novice",
     musicSrc: "assets/audio/duncairn-keep.mp3",
+    culture: "deveran",
     image: "assets/images/duncairn-keep.png",
     description:
       "An abandoned Deveran castle on a fog-bound hill, empty since " +
@@ -22,6 +23,7 @@ const DUNGEONS = {
     name: "The Sunken Longhall",
     difficulty: "Novice",
     musicSrc: "assets/audio/sunken-longhall.mp3",
+    culture: "drakvarr",
     image: "assets/images/sunken-longhall.png",
     description:
       "A Drakvarr hall, half-swallowed by a rising bog, its rafters " +
@@ -36,6 +38,7 @@ const DUNGEONS = {
     name: "The Wychroot Grove",
     difficulty: "Novice",
     musicSrc: "assets/audio/wychroot-grove.mp3",
+    culture: "gaeldrim",
     image: "assets/images/wychroot-grove.png",
     description:
       "A grove gone wrong — roots grown thick around old grave-mounds, " +
@@ -49,6 +52,7 @@ const DUNGEONS = {
     name: "The Hollowmere Cairn",
     difficulty: "Adept",
     musicSrc: "assets/audio/hollowmere-cairn.mp3",
+    culture: "deveran",
     image: "assets/images/hollowmere-cairn.png",
     description:
       "A burial-mound complex out on the moors where several Deveran " +
@@ -61,6 +65,7 @@ const DUNGEONS = {
     name: "Frosthollow Vault",
     difficulty: "Adept",
     musicSrc: "assets/audio/frosthollow-vault.mp3",
+    culture: "drakvarr",
     image: "assets/images/frosthollow-vault.png",
     description:
       "An ice-cave forge-vault where the Drakvarr's greatest " +
@@ -73,6 +78,7 @@ const DUNGEONS = {
     name: "The Hollow Vale",
     difficulty: "Expert",
     musicSrc: "assets/audio/hollow-vale.mp3",
+    culture: "gaeldrim",
     image: "assets/images/hollow-vale.png",
     description:
       "A ring of standing stones where the Túath once gathered to " +
@@ -84,10 +90,23 @@ const DUNGEONS = {
     name: "The Blackforge Deep",
     difficulty: "Expert",
     musicSrc: "assets/audio/blackforge-deep-theme.mp3",
+    culture: "drakvarr",
     image: "assets/images/blackforge-deep/hall-entrance.png",
     description:
       "An ancient dwarven stronghold, overrun from below by something " +
       "wearing the shape of its own kin."
+  },
+  fomorianDepths: {
+    id: "fomorianDepths",
+    name: "The Fomorian Depths",
+    difficulty: "Adept",
+    musicSrc: "assets/audio/fomorian-depths-theme.mp3",
+    culture: "gaeldrim",
+    image: "assets/images/fomorian-depths.png",
+    description:
+      "A sea-cave older than the Tuatha Dé Danann themselves, home to " +
+      "something that came before even the old gods — and never fully " +
+      "left."
   }
 };
 
@@ -1007,6 +1026,122 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+
+  fomorianDepths: {
+    startRoomId: "shoreEntrance",
+    rooms: {
+      shoreEntrance: {
+        text: "A storm-battered shoreline stretches before you, black waves crashing against jagged rock. A sea-cave mouth yawns open ahead, faint unnatural light glimmering somewhere deep within.",
+        choices: [{ type: "goto", label: "Enter the cave", target: "tidalCave" }]
+      },
+      tidalCave: {
+        text: "The cave is damp and briny, tide pools glinting faintly in the near-dark. Something shifts further in.",
+        choices: [{ type: "goto", label: "Press onward", target: "raiderAmbush" }]
+      },
+      raiderAmbush: {
+        text: "A misshapen shape rises from the shallows — a Fomorian Raider, one clouded eye fixed on you, a crude weapon already raised.",
+        choices: [{ type: "combat", label: "Fight the Raider", enemyId: "fomorianRaider", target: "wreckageLoot" }]
+      },
+      wreckageLoot: {
+        text: "A shattered ship's hull lies driven deep into the cave, old cargo scattered among the rocks.",
+        loot: ["Old Ore"],
+        choices: [
+          { type: "check", label: "Search the wreckage further (Survival)", skillId: "survival", difficulty: "Adept", successTarget: "driftwoodCache", failureTarget: "deeperCave" },
+          { type: "goto", label: "Move on", target: "deeperCave" }
+        ]
+      },
+      driftwoodCache: {
+        text: "Behind a tangle of storm-driven driftwood, a small cache sits half-buried.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "deeperCave" }]
+      },
+      deeperCave: {
+        text: "The cave narrows and descends, salt-crusted stone pressing close. Something heavy moves ahead.",
+        choices: [{ type: "goto", label: "Press onward", target: "bruteFight" }]
+      },
+      bruteFight: {
+        text: "A hulking shape blocks the passage — a Fomorian Brute, thick barnacle-crusted hide, ready to crush anything in its path.",
+        choices: [
+          { type: "combat", label: "Fight the Brute", enemyId: "fomorianBrute", target: "sideGrotto" },
+          {
+            type: "persuade",
+            label: "Invoke the old dread it must still remember (Persuasion)",
+            skillId: "pathBarrow",
+            spellId: "bonewhisper",
+            target: "sideGrotto",
+            failDialogue: [
+              "It only roars, uncomprehending, and swings anyway.",
+              "Whatever dread it once answered to, it answers to nothing now but hunger.",
+              "The old words mean nothing here — this thing was old before words were."
+            ],
+            finalFailDialogue: "Whatever came before the gods does not fear what came after them."
+          }
+        ]
+      },
+      sideGrotto: {
+        text: "A quiet grotto, untouched by the storm above. Something ancient is carved into the wet stone here.",
+        choices: [
+          { type: "discover", label: "Study the carving (Path of the Grove)", skillId: "pathGrove", spellId: "venomstrike", target: "blightHall" },
+          { type: "goto", label: "Leave it and move on", target: "blightHall" }
+        ]
+      },
+      blightHall: {
+        text: "A wide hall opens ahead, the water itself sick and discolored, faintly glowing where it shouldn't.",
+        choices: [{ type: "goto", label: "Continue", target: "casterEncounter" }]
+      },
+      casterEncounter: {
+        text: "A gaunt shape rises from the glowing water — a Fomorian Blight-Caster, hands already wreathing themselves in sickly light.",
+        choices: [{ type: "combat", label: "Fight the Blight-Caster", enemyId: "fomorianBlightCaster", target: "bonePileChamber" }]
+      },
+      bonePileChamber: {
+        text: "A chamber choked with old bones, both human and unmistakably not, piled high against the walls.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The passage splits ahead: one way toward eerily still tide-pools, the other into a low, flooded tunnel.",
+        choices: [
+          { type: "goto", label: "Follow the tide-pools", target: "tidepoolPath" },
+          { type: "goto", label: "Wade into the flooded tunnel", target: "sunkenPassage" }
+        ]
+      },
+      tidepoolPath: {
+        text: "The tide-pools sit unnervingly still, the water's surface faintly reflective in the dim light.",
+        choices: [{ type: "goto", label: "Continue", target: "converge" }]
+      },
+      sunkenPassage: {
+        text: "The tunnel is half-flooded, water reaching your knees, the ceiling pressing low. Something moves fast beneath the surface.",
+        choices: [{ type: "combat", label: "Fight what surfaces", enemyId: "fomorianSkulker", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths meet at the top of a final descending stair, the water below growing stranger and darker.",
+        choices: [{ type: "goto", label: "Descend", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "At the bottom of the stair, a vast dark threshold opens before you. Something massive stirs just beyond the edge of sight.",
+        choices: [
+          { type: "check", label: "Move carefully and unseen (Stealth)", skillId: "stealth", difficulty: "Adept", successTarget: "bossDoor", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "Something has noticed you in the dark — another Fomorian Raider, closing fast before you can reach the threshold.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "fomorianRaider", target: "bossDoor" }]
+      },
+      bossDoor: {
+        text: "A colossal sea-cave opens before you, black water lapping at a throne of coral and bleached bone, an intense sickly light glowing from within.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The chamber is vast, lightless but for that sickly glow. Upon the throne sits Balor, a single vast eye beneath a heavy lid slowly beginning to rise.",
+        choices: [{ type: "combat", label: "Face Balor", enemyId: "balor", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The great eye closes for the last time, and the sickly glow fades from the cavern. Somewhere far above, ordinary daylight finally finds its way down. The Fomorian Depths are still again — older than the gods, and now, at last, quiet.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -1159,6 +1294,28 @@ const ROOM_IMAGES = {
     bossDoor: "assets/images/blackforge-deep/boss-door.png",
     bossRoom: "assets/images/blackforge-deep/boss-room.png",
     epilogue: "assets/images/blackforge-deep/epilogue.png"
+  },
+  fomorianDepths: {
+    shoreEntrance: "assets/images/fomorian-depths/shore-entrance.png",
+    tidalCave: "assets/images/fomorian-depths/tidal-cave.png",
+    raiderAmbush: "assets/images/fomorian-depths/tidal-cave.png",
+    wreckageLoot: "assets/images/fomorian-depths/wreckage-loot.png",
+    driftwoodCache: "assets/images/fomorian-depths/driftwood-cache.png",
+    deeperCave: "assets/images/fomorian-depths/deeper-cave.png",
+    bruteFight: "assets/images/fomorian-depths/deeper-cave.png",
+    sideGrotto: "assets/images/fomorian-depths/side-grotto.png",
+    blightHall: "assets/images/fomorian-depths/blight-hall.png",
+    casterEncounter: "assets/images/fomorian-depths/blight-hall.png",
+    bonePileChamber: "assets/images/fomorian-depths/bone-pile-chamber.png",
+    fork: "assets/images/fomorian-depths/fork.png",
+    tidepoolPath: "assets/images/fomorian-depths/tidepool-path.png",
+    sunkenPassage: "assets/images/fomorian-depths/sunken-passage.png",
+    converge: "assets/images/fomorian-depths/converge.png",
+    preBoss: "assets/images/fomorian-depths/pre-boss.png",
+    extraFight: "assets/images/fomorian-depths/pre-boss.png",
+    bossDoor: "assets/images/fomorian-depths/boss-door.png",
+    bossRoom: "assets/images/fomorian-depths/boss-room.png",
+    epilogue: "assets/images/fomorian-depths/epilogue.png"
   }
 };
 

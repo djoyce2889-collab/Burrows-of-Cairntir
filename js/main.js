@@ -301,7 +301,6 @@ function loadGameStateFromSlot(slot) {
     musicEnabled = saveData.musicEnabled !== undefined ? saveData.musicEnabled : true;
     musicVolume = saveData.musicVolume !== undefined ? saveData.musicVolume : 0.4;
     gameMusic.volume = musicVolume;
-    document.getElementById("music-volume-slider").value = Math.round(musicVolume * 100);
     currentSaveSlot = slot;
 
     return true;
@@ -2507,11 +2506,9 @@ function attemptGiveItem(followerIndex) {
   saveGameState();
 }
 
-document.getElementById("music-volume-slider").addEventListener("input", (event) => {
-  musicVolume = Number(event.target.value) / 100;
-  gameMusic.volume = musicVolume;
-  saveGameState();
-});
+if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+  document.getElementById("ios-volume-note").style.display = "inline";
+}
 
 document.getElementById("btn-toggle-music").addEventListener("click", () => {
   musicEnabled = !musicEnabled;

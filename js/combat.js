@@ -296,6 +296,35 @@ function getFlatDamageAbsorb(character) {
   return total;
 }
 
+const ENEMY_CASTABLE_TYPES = ["damage", "burst"];
+
+/**
+ * Picks a random damage-flavored spell from whichever culture
+ * the current dungeon belongs to — this is what gives magic
+ * enemies a genuine, named spell instead of generic magic
+ * damage. Returns null if the dungeon has no culture tag, or
+ * that culture has no usable spells (shouldn't normally happen).
+ */
+function getEnemyCultureSpell() {
+  const dungeon = DUNGEONS[selectedDungeonId];
+  if (!dungeon || !dungeon.culture) return null;
+  const culture = CULTURES[dungeon.culture];
+  if (!culture) return null;
+
+  const pool = [];
+  culture.magicSkillIds.forEach((skillId) => {
+    const spells = SPELLS[skillId] || [];
+    spells.forEach((spell) => {
+      if (ENEMY_CASTABLE_TYPES.includes(spell.type)) {
+        pool.push({ skillId, spell, cultureId: dungeon.culture });
+      }
+    });
+  });
+
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 /**
  * Runes of the Vision guarantee effects (guaranteedHit,
  * guaranteedSpellHit, guaranteedFollowerAction, guaranteedDodge,
@@ -799,6 +828,13 @@ function resolveEnemyAttack() {
     deflected = tryArmorEnchantProc(enemyEffectiveTier);
   }
 
+  const enemyCastInfo = attackType === "magic" ? getEnemyCultureSpell() : null;
+  let hasCultureTraining = false;
+  if (enemyCastInfo) {
+    const cultureSkillIds = CULTURES[enemyCastInfo.cultureId].magicSkillIds;
+    hasCultureTraining = Object.keys(target.skills || {}).some((skillId) => cultureSkillIds.includes(skillId));
+  }
+
   let backfired = false;
   if (hit && !deflected && isPlayerTarget) {
     const hasIllFortune = currentCombat.activeEffects.some((e) => e.kind === "curseBack");
@@ -812,6 +848,11 @@ function resolveEnemyAttack() {
       1,
       Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier * adaptive.damageMultiplier)
     );
+
+    if (enemyCastInfo && hasCultureTraining) {
+      damage = Math.max(1, Math.round(damage * 0.75));
+    }
+
     const absorbed = getFlatDamageAbsorb(target) + getThickHideReduction(target, attackType);
     if (absorbed > 0) {
       damage = Math.max(0, damage - absorbed);
@@ -832,7 +873,10 @@ function resolveEnemyAttack() {
     backfired: backfired,
     damage: damage,
     isPlayerTarget: isPlayerTarget,
-    targetName: isPlayerTarget ? playerCharacter.name : target.name
+    targetName: isPlayerTarget ? playerCharacter.name : target.name,
+    spellName: enemyCastInfo ? enemyCastInfo.spell.name : null,
+    spellCultureId: enemyCastInfo ? enemyCastInfo.cultureId : null,
+    culturallyResisted: enemyCastInfo ? hasCultureTraining : undefined
   });
 
   if (hit && !deflected && isPlayerTarget) {
@@ -1369,6 +1413,17 @@ function describeLogEntry(entry) {
     const enchantType = ENCHANTMENT_TYPES[playerCharacter.armorEnchantment.type];
     const flavor = enchantType ? enchantType.name : "";
     return `${currentCombat.enemyName} strikes at you, but your ${flavor}-enchanted armor turns the blow aside.`;
+  }
+
+  if (entry.spellName) {
+    if (!entry.hit) {
+      return `${currentCombat.enemyName} calls on ${entry.spellName}, but it goes wide of ${targetLabel}.`;
+    }
+    if (entry.backfired) {
+      return `${currentCombat.enemyName} calls on ${entry.spellName} at you — but ill fortune turns it back on them for ${entry.damage}!`;
+    }
+    const resistLine = entry.culturallyResisted ? " Training in that same magic softens the blow." : "";
+    return `${currentCombat.enemyName} calls on ${entry.spellName}, striking ${targetLabel} for ${entry.damage}.${resistLine}`;
   }
 
   return entry.hit

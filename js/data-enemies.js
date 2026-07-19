@@ -357,5 +357,62 @@ const ENEMIES = {
     threatTier: "Master",
     soundCategory: "stone",
     lootTable: ["Sovereign's Crown Shard", "Grave Essence", "Grave Essence"]
+  },
+
+  fomorianRaider: {
+    id: "fomorianRaider",
+    name: "Fomorian Raider",
+    description: "A misshapen sea-raider, one clouded eye and a single crude weapon, barnacles crusted along its hide.",
+    image: "assets/images/enemies/fomorian-raider.png",
+    hitPoints: 26,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  fomorianBrute: {
+    id: "fomorianBrute",
+    name: "Fomorian Brute",
+    description: "A hulking, misshapen thing, thick barnacle-crusted hide turning aside all but the surest blows.",
+    image: "assets/images/enemies/fomorian-brute.png",
+    hitPoints: 34,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Hide"]
+  },
+  fomorianBlightCaster: {
+    id: "fomorianBlightCaster",
+    name: "Fomorian Blight-Caster",
+    description: "A gaunt sea-witch trailing kelp, hands wreathed in a sickly light that shouldn't glow at all.",
+    image: "assets/images/enemies/fomorian-blight-caster.png",
+    hitPoints: 24,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  fomorianSkulker: {
+    id: "fomorianSkulker",
+    name: "Fomorian Skulker",
+    description: "Lean and eel-quick, dark wet hide glistening, closing the distance before you're ready for it.",
+    image: "assets/images/enemies/fomorian-skulker.png",
+    hitPoints: 22,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  balor: {
+    id: "balor",
+    name: "Balor",
+    description: "A towering Fomorian king, a single vast eye beneath a heavy lid — the old tales say it kills whatever it looks upon.",
+    image: "assets/images/enemies/balor.png",
+    deathImage: "assets/images/deaths/balor-death.png",
+    hitPoints: 60,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Balor's Eye Shard", "Grave Essence", "Grave Essence"]
   }
 };
