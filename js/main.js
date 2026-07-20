@@ -32,7 +32,8 @@ const RACE_TO_CULTURE = {
   alfar: "drakvarr",
   dwarf: "drakvarr",
   wulver: "deveran",
-  sidhe: "gaeldrim"
+  sidhe: "gaeldrim",
+  leopardkin: "vandiri"
 };
 
 let selectedDungeonId = null;
@@ -602,31 +603,36 @@ function renderRaceGrid() {
   });
 }
 
+const SKIN_TONE_RACES = ["human", "alfar", "dwarf"];
+const SKIN_TONES = [
+  { slug: "" },
+  { slug: "-tan" },
+  { slug: "-brown" }
+];
+
+/**
+ * Portrait choices are archetype-based (Sword & Shield, Archer,
+ * Spellcaster, etc.), shown as race-specific full-set combos —
+ * your existing full-set art is the "Fair" tone by default, with
+ * Tan/Brown added alongside for skin-tone-eligible races. Any
+ * combo you haven't generated yet just quietly doesn't appear
+ * (handled by the existing image-existence check). No tone
+ * wording ever shows on screen.
+ */
 function buildPortraitOptions(raceId) {
   const options = [];
-
-  options.push({ path: `assets/images/characters/${raceId}.png`, label: "Classic (Male)" });
-  options.push({ path: `assets/images/characters/${raceId}-female.png`, label: "Classic (Female)" });
+  const tones = SKIN_TONE_RACES.includes(raceId) ? SKIN_TONES : [{ slug: "" }];
 
   ARCHETYPES.forEach((arch) => {
-    options.push({
-      path: `assets/images/characters/archetypes/${arch.fileSlug}-male.png`,
-      label: `${arch.name} (Male)`
-    });
-    options.push({
-      path: `assets/images/characters/archetypes/${arch.fileSlug}-female.png`,
-      label: `${arch.name} (Female)`
-    });
-  });
-
-  ARCHETYPES.forEach((arch) => {
-    options.push({
-      path: `assets/images/characters/full-set/${raceId}-male-${arch.fileSlug}.png`,
-      label: `${RACES[raceId].name} ${arch.name} (Male)`
-    });
-    options.push({
-      path: `assets/images/characters/full-set/${raceId}-female-${arch.fileSlug}.png`,
-      label: `${RACES[raceId].name} ${arch.name} (Female)`
+    tones.forEach((tone) => {
+      options.push({
+        path: `assets/images/characters/full-set/${raceId}${tone.slug}-male-${arch.fileSlug}.png`,
+        label: `${arch.name} (Male)`
+      });
+      options.push({
+        path: `assets/images/characters/full-set/${raceId}${tone.slug}-female-${arch.fileSlug}.png`,
+        label: `${arch.name} (Female)`
+      });
     });
   });
 
@@ -721,8 +727,9 @@ function renderSkillGrid() {
 
   const availableSkills = Object.values(SKILLS).filter((s) => s.category !== "Magic");
 
-  const atLimit = creationState.skills.length >= MAX_STARTING_SKILLS;
-  countLabel.textContent = `Chosen ${creationState.skills.length} / ${MAX_STARTING_SKILLS}`;
+  const nonMagicChosenCount = creationState.skills.filter((id) => SKILLS[id].category !== "Magic").length;
+  const atLimit = nonMagicChosenCount >= MAX_STARTING_SKILLS;
+  countLabel.textContent = `Chosen ${nonMagicChosenCount} / ${MAX_STARTING_SKILLS}`;
   countLabel.classList.toggle("limit-reached", atLimit);
 
   function buildSkillCard(skill) {
@@ -798,6 +805,8 @@ function syncDerivedMagicSkills() {
  * pick a magic skill directly. Picking a spell automatically
  * grants its underlying skill line via syncDerivedMagicSkills().
  */
+let spellsViewCultureId = null;
+
 function renderStartingSpellsGrid() {
   const container = document.getElementById("cc-spell-grid");
   const countLabel = document.getElementById("cc-spell-count");
@@ -807,57 +816,81 @@ function renderStartingSpellsGrid() {
   countLabel.textContent = `Chosen ${creationState.startingSpellIds.length} / 4`;
   countLabel.classList.toggle("limit-reached", atLimit);
 
+  if (!spellsViewCultureId || !CULTURES[spellsViewCultureId]) {
+    spellsViewCultureId = Object.keys(CULTURES)[0];
+  }
+
+  const cultureTabsRow = document.createElement("div");
+  cultureTabsRow.className = "cc-grid";
+  cultureTabsRow.style.marginBottom = "18px";
   Object.values(CULTURES).forEach((culture) => {
-    const cultureHeading = document.createElement("div");
-    cultureHeading.className = "cc-category-heading";
-    cultureHeading.textContent = `${culture.name} — ${culture.magicName}`;
-    container.appendChild(cultureHeading);
-
-    const cultureDesc = document.createElement("div");
-    cultureDesc.className = "cc-card-desc";
-    cultureDesc.style.marginBottom = "14px";
-    cultureDesc.textContent = culture.magicDescription;
-    container.appendChild(cultureDesc);
-
-    culture.magicSkillIds.forEach((skillId) => {
-      const skill = SKILLS[skillId];
-      const allSpells = SPELLS[skillId] || [];
-      if (!skill || allSpells.length === 0) return;
-
-      const subHeading = document.createElement("div");
-      subHeading.className = "cc-culture-subheading";
-      subHeading.style.setProperty("--card-accent", culture.accentColor);
-      subHeading.innerHTML = `<span>${skill.name}</span>`;
-      container.appendChild(subHeading);
-
-      const grid = document.createElement("div");
-      grid.className = "cc-grid";
-
-      allSpells.forEach((spell) => {
-        const isSelected = creationState.startingSpellIds.includes(spell.id);
-        const card = document.createElement("div");
-        card.className = "cc-card";
-        if (isSelected) card.classList.add("selected");
-        card.style.setProperty("--card-accent", culture.accentColor);
-        card.innerHTML = `
-          <div class="cc-card-name">${spell.name}</div>
-          <div class="cc-card-desc">${spell.description}</div>
-        `;
-        card.addEventListener("click", () => {
-          if (isSelected) {
-            creationState.startingSpellIds = creationState.startingSpellIds.filter((id) => id !== spell.id);
-          } else if (!atLimit) {
-            creationState.startingSpellIds.push(spell.id);
-          }
-          syncDerivedMagicSkills();
-          renderStartingSpellsGrid();
-          renderSkillGrid();
-        });
-        grid.appendChild(card);
-      });
-
-      container.appendChild(grid);
+    const tabCard = document.createElement("div");
+    tabCard.className = "cc-card";
+    if (spellsViewCultureId === culture.id) tabCard.classList.add("selected");
+    tabCard.style.setProperty("--card-accent", culture.accentColor);
+    tabCard.innerHTML = `
+      <div class="cc-card-name">${culture.name}</div>
+      <div class="cc-card-desc"><em>Click to explore</em></div>
+    `;
+    tabCard.addEventListener("click", () => {
+      spellsViewCultureId = culture.id;
+      renderStartingSpellsGrid();
     });
+    cultureTabsRow.appendChild(tabCard);
+  });
+  container.appendChild(cultureTabsRow);
+
+  const culture = CULTURES[spellsViewCultureId];
+
+  const cultureHeading = document.createElement("div");
+  cultureHeading.className = "cc-category-heading";
+  cultureHeading.textContent = `${culture.name} — ${culture.magicName}`;
+  container.appendChild(cultureHeading);
+
+  const cultureDesc = document.createElement("div");
+  cultureDesc.className = "cc-card-desc";
+  cultureDesc.style.marginBottom = "14px";
+  cultureDesc.textContent = culture.magicDescription;
+  container.appendChild(cultureDesc);
+
+  culture.magicSkillIds.forEach((skillId) => {
+    const skill = SKILLS[skillId];
+    const allSpells = SPELLS[skillId] || [];
+    if (!skill || allSpells.length === 0) return;
+
+    const subHeading = document.createElement("div");
+    subHeading.className = "cc-culture-subheading";
+    subHeading.style.setProperty("--card-accent", culture.accentColor);
+    subHeading.innerHTML = `<span>${skill.name}</span>`;
+    container.appendChild(subHeading);
+
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+
+    allSpells.forEach((spell) => {
+      const isSelected = creationState.startingSpellIds.includes(spell.id);
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      if (isSelected) card.classList.add("selected");
+      card.style.setProperty("--card-accent", culture.accentColor);
+      card.innerHTML = `
+        <div class="cc-card-name">${spell.name}</div>
+        <div class="cc-card-desc">${spell.description}</div>
+      `;
+      card.addEventListener("click", () => {
+        if (isSelected) {
+          creationState.startingSpellIds = creationState.startingSpellIds.filter((id) => id !== spell.id);
+        } else if (!atLimit) {
+          creationState.startingSpellIds.push(spell.id);
+        }
+        syncDerivedMagicSkills();
+        renderStartingSpellsGrid();
+        renderSkillGrid();
+      });
+      grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
   });
 }
 
@@ -1132,6 +1165,40 @@ function goToInventoryScreen() {
   renderInventoryScreen();
 }
 
+function getOwnedItemsForSkill(skillId) {
+  return playerCharacter.inventory.filter((item) => getItemRequiredSkill(item) === skillId);
+}
+
+function buildWeaponOrArmorCard(skillId, itemName, isArmor) {
+  const card = document.createElement("div");
+  card.className = "cc-card";
+
+  const equippedSkillField = isArmor ? "equippedArmorSkill" : "equippedWeaponSkill";
+  const equippedItemField = isArmor ? "equippedArmorItemName" : "equippedWeaponItemName";
+
+  const isSelected = itemName
+    ? playerCharacter[equippedItemField] === itemName
+    : (playerCharacter[equippedSkillField] === skillId && !playerCharacter[equippedItemField]);
+
+  if (isSelected) card.classList.add("selected");
+  card.innerHTML = `
+    <div class="cc-card-name">${itemName || SKILLS[skillId].name}</div>
+    <div class="cc-card-desc">${isSelected ? "Equipped" : (itemName ? "Click to equip" : "No item — click to use this skill")}</div>
+  `;
+  card.addEventListener("click", () => {
+    if (isArmor) {
+      setEquippedArmor(playerCharacter, skillId);
+      playerCharacter.equippedArmorItemName = itemName || null;
+    } else {
+      setEquippedWeapon(playerCharacter, skillId);
+      playerCharacter.equippedWeaponItemName = itemName || null;
+    }
+    renderEquipSection();
+    saveGameState();
+  });
+  return card;
+}
+
 function renderEquipSection() {
   const weaponGrid = document.getElementById("equip-weapon-grid");
   const armorGrid = document.getElementById("equip-armor-grid");
@@ -1145,16 +1212,14 @@ function renderEquipSection() {
     trainedWeaponIds.push("unarmedCombat");
   }
   trainedWeaponIds.forEach((skillId) => {
-    const card = document.createElement("div");
-    card.className = "cc-card";
-    if (playerCharacter.equippedWeaponSkill === skillId) card.classList.add("selected");
-    card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
-    card.addEventListener("click", () => {
-      setEquippedWeapon(playerCharacter, skillId);
-      renderEquipSection();
-      saveGameState();
-    });
-    weaponGrid.appendChild(card);
+    const ownedItems = getOwnedItemsForSkill(skillId);
+    if (ownedItems.length === 0) {
+      weaponGrid.appendChild(buildWeaponOrArmorCard(skillId, null, false));
+    } else {
+      ownedItems.forEach((itemName) => {
+        weaponGrid.appendChild(buildWeaponOrArmorCard(skillId, itemName, false));
+      });
+    }
   });
 
   const trainedArmorIds = Object.keys(playerCharacter.skills).filter(
@@ -1164,16 +1229,14 @@ function renderEquipSection() {
     armorGrid.innerHTML = '<div class="cc-skill-count">No armor trained yet.</div>';
   } else {
     trainedArmorIds.forEach((skillId) => {
-      const card = document.createElement("div");
-      card.className = "cc-card";
-      if (playerCharacter.equippedArmorSkill === skillId) card.classList.add("selected");
-      card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
-      card.addEventListener("click", () => {
-        setEquippedArmor(playerCharacter, skillId);
-        renderEquipSection();
-        saveGameState();
-      });
-      armorGrid.appendChild(card);
+      const ownedItems = getOwnedItemsForSkill(skillId);
+      if (ownedItems.length === 0) {
+        armorGrid.appendChild(buildWeaponOrArmorCard(skillId, null, true));
+      } else {
+        ownedItems.forEach((itemName) => {
+          armorGrid.appendChild(buildWeaponOrArmorCard(skillId, itemName, true));
+        });
+      }
     });
   }
 
@@ -1321,55 +1384,6 @@ function renderShieldOffhandSections() {
   }
 }
 
-function renderEquipSection() {
-  const weaponGrid = document.getElementById("equip-weapon-grid");
-  const armorGrid = document.getElementById("equip-armor-grid");
-  weaponGrid.innerHTML = "";
-  armorGrid.innerHTML = "";
-
-  const trainedWeaponIds = Object.keys(playerCharacter.skills).filter(
-    (id) => SKILLS[id] && SKILLS[id].category === "Weapon"
-  );
-  if (!trainedWeaponIds.includes("unarmedCombat")) {
-    trainedWeaponIds.push("unarmedCombat");
-  }
-  trainedWeaponIds.forEach((skillId) => {
-    const card = document.createElement("div");
-    card.className = "cc-card";
-    if (playerCharacter.equippedWeaponSkill === skillId) card.classList.add("selected");
-    card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
-    card.addEventListener("click", () => {
-      setEquippedWeapon(playerCharacter, skillId);
-      renderEquipSection();
-      saveGameState();
-    });
-    weaponGrid.appendChild(card);
-  });
-
-  const trainedArmorIds = Object.keys(playerCharacter.skills).filter(
-    (id) => SKILLS[id] && SKILLS[id].category === "Armor"
-  );
-  if (trainedArmorIds.length === 0) {
-    armorGrid.innerHTML = '<div class="cc-skill-count">No armor trained yet.</div>';
-  } else {
-    trainedArmorIds.forEach((skillId) => {
-      const card = document.createElement("div");
-      card.className = "cc-card";
-      if (playerCharacter.equippedArmorSkill === skillId) card.classList.add("selected");
-      card.innerHTML = `<div class="cc-card-name">${SKILLS[skillId].name}</div>`;
-      card.addEventListener("click", () => {
-        setEquippedArmor(playerCharacter, skillId);
-        renderEquipSection();
-        saveGameState();
-      });
-      armorGrid.appendChild(card);
-    });
-  }
-
-  renderShieldOffhandSections();
-  renderRingAmuletSections();
-}
-
 /**
  * Shield and Offhand equip sections only appear when your
  * chosen combat style actually needs them (Sword/Axe & Shield
@@ -1457,9 +1471,13 @@ function renderInventoryScreen() {
   inventory.forEach((itemName) => {
     if (knownMaterials.includes(itemName)) {
       materialCounts[itemName] = (materialCounts[itemName] || 0) + 1;
-    } else {
-      equipmentCounts[itemName] = (equipmentCounts[itemName] || 0) + 1;
+      return;
     }
+    const requiredSkill = getItemRequiredSkill(itemName);
+    const isWeaponOrArmor = requiredSkill && SKILLS[requiredSkill] &&
+      (SKILLS[requiredSkill].category === "Weapon" || SKILLS[requiredSkill].category === "Armor");
+    if (isWeaponOrArmor) return;
+    equipmentCounts[itemName] = (equipmentCounts[itemName] || 0) + 1;
   });
 
   if (Object.keys(materialCounts).length > 0) {
@@ -1495,12 +1513,25 @@ function renderInventoryScreen() {
       const requiredSkill = getItemRequiredSkill(name);
       const card = document.createElement("div");
       card.className = "cc-card";
-      const isEquipped = requiredSkill &&
-        (playerCharacter.equippedWeaponSkill === requiredSkill || playerCharacter.equippedArmorSkill === requiredSkill);
+      let isEquipped = false;
+      if (requiredSkill) {
+        if (SKILLS[requiredSkill].category === "Weapon") {
+          isEquipped = playerCharacter.equippedWeaponItemName
+            ? playerCharacter.equippedWeaponItemName === name
+            : playerCharacter.equippedWeaponSkill === requiredSkill;
+        } else if (SKILLS[requiredSkill].category === "Armor") {
+          isEquipped = playerCharacter.equippedArmorItemName
+            ? playerCharacter.equippedArmorItemName === name
+            : playerCharacter.equippedArmorSkill === requiredSkill;
+        }
+      }
       if (isEquipped) card.classList.add("selected");
+      const statusText = isEquipped
+        ? "Equipped"
+        : (count > 1 ? `Quantity: ${count}` : "Carried");
       card.innerHTML = `
         <div class="cc-card-name">${name}</div>
-        <div class="cc-card-desc">${count > 1 ? `Quantity: ${count}` : "Carried"}${isEquipped ? " &middot; Equipped" : ""}</div>
+        <div class="cc-card-desc">${statusText}</div>
       `;
       if (requiredSkill) {
         card.addEventListener("click", () => {
@@ -1509,8 +1540,10 @@ function renderInventoryScreen() {
           }
           if (SKILLS[requiredSkill].category === "Weapon") {
             setEquippedWeapon(playerCharacter, requiredSkill);
+            playerCharacter.equippedWeaponItemName = name;
           } else if (SKILLS[requiredSkill].category === "Armor") {
             setEquippedArmor(playerCharacter, requiredSkill);
+            playerCharacter.equippedArmorItemName = name;
           }
           renderInventoryScreen();
           saveGameState();
@@ -1579,16 +1612,73 @@ function renderInventoryScreen() {
   }
 }
 
+const REGION_MAPS = {
+  deveran: "assets/images/deveran-map.png",
+  drakvarr: "assets/images/drakvarr-map.png",
+  gaeldrim: "assets/images/gaeldrim-map.png"
+};
+
+let dungeonSelectRegionId = null;
+
 function goToDungeonSelectScreen() {
   showScreen("screen-dungeon-select");
   renderDungeonList();
 }
 
+function selectDungeon(dungeon) {
+  selectedDungeonId = dungeon.id;
+  resetDungeonCompanionState();
+  if (DUNGEON_CONTENT[dungeon.id]) {
+    enterDungeon(dungeon.id);
+  } else {
+    enterPlaceholderDungeon(dungeon);
+  }
+}
+
 function renderDungeonList() {
+  const tabsContainer = document.getElementById("region-tabs-grid");
+  const mapImage = document.getElementById("region-map-image");
+  const hotspotsContainer = document.getElementById("region-hotspots");
   const list = document.getElementById("dungeon-list");
+  tabsContainer.innerHTML = "";
   list.innerHTML = "";
 
-  Object.values(DUNGEONS).forEach((dungeon) => {
+  const regionIds = Object.keys(REGION_MAPS);
+  if (!dungeonSelectRegionId || !regionIds.includes(dungeonSelectRegionId)) {
+    dungeonSelectRegionId = regionIds[0];
+  }
+
+  regionIds.forEach((cultureId) => {
+    const culture = CULTURES[cultureId];
+    const tabCard = document.createElement("div");
+    tabCard.className = "cc-card";
+    if (dungeonSelectRegionId === cultureId) tabCard.classList.add("selected");
+    tabCard.style.setProperty("--card-accent", culture.accentColor);
+    tabCard.innerHTML = `<div class="cc-card-name">${culture.name}</div>`;
+    tabCard.addEventListener("click", () => {
+      dungeonSelectRegionId = cultureId;
+      renderDungeonList();
+    });
+    tabsContainer.appendChild(tabCard);
+  });
+
+  mapImage.src = REGION_MAPS[dungeonSelectRegionId];
+  hotspotsContainer.innerHTML = "";
+
+  const regionDungeons = Object.values(DUNGEONS).filter((d) => d.culture === dungeonSelectRegionId);
+
+  regionDungeons.forEach((dungeon) => {
+    if (!dungeon.mapHotspot) return;
+    const hotspot = document.createElement("div");
+    hotspot.className = "map-hotspot";
+    hotspot.style.top = dungeon.mapHotspot.top;
+    hotspot.style.left = dungeon.mapHotspot.left;
+    hotspot.title = dungeon.name;
+    hotspot.addEventListener("click", () => selectDungeon(dungeon));
+    hotspotsContainer.appendChild(hotspot);
+  });
+
+  regionDungeons.forEach((dungeon) => {
     const card = document.createElement("div");
     card.className = "cc-card";
     card.innerHTML = `
@@ -1596,15 +1686,7 @@ function renderDungeonList() {
       <div class="cc-card-desc"><em>Difficulty: ${dungeon.difficulty}</em></div>
       <div class="cc-card-desc">${dungeon.description}</div>
     `;
-    card.addEventListener("click", () => {
-      selectedDungeonId = dungeon.id;
-      resetDungeonCompanionState();
-      if (DUNGEON_CONTENT[dungeon.id]) {
-        enterDungeon(dungeon.id);
-      } else {
-        enterPlaceholderDungeon(dungeon);
-      }
-    });
+    card.addEventListener("click", () => selectDungeon(dungeon));
     list.appendChild(card);
   });
 }
@@ -2164,6 +2246,13 @@ function renderCombatScreen() {
       if (spell.type === "companion" && dungeonCompanionUsed) {
         return;
       }
+      if (spell.type === "cooldownBuff") {
+        const cooldownLeft = getSpellCooldownRemaining(playerCharacter, spell.id);
+        if (cooldownLeft > 0) {
+          addChoiceButton(choicesEl, `Cast - ${spell.name} (recovering, ${cooldownLeft} ${cooldownLeft === 1 ? "round" : "rounds"} left)`, null, true);
+          return;
+        }
+      }
       const isSong = skillId === "ancestralSiuloir";
       const songCapped = isSong && getActiveSongCount() >= 2;
       const verb = isSong ? "Sing" : "Cast";
@@ -2686,11 +2775,6 @@ document.getElementById("btn-add-follower").addEventListener("click", () => {
 
 document.getElementById("btn-continue-to-homebase").addEventListener("click", goToHomebaseScreen);
 
-document.getElementById("btn-recruit-homebase").addEventListener("click", () => {
-  resetCreationState("follower");
-  goToCreationStep(0);
-});
-
 document.getElementById("btn-manage-party").addEventListener("click", goToPartyScreen);
 
 document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
@@ -2854,16 +2938,11 @@ function renderTeachSkillScreen() {
   container.innerHTML = "";
   resultEl.textContent = "";
 
-  const availableSkills = Object.values(SKILLS).filter((s) => s.category !== "Magic" && !follower.skills[s.id]);
-
-  if (availableSkills.length === 0) {
-    container.innerHTML = '<div class="cc-skill-count">They already know every skill.</div>';
-    return;
-  }
+  const allTeachableSkills = Object.values(SKILLS).filter((s) => s.category !== "Magic");
 
   SKILL_CATEGORY_ORDER.forEach((categoryName) => {
     if (categoryName === "Magic") return;
-    const skillsInCategory = availableSkills.filter((s) => s.category === categoryName);
+    const skillsInCategory = allTeachableSkills.filter((s) => s.category === categoryName);
     if (skillsInCategory.length === 0) return;
 
     const heading = document.createElement("div");
@@ -2875,15 +2954,31 @@ function renderTeachSkillScreen() {
     grid.className = "cc-grid";
 
     skillsInCategory.forEach((skill) => {
+      const isKnown = !!follower.skills[skill.id];
       const card = document.createElement("div");
       card.className = "cc-card";
+      if (isKnown) card.classList.add("selected");
       card.innerHTML = `
         <div class="cc-card-name">${skill.name}</div>
         <div class="cc-card-desc">${skill.description}</div>
+        <div class="cc-card-desc"><em>${isKnown ? "Learned (click to remove)" : "Click to teach"}</em></div>
       `;
       card.addEventListener("click", () => {
-        learnNewSkill(follower, skill.id);
-        resultEl.textContent = `${follower.name} has learned ${skill.name}.`;
+        if (isKnown) {
+          delete follower.skills[skill.id];
+          if (follower.equippedWeaponSkill === skill.id) {
+            follower.equippedWeaponSkill = "unarmedCombat";
+          }
+          if (follower.equippedArmorSkill === skill.id) {
+            follower.equippedArmorSkill = null;
+          }
+          resultEl.textContent = `${follower.name} has forgotten ${skill.name}.`;
+        } else if (Object.keys(follower.skills).filter((id) => SKILLS[id].category !== "Magic").length >= MAX_STARTING_SKILLS) {
+          resultEl.textContent = `${follower.name} already knows ${MAX_STARTING_SKILLS} skills — forget one first to make room.`;
+        } else {
+          learnNewSkill(follower, skill.id);
+          resultEl.textContent = `${follower.name} has learned ${skill.name}.`;
+        }
         renderTeachSkillScreen();
         saveGameState();
       });
@@ -2916,8 +3011,7 @@ function renderTeachSpellScreen() {
       const skill = SKILLS[skillId];
       const allSpells = SPELLS[skillId] || [];
       const knownIds = (follower.knownSpells && follower.knownSpells[skillId]) || [];
-      const unknownSpells = allSpells.filter((s) => !knownIds.includes(s.id));
-      if (!skill || unknownSpells.length === 0) return;
+      if (!skill || allSpells.length === 0) return;
 
       const subHeading = document.createElement("div");
       subHeading.className = "cc-culture-subheading";
@@ -2928,27 +3022,39 @@ function renderTeachSpellScreen() {
       const grid = document.createElement("div");
       grid.className = "cc-grid";
 
-      unknownSpells.forEach((spell) => {
+      allSpells.forEach((spell) => {
+        const isKnown = knownIds.includes(spell.id);
+        const isActive = (follower.activeSpellIds || []).includes(spell.id);
         const card = document.createElement("div");
         card.className = "cc-card";
+        if (isKnown && isActive) card.classList.add("selected");
         card.style.setProperty("--card-accent", culture.accentColor);
+        const statusLabel = !isKnown ? "Click to teach" : (isActive ? "Active" : "Known (benched)");
         card.innerHTML = `
           <div class="cc-card-name">${spell.name}</div>
           <div class="cc-card-desc">${spell.description}</div>
+          <div class="cc-card-desc"><em>${statusLabel}</em></div>
         `;
         card.addEventListener("click", () => {
-          if (!follower.skills[skillId]) {
-            follower.skills[skillId] = { timesUsed: 0 };
-          }
-          if (!follower.knownSpells) follower.knownSpells = {};
-          if (!follower.knownSpells[skillId]) follower.knownSpells[skillId] = [];
-          follower.knownSpells[skillId].push(spell.id);
+          if (isKnown) {
+            const nowActive = toggleActiveSpell(follower, spell.id);
+            resultEl.textContent = nowActive
+              ? `${spell.name} is now active for ${follower.name}.`
+              : `${spell.name} is now benched for ${follower.name}.`;
+          } else {
+            if (!follower.skills[skillId]) {
+              follower.skills[skillId] = { timesUsed: 0 };
+            }
+            if (!follower.knownSpells) follower.knownSpells = {};
+            if (!follower.knownSpells[skillId]) follower.knownSpells[skillId] = [];
+            follower.knownSpells[skillId].push(spell.id);
 
-          if ((follower.activeSpellIds || []).length < 4) {
-            toggleActiveSpell(follower, spell.id);
-          }
+            if ((follower.activeSpellIds || []).length < 4) {
+              toggleActiveSpell(follower, spell.id);
+            }
 
-          resultEl.textContent = `${follower.name} has learned ${spell.name}.`;
+            resultEl.textContent = `${follower.name} has learned ${spell.name}.`;
+          }
           renderTeachSpellScreen();
           saveGameState();
         });

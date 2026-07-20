@@ -30,7 +30,7 @@
       </div>
       <div id="panel">
         <div id="story-text">
-          Three peoples. Three magics. One road into the dark below Cairntír.
+          Four peoples. Four magics. One road into the dark below Cairntír.
         </div>
         <div class="cc-section">
           <span class="cc-label">Difficulty</span>
@@ -57,7 +57,7 @@
 
     <section id="screen-creation-step1" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 1 of 7 &mdash; Name, Race &amp; Portrait</span>
+        <span class="cc-label">Step 1 of 6 &mdash; Name, Race &amp; Portrait</span>
 
         <div class="cc-section">
           <label class="cc-label" for="cc-name">Name</label>
@@ -86,7 +86,7 @@
       <div id="panel">
         <span class="cc-label">Step 2 of 6 &mdash; Starting Spells</span>
         <div id="story-text">
-          Choose freely from all three peoples' magic — Deveran, Drakvarr, and Gaeldrim alike. Whichever cultures you draw spells from, those skills will grow faster for you and strengthen your resistance to magical harm.
+          Choose freely from all four peoples' magic — Deveran, Drakvarr, Gaeldrim, and Vandiri alike. Whichever cultures you draw spells from, those skills will grow faster for you and strengthen your resistance to magical harm.
         </div>
         <div id="cc-spell-count" class="cc-skill-count"></div>
         <div id="cc-spell-grid"></div>
@@ -113,7 +113,7 @@
 
     <section id="screen-creation-step4" class="screen">
       <div id="panel">
-        <spStep 4 of 6 &mdash; Traitsan class="cc-label">Step 5 of 7 &mdash; Traits</span>
+        <span class="cc-label">Step 4 of 6 &mdash; Traits</span>
         <div id="cc-trait-count" class="cc-skill-count">Choose 2-3</div>
         <div id="cc-trait-grid" class="cc-grid"></div>
         <div id="cc-error-step4"></div>
@@ -126,7 +126,7 @@
 
     <section id="screen-creation-step5" class="screen">
       <div id="panel">
-        <span class="cStep 5 of 6 &mdash; Combat Stylec-label">Step 6 of 7 &mdash; Combat Style</span>
+        <span class="cc-label">Step 5 of 6 &mdash; Combat Style</span>
         <div id="cc-combatstyle-grid" class="cc-grid"></div>
         <div id="choices">
           <button class="choice-button" id="btn-step5-back">Back</button>
@@ -170,7 +170,6 @@
           <button class="choice-button" id="btn-go-to-crafting">Forge &amp; Craft</button>
           <button class="choice-button" id="btn-go-to-skills">Your Skills</button>
           <button class="choice-button" id="btn-go-to-inventory">Your Inventory</button>
-          <button class="choice-button" id="btn-recruit-homebase">Recruit a Follower</button>
           <button class="choice-button" id="btn-manage-party">Manage Your Party</button>
           <button class="choice-button" id="btn-go-to-give-items">Give Items to a Follower</button>
           <button class="choice-button" id="btn-your-spells">Your Spells</button>
@@ -195,13 +194,13 @@
       <div id="panel">
         <span class="cc-label">Your Inventory</span>
 
-        <div class="cc-section">
-          <span class="cc-label">Equipped Weapon</span>
+        <div class="cc-section" id="equip-weapon-section">
+          <span class="cc-label">Weapons</span>
           <div id="equip-weapon-grid" class="cc-grid"></div>
         </div>
 
-        <div class="cc-section">
-          <span class="cc-label">Equipped Armor</span>
+        <div class="cc-section" id="equip-armor-section">
+          <span class="cc-label">Armor</span>
           <div id="equip-armor-grid" class="cc-grid"></div>
         </div>
 
@@ -291,30 +290,6 @@
       </div>
     </section>
 
-    <section id="screen-manage-spells" class="screen">
-      <div id="panel">
-        <span class="cc-label">Manage Spells</span>
-        <div id="manage-spells-name" class="cc-skill-count"></div>
-        <div id="manage-spells-count" class="cc-skill-count"></div>
-        <div id="manage-spells-grid" class="cc-grid"></div>
-        <div id="choices">
-          <button class="choice-button" id="btn-manage-spells-back">Back</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="screen-teach-skill" class="screen">
-      <div id="panel">
-        <span class="cc-label">Teach a Skill</span>
-        <div id="teach-skill-name" class="cc-skill-count"></div>
-        <div id="teach-skill-result" class="cc-skill-count"></div>
-        <div id="teach-skill-grid"></div>
-        <div id="choices">
-          <button class="choice-button" id="btn-teach-skill-back">Back</button>
-        </div>
-      </div>
-    </section>
-
     <section id="screen-crafting" class="screen">
       <div id="panel">
         <span class="cc-label">Forge &amp; Craft</span>
@@ -330,6 +305,11 @@
     <section id="screen-dungeon-select" class="screen">
       <div id="panel">
         <span class="cc-label">Choose Your Path</span>
+        <div id="region-tabs-grid" class="cc-grid"></div>
+        <div id="region-map-container" style="position: relative; margin-top: 12px;">
+          <img id="region-map-image" style="width: 100%; display: block; border-radius: 4px;" />
+          <div id="region-hotspots"></div>
+        </div>
         <div id="dungeon-list" class="cc-grid"></div>
       </div>
     </section>

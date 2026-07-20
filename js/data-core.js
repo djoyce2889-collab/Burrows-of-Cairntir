@@ -4,6 +4,27 @@
    ============================================================ */
 
 const CULTURES = {
+  vandiri: {
+    id: "vandiri",
+    name: "Vandiri",
+    tagline: "Storm-blessed, water-guarded.",
+    description:
+      "A people whose magic is granted by ancient, deeply revered " +
+      "spirits — not inherited by blood, but sought through devotion " +
+      "and rite. Three great spirits answer those who call upon them " +
+      "today, each with its own domain and its own demands.",
+    magicName: "Rite Magic",
+    magicDescription:
+      "Power granted through sacred rite rather than bloodline or " +
+      "rune. The Thunder-Wrath answers with fire and righteous fury, " +
+      "Unmaking answers with storm and the unweaving of a foe's " +
+      "strength, and Protection answers by guarding those you hold " +
+      "dear, even without being called.",
+    socialStructure: "Devotional Rite-Society",
+    magicSkillIds: ["riteThunderWrath", "riteUnmaking", "riteProtection"],
+    accentColor: "#c17a3d",
+    magicOrigin: "The Vandiri dwell among sun-warmed savanna, tropical rivers, and coastal storm — and it is devotion to the old spirits of that land, given form through sacred rite, that grants their magic its power."
+  },
   deveran: {
     id: "deveran",
     name: "Deverans",
@@ -21,7 +42,8 @@ const CULTURES = {
       "stranger, said to command the raw elements directly.",
     socialStructure: "Hereditary Clan Chief",
     magicSkillIds: ["ancestralAverick", "ancestralSiuloir", "ancestralEmyrs"],
-    accentColor: "#7d5ba6"
+    accentColor: "#7d5ba6",
+    magicOrigin: "The Deverans hold to the misted Highlands and stone circles of their ancestors — and it is that same bloodline, passed down through the clans, that gives their magic its power."
   },
   drakvarr: {
     id: "drakvarr",
@@ -40,7 +62,8 @@ const CULTURES = {
       "quietly — a hex that lingers and festers.",
     socialStructure: "Warrior-Caste Shamanic Society",
     magicSkillIds: ["runeBlade", "runeVision", "runeCurse"],
-    accentColor: "#4f7ca6"
+    accentColor: "#4f7ca6",
+    magicOrigin: "The Drakvarr carve out a hard life among fjord and battle-hall — and their magic is carved too, etched into rune and skin by warriors and shamans alike."
   },
   gaeldrim: {
     id: "gaeldrim",
@@ -60,7 +83,8 @@ const CULTURES = {
       "beneath the land rather than what grows on it.",
     socialStructure: "Túath (Clan Consensus)",
     magicSkillIds: ["pathWild", "pathGrove", "pathStorm", "pathBarrow"],
-    accentColor: "#5a8f5a"
+    accentColor: "#5a8f5a",
+    magicOrigin: "The Gaeldrim dwell among ancient groves, bogs, and green hills — and it is that same living land, older than any people upon it, that gives their magic its power."
   }
 };
 
@@ -120,10 +144,21 @@ const RACES = {
       "mortals from naming them plainly.",
     image: "assets/images/characters/sidhe.png"
   },
+  leopardkin: {
+    id: "leopardkin",
+    name: "Leopard-kin",
+    origin: "Old blood of the Vandiri",
+    description:
+      "A feline-featured people, quiet and solitary by nature, " +
+      "said to descend from the old spirit-societies of the deep " +
+      "bush. The Leopard-kin are known as keen-eyed trackers and " +
+      "patient hunters, rarely seen unless they wish to be.",
+    image: "assets/images/characters/full-set/leopardkin-male-sword-shield.png"
+  },
   giant: {
     id: "giant",
     name: "Giant",
-    origin: "Old blood of all three peoples",
+    origin: "Old blood of all four peoples",
     description:
       "Descended, by every clan's account, from the great stone-kin " +
       "said to have shaped Cairntír's coastline with their bare " +
@@ -155,6 +190,10 @@ const MAX_FOLLOWERS = 3;
 const MAX_STARTING_SKILLS = 6;
 
 const SKILLS = {
+  riteThunderWrath: { id: "riteThunderWrath", name: "Rite of the Thunder-Wrath", category: "Magic", cultureLocked: "vandiri", description: "Sacred fire and righteous fury, called down upon the guilty." },
+  riteUnmaking: { id: "riteUnmaking", name: "Rite of Unmaking", category: "Magic", cultureLocked: "vandiri", description: "Storm and unraveling, drawing strength away from a foe." },
+  riteProtection: { id: "riteProtection", name: "Rite of Protection", category: "Magic", cultureLocked: "vandiri", description: "A guardian's sacred ward, answering harm before it's even called upon." },
+
   ancestralAverick: { id: "ancestralAverick", name: "Line of Averick", category: "Magic", cultureLocked: "deveran", description: "The warblood line — imbues your weapon with elemental force for a time." },
   ancestralSiuloir: { id: "ancestralSiuloir", name: "Line of Siuloir", category: "Magic", cultureLocked: "deveran", description: "The wardblood line — mends wounds through ancestral blessing." },
   ancestralEmyrs: { id: "ancestralEmyrs", name: "Line of Emyrs", category: "Magic", cultureLocked: "deveran", description: "The wizard line — rare and volatile, commanding fire, water, earth, and air directly." },

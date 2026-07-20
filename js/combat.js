@@ -118,6 +118,40 @@ function pushDotEffect(newEffect) {
   currentCombat.activeEffects.push(newEffect);
 }
 
+/**
+ * Cooldown tracking for spells like Warrior's Fire that can't be
+ * recast immediately after use. Lives on currentCombat (resets
+ * each fight), keyed by character + spellId so player and
+ * followers each track their own cooldowns independently.
+ */
+function getSpellCooldownRemaining(character, spellId) {
+  if (!currentCombat.spellCooldowns) return 0;
+  const entry = currentCombat.spellCooldowns.find(
+    (c) => c.character === character && c.spellId === spellId
+  );
+  return entry ? entry.roundsRemaining : 0;
+}
+
+function setSpellCooldown(character, spellId, rounds) {
+  if (!currentCombat.spellCooldowns) currentCombat.spellCooldowns = [];
+  const existing = currentCombat.spellCooldowns.find(
+    (c) => c.character === character && c.spellId === spellId
+  );
+  if (existing) {
+    existing.roundsRemaining = rounds;
+  } else {
+    currentCombat.spellCooldowns.push({ character, spellId, roundsRemaining: rounds });
+  }
+}
+
+function tickSpellCooldowns() {
+  if (!currentCombat.spellCooldowns) return;
+  currentCombat.spellCooldowns.forEach((c) => {
+    c.roundsRemaining -= 1;
+  });
+  currentCombat.spellCooldowns = currentCombat.spellCooldowns.filter((c) => c.roundsRemaining > 0);
+}
+
 function getEffectRankSum(kind, owner) {
   const targetOwner = owner || playerCharacter;
   return currentCombat.activeEffects
@@ -236,7 +270,23 @@ function getEffectivePlayerHealTier(baseTierName) {
 }
 
 function getEffectiveEnemyTier() {
-  return shiftTierByRank(currentCombat.enemyThreatTier, getEffectRankSum("enemyDebuff"));
+  return shiftTierByRank(
+    currentCombat.enemyThreatTier,
+    getEffectRankSum("enemyDebuff") + getEffectRankSum("defenseDebuff")
+  );
+}
+
+/**
+ * Used only for the enemy's OWN attack roll (their accuracy),
+ * separate from getEffectiveEnemyTier (used when YOU attack
+ * them). Existing enemyDebuff spells weaken both, same as
+ * before — accuracyDebuff (Blinding Curse) only weakens this one.
+ */
+function getEnemyAttackTier() {
+  return shiftTierByRank(
+    currentCombat.enemyThreatTier,
+    getEffectRankSum("enemyDebuff") + getEffectRankSum("accuracyDebuff")
+  );
 }
 
 function getArmorEnchantDefenseBonus() {
@@ -286,6 +336,60 @@ function getNightsightBonus() {
   if (!playerCharacter.traits || !playerCharacter.traits.includes("nightsight")) return 0;
   if (!NIGHTSIGHT_DUNGEON_IDS.includes(selectedDungeonId)) return 0;
   return 1;
+}
+
+/**
+ * Vulnerability Curse (Rite of Unmaking) amplifies EVERY hit the
+ * enemy takes, from any source — melee, spells, follower attacks,
+ * dot ticks, companion hits. This central helper is what every
+ * damage-to-enemy code path routes through so the bonus applies
+ * universally instead of needing separate logic at each site.
+ */
+/**
+ * Rite of Protection's 5 "ward" spells (everything except Ward
+ * of the Deep) don't work like normal spells — once active, they
+ * silently trigger every time the caster is hit, for as long as
+ * combat lasts (no duration, no recast). This checks the active
+ * wards and applies whichever ones the owner has up.
+ */
+function triggerOnHitWards(character) {
+  const wards = currentCombat.activeEffects.filter(
+    (e) => e.kind === "onHitWard" && e.owner === character
+  );
+
+  wards.forEach((ward) => {
+    if (ward.wardType === "onHitBuff") {
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: 1 });
+      currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: "grows stronger" });
+    } else if (ward.wardType === "onHitHeal") {
+      const maxHP = getHitPoints(character);
+      const healAmt = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+      character.currentHP = Math.min(maxHP, character.currentHP + healAmt);
+      currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: `mends ${healAmt} Hit Points` });
+    } else if (ward.wardType === "onHitManaRegen") {
+      const manaMax = getManaPoolMax(character);
+      character.currentMana = Math.min(manaMax, character.currentMana + 5);
+      currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: "returns 5 mana" });
+    } else if (ward.wardType === "onHitGroupHeal") {
+      const healAmt = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+      [playerCharacter, ...getActiveFollowers()].forEach((member) => {
+        if (member.currentHP <= 0) return;
+        const maxHP = getHitPoints(member);
+        member.currentHP = Math.min(maxHP, member.currentHP + healAmt);
+      });
+      currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: `mends the whole party for ${healAmt}` });
+    } else if (ward.wardType === "onHitDebuff") {
+      currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: 1 });
+      currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: "drags your foe down" });
+    }
+  });
+}
+
+function applyDamageToEnemy(rawDamage) {
+  const hasVulnerability = currentCombat.activeEffects.some((e) => e.kind === "vulnerability");
+  const finalDamage = hasVulnerability ? Math.round(rawDamage * 1.25) : rawDamage;
+  currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - finalDamage);
+  return finalDamage;
 }
 
 function getFlatDamageAbsorb(character) {
@@ -433,18 +537,17 @@ function tickCombatEffects() {
     const owner = effect.owner || playerCharacter;
 
     if (effect.kind === "dot") {
-      const dmg = Math.max(1, Math.floor(rollDamage(effect.casterTierName) / 2));
-      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
+      const dmg = applyDamageToEnemy(Math.max(1, Math.floor(rollDamage(effect.casterTierName) / 2)));
       currentCombat.log.push({ actor: "effect", kind: "dot", damage: dmg, spellName: effect.spellName });
     } else if (effect.kind === "companion") {
       const kinshipBonus = playerCharacter.traits && playerCharacter.traits.includes("beastkinship") ? 1 : 0;
       const heavyTier = shiftTierByRank(effect.casterTierName || "Novice", 2 + kinshipBonus);
-      const dmg = rollDamage(heavyTier);
-      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - dmg);
+      const dmg = applyDamageToEnemy(rollDamage(heavyTier));
       currentCombat.log.push({ actor: "effect", kind: "companion", damage: dmg });
     } else if (effect.kind === "hot") {
       const healTargets = effect.partyWide ? [playerCharacter, ...getActiveFollowers()] : [owner];
       healTargets.forEach((target) => {
+        if (target.currentHP <= 0) return;
         const maxHP = getHitPoints(target);
         if (target.currentHP < maxHP) {
           const healAmt = Math.max(1, Math.floor(rollDamage(effect.casterTierName || "Novice") / 2));
@@ -701,7 +804,7 @@ function performFollowerAttackSpell(follower, skillId, spell) {
       damage = Math.round(damage * (1 + missingHpPct * 1.5));
     }
 
-    currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+    damage = applyDamageToEnemy(damage);
 
     if (spell.type === "lifetap") {
       const followerMax = getHitPoints(follower);
@@ -761,8 +864,7 @@ function performFollowersTurn() {
     const hit = hasGuaranteedFollowerAction || rollSuccess(attackTierName, getEffectiveEnemyTier());
     let damage = 0;
     if (hit) {
-      damage = rollDamage(attackTierName);
-      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+      damage = applyDamageToEnemy(rollDamage(attackTierName));
     }
 
     currentCombat.log.push({
@@ -801,6 +903,7 @@ function tryArmorEnchantProc(enemyEffectiveTier) {
 
 function resolveEnemyAttack() {
   tickCombatEffects();
+  tickSpellCooldowns();
   if (currentCombat.enemyCurrentHP <= 0) {
     currentCombat.result = "victory";
     return;
@@ -826,7 +929,7 @@ function resolveEnemyAttack() {
   const target = pickEnemyTarget();
   const isPlayerTarget = target === playerCharacter;
   const attackType = currentCombat.enemyAttackType;
-  const enemyEffectiveTier = getEffectiveEnemyTier();
+  const enemyEffectiveTier = getEnemyAttackTier();
   const defenderTier = getDefendingTierName(attackType, target);
   const adjustment = isPlayerTarget && currentCombat.playerDefending ? -DEFEND_SUCCESS_PENALTY : 0;
 
@@ -839,7 +942,8 @@ function resolveEnemyAttack() {
     deflected = tryArmorEnchantProc(enemyEffectiveTier);
   }
 
-  const enemyCastInfo = attackType === "magic" ? getEnemyCultureSpell() : null;
+  const isSilenced = consumeGuaranteedEffect("silence");
+  const enemyCastInfo = (attackType === "magic" && !isSilenced) ? getEnemyCultureSpell() : null;
   let hasCultureTraining = false;
   if (enemyCastInfo) {
     const cultureSkillIds = CULTURES[enemyCastInfo.cultureId].magicSkillIds;
@@ -855,6 +959,9 @@ function resolveEnemyAttack() {
   }
 
   if (hit && !deflected && !backfired) {
+    if (!isPlayerTarget) {
+      triggerOnHitWards(target);
+    }
     damage = Math.max(
       1,
       Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier * adaptive.damageMultiplier)
@@ -869,12 +976,20 @@ function resolveEnemyAttack() {
       damage = Math.max(0, damage - absorbed);
     }
     target.currentHP = Math.max(0, target.currentHP - damage);
+    if (target.currentHP <= 0) {
+      const hasWard = currentCombat.activeEffects.some((e) => e.kind === "autoRevive");
+      if (hasWard) {
+        const maxHP = getHitPoints(target);
+        const manaMax = getManaPoolMax(target);
+        target.currentHP = Math.max(1, Math.round(maxHP * 0.6));
+        target.currentMana = Math.min(manaMax, target.currentMana + Math.round(manaMax * 0.4));
+        currentCombat.log.push({ actor: "effect", kind: "wardOfTheDeepSave", targetName: target.name });
+      }
+    }
   } else if (backfired) {
-    damage = Math.max(
-      1,
-      Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier)
+    damage = applyDamageToEnemy(
+      Math.max(1, Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier))
     );
-    currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
   }
 
   currentCombat.playerDefending = false;
@@ -891,6 +1006,7 @@ function resolveEnemyAttack() {
   });
 
   if (hit && !deflected && isPlayerTarget) {
+    triggerOnHitWards(playerCharacter);
     const hasIronWill = playerCharacter.traits && playerCharacter.traits.includes("ironWill");
     const procChance = hasIronWill ? 0.06 : 0.15;
     if (Math.random() < procChance) {
@@ -937,8 +1053,7 @@ function performPlayerAction(skillId) {
   let damage = 0;
 
   if (hit) {
-    damage = rollDamage(attackTier);
-    currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+    damage = applyDamageToEnemy(rollDamage(attackTier));
   }
 
   if (hit && playerCharacter.traits && playerCharacter.traits.includes("predatorInstinct")) {
@@ -991,8 +1106,64 @@ function performPlayerCast(skillId, spell) {
     const hit = hasGuaranteedSpellHit || rollSuccess(accuracyTier, enemyTier);
     let damage = 0;
     if (hit) {
-      damage = rollDamage(attackTier);
-      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+      damage = applyDamageToEnemy(rollDamage(attackTier));
+    }
+    logEntry.hit = hit;
+    logEntry.damage = damage;
+  } else if (spell.type === "damageAmpDebuff") {
+    currentCombat.activeEffects.push({ kind: "vulnerability", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
+  } else if (spell.type === "accuracyDebuff") {
+    currentCombat.activeEffects.push({ kind: "accuracyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+  } else if (spell.type === "defenseDebuff") {
+    currentCombat.activeEffects.push({ kind: "defenseDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+  } else if (spell.type === "spellLock") {
+    currentCombat.activeEffects.push({ kind: "silence", rankBonus: 0, roundsRemaining: null });
+  } else if (spell.type === "autoRevive") {
+    currentCombat.activeEffects.push({
+      kind: "autoRevive",
+      rankBonus: 0,
+      roundsRemaining: null,
+      owner: playerCharacter,
+      spellName: spell.name
+    });
+  } else if (
+    spell.type === "onHitBuff" || spell.type === "onHitHeal" ||
+    spell.type === "onHitManaRegen" || spell.type === "onHitGroupHeal" ||
+    spell.type === "onHitDebuff"
+  ) {
+    currentCombat.activeEffects.push({
+      kind: "onHitWard",
+      rankBonus: 0,
+      roundsRemaining: null,
+      owner: playerCharacter,
+      wardType: spell.type,
+      spellName: spell.name
+    });
+  } else if (spell.type === "powerSteal") {
+    const attackTier = getEffectivePlayerSpellDamageTier(tierBefore);
+    const enemyTier = getEffectiveEnemyTier();
+    const hit = rollSuccess(attackTier, enemyTier);
+    let damage = 0;
+    if (hit) {
+      damage = applyDamageToEnemy(rollDamage(attackTier));
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION });
+      currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+    }
+    logEntry.hit = hit;
+    logEntry.damage = damage;
+  } else if (spell.type === "doubleDrain") {
+    const attackTier = getEffectivePlayerSpellDamageTier(tierBefore);
+    const enemyTier = getEffectiveEnemyTier();
+    const hit = rollSuccess(attackTier, enemyTier);
+    let damage = 0;
+    if (hit) {
+      damage = applyDamageToEnemy(rollDamage(attackTier));
+      const maxHP = getHitPoints(playerCharacter);
+      const manaMax = getManaPoolMax(playerCharacter);
+      playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + damage);
+      const manaGain = Math.max(1, Math.floor(damage / 2));
+      playerCharacter.currentMana = Math.min(manaMax, playerCharacter.currentMana + manaGain);
+      logEntry.manaGained = manaGain;
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
@@ -1005,8 +1176,7 @@ function performPlayerCast(skillId, spell) {
       damage = rollDamage(attackTier);
       const missingHpPct = 1 - currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
       const executeMultiplier = 1 + missingHpPct * 1.5;
-      damage = Math.round(damage * executeMultiplier);
-      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+      damage = applyDamageToEnemy(Math.round(damage * executeMultiplier));
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
@@ -1076,8 +1246,7 @@ function performPlayerCast(skillId, spell) {
     const hit = rollSuccess(attackTier, enemyTier);
     let damage = 0;
     if (hit) {
-      damage = rollDamage(attackTier);
-      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - damage);
+      damage = applyDamageToEnemy(rollDamage(attackTier));
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
@@ -1139,6 +1308,18 @@ function performPlayerCast(skillId, spell) {
     currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "curseBack") {
     currentCombat.activeEffects.push({ kind: "curseBack", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
+  } else if (spell.type === "cooldownBuff") {
+    if (getSpellCooldownRemaining(playerCharacter, spell.id) > 0) {
+      logEntry.onCooldown = true;
+    } else {
+      currentCombat.activeEffects.push({
+        kind: "playerAttackBonus",
+        rankBonus: 1,
+        roundsRemaining: 4,
+        spellName: spell.name
+      });
+      setSpellCooldown(playerCharacter, spell.id, 4);
+    }
   } else if (spell.type === "manaRefund") {
     const refundAmount = rollDamage(tierBefore);
     const manaMax = getManaPoolMax(playerCharacter);
@@ -1269,6 +1450,8 @@ function describeLogEntry(entry) {
       const who = entry.ownerName && entry.ownerName !== playerCharacter.name ? `${entry.ownerName}'s` : "your";
       return `${entry.spellName || "The song's melody"} restores ${entry.manaAmount} mana to ${who} pool.`;
     }
+    if (entry.kind === "wardTriggered") return `${entry.wardName} answers the blow — ${entry.effectText}.`;
+    if (entry.kind === "wardOfTheDeepSave") return `Ward of the Deep pulls ${entry.targetName} back from the edge, restoring them well beyond an ordinary revival.`;
     if (entry.kind === "songStopped") {
       return entry.outOfMana
         ? `${entry.spellName} fades as your mana runs dry.`
@@ -1371,6 +1554,40 @@ function describeLogEntry(entry) {
     }
     if (entry.spellType === "buffAndDebuff") {
       return `You call on ${actionName}, and feel your strikes grow stronger as your foe falters.`;
+    }
+    if (entry.spellType === "damageAmpDebuff") {
+      return `You call on ${actionName}, and your foe is left exposed to every strike that follows.`;
+    }
+    if (entry.spellType === "accuracyDebuff") {
+      return `You call on ${actionName}, and your foe's own aim begins to fail them.`;
+    }
+    if (entry.spellType === "defenseDebuff") {
+      return `You call on ${actionName}, and your foe's guard falls open.`;
+    }
+    if (entry.spellType === "spellLock") {
+      return `You call on ${actionName}, and your foe's own magic falls silent.`;
+    }
+    if (
+      entry.spellType === "onHitBuff" || entry.spellType === "onHitHeal" ||
+      entry.spellType === "onHitManaRegen" || entry.spellType === "onHitGroupHeal" ||
+      entry.spellType === "onHitDebuff"
+    ) {
+      return `You call on ${actionName}, and a silent ward settles over you — ready to answer the next blow.`;
+    }
+    if (entry.spellType === "powerSteal") {
+      return entry.hit
+        ? `You call on ${actionName}, tearing ${entry.damage} strength away from your foe — and making it your own.`
+        : `You call on ${actionName}, but it fails to take hold.`;
+    }
+    if (entry.spellType === "doubleDrain") {
+      return entry.hit
+        ? `You call on ${actionName} and drain your foe for ${entry.damage}, restoring the same in Hit Points and ${entry.manaGained} mana.`
+        : `You call on ${actionName}, but it fails to find its mark.`;
+    }
+    if (entry.spellType === "cooldownBuff") {
+      return entry.onCooldown
+        ? `You reach for ${actionName}, but the fire hasn't rekindled yet.`
+        : `You call on ${actionName}, and your strikes burn brighter for a time.`;
     }
     if (entry.spellType === "manaRefund") {
       return `You call on ${actionName}, drawing ${entry.manaAmount} mana back into yourself.`;

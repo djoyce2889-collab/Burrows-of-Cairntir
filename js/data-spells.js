@@ -4,6 +4,33 @@
    ============================================================ */
 
 const SPELLS = {
+  riteProtection: [
+    { id: "wardOfTheDeep", name: "Ward of the Deep", type: "autoRevive", description: "If you or a companion falls, this ward pulls them back — restoring more than an ordinary revival grants." },
+    { id: "furysAnswer", name: "Fury's Answer", type: "onHitBuff", description: "Every blow that lands against you only sharpens your own strikes in answer." },
+    { id: "mercysTouch", name: "Mercy's Touch", type: "onHitHeal", description: "Every blow that lands against you calls forth a measure of healing in turn." },
+    { id: "deepCurrent", name: "Deep Current", type: "onHitManaRegen", description: "Every blow that lands against you stirs the deep waters, returning mana." },
+    { id: "mothersCircle", name: "Mother's Circle", type: "onHitGroupHeal", description: "When harm touches any of your own, the whole circle is mended a little." },
+    { id: "undertow", name: "Undertow", type: "onHitDebuff", description: "Whatever strikes you and yours is dragged down in turn, weakened for its trouble." }
+  ],
+
+  riteUnmaking: [
+    { id: "devouringGale", name: "Devouring Gale", type: "powerSteal", description: "Deals damage and steals strength itself — weakening the enemy's attacks while strengthening yours, for a few rounds." },
+    { id: "vulnerabilityCurse", name: "Vulnerability Curse", type: "damageAmpDebuff", description: "A curse that leaves your foe exposed — every blow that lands against them, from any source, strikes a little harder for a time." },
+    { id: "blindingCurse", name: "Blinding Curse", type: "accuracyDebuff", description: "Weakens only the enemy's own aim, making them more likely to miss you, without changing how easy they are to strike." },
+    { id: "cripplingCurse", name: "Crippling Curse", type: "damageDebuff", description: "Weakens the raw force behind the enemy's blows, without affecting their aim." },
+    { id: "exposingCurse", name: "Exposing Curse", type: "defenseDebuff", description: "Leaves the enemy's guard down, making them easier for you specifically to strike." },
+    { id: "silencingCurse", name: "Silencing Curse", type: "spellLock", description: "Prevents the enemy from calling on their own magic next turn, forcing a plain attack instead." }
+  ],
+
+  riteThunderWrath: [
+    { id: "wrathUnbound", name: "Wrath Unbound", type: "dot", description: "A lingering wound of righteous fury that saps your foe's strength over a few rounds." },
+    { id: "emberLash", name: "Ember-Lash", type: "companion", description: "Calls a fire elemental to fight at your side for the rest of the dungeon." },
+    { id: "judgmentsWeight", name: "Judgment's Weight", type: "debuff", description: "Marks a foe as guilty, weakening their strikes for a time." },
+    { id: "thunderCaller", name: "Thunder Caller", type: "companion", description: "Calls a lightning elemental to fight at your side for the rest of the dungeon." },
+    { id: "warriorsFire", name: "Warrior's Fire", type: "cooldownBuff", description: "Strengthens your strikes beyond the usual measure for 4 rounds — but the fire needs time to rekindle before it can be called again." },
+    { id: "thunderstrike", name: "Thunderstrike", type: "doubleDrain", description: "A direct strike that drains your foe, returning both Hit Points and mana to you." }
+  ],
+
   ancestralAverick: [
     { id: "flametouchedBlade", name: "Flametouched Blade", type: "buff", description: "Wreathes your weapon in fire for a few rounds, strengthening every strike." },
     { id: "glacialEdge", name: "Glacial Edge", type: "buff", description: "Coats your blade in unnatural frost for a few rounds, strengthening every strike." },

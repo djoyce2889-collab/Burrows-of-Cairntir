@@ -414,5 +414,62 @@ const ENEMIES = {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Balor's Eye Shard", "Grave Essence", "Grave Essence"]
+  },
+
+  stormTouchedReiver: {
+    id: "stormTouchedReiver",
+    name: "Storm-Touched Reiver",
+    description: "A Highland raider, eyes clouded storm-white, moving like something no longer entirely in control of itself.",
+    image: "assets/images/enemies/storm-touched-reiver.png",
+    hitPoints: 34,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  frostWightOfTheReach: {
+    id: "frostWightOfTheReach",
+    name: "Frost-Wight of the Reach",
+    description: "A traveler who froze on this mountain long ago, and never quite lay down.",
+    image: "assets/images/enemies/frost-wight-of-the-reach.png",
+    hitPoints: 32,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  cailleachsHandmaiden: {
+    id: "cailleachsHandmaiden",
+    name: "Cailleach's Handmaiden",
+    description: "A gaunt, ancient-looking woman wrapped in ragged winter furs, hands wreathed in swirling ice and storm magic.",
+    image: "assets/images/enemies/cailleachs-handmaiden.png",
+    hitPoints: 30,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence", "Grave Essence"]
+  },
+  boulderHideStalker: {
+    id: "boulderHideStalker",
+    name: "Boulder-Hide Stalker",
+    description: "A hulking creature with hide like weathered mountain stone, moss and ice clinging to its rocky form.",
+    image: "assets/images/enemies/boulder-hide-stalker.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "stone",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  theCailleach: {
+    id: "theCailleach",
+    name: "The Cailleach",
+    description: "An ancient, towering hag-goddess wrapped in storm clouds and winter itself, primordial beyond any of the world's younger peoples.",
+    image: "assets/images/enemies/the-cailleach.png",
+    deathImage: "assets/images/deaths/cailleach-death.png",
+    hitPoints: 65,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Cailleach's Frost Sigil", "Grave Essence", "Grave Essence"]
   }
 };

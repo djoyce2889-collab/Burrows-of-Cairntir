@@ -40,13 +40,18 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     (id) => SKILLS[id] && SKILLS[id].category === "Armor"
   ) || null;
 
+  const validActiveSpellIds = (startingSpellIds || []).filter((spellId) => {
+    const skillId = getSkillIdForSpellId(spellId);
+    return skillId && startingSkillIds.includes(skillId);
+  });
+
   const character = {
     name: name,
     raceId: raceId,
     cultureId: cultureId,
     skills: skills,
     knownSpells: knownSpells,
-    activeSpellIds: (startingSpellIds || []).slice(0, 4),
+    activeSpellIds: validActiveSpellIds.slice(0, 4),
     traits: traitIds.slice(),
     combatStyle: combatStyle || "single",
     portraitImage: portraitImage || null,
@@ -56,6 +61,8 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     equippedOffhandSkill: null,
     equippedRing: null,
     equippedAmulet: null,
+    equippedWeaponItemName: null,
+    equippedArmorItemName: null,
     inventory: inventory,
     active: true,
     flags: {}

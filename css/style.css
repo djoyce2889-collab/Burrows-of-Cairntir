@@ -442,6 +442,23 @@ body {
   opacity: 0.9;
 }
 
+.map-hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ember);
+  border: 3px solid var(--parchment);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: transform 0.15s ease;
+}
+
+.map-hotspot:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
 .cc-skill-count {
   font-family: var(--font-readable);
   font-size: 16px;

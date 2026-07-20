@@ -10,6 +10,7 @@ const DUNGEONS = {
     name: "Duncairn Keep",
     difficulty: "Novice",
     musicSrc: "assets/audio/duncairn-keep.mp3",
+    mapHotspot: { top: "50%", left: "20%" },
     culture: "deveran",
     image: "assets/images/duncairn-keep.png",
     description:
@@ -23,6 +24,7 @@ const DUNGEONS = {
     name: "The Sunken Longhall",
     difficulty: "Novice",
     musicSrc: "assets/audio/sunken-longhall.mp3",
+    mapHotspot: { top: "85%", left: "15%" },
     culture: "drakvarr",
     image: "assets/images/sunken-longhall.png",
     description:
@@ -38,6 +40,7 @@ const DUNGEONS = {
     name: "The Wychroot Grove",
     difficulty: "Novice",
     musicSrc: "assets/audio/wychroot-grove.mp3",
+    mapHotspot: { top: "28%", left: "22%" },
     culture: "gaeldrim",
     image: "assets/images/wychroot-grove.png",
     description:
@@ -52,6 +55,7 @@ const DUNGEONS = {
     name: "The Hollowmere Cairn",
     difficulty: "Adept",
     musicSrc: "assets/audio/hollowmere-cairn.mp3",
+    mapHotspot: { top: "58%", left: "75%" },
     culture: "deveran",
     image: "assets/images/hollowmere-cairn.png",
     description:
@@ -65,6 +69,7 @@ const DUNGEONS = {
     name: "Frosthollow Vault",
     difficulty: "Adept",
     musicSrc: "assets/audio/frosthollow-vault.mp3",
+    mapHotspot: { top: "50%", left: "78%" },
     culture: "drakvarr",
     image: "assets/images/frosthollow-vault.png",
     description:
@@ -78,6 +83,7 @@ const DUNGEONS = {
     name: "The Hollow Vale",
     difficulty: "Expert",
     musicSrc: "assets/audio/hollow-vale.mp3",
+    mapHotspot: { top: "50%", left: "80%" },
     culture: "gaeldrim",
     image: "assets/images/hollow-vale.png",
     description:
@@ -90,6 +96,7 @@ const DUNGEONS = {
     name: "The Blackforge Deep",
     difficulty: "Expert",
     musicSrc: "assets/audio/blackforge-deep-theme.mp3",
+    mapHotspot: { top: "50%", left: "50%" },
     culture: "drakvarr",
     image: "assets/images/blackforge-deep/hall-entrance.png",
     description:
@@ -101,12 +108,26 @@ const DUNGEONS = {
     name: "The Fomorian Depths",
     difficulty: "Adept",
     musicSrc: "assets/audio/fomorian-depths-theme.mp3",
+    mapHotspot: { top: "72%", left: "16%" },
     culture: "gaeldrim",
     image: "assets/images/fomorian-depths.png",
     description:
       "A sea-cave older than the Tuatha Dé Danann themselves, home to " +
       "something that came before even the old gods — and never fully " +
       "left."
+  },
+  cailleachsReach: {
+    id: "cailleachsReach",
+    name: "Cailleach's Reach",
+    difficulty: "Expert",
+    musicSrc: "assets/audio/cailleachs-reach-theme.mp3",
+    mapHotspot: { top: "12%", left: "55%" },
+    culture: "deveran",
+    image: "assets/images/cailleachs-reach.png",
+    description:
+      "A storm-lashed Highland peak, older than any Deveran clan, home " +
+      "to the winter goddess herself — and the mountain remembers her " +
+      "far better than it remembers you."
   }
 };
 
@@ -1149,6 +1170,127 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+
+  cailleachsReach: {
+    startRoomId: "mountainPassEntrance",
+    rooms: {
+      mountainPassEntrance: {
+        text: "A storm-lashed mountain pass stretches before you, ancient standing stones half-buried in driving snow, wind howling between two towering peaks.",
+        choices: [{ type: "goto", label: "Press onward", target: "windsweptTrail" }]
+      },
+      windsweptTrail: {
+        text: "The trail narrows, clinging to a steep cliffside. Snow drives sideways in the wind, and the drop below is lost in swirling white.",
+        choices: [{ type: "goto", label: "Continue", target: "reiverAmbush" }]
+      },
+      reiverAmbush: {
+        text: "A shape lurches out of the blowing snow — a Highland raider, eyes clouded storm-white, moving like something no longer entirely in control of itself.",
+        choices: [{ type: "combat", label: "Fight the Reiver", enemyId: "stormTouchedReiver", target: "cairnLoot" }]
+      },
+      cairnLoot: {
+        text: "An old stone cairn sits half-collapsed on the mountainside, weathered grave goods wedged among the fallen stones.",
+        loot: ["Old Ore"],
+        choices: [
+          { type: "check", label: "Search further (Survival)", skillId: "survival", difficulty: "Expert", successTarget: "hiddenNiche", failureTarget: "risingPath" },
+          { type: "goto", label: "Move on", target: "risingPath" }
+        ]
+      },
+      hiddenNiche: {
+        text: "A small niche is carved into the mountainside here, sheltered from the worst of the wind — easy to miss unless you're looking for it.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "risingPath" }]
+      },
+      risingPath: {
+        text: "The trail climbs steeply now, the air growing thinner and colder with every step. Storm clouds press close overhead.",
+        choices: [{ type: "goto", label: "Press onward", target: "wightEncounter" }]
+      },
+      wightEncounter: {
+        text: "Something pale and frost-rimed stands motionless ahead — a traveler who froze on this mountain long ago, and never quite lay down.",
+        choices: [{ type: "combat", label: "Fight the Frost-Wight", enemyId: "frostWightOfTheReach", target: "shelteredHollow" }]
+      },
+      shelteredHollow: {
+        text: "A hollow is carved into the rock here, ancient carvings just visible beneath a crust of frost.",
+        choices: [
+          { type: "discover", label: "Study the carving (Line of Siuloir)", skillId: "ancestralSiuloir", spellId: "warChant", target: "stormRidge" },
+          { type: "goto", label: "Leave it and move on", target: "stormRidge" }
+        ]
+      },
+      stormRidge: {
+        text: "An exposed ridge stretches ahead, lightning flickering somewhere above the clouds. The wind here is enough to knock you off balance.",
+        choices: [{ type: "goto", label: "Press onward", target: "handmaidenFight" }]
+      },
+      handmaidenFight: {
+        text: "A gaunt figure steps from the blowing snow, hands already wreathed in swirling ice — one of the Cailleach's own, sent to bar your way.",
+        choices: [
+          { type: "combat", label: "Fight the Handmaiden", enemyId: "cailleachsHandmaiden", target: "boneCairn" },
+          {
+            type: "persuade",
+            label: "Invoke old reverence for the Cailleach (Persuasion)",
+            skillId: "ancestralEmyrs",
+            spellId: "aegisWard",
+            target: "boneCairn",
+            enemyId: "cailleachsHandmaiden",
+            failDialogue: [
+              "The Handmaiden's eyes don't waver — reverence means nothing to something that already serves.",
+              "\"She does not need your worship,\" the Handmaiden says. \"Only your passage stopped.\"",
+              "The old words fall away into the wind, unheard, or unheeded."
+            ],
+            finalFailDialogue: "Whatever devotion once moved the clans to honor her, it means nothing here."
+          }
+        ]
+      },
+      boneCairn: {
+        text: "A grim cairn of old bones rises from the snow, both animal and unmistakably not.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead: one way along a narrow, icy ledge, the other into a dark cave mouth.",
+        choices: [
+          { type: "goto", label: "Take the icy ledge", target: "icyLedge" },
+          { type: "goto", label: "Enter the cave", target: "hiddenCave" }
+        ]
+      },
+      icyLedge: {
+        text: "The ledge is glazed thick with ice, the drop below vanishing into cloud. Every step here has to be careful.",
+        choices: [{ type: "goto", label: "Continue", target: "converge" }]
+      },
+      hiddenCave: {
+        text: "The cave is oddly still, dry despite the storm raging outside. Something waits in the dark ahead.",
+        choices: [{ type: "goto", label: "Press onward", target: "stalkerFight" }]
+      },
+      stalkerFight: {
+        text: "A shape detaches itself from the rock — a creature with hide like weathered stone, immense and immovable, blocking the way forward.",
+        choices: [{ type: "combat", label: "Fight the Stalker", enemyId: "boulderHideStalker", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths meet at the base of a final summit, wrapped entirely in storm. Whatever waits above, this is the only way to it.",
+        choices: [{ type: "goto", label: "Ascend", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The wind screams at the base of the peak. Something ancient and immense stirs at the summit above, barely visible through the blizzard.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Expert", successTarget: "bossDoor", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A second raider emerges from the storm, clouded eyes fixed on you, closing the distance before you can reach the summit.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "stormTouchedReiver", target: "bossDoor" }]
+      },
+      bossDoor: {
+        text: "The summit opens before you — a ring of ancient standing stones half-swallowed by ice and low cloud, the air crackling with unnatural cold.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "This is the storm's true heart. Amid the ring of stones stands something ancient beyond reckoning — the Cailleach herself, weathered and primordial, wrapped in winter and cloud.",
+        choices: [{ type: "combat", label: "Face the Cailleach", enemyId: "theCailleach", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The storm finally breaks. Pale winter sunlight filters through the parting clouds, and for the first time, the mountain feels merely cold — not alive with something older than the world.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -1323,6 +1465,29 @@ const ROOM_IMAGES = {
     bossDoor: "assets/images/fomorian-depths/boss-door.png",
     bossRoom: "assets/images/fomorian-depths/boss-room.png",
     epilogue: "assets/images/fomorian-depths/epilogue.png"
+  },
+  cailleachsReach: {
+    mountainPassEntrance: "assets/images/cailleachs-reach/mountain-pass-entrance.png",
+    windsweptTrail: "assets/images/cailleachs-reach/windswept-trail.png",
+    reiverAmbush: "assets/images/cailleachs-reach/windswept-trail.png",
+    cairnLoot: "assets/images/cailleachs-reach/cairn-loot.png",
+    hiddenNiche: "assets/images/cailleachs-reach/hidden-niche.png",
+    risingPath: "assets/images/cailleachs-reach/rising-path.png",
+    wightEncounter: "assets/images/cailleachs-reach/rising-path.png",
+    shelteredHollow: "assets/images/cailleachs-reach/sheltered-hollow.png",
+    stormRidge: "assets/images/cailleachs-reach/storm-ridge.png",
+    handmaidenFight: "assets/images/cailleachs-reach/storm-ridge.png",
+    boneCairn: "assets/images/cailleachs-reach/bone-cairn.png",
+    fork: "assets/images/cailleachs-reach/fork.png",
+    icyLedge: "assets/images/cailleachs-reach/icy-ledge.png",
+    hiddenCave: "assets/images/cailleachs-reach/hidden-cave.png",
+    stalkerFight: "assets/images/cailleachs-reach/hidden-cave.png",
+    converge: "assets/images/cailleachs-reach/converge.png",
+    preBoss: "assets/images/cailleachs-reach/pre-boss.png",
+    extraFight: "assets/images/cailleachs-reach/pre-boss.png",
+    bossDoor: "assets/images/cailleachs-reach/boss-door.png",
+    bossRoom: "assets/images/cailleachs-reach/boss-room.png",
+    epilogue: "assets/images/cailleachs-reach/epilogue.png"
   }
 };
 
