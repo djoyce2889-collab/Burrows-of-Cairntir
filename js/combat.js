@@ -92,8 +92,8 @@ function getPlayerPowerRank() {
 function getAdaptiveScaling() {
   const powerRank = getPlayerPowerRank();
   return {
-    hpMultiplier: 1 + powerRank * 0.3,
-    damageMultiplier: 1 + powerRank * 0.12
+    hpMultiplier: 1 + powerRank * 1.14,
+    damageMultiplier: 1 + powerRank * 0.45
   };
 }
 
@@ -532,6 +532,23 @@ function startCombat(enemyId) {
   };
 
   return currentCombat;
+}
+
+const PASSIVE_MANA_REGEN_PER_ROUND = 3;
+
+/**
+ * Every living character — player and followers alike — slowly
+ * regenerates a small amount of mana each round, regardless of
+ * any active spell effect. Silent (no log entry) since it happens
+ * every single round and would otherwise clutter the combat log.
+ * Meaningfully slower than a bard's manaRegen song (+8/round).
+ */
+function applyPassiveManaRegen() {
+  [playerCharacter, ...getActiveFollowers()].forEach((character) => {
+    if (character.currentHP <= 0) return;
+    const manaMax = getManaPoolMax(character);
+    character.currentMana = Math.min(manaMax, character.currentMana + PASSIVE_MANA_REGEN_PER_ROUND);
+  });
 }
 
 function tickCombatEffects() {
@@ -1029,33 +1046,104 @@ function tryArmorEnchantProc(enemyEffectiveTier) {
   if (!effect || !effect.procType) return false;
   if (Math.random() >= effect.procChance) return false;
 
+  const craftedBonus = getCraftedItemBonus(playerCharacter, playerCharacter.equippedArmorSkill);
+
   if (effect.procType === "deflect") {
     currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "deflect" });
     return true;
   }
   if (effect.procType === "counterBurn") {
-    const burnDmg = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+    const burnDmg = Math.max(1, Math.floor(rollDamage("Novice") / 2)) + craftedBonus;
     currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - burnDmg);
     currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "counterBurn", damage: burnDmg });
   } else if (effect.procType === "chill") {
-    currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: 2 });
+    currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1 - craftedBonus, roundsRemaining: 2 });
     currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "chill" });
   } else if (effect.procType === "counterCurse") {
-    currentCombat.activeEffects.push({ kind: "dot", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, casterTierName: "Novice" });
+    const curseTier = shiftTierByRank("Novice", craftedBonus);
+    currentCombat.activeEffects.push({ kind: "dot", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, casterTierName: curseTier });
     currentCombat.log.push({ actor: "effect", kind: "enchantProc", procType: "counterCurse" });
   }
   return false;
 }
 
+const ENEMY_SELF_HEAL_IDS = [];
+
+/**
+ * Finds a heal/hot-type spell from the current dungeon's
+ * culture, if one exists — not every culture has one (Drakvarr
+ * and Vandiri currently don't), in which case this returns null
+ * and the enemy just fights normally instead.
+ */
+function getEnemyHealSpell() {
+  const dungeon = DUNGEONS[selectedDungeonId];
+  if (!dungeon || !dungeon.culture) return null;
+  const culture = CULTURES[dungeon.culture];
+  if (!culture) return null;
+
+  const healTypes = ["heal", "hot", "groupHeal"];
+  const pool = [];
+  culture.magicSkillIds.forEach((skillId) => {
+    const spells = SPELLS[skillId] || [];
+    spells.forEach((spell) => {
+      if (healTypes.includes(spell.type)) {
+        pool.push({ skillId, spell, cultureId: dungeon.culture });
+      }
+    });
+  });
+
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/**
+ * Below 40% HP, any enemy except the 4 named bosses will heal
+ * themselves instead of attacking that round, if their culture
+ * has a heal-type spell available. Returns true if healing
+ * happened (meaning the normal attack should be skipped).
+ */
+function tryEnemySelfHeal() {
+  if (!ENEMY_SELF_HEAL_IDS.includes(currentCombat.enemyId)) return false;
+  const hpPct = currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
+  if (hpPct >= 0.4) return false;
+
+  const healOption = getEnemyHealSpell();
+  if (!healOption) return false;
+
+  const healAmt = rollDamage(currentCombat.enemyThreatTier);
+  currentCombat.enemyCurrentHP = Math.min(currentCombat.enemyMaxHP, currentCombat.enemyCurrentHP + healAmt);
+
+  currentCombat.log.push({
+    actor: "enemy",
+    action: "heal",
+    spellName: healOption.spell.name,
+    healAmount: healAmt
+  });
+
+  return true;
+}
+
 function resolveEnemyAttack() {
+  const isStunned = currentCombat.activeEffects.some((e) => e.kind === "stun" && e.target !== "player");
+  if (isStunned) {
+    currentCombat.activeEffects = currentCombat.activeEffects.filter(
+      (e) => !(e.kind === "stun" && e.target !== "player")
+    );
+  }
+
   tickCombatEffects();
   tickSpellCooldowns();
+  applyPassiveManaRegen();
   if (currentCombat.enemyCurrentHP <= 0) {
     currentCombat.result = "victory";
     return;
   }
 
-  const isStunned = currentCombat.activeEffects.some((e) => e.kind === "stun" && e.target !== "player");
+  if (tryEnemySelfHeal()) {
+    currentCombat.playerDefending = false;
+    return;
+  }
+
   const isVisionStunned = consumeGuaranteedEffect("guaranteedStun");
   if (isStunned || isVisionStunned) {
     currentCombat.playerDefending = false;
@@ -1124,12 +1212,13 @@ function resolveEnemyAttack() {
     }
     target.currentHP = Math.max(0, target.currentHP - damage);
     if (target.currentHP <= 0) {
-      const hasWard = currentCombat.activeEffects.some((e) => e.kind === "autoRevive");
-      if (hasWard) {
+      const wardIndex = currentCombat.activeEffects.findIndex((e) => e.kind === "autoRevive");
+      if (wardIndex !== -1) {
+        currentCombat.activeEffects.splice(wardIndex, 1);
         const maxHP = getHitPoints(target);
         const manaMax = getManaPoolMax(target);
-        target.currentHP = Math.max(1, Math.round(maxHP * 0.6));
-        target.currentMana = Math.min(manaMax, target.currentMana + Math.round(manaMax * 0.4));
+        target.currentHP = Math.max(1, Math.round(maxHP * 0.3));
+        target.currentMana = Math.min(manaMax, target.currentMana + Math.round(manaMax * 0.2));
         currentCombat.log.push({ actor: "effect", kind: "wardOfTheDeepSave", targetName: target.name });
       }
     }
@@ -1152,8 +1241,11 @@ function resolveEnemyAttack() {
     culturallyResisted: enemyCastInfo ? hasCultureTraining : undefined
   });
 
-  if (hit && !deflected && isPlayerTarget) {
+  if (hit && isPlayerTarget) {
     triggerOnHitWards(playerCharacter);
+  }
+
+  if (hit && !deflected && isPlayerTarget) {
     const hasIronWill = playerCharacter.traits && playerCharacter.traits.includes("ironWill");
     const procChance = hasIronWill ? 0.06 : 0.15;
     if (Math.random() < procChance) {
@@ -1182,6 +1274,56 @@ function resolveEnemyAttack() {
   if (playerCharacter.currentHP <= 0) {
     currentCombat.result = "defeat";
   }
+}
+
+const SHIELD_BASH_ID = "shieldBash";
+
+/**
+ * Shield Bash — only available with a shield actually equipped.
+ * Low damage (tier shifted down), high stun chance, 3-round
+ * cooldown so it can't be spammed into a permanent stun-lock.
+ */
+function performShieldBash() {
+  if (!currentCombat || currentCombat.result) return currentCombat;
+  if (getSpellCooldownRemaining(playerCharacter, SHIELD_BASH_ID) > 0) return currentCombat;
+
+  const skillId = playerCharacter.equippedWeaponSkill || "unarmedCombat";
+  const tierBefore = getCharacterSkillTier(playerCharacter, skillId).name;
+  useSkill(playerCharacter, skillId);
+
+  const attackTier = shiftTierByRank(getEffectivePlayerAttackTier(tierBefore), -2);
+  const enemyTier = getEffectiveEnemyTier();
+  const hit = rollSuccess(attackTier, enemyTier);
+  let damage = 0;
+  let stunned = false;
+
+  if (hit) {
+    damage = applyDamageToEnemy(rollDamage(attackTier));
+    if (Math.random() < 0.6) {
+      currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
+      stunned = true;
+    }
+  }
+
+  setSpellCooldown(playerCharacter, SHIELD_BASH_ID, 3);
+
+  currentCombat.log.push({
+    actor: "player",
+    action: "shieldBash",
+    hit: hit,
+    damage: damage,
+    stunned: stunned
+  });
+
+  performFollowersTurn();
+
+  if (currentCombat.enemyCurrentHP <= 0) {
+    currentCombat.result = "victory";
+    return currentCombat;
+  }
+
+  resolveEnemyAttack();
+  return currentCombat;
 }
 
 function performPlayerAction(skillId) {
@@ -1617,6 +1759,10 @@ function describeLogEntry(entry) {
     return "";
   }
 
+  if (entry.actor === "enemy" && entry.action === "heal") {
+    return `${currentCombat.enemyName} calls on ${entry.spellName}, mending ${entry.healAmount} Hit Points.`;
+  }
+
   if (entry.actor === "follower") {
     if (entry.action === "heal") {
       return `${entry.followerName} calls on healing magic, restoring ${entry.healAmount} Hit Points to ${entry.targetName}.`;
@@ -1656,6 +1802,12 @@ function describeLogEntry(entry) {
     }
     if (entry.action === "defend") {
       return "You brace yourself, ready to turn aside the next blow.";
+    }
+    if (entry.action === "shieldBash") {
+      if (!entry.hit) return "You slam your shield forward, but your foe twists away.";
+      return entry.stunned
+        ? `You slam your shield into your foe for ${entry.damage}, knocking them senseless!`
+        : `You slam your shield into your foe for ${entry.damage}.`;
     }
     if (entry.action === "flee") {
       return entry.success

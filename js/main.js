@@ -389,7 +389,6 @@ function continueHeroFromSlot(slot) {
 function beginNewHeroCreation() {
   playMusic(MAIN_THEME_SRC);
   showScreen("screen-title");
-  renderDifficultyGrid();
 }
 
 function confirmDifficultyAndStartCreation() {
@@ -429,7 +428,6 @@ function deleteCurrentHero() {
     goToChooseHeroScreen();
   } else {
     showScreen("screen-title");
-    renderDifficultyGrid();
   }
 }
 
@@ -1626,13 +1624,45 @@ function goToDungeonSelectScreen() {
   renderDungeonList();
 }
 
+let pendingDungeon = null;
+
 function selectDungeon(dungeon) {
-  selectedDungeonId = dungeon.id;
+  pendingDungeon = dungeon;
+  showScreen("screen-dungeon-difficulty");
+  renderDungeonDifficultyScreen();
+}
+
+function renderDungeonDifficultyScreen() {
+  document.getElementById("dungeon-difficulty-name").textContent = pendingDungeon.name;
+  document.getElementById("dungeon-difficulty-desc").textContent = "Choose your difficulty for this dungeon.";
+
+  const grid = document.getElementById("dungeon-difficulty-grid");
+  grid.innerHTML = "";
+
+  Object.values(DIFFICULTY_SETTINGS).forEach((diff) => {
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (selectedDifficulty === diff.id) card.classList.add("selected");
+    card.innerHTML = `
+      <div class="cc-card-name">${diff.name}</div>
+      <div class="cc-card-desc">${diff.description}</div>
+    `;
+    card.addEventListener("click", () => {
+      selectedDifficulty = diff.id;
+      saveGameState();
+      renderDungeonDifficultyScreen();
+    });
+    grid.appendChild(card);
+  });
+}
+
+function confirmEnterDungeon() {
+  selectedDungeonId = pendingDungeon.id;
   resetDungeonCompanionState();
-  if (DUNGEON_CONTENT[dungeon.id]) {
-    enterDungeon(dungeon.id);
+  if (DUNGEON_CONTENT[pendingDungeon.id]) {
+    enterDungeon(pendingDungeon.id);
   } else {
-    enterPlaceholderDungeon(dungeon);
+    enterPlaceholderDungeon(pendingDungeon);
   }
 }
 
@@ -1674,6 +1704,7 @@ function renderDungeonList() {
     hotspot.className = "map-hotspot";
     hotspot.style.top = dungeon.mapHotspot.top;
     hotspot.style.left = dungeon.mapHotspot.left;
+    hotspot.style.background = dungeon.hotspotColor || "var(--ember)";
     hotspot.title = dungeon.name;
     hotspot.addEventListener("click", () => selectDungeon(dungeon));
     hotspotsContainer.appendChild(hotspot);
@@ -1682,9 +1713,9 @@ function renderDungeonList() {
   regionDungeons.forEach((dungeon) => {
     const card = document.createElement("div");
     card.className = "cc-card";
+    card.style.setProperty("--card-accent", dungeon.hotspotColor || "var(--ember)");
     card.innerHTML = `
       <div class="cc-card-name">${dungeon.name}</div>
-      <div class="cc-card-desc"><em>Difficulty: ${dungeon.difficulty}</em></div>
       <div class="cc-card-desc">${dungeon.description}</div>
     `;
     card.addEventListener("click", () => selectDungeon(dungeon));
@@ -2235,6 +2266,20 @@ function renderCombatScreen() {
     saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
+
+  if (playerCharacter.equippedShield) {
+    const bashCooldown = getSpellCooldownRemaining(playerCharacter, SHIELD_BASH_ID);
+    if (bashCooldown > 0) {
+      addChoiceButton(choicesEl, `Shield Bash (recovering, ${bashCooldown} ${bashCooldown === 1 ? "round" : "rounds"} left)`, null, true);
+    } else {
+      addChoiceButton(choicesEl, "Shield Bash", () => {
+        const startIndex = currentCombat.log.length;
+        performShieldBash();
+        saveGameState();
+        playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
+      });
+    }
+  }
 
   const trainedSkillIds = Object.keys(playerCharacter.skills);
   const magicSkillIds = trainedSkillIds.filter((id) => SKILLS[id].category === "Magic");
@@ -3084,6 +3129,8 @@ function renderTeachSpellScreen() {
 
 document.getElementById("btn-teach-skill-back").addEventListener("click", goToPartyScreen);
 document.getElementById("btn-teach-spell-back").addEventListener("click", goToPartyScreen);
+document.getElementById("btn-dungeon-difficulty-back").addEventListener("click", goToDungeonSelectScreen);
+document.getElementById("btn-dungeon-difficulty-enter").addEventListener("click", confirmEnterDungeon);
 
 try {
   const oldSave = localStorage.getItem("burrowsOfCairntirSave");
@@ -3103,7 +3150,6 @@ if (existingSaveSummaries.length > 0) {
   renderStartingSpellsGrid();
   renderTraitGrid();
   renderCombatStyleGrid();
-  renderDifficultyGrid();
   playMusic(MAIN_THEME_SRC);
   prewarmAllPortraitCaches();
 }

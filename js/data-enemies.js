@@ -528,5 +528,62 @@ const ENEMIES = {
     threatTier: "Adept",
     soundCategory: "spectral",
     lootTable: ["Root of Remembrance", "Grave Essence", "Grave Essence"]
+  },
+
+  drownedGuardian: {
+    id: "drownedGuardian",
+    name: "Drowned Guardian",
+    description: "A gaunt, waterlogged spirit, wrapped in decayed ceremonial cloth and river reeds, cowrie shells embedded in its skin.",
+    image: "assets/images/enemies/drowned-guardian.png",
+    hitPoints: 24,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  riverWarden: {
+    id: "riverWarden",
+    name: "River Warden",
+    description: "A hulking guardian spirit, hide slick and stone-like, ceremonial carved regalia fused into its shoulders.",
+    image: "assets/images/enemies/river-warden.png",
+    hitPoints: 32,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "stone",
+    lootTable: ["Old Ore"]
+  },
+  undertowSpirit: {
+    id: "undertowSpirit",
+    name: "Undertow Spirit",
+    description: "A lean, fast water-spirit, form shifting like flowing current, cowrie shells and carved charms trailing from its limbs.",
+    image: "assets/images/enemies/undertow-spirit.png",
+    hitPoints: 20,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  stagnantHorror: {
+    id: "stagnantHorror",
+    name: "Stagnant Horror",
+    description: "A gaunt, waterlogged spirit wreathed in faint pale-blue mist, hands raised and glowing with unsettling magic.",
+    image: "assets/images/enemies/stagnant-horror.png",
+    hitPoints: 22,
+    attackType: "magic",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theTideMother: {
+    id: "theTideMother",
+    name: "The Tide-Mother",
+    description: "A towering ancient water-spirit, form composed of flowing water and coral, layered ceremonial regalia draped across her form, an intense pale-blue glow radiating from within.",
+    image: "assets/images/enemies/the-tide-mother.png",
+    deathImage: "assets/images/deaths/tide-mother-death.png",
+    hitPoints: 48,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Tide-Mother's Pearl", "Grave Essence", "Grave Essence"]
   }
 };

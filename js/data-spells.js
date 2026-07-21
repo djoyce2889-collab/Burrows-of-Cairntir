@@ -27,7 +27,7 @@ const SPELLS = {
     { id: "emberLash", name: "Ember-Lash", type: "companion", description: "Calls a fire elemental to fight at your side for the rest of the dungeon." },
     { id: "judgmentsWeight", name: "Judgment's Weight", type: "debuff", description: "Marks a foe as guilty, weakening their strikes for a time." },
     { id: "thunderCaller", name: "Thunder Caller", type: "companion", description: "Calls a lightning elemental to fight at your side for the rest of the dungeon." },
-    { id: "warriorsFire", name: "Warrior's Fire", type: "cooldownBuff", description: "Strengthens your strikes beyond the usual measure for 4 rounds — but the fire needs time to rekindle before it can be called again." },
+    { id: "warriorsFire", name: "Warrior's Resolve", type: "heal", description: "A burst of hard-won resolve, mending your wounds in an instant." },
     { id: "thunderstrike", name: "Thunderstrike", type: "doubleDrain", description: "A direct strike that drains your foe, returning both Hit Points and mana to you." }
   ],
 

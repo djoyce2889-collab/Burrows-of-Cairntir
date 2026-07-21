@@ -10,6 +10,7 @@ const DUNGEONS = {
     name: "Duncairn Keep",
     difficulty: "Novice",
     musicSrc: "assets/audio/duncairn-keep.mp3",
+    hotspotColor: "#c0392b",
     mapHotspot: { top: "50%", left: "20%" },
     culture: "deveran",
     image: "assets/images/duncairn-keep.png",
@@ -24,6 +25,7 @@ const DUNGEONS = {
     name: "The Sunken Longhall",
     difficulty: "Novice",
     musicSrc: "assets/audio/sunken-longhall.mp3",
+    hotspotColor: "#2980b9",
     mapHotspot: { top: "85%", left: "15%" },
     culture: "drakvarr",
     image: "assets/images/sunken-longhall.png",
@@ -40,6 +42,7 @@ const DUNGEONS = {
     name: "The Wychroot Grove",
     difficulty: "Novice",
     musicSrc: "assets/audio/wychroot-grove.mp3",
+    hotspotColor: "#27ae60",
     mapHotspot: { top: "28%", left: "22%" },
     culture: "gaeldrim",
     image: "assets/images/wychroot-grove.png",
@@ -55,6 +58,7 @@ const DUNGEONS = {
     name: "The Hollowmere Cairn",
     difficulty: "Adept",
     musicSrc: "assets/audio/hollowmere-cairn.mp3",
+    hotspotColor: "#e67e22",
     mapHotspot: { top: "58%", left: "75%" },
     culture: "deveran",
     image: "assets/images/hollowmere-cairn.png",
@@ -69,6 +73,7 @@ const DUNGEONS = {
     name: "Frosthollow Vault",
     difficulty: "Adept",
     musicSrc: "assets/audio/frosthollow-vault.mp3",
+    hotspotColor: "#1abc9c",
     mapHotspot: { top: "50%", left: "78%" },
     culture: "drakvarr",
     image: "assets/images/frosthollow-vault.png",
@@ -83,6 +88,7 @@ const DUNGEONS = {
     name: "The Hollow Vale",
     difficulty: "Expert",
     musicSrc: "assets/audio/hollow-vale.mp3",
+    hotspotColor: "#8e44ad",
     mapHotspot: { top: "50%", left: "80%" },
     culture: "gaeldrim",
     image: "assets/images/hollow-vale.png",
@@ -96,6 +102,7 @@ const DUNGEONS = {
     name: "The Blackforge Deep",
     difficulty: "Expert",
     musicSrc: "assets/audio/blackforge-deep-theme.mp3",
+    hotspotColor: "#7f8c8d",
     mapHotspot: { top: "50%", left: "50%" },
     culture: "drakvarr",
     image: "assets/images/blackforge-deep/hall-entrance.png",
@@ -108,6 +115,7 @@ const DUNGEONS = {
     name: "The Fomorian Depths",
     difficulty: "Adept",
     musicSrc: "assets/audio/fomorian-depths-theme.mp3",
+    hotspotColor: "#16a085",
     mapHotspot: { top: "72%", left: "16%" },
     culture: "gaeldrim",
     image: "assets/images/fomorian-depths.png",
@@ -121,6 +129,7 @@ const DUNGEONS = {
     name: "Cailleach's Reach",
     difficulty: "Expert",
     musicSrc: "assets/audio/cailleachs-reach-theme.mp3",
+    hotspotColor: "#3498db",
     mapHotspot: { top: "12%", left: "55%" },
     culture: "deveran",
     image: "assets/images/cailleachs-reach.png",
@@ -134,6 +143,7 @@ const DUNGEONS = {
     name: "The Restless Baobab",
     difficulty: "Novice",
     musicSrc: "assets/audio/restless-baobab-theme.mp3",
+    hotspotColor: "#2ecc71",
     mapHotspot: { top: "25%", left: "30%" },
     enemyCastableTypes: ["doubleDrain", "powerSteal"],
     culture: "vandiri",
@@ -142,6 +152,21 @@ const DUNGEONS = {
       "A tropical grove of ancient baobab trees, once tended in " +
       "quiet reverence — the ancestors who watched over it have " +
       "grown resentful of the living, and no longer watch kindly."
+  },
+  drownedShrine: {
+    id: "drownedShrine",
+    name: "The Drowned Shrine",
+    musicSrc: "assets/audio/drowned-shrine-theme.mp3",
+    hotspotColor: "#5dade2",
+    mapHotspot: { top: "50%", left: "85%" },
+    culture: "vandiri",
+    enemyCastableTypes: ["doubleDrain", "powerSteal"],
+    image: "assets/images/drowned-shrine.png",
+    description:
+      "A riverside shrine once devoted to the old water-spirits, " +
+      "now flooded and turned hostile — whatever protected this " +
+      "place has forgotten how to do anything but guard it against " +
+      "everyone."
   }
 };
 
@@ -1397,6 +1422,98 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+
+  drownedShrine: {
+    startRoomId: "shrineApproach",
+    rooms: {
+      shrineApproach: {
+        text: "A flooded riverside path leads toward a half-submerged stone shrine, ancient carved pillars rising from murky water.",
+        choices: [{ type: "goto", label: "Approach the shrine", target: "floodedSteps" }]
+      },
+      floodedSteps: {
+        text: "Ancient stone steps disappear into still, dark water, moss thick along the worn carvings.",
+        choices: [{ type: "goto", label: "Descend", target: "guardianAmbush" }]
+      },
+      guardianAmbush: {
+        text: "A gaunt, waterlogged shape rises from the shallows — a drowned guardian, old ceremonial cloth clinging to its form, cowrie shells glinting faintly.",
+        choices: [{ type: "combat", label: "Fight the Guardian", enemyId: "drownedGuardian", target: "submergedOffering" }]
+      },
+      submergedOffering: {
+        text: "Old offerings rest undisturbed beneath the shallow, clear water, exactly as they were left.",
+        loot: ["Grave Essence"],
+        choices: [
+          { type: "check", label: "Search further (Survival)", skillId: "survival", difficulty: "Novice", successTarget: "hiddenAlcove", failureTarget: "deeperWaters" },
+          { type: "goto", label: "Move on", target: "deeperWaters" }
+        ]
+      },
+      hiddenAlcove: {
+        text: "A dry alcove sits tucked above the waterline, something useful left half-hidden in the shadows.",
+        loot: ["Old Ore"],
+        choices: [
+          { type: "discover", label: "Study the carvings (Rite of Protection)", skillId: "riteProtection", spellId: "mercysTouch", target: "deeperWaters" },
+          { type: "goto", label: "Leave it and move on", target: "deeperWaters" }
+        ]
+      },
+      deeperWaters: {
+        text: "The passage deepens, water rising past the knee, a gentle current pulling steadily at your legs.",
+        choices: [{ type: "goto", label: "Press onward", target: "wardenEncounter" }]
+      },
+      wardenEncounter: {
+        text: "A hulking shape blocks the flooded passage — a river warden, hide slick and stone-like, immovable as the shrine itself.",
+        choices: [{ type: "combat", label: "Fight the Warden", enemyId: "riverWarden", target: "stillPool" }]
+      },
+      stillPool: {
+        text: "A pool of water sits unnervingly still ahead, its surface reflecting nothing back at all.",
+        choices: [{ type: "goto", label: "Continue", target: "driftwoodPile" }]
+      },
+      driftwoodPile: {
+        text: "Driftwood and old debris are piled against a crumbling wall, tangled with river reeds.",
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The flooded passage splits around a fallen carved pillar, water rippling gently in both directions.",
+        choices: [
+          { type: "goto", label: "Take the sunken hall", target: "sunkenHall" },
+          { type: "goto", label: "Follow the rising current", target: "risingCurrent" }
+        ]
+      },
+      sunkenHall: {
+        text: "A half-collapsed hall opens ahead, water reaching your waist, old carvings just visible along the submerged walls.",
+        choices: [{ type: "goto", label: "Continue", target: "converge" }]
+      },
+      risingCurrent: {
+        text: "A narrow side channel carries a surprisingly strong current for such an enclosed space.",
+        choices: [{ type: "combat", label: "Fight what surfaces", enemyId: "undertowSpirit", target: "converge" }]
+      },
+      converge: {
+        text: "Both flooded paths meet before the entrance to the shrine's inner sanctum, the water ahead glowing faintly pale-blue.",
+        choices: [{ type: "goto", label: "Approach", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The sanctum entrance looms ahead, water glowing steadily now. Something vast stirs beneath the surface.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Novice", successTarget: "bossDoor", failureTarget: "extraFight" },
+          { type: "goto", label: "Approach directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "Another drowned guardian rises from the water nearby, closing the distance before you can reach the sanctum.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "drownedGuardian", target: "bossDoor" }]
+      },
+      bossDoor: {
+        text: "The flooded threshold of the inner sanctum opens before you, pale-blue light glowing steadily from the water beyond.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The heart of the sanctum opens around you — a vast flooded chamber, and at its center, something ancient and vast stirs. The Tide-Mother has been waiting.",
+        choices: [{ type: "combat", label: "Face the Tide-Mother", enemyId: "theTideMother", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The pale-blue glow finally fades from the water. Ordinary daylight filters gently down, and for the first time, the shrine feels merely old — not restless.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -1614,6 +1731,26 @@ const ROOM_IMAGES = {
     bossDoor: "assets/images/restless-baobab/boss-door.png",
     bossRoom: "assets/images/restless-baobab/boss-room.png",
     epilogue: "assets/images/restless-baobab/epilogue.png"
+  },
+  drownedShrine: {
+    shrineApproach: "assets/images/drowned-shrine/shrine-approach.png",
+    floodedSteps: "assets/images/drowned-shrine/flooded-steps.png",
+    guardianAmbush: "assets/images/drowned-shrine/flooded-steps.png",
+    submergedOffering: "assets/images/drowned-shrine/submerged-offering.png",
+    hiddenAlcove: "assets/images/drowned-shrine/hidden-alcove.png",
+    deeperWaters: "assets/images/drowned-shrine/deeper-waters.png",
+    wardenEncounter: "assets/images/drowned-shrine/deeper-waters.png",
+    stillPool: "assets/images/drowned-shrine/still-pool.png",
+    driftwoodPile: "assets/images/drowned-shrine/driftwood-pile.png",
+    fork: "assets/images/drowned-shrine/fork.png",
+    sunkenHall: "assets/images/drowned-shrine/sunken-hall.png",
+    risingCurrent: "assets/images/drowned-shrine/rising-current.png",
+    converge: "assets/images/drowned-shrine/converge.png",
+    preBoss: "assets/images/drowned-shrine/pre-boss.png",
+    extraFight: "assets/images/drowned-shrine/pre-boss.png",
+    bossDoor: "assets/images/drowned-shrine/boss-door.png",
+    bossRoom: "assets/images/drowned-shrine/boss-room.png",
+    epilogue: "assets/images/drowned-shrine/epilogue.png"
   }
 };
 
