@@ -471,5 +471,62 @@ const ENEMIES = {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Cailleach's Frost Sigil", "Grave Essence", "Grave Essence"]
+  },
+
+  restlessAncestor: {
+    id: "restlessAncestor",
+    name: "Restless Ancestor",
+    description: "A gaunt, translucent spirit wrapped in tattered ceremonial cloth, old markings faintly visible, its hollow eyes fixed with resentment.",
+    image: "assets/images/enemies/restless-ancestor.png",
+    hitPoints: 22,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  baobabGuardian: {
+    id: "baobabGuardian",
+    name: "Baobab Guardian",
+    description: "A hulking guardian spirit, bark-skinned and rooted, wrapped in raffia and woven grass, carved ancestral masks fused into its shoulders.",
+    image: "assets/images/enemies/baobab-guardian.png",
+    hitPoints: 30,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "stone",
+    lootTable: ["Old Ore"]
+  },
+  whisperingSpirit: {
+    id: "whisperingSpirit",
+    name: "Whispering Spirit",
+    description: "A gaunt spirit wreathed in faint green mist, wrapped in faded ceremonial cloth, hands raised and glowing with unsettling magic.",
+    image: "assets/images/enemies/whispering-spirit.png",
+    hitPoints: 20,
+    attackType: "magic",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  boneAdornedStalker: {
+    id: "boneAdornedStalker",
+    name: "Bone-Adorned Stalker",
+    description: "A lean, fast spirit-creature adorned with old bones and cowrie shells, ceremonial markings visible across bare skin.",
+    image: "assets/images/enemies/bone-adorned-stalker.png",
+    hitPoints: 18,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theForgottenElder: {
+    id: "theForgottenElder",
+    name: "The Forgotten Elder",
+    description: "A towering ancestral spirit, wrapped in decayed ceremonial cloth and layered regalia, an ancestral mask fused to its face, cracks of green light across its form.",
+    image: "assets/images/enemies/the-forgotten-elder.png",
+    deathImage: "assets/images/deaths/forgotten-elder-death.png",
+    hitPoints: 45,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Root of Remembrance", "Grave Essence", "Grave Essence"]
   }
 };

@@ -1615,7 +1615,8 @@ function renderInventoryScreen() {
 const REGION_MAPS = {
   deveran: "assets/images/deveran-map.png",
   drakvarr: "assets/images/drakvarr-map.png",
-  gaeldrim: "assets/images/gaeldrim-map.png"
+  gaeldrim: "assets/images/gaeldrim-map.png",
+  vandiri: "assets/images/vandiri-map.png"
 };
 
 let dungeonSelectRegionId = null;
@@ -1858,6 +1859,17 @@ function buildRoomChoices(room) {
       });
     }
   });
+
+  if (room.choices.every((c) => c.type !== "end")) {
+    addChoiceButton(choicesEl, "Return to Homebase", () => {
+      const storyEl = document.getElementById("game-story-text");
+      const confirmChoicesEl = document.getElementById("game-choices");
+      storyEl.innerHTML = "Leave the dungeon and return to Homebase? Your progress in this room is saved, but you'll need to make your way back in to continue.";
+      confirmChoicesEl.innerHTML = "";
+      addChoiceButton(confirmChoicesEl, "Yes, return to Homebase", () => goToHomebaseScreen());
+      addChoiceButton(confirmChoicesEl, "No, stay here", () => renderDungeonRoom(currentDungeonRoomId));
+    });
+  }
 }
 
 function renderDiscoveryOutcome(message, targetRoomId) {

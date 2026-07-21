@@ -128,6 +128,20 @@ const DUNGEONS = {
       "A storm-lashed Highland peak, older than any Deveran clan, home " +
       "to the winter goddess herself — and the mountain remembers her " +
       "far better than it remembers you."
+  },
+  restlessBaobab: {
+    id: "restlessBaobab",
+    name: "The Restless Baobab",
+    difficulty: "Novice",
+    musicSrc: "assets/audio/restless-baobab-theme.mp3",
+    mapHotspot: { top: "25%", left: "30%" },
+    enemyCastableTypes: ["doubleDrain", "powerSteal"],
+    culture: "vandiri",
+    image: "assets/images/restless-baobab.png",
+    description:
+      "A tropical grove of ancient baobab trees, once tended in " +
+      "quiet reverence — the ancestors who watched over it have " +
+      "grown resentful of the living, and no longer watch kindly."
   }
 };
 
@@ -1291,6 +1305,98 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+
+  restlessBaobab: {
+    startRoomId: "groveEntrance",
+    rooms: {
+      groveEntrance: {
+        text: "A misty, humid entrance to an ancient baobab grove opens before you. Massive gnarled trunks loom overhead, their canopy swallowing most of the light.",
+        choices: [{ type: "goto", label: "Enter the grove", target: "innerPath" }]
+      },
+      innerPath: {
+        text: "The path winds deeper between huge trunks, the air thick and still. The canopy thickens overhead, and the light grows dimmer with every step.",
+        choices: [{ type: "goto", label: "Continue", target: "ancestorAmbush" }]
+      },
+      ancestorAmbush: {
+        text: "A gaunt, translucent shape rises from among the roots — an ancestral spirit, old markings faintly visible, its hollow eyes fixed on you with something like resentment.",
+        choices: [{ type: "combat", label: "Fight the Ancestor", enemyId: "restlessAncestor", target: "rootHollow" }]
+      },
+      rootHollow: {
+        text: "A hollow is carved into the base of a massive trunk, old offerings scattered inside, faint green light glowing from somewhere deep within the wood.",
+        loot: ["Grave Essence"],
+        choices: [
+          { type: "check", label: "Search further (Survival)", skillId: "survival", difficulty: "Novice", successTarget: "hiddenGrove", failureTarget: "deeperGrove" },
+          { type: "goto", label: "Move on", target: "deeperGrove" }
+        ]
+      },
+      hiddenGrove: {
+        text: "A smaller grove sits tucked out of sight here, dappled light filtering through, something useful left half-hidden among the roots.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "deeperGrove" }]
+      },
+      deeperGrove: {
+        text: "The trees grow denser now, the canopy nearly blotting out the sky. Light barely reaches the humid ground below.",
+        choices: [{ type: "goto", label: "Press onward", target: "guardianEncounter" }]
+      },
+      guardianEncounter: {
+        text: "A hulking shape detaches itself from the bark — a guardian spirit, roots and branches fused into its massive form, blocking the way forward.",
+        choices: [{ type: "combat", label: "Fight the Guardian", enemyId: "baobabGuardian", target: "whisperingClearing" }]
+      },
+      whisperingClearing: {
+        text: "A quiet clearing opens ahead. The air itself seems to murmur here, faint and wordless, though there's no wind to explain it.",
+        choices: [
+          { type: "discover", label: "Listen closely (Rite of Protection)", skillId: "riteProtection", spellId: "mercysTouch", target: "boneScatter" },
+          { type: "goto", label: "Move on quickly", target: "boneScatter" }
+        ]
+      },
+      boneScatter: {
+        text: "Old bones lie scattered beneath a great tree — past visitors who never found their way back out of this grove.",
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits around a massive fallen trunk, moss and vines overtaking the wood. Mist drifts across both directions equally.",
+        choices: [
+          { type: "goto", label: "Take the shadowed hollow", target: "shadowedHollow" },
+          { type: "goto", label: "Push into the misty thicket", target: "mistyThicket" }
+        ]
+      },
+      shadowedHollow: {
+        text: "A dark hollow path opens between close-growing trunks, barely any light finding its way through the canopy above.",
+        choices: [{ type: "combat", label: "Fight what stalks you", enemyId: "boneAdornedStalker", target: "converge" }]
+      },
+      mistyThicket: {
+        text: "A thicket ahead is choked with low, drifting mist, roots and undergrowth tangled thick underfoot.",
+        choices: [{ type: "combat", label: "Fight the spirit within", enemyId: "whisperingSpirit", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths meet before a final, impossibly massive and ancient tree, its trunk wide enough to hollow out a room.",
+        choices: [{ type: "goto", label: "Approach", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The oldest baobab in the grove looms directly ahead, its hollow trunk pulsing faintly with green light. Something vast stirs within.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Novice", successTarget: "bossDoor", failureTarget: "extraFight" },
+          { type: "goto", label: "Approach directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "Another ancestral spirit rises from the roots nearby, hollow eyes fixed on you, closing the distance before you can reach the great tree.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "restlessAncestor", target: "bossDoor" }]
+      },
+      bossDoor: {
+        text: "A hollow opening leads into the heart of the great ancient tree, green light glowing steadily from somewhere deep inside.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The hollow core of the great tree opens around you. Old carvings line the walls, and at the center, something vast and ancient stirs — the Forgotten Elder, resentment given form.",
+        choices: [{ type: "combat", label: "Face the Forgotten Elder", enemyId: "theForgottenElder", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The green light finally fades from the hollow tree-core. Warm daylight filters gently through the canopy above, and for the first time, the grove feels merely old — not restless.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -1488,6 +1594,26 @@ const ROOM_IMAGES = {
     bossDoor: "assets/images/cailleachs-reach/boss-door.png",
     bossRoom: "assets/images/cailleachs-reach/boss-room.png",
     epilogue: "assets/images/cailleachs-reach/epilogue.png"
+  },
+  restlessBaobab: {
+    groveEntrance: "assets/images/restless-baobab/grove-entrance.png",
+    innerPath: "assets/images/restless-baobab/inner-path.png",
+    ancestorAmbush: "assets/images/restless-baobab/inner-path.png",
+    rootHollow: "assets/images/restless-baobab/root-hollow.png",
+    hiddenGrove: "assets/images/restless-baobab/hidden-grove.png",
+    deeperGrove: "assets/images/restless-baobab/deeper-grove.png",
+    guardianEncounter: "assets/images/restless-baobab/deeper-grove.png",
+    whisperingClearing: "assets/images/restless-baobab/whispering-clearing.png",
+    boneScatter: "assets/images/restless-baobab/bone-scatter.png",
+    fork: "assets/images/restless-baobab/fork.png",
+    shadowedHollow: "assets/images/restless-baobab/shadowed-hollow.png",
+    mistyThicket: "assets/images/restless-baobab/misty-thicket.png",
+    converge: "assets/images/restless-baobab/converge.png",
+    preBoss: "assets/images/restless-baobab/pre-boss.png",
+    extraFight: "assets/images/restless-baobab/pre-boss.png",
+    bossDoor: "assets/images/restless-baobab/boss-door.png",
+    bossRoom: "assets/images/restless-baobab/boss-room.png",
+    epilogue: "assets/images/restless-baobab/epilogue.png"
   }
 };
 

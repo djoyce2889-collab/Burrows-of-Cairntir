@@ -417,11 +417,13 @@ function getEnemyCultureSpell() {
   const culture = CULTURES[dungeon.culture];
   if (!culture) return null;
 
+  const castableTypes = dungeon.enemyCastableTypes || ENEMY_CASTABLE_TYPES;
+
   const pool = [];
   culture.magicSkillIds.forEach((skillId) => {
     const spells = SPELLS[skillId] || [];
     spells.forEach((spell) => {
-      if (ENEMY_CASTABLE_TYPES.includes(spell.type)) {
+      if (castableTypes.includes(spell.type)) {
         pool.push({ skillId, spell, cultureId: dungeon.culture });
       }
     });
@@ -718,7 +720,7 @@ function performFollowerSongCast(follower, skillId, spell) {
   currentCombat.log.push(logEntry);
 }
 
-const FOLLOWER_ATTACK_SPELL_TYPES = ["damage", "burst", "undeadSlayer", "execute", "lifetap", "dot"];
+const FOLLOWER_ATTACK_SPELL_TYPES = ["damage", "burst", "undeadSlayer", "execute", "lifetap", "dot", "doubleDrain", "powerSteal"];
 
 function getFollowerAttackSpellOption(follower) {
   const magicSkillIds = Object.keys(follower.skills).filter(
@@ -809,6 +811,15 @@ function performFollowerAttackSpell(follower, skillId, spell) {
     if (spell.type === "lifetap") {
       const followerMax = getHitPoints(follower);
       follower.currentHP = Math.min(followerMax, follower.currentHP + damage);
+    } else if (spell.type === "doubleDrain") {
+      const followerMax = getHitPoints(follower);
+      const manaMax = getManaPoolMax(follower);
+      follower.currentHP = Math.min(followerMax, follower.currentHP + damage);
+      const manaGain = Math.max(1, Math.floor(damage / 2));
+      follower.currentMana = Math.min(manaMax, follower.currentMana + manaGain);
+    } else if (spell.type === "powerSteal") {
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION, owner: follower });
+      currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
     }
   }
 
@@ -819,6 +830,123 @@ function performFollowerAttackSpell(follower, skillId, spell) {
     spellName: spell.name,
     hit: hit,
     damage: damage
+  });
+}
+
+/**
+ * Followers cast at most ONE Rite of Protection ward per fight —
+ * checks their known spells for any ward/autoRevive type they
+ * haven't already cast this combat.
+ */
+function getFollowerWardOption(follower) {
+  const alreadyWarded = currentCombat.activeEffects.some(
+    (e) => (e.kind === "onHitWard" || e.kind === "autoRevive") && e.owner === follower
+  );
+  if (alreadyWarded) return null;
+
+  const wardTypes = ["autoRevive", "onHitBuff", "onHitHeal", "onHitManaRegen", "onHitGroupHeal", "onHitDebuff"];
+  const knownIds = (follower.knownSpells && follower.knownSpells.riteProtection) || [];
+  if (knownIds.length === 0) return null;
+
+  const allSpells = SPELLS.riteProtection || [];
+  const castable = allSpells.find((s) => knownIds.includes(s.id) && wardTypes.includes(s.type));
+  return castable ? { skillId: "riteProtection", spell: castable } : null;
+}
+
+function performFollowerWardCast(follower, skillId, spell) {
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  if (spell.type === "autoRevive") {
+    currentCombat.activeEffects.push({
+      kind: "autoRevive", rankBonus: 0, roundsRemaining: null, owner: follower, spellName: spell.name
+    });
+  } else {
+    currentCombat.activeEffects.push({
+      kind: "onHitWard", rankBonus: 0, roundsRemaining: null, owner: follower, wardType: spell.type, spellName: spell.name
+    });
+  }
+
+  currentCombat.log.push({
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    spellName: spell.name,
+    castKind: "ward"
+  });
+}
+
+/**
+ * Warrior's Fire (cooldownBuff) is a self-buff, not an attack —
+ * checks if the follower knows it and it's off cooldown.
+ */
+function getFollowerCooldownBuffOption(follower) {
+  const knownIds = (follower.knownSpells && follower.knownSpells.riteThunderWrath) || [];
+  if (knownIds.length === 0) return null;
+
+  const allSpells = SPELLS.riteThunderWrath || [];
+  const castable = allSpells.find(
+    (s) => knownIds.includes(s.id) && s.type === "cooldownBuff" && getSpellCooldownRemaining(follower, s.id) === 0
+  );
+  return castable ? { skillId: "riteThunderWrath", spell: castable } : null;
+}
+
+function performFollowerCooldownBuffCast(follower, skillId, spell) {
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  currentCombat.activeEffects.push({
+    kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: 4, owner: follower, spellName: spell.name
+  });
+  setSpellCooldown(follower, spell.id, 4);
+
+  currentCombat.log.push({
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    spellName: spell.name,
+    castKind: "cooldownBuff"
+  });
+}
+
+const FOLLOWER_DEBUFF_SPELL_TYPES = ["damageAmpDebuff", "accuracyDebuff", "damageDebuff", "defenseDebuff", "spellLock"];
+
+/**
+ * Followers cast a debuff only if that exact effect isn't
+ * already active on the enemy from an earlier cast this fight.
+ */
+function getFollowerDebuffOption(follower) {
+  const knownIds = (follower.knownSpells && follower.knownSpells.riteUnmaking) || [];
+  if (knownIds.length === 0) return null;
+
+  const allSpells = SPELLS.riteUnmaking || [];
+  const castable = allSpells.find((s) => {
+    if (!FOLLOWER_DEBUFF_SPELL_TYPES.includes(s.type)) return false;
+    if (!knownIds.includes(s.id)) return false;
+    const effectKind = s.type === "damageAmpDebuff" ? "vulnerability" : s.type === "spellLock" ? "silence" : s.type;
+    return !currentCombat.activeEffects.some((e) => e.kind === effectKind);
+  });
+  return castable ? { skillId: "riteUnmaking", spell: castable } : null;
+}
+
+function performFollowerDebuffCast(follower, skillId, spell) {
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  if (spell.type === "damageAmpDebuff") {
+    currentCombat.activeEffects.push({ kind: "vulnerability", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
+  } else if (spell.type === "spellLock") {
+    currentCombat.activeEffects.push({ kind: "silence", rankBonus: 0, roundsRemaining: null });
+  } else {
+    currentCombat.activeEffects.push({ kind: spell.type, rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+  }
+
+  currentCombat.log.push({
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    spellName: spell.name,
+    castKind: "debuff"
   });
 }
 
@@ -850,9 +978,27 @@ function performFollowersTurn() {
       return;
     }
 
+    const wardOption = getFollowerWardOption(follower);
+    if (wardOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
+      performFollowerWardCast(follower, wardOption.skillId, wardOption.spell);
+      return;
+    }
+
+    const cooldownBuffOption = getFollowerCooldownBuffOption(follower);
+    if (cooldownBuffOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
+      performFollowerCooldownBuffCast(follower, cooldownBuffOption.skillId, cooldownBuffOption.spell);
+      return;
+    }
+
     const attackSpellOption = getFollowerAttackSpellOption(follower);
     if (attackSpellOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
       performFollowerAttackSpell(follower, attackSpellOption.skillId, attackSpellOption.spell);
+      return;
+    }
+
+    const debuffOption = getFollowerDebuffOption(follower);
+    if (debuffOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
+      performFollowerDebuffCast(follower, debuffOption.skillId, debuffOption.spell);
       return;
     }
 
@@ -962,9 +1108,10 @@ function resolveEnemyAttack() {
     if (!isPlayerTarget) {
       triggerOnHitWards(target);
     }
+    const damageDebuffTier = shiftTierByRank(enemyEffectiveTier, getEffectRankSum("damageDebuff"));
     damage = Math.max(
       1,
-      Math.round(rollDamage(enemyEffectiveTier) * diff.enemyDamageMultiplier * adaptive.damageMultiplier)
+      Math.round(rollDamage(damageDebuffTier) * diff.enemyDamageMultiplier * adaptive.damageMultiplier)
     );
 
     if (enemyCastInfo && hasCultureTraining) {
@@ -1114,6 +1261,8 @@ function performPlayerCast(skillId, spell) {
     currentCombat.activeEffects.push({ kind: "vulnerability", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "accuracyDebuff") {
     currentCombat.activeEffects.push({ kind: "accuracyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+  } else if (spell.type === "damageDebuff") {
+    currentCombat.activeEffects.push({ kind: "damageDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "defenseDebuff") {
     currentCombat.activeEffects.push({ kind: "defenseDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "spellLock") {
@@ -1473,6 +1622,15 @@ function describeLogEntry(entry) {
       return `${entry.followerName} calls on healing magic, restoring ${entry.healAmount} Hit Points to ${entry.targetName}.`;
     }
     if (entry.action === "cast") {
+      if (entry.castKind === "ward") {
+        return `${entry.followerName} calls on ${entry.spellName}, and a silent ward settles over her — ready to answer the next blow.`;
+      }
+      if (entry.castKind === "cooldownBuff") {
+        return `${entry.followerName} calls on ${entry.spellName}, and her strikes burn brighter for a time.`;
+      }
+      if (entry.castKind === "debuff") {
+        return `${entry.followerName} calls on ${entry.spellName}, and their foe falters.`;
+      }
       if (entry.hit === undefined) {
         return `${entry.followerName} calls on ${entry.spellName}, a curse taking hold.`;
       }
