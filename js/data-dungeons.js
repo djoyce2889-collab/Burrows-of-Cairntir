@@ -167,6 +167,21 @@ const DUNGEONS = {
       "now flooded and turned hostile — whatever protected this " +
       "place has forgotten how to do anything but guard it against " +
       "everyone."
+  },
+  emberScarredOutcrop: {
+    id: "emberScarredOutcrop",
+    name: "The Ember-Scarred Outcrop",
+    musicSrc: "assets/audio/ember-scarred-outcrop-theme.mp3",
+    mapHotspot: { top: "50%", left: "26%" },
+    culture: "vandiri",
+    enemyCastableTypes: ["doubleDrain", "powerSteal"],
+    hotspotColor: "#d35400",
+    image: "assets/images/ember-scarred-outcrop.png",
+    description:
+      "A shrine of righteous fire and judgment, burned and left " +
+      "smoldering — whatever justice this place once served, it " +
+      "no longer distinguishes the guilty from anyone else who " +
+      "wanders in."
   }
 };
 
@@ -1514,6 +1529,90 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+
+  emberScarredOutcrop: {
+    startRoomId: "outcropApproach",
+    rooms: {
+      outcropApproach: {
+        text: "A dry, sun-baked rocky outcrop juts up from open savanna grassland, the ground cracked and parched, waves of heat visibly rising in the distance.",
+        choices: [{ type: "goto", label: "Climb toward the outcrop", target: "blackenedPath" }]
+      },
+      blackenedPath: {
+        text: "A narrow path winds up the scorched rock face, blackened stone underfoot, embers glowing faintly in the cracks along the way.",
+        choices: [{ type: "combat", label: "Fight the Sentinel", enemyId: "scorchedSentinel", target: "ashStrewnLedge" }]
+      },
+      ashStrewnLedge: {
+        text: "A wide stone ledge is layered with old ash, something useful half-buried within the drifts.",
+        loot: ["Old Ore"],
+        choices: [
+          { type: "check", label: "Search further (Survival)", skillId: "survival", difficulty: "Novice", successTarget: "hiddenCache", failureTarget: "smolderingPassage" },
+          { type: "goto", label: "Move on", target: "smolderingPassage" }
+        ]
+      },
+      hiddenCache: {
+        text: "A small cache is tucked into a scorched crevice, shielded from the worst of the outcrop's heat.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "smolderingPassage" }]
+      },
+      smolderingPassage: {
+        text: "The rock passage narrows, faint smoke curling from fissures in the stone. The heat grows more intense with every step.",
+        choices: [{ type: "goto", label: "Press onward", target: "emberField" }]
+      },
+      emberField: {
+        text: "A wide stretch of cracked stone opens ahead, scattered embers glowing faintly across the ground like dying stars.",
+        choices: [{ type: "combat", label: "Fight the Ember-Wraith", enemyId: "emberWraith", target: "scorchedShrine" }]
+      },
+      scorchedShrine: {
+        text: "The remains of a small shrine stand blackened and scorched, old carvings still faintly visible beneath the char.",
+        choices: [
+          { type: "discover", label: "Study the carvings (Rite of the Thunder-Wrath)", skillId: "riteThunderWrath", spellId: "judgmentsWeight", target: "fork" },
+          { type: "goto", label: "Leave it and move on", target: "fork" }
+        ]
+      },
+      fork: {
+        text: "The path splits around a jagged, fire-scarred boulder, both directions equally scorched.",
+        choices: [
+          { type: "goto", label: "Take the cracked ravine", target: "crackedRavine" },
+          { type: "goto", label: "Climb the high ledge", target: "highLedge" }
+        ]
+      },
+      crackedRavine: {
+        text: "A narrow ravine cuts through the scorched rock, deep fissures glowing faintly with trapped heat below.",
+        choices: [{ type: "combat", label: "Fight the Judge", enemyId: "ashBoundJudge", target: "converge" }]
+      },
+      highLedge: {
+        text: "An exposed ledge sits high on the outcrop, wind carrying faint ash across the open air. The ground far below wavers with heat.",
+        choices: [{ type: "combat", label: "Fight the Golem", enemyId: "crackedGolem", target: "converge" }]
+      },
+      converge: {
+        text: "Both scorched paths meet before a final rise, the embers glowing more intensely ahead where the rock climbs toward the summit.",
+        choices: [{ type: "goto", label: "Ascend", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The summit looms ahead, heat shimmering intensely off the blackened stone. Something vast stirs within the glow.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Novice", successTarget: "bossDoor", failureTarget: "extraFight" },
+          { type: "goto", label: "Approach directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "Another scorched sentinel rises from the cracked stone, closing the distance before you can reach the summit.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "scorchedSentinel", target: "bossDoor" }]
+      },
+      bossDoor: {
+        text: "The entrance to the summit shrine stands before you, blackened stone glowing at the edges with trapped ember-light.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The heart of the summit shrine opens around you, cracked walls glowing with deep ember-light — and within it, the Unyielding Flame still burns.",
+        choices: [{ type: "combat", label: "Face the Unyielding Flame", enemyId: "theUnyieldingFlame", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The ember-glow finally dims and cools. Ordinary daylight settles gently over the blackened stone, and for the first time, the outcrop feels merely old — not smoldering.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -1751,6 +1850,24 @@ const ROOM_IMAGES = {
     bossDoor: "assets/images/drowned-shrine/boss-door.png",
     bossRoom: "assets/images/drowned-shrine/boss-room.png",
     epilogue: "assets/images/drowned-shrine/epilogue.png"
+  },
+  emberScarredOutcrop: {
+    outcropApproach: "assets/images/ember-scarred-outcrop/outcrop-approach.png",
+    blackenedPath: "assets/images/ember-scarred-outcrop/blackened-path.png",
+    ashStrewnLedge: "assets/images/ember-scarred-outcrop/ash-strewn-ledge.png",
+    hiddenCache: "assets/images/ember-scarred-outcrop/hidden-cache.png",
+    smolderingPassage: "assets/images/ember-scarred-outcrop/smoldering-passage.png",
+    emberField: "assets/images/ember-scarred-outcrop/ember-field.png",
+    scorchedShrine: "assets/images/ember-scarred-outcrop/scorched-shrine.png",
+    fork: "assets/images/ember-scarred-outcrop/fork.png",
+    crackedRavine: "assets/images/ember-scarred-outcrop/cracked-ravine.png",
+    highLedge: "assets/images/ember-scarred-outcrop/high-ledge.png",
+    converge: "assets/images/ember-scarred-outcrop/converge.png",
+    preBoss: "assets/images/ember-scarred-outcrop/pre-boss.png",
+    extraFight: "assets/images/ember-scarred-outcrop/pre-boss.png",
+    bossDoor: "assets/images/ember-scarred-outcrop/boss-door.png",
+    bossRoom: "assets/images/ember-scarred-outcrop/boss-room.png",
+    epilogue: "assets/images/ember-scarred-outcrop/epilogue.png"
   }
 };
 

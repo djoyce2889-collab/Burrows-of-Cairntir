@@ -21,7 +21,7 @@ const CRAFTING_RECIPES = {
   craftChain: { id: "craftChain", name: "Chainmail", category: "armor", craftingSkill: "smithing", linkedSkill: "chainArmor", material: "Old Ore", materialCost: 2 },
   craftLeather: { id: "craftLeather", name: "Leather Armor", category: "armor", craftingSkill: "tailoring", linkedSkill: "leatherArmor", material: "Hide", materialCost: 2 },
   craftCloth: { id: "craftCloth", name: "Cloth Robes", category: "armor", craftingSkill: "tailoring", linkedSkill: "clothArmor", material: "Hide", materialCost: 1 },
-  craftShield: { id: "craftShield", name: "Shield", category: "armor", craftingSkill: "smithing", linkedSkill: null, material: "Old Ore", materialCost: 2 }
+  craftShield: { id: "craftShield", name: "Shield", category: "armor", craftingSkill: "smithing", linkedSkill: "shields", material: "Old Ore", materialCost: 2 }
 };
 
 const ENCHANTMENT_TYPES = {

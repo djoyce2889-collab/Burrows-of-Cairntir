@@ -232,6 +232,8 @@ function stopSong(spellName) {
  * equipped in the offhand — picking the style alone is no
  * longer enough on its own.
  */
+const SHIELD_TIER_BONUS = { Untrained: 0, Novice: 0, Adept: 1, Expert: 2, Master: 3 };
+
 function getPlayerCombatStyleBonus() {
   const style = COMBAT_STYLES[playerCharacter.combatStyle];
   if (!style) return { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0 };
@@ -241,6 +243,9 @@ function getPlayerCombatStyleBonus() {
   const needsShield = playerCharacter.combatStyle === "swordShield" || playerCharacter.combatStyle === "axeShield";
   if (needsShield && !playerCharacter.equippedShield) {
     result.defenseBonus = 0;
+  } else if (needsShield && playerCharacter.equippedShield) {
+    const shieldTierName = getCharacterSkillTier(playerCharacter, "shields").name;
+    result.defenseBonus += SHIELD_TIER_BONUS[shieldTierName] || 0;
   }
 
   if (playerCharacter.combatStyle === "dual" && !playerCharacter.equippedOffhandSkill) {
@@ -1211,6 +1216,9 @@ function resolveEnemyAttack() {
     target.currentHP = Math.max(0, target.currentHP - damage);
     if (target.equippedArmorSkill && target.skills[target.equippedArmorSkill]) {
       useSkill(target, target.equippedArmorSkill);
+    }
+    if (target.equippedShield && target.skills.shields) {
+      useSkill(target, "shields");
     }
     if (target.currentHP <= 0) {
       const wardIndex = currentCombat.activeEffects.findIndex((e) => e.kind === "autoRevive");

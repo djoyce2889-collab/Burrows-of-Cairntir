@@ -2463,12 +2463,69 @@ function renderCombatOutcome() {
     const loot = claimVictoryLoot();
 
     if (inTrainingGrounds) {
+      const newDefeatCount = trainingGroundsDefeatCount + 1;
+      const bonusMaterials = ["Old Ore", "Hide", "Grave Essence"];
+      const bonusCount = Math.min(3, 1 + Math.floor(newDefeatCount / 5));
+      const bonusLoot = [];
+      for (let i = 0; i < bonusCount; i++) {
+        const material = bonusMaterials[Math.floor(Math.random() * bonusMaterials.length)];
+        playerCharacter.inventory.push(material);
+        bonusLoot.push(material);
+      }
+
       storyEl.innerHTML = `
         <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
-        Enemies defeated: ${trainingGroundsDefeatCount + 1}
+        You recover: ${loot.join(", ") || "nothing of note"}, plus ${bonusLoot.join(", ")}.<br />
+        Enemies defeated: ${newDefeatCount}
       `;
-      addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
-      addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
+
+      if (newDefeatCount === 5) {
+        const rewardTierByDifficulty = { easy: "Adept", normal: "Expert", hard: "Master" };
+        const rewardTier = rewardTierByDifficulty[selectedDifficulty] || "Adept";
+
+        storyEl.innerHTML += `<br /><br /><strong>Five falls in the arena.</strong> Choose your champion's reward.`;
+        const weaponSkillId = playerCharacter.equippedWeaponSkill;
+        const armorSkillId = playerCharacter.equippedArmorSkill;
+        const weaponRecipe = Object.values(CRAFTING_RECIPES).find((r) => r.linkedSkill === weaponSkillId);
+        const armorRecipe = Object.values(CRAFTING_RECIPES).find((r) => r.linkedSkill === armorSkillId);
+        const hasShield = !!playerCharacter.equippedShield;
+        let anyOption = false;
+
+        if (weaponRecipe) {
+          anyOption = true;
+          addChoiceButton(choicesEl, `Claim Weapon - ${weaponRecipe.name}`, () => {
+            playerCharacter.inventory.push(`${weaponRecipe.name} (Champion's ${rewardTier}-crafted)`);
+            saveGameState();
+            addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
+            addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
+          });
+        }
+        if (armorRecipe) {
+          anyOption = true;
+          addChoiceButton(choicesEl, `Claim Armor - ${armorRecipe.name}`, () => {
+            playerCharacter.inventory.push(`${armorRecipe.name} (Champion's ${rewardTier}-crafted)`);
+            saveGameState();
+            addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
+            addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
+          });
+        }
+        if (hasShield) {
+          anyOption = true;
+          addChoiceButton(choicesEl, "Claim Shield", () => {
+            playerCharacter.inventory.push(`Shield (Champion's ${rewardTier}-crafted)`);
+            saveGameState();
+            addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
+            addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
+          });
+        }
+        if (!anyOption) {
+          addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
+          addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
+        }
+      } else {
+        addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
+        addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
+      }
     } else {
       storyEl.innerHTML = `
         <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
@@ -3261,6 +3318,7 @@ document.getElementById("btn-dungeon-difficulty-back").addEventListener("click",
 document.getElementById("btn-dungeon-difficulty-enter").addEventListener("click", confirmEnterDungeon);
 document.getElementById("btn-training-grounds").addEventListener("click", goToTrainingDifficultyScreen);
 document.getElementById("btn-training-difficulty-back").addEventListener("click", goToHomebaseScreen);
+document.getElementById("btn-dungeon-select-back").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-training-difficulty-enter").addEventListener("click", startTrainingGauntlet);
 
 try {

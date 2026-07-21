@@ -212,6 +212,7 @@ const SKILLS = {
   archery: { id: "archery", name: "Archery", category: "Weapon", description: "Accuracy and power with a bow." },
   unarmedCombat: { id: "unarmedCombat", name: "Unarmed Combat", category: "Weapon", description: "Fighting with fists, feet, and improvised force." },
 
+  shields: { id: "shields", name: "Shields", category: "Armor", description: "Wielding a shield effectively — deflecting and absorbing blows that would otherwise land." },
   plateArmor: { id: "plateArmor", name: "Plate", category: "Armor", description: "Moving and fighting effectively in heavy plate — the strongest protection there is." },
   chainArmor: { id: "chainArmor", name: "Chain", category: "Armor", description: "Wearing chainmail without it slowing you down — strong, second only to plate." },
   leatherArmor: { id: "leatherArmor", name: "Leather", category: "Armor", description: "Light, flexible armor that trades protection for speed." },

@@ -641,5 +641,62 @@ const ENEMIES = {
     threatTier: "Adept",
     soundCategory: "physical",
     lootTable: ["Grave Essence"]
+  },
+
+  scorchedSentinel: {
+    id: "scorchedSentinel",
+    name: "Scorched Sentinel",
+    description: "A gaunt, blackened guardian spirit, form charred and cracked like burnt wood, faint embers glowing through fissures in its skin.",
+    image: "assets/images/enemies/scorched-sentinel.png",
+    hitPoints: 24,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  emberWraith: {
+    id: "emberWraith",
+    name: "Ember-Wraith",
+    description: "A lean, fast spirit wreathed in drifting embers and smoke, form shifting and flickering like dying flame.",
+    image: "assets/images/enemies/ember-wraith.png",
+    hitPoints: 20,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  ashBoundJudge: {
+    id: "ashBoundJudge",
+    name: "Ash-Bound Judge",
+    description: "A gaunt, imposing spirit wrapped in ash-grey ceremonial cloth, hands wreathed in smoldering magic, an air of stern judgment about it.",
+    image: "assets/images/enemies/ash-bound-judge.png",
+    hitPoints: 22,
+    attackType: "magic",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  crackedGolem: {
+    id: "crackedGolem",
+    name: "Cracked Golem",
+    description: "A hulking guardian construct made of scorched, cracked stone, embers glowing deep within its fissures.",
+    image: "assets/images/enemies/cracked-golem.png",
+    hitPoints: 32,
+    attackType: "physical",
+    threatTier: "Novice",
+    soundCategory: "stone",
+    lootTable: ["Old Ore"]
+  },
+  theUnyieldingFlame: {
+    id: "theUnyieldingFlame",
+    name: "The Unyielding Flame",
+    description: "A towering ancient spirit composed of living ember and blackened stone, ceremonial regalia scorched but intact, an intense fiery glow radiating from deep cracks across its form.",
+    image: "assets/images/enemies/the-unyielding-flame.png",
+    deathImage: "assets/images/deaths/unyielding-flame-death.png",
+    hitPoints: 46,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Unyielding Ember", "Grave Essence", "Grave Essence"]
   }
 };
