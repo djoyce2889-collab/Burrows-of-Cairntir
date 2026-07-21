@@ -85,6 +85,27 @@ const CULTURES = {
     magicSkillIds: ["pathWild", "pathGrove", "pathStorm", "pathBarrow"],
     accentColor: "#5a8f5a",
     magicOrigin: "The Gaeldrim dwell among ancient groves, bogs, and green hills — and it is that same living land, older than any people upon it, that gives their magic its power."
+  },
+  yorenshi: {
+    id: "yorenshi",
+    name: "Yorenshi",
+    tagline: "Kami-bound, shape-sworn.",
+    description:
+      "An island people whose magic flows from kami — spirits bound to " +
+      "storm, water, mountain, and beast alike. Shrine-keepers, not " +
+      "chiefs or clans, hold authority here, tending the old rites " +
+      "that keep each spirit's favor.",
+    magicName: "Kami Rite",
+    magicDescription:
+      "Power granted by the kami. The Way of Tengu sharpens body and " +
+      "blade through pure martial discipline, the Way of Suijin calls " +
+      "on the river-spirit's favor through song and instrument, and " +
+      "the Way of the Yōkai lets the caster take on a monstrous shape " +
+      "for a time.",
+    socialStructure: "Shrine-Keeper Hierarchy",
+    magicSkillIds: ["wayTengu", "waySuijin", "wayYokai"],
+    accentColor: "#d17b9e",
+    magicOrigin: "The Yorenshi dwell among mist-wrapped peaks and cherry-blossomed shorelines — and it is devotion to the kami of that land which grants their magic its power."
   }
 };
 
@@ -206,6 +227,10 @@ const SKILLS = {
   pathGrove: { id: "pathGrove", name: "Path of the Grove", category: "Magic", cultureLocked: "gaeldrim", description: "Growth and healing, mending wounds from root and leaf." },
   pathStorm: { id: "pathStorm", name: "Path of the Storm", category: "Magic", cultureLocked: "gaeldrim", description: "Wind, rain, and lightning, called down from the turning sky." },
   pathBarrow: { id: "pathBarrow", name: "Path of the Barrow", category: "Magic", cultureLocked: "gaeldrim", description: "The dark path — a lingering curse from what rests beneath the land." },
+
+  wayTengu: { id: "wayTengu", name: "Way of Tengu", category: "Magic", cultureLocked: "yorenshi", description: "A mountain-spirit's martial discipline — inhuman precision and wind-aided strikes, honed through combat mastery alone." },
+  waySuijin: { id: "waySuijin", name: "Way of Suijin", category: "Magic", cultureLocked: "yorenshi", description: "The river-spirit's favor, called through song and instrument — koto, taiko, and shakuhachi each answering differently." },
+  wayYokai: { id: "wayYokai", name: "Way of the Yōkai", category: "Magic", cultureLocked: "yorenshi", description: "A brief, monstrous transformation, borrowing the shape and gift of a yōkai spirit." },
 
   swords: { id: "swords", name: "Sword", category: "Weapon", description: "Skill with blades in close combat." },
   axes: { id: "axes", name: "Axe", category: "Weapon", description: "Heavy, cleaving strikes with an axe." },

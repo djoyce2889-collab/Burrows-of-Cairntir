@@ -4,7 +4,7 @@
 
 const SAVE_KEY = "burrowsOfCairntirSave";
 
-const MAX_SAVE_SLOTS = 3;
+const MAX_SAVE_SLOTS = 5;
 let currentSaveSlot = null;
 
 const creationState = {
@@ -91,6 +91,18 @@ function getSpellSfxPath(spellName) {
   if (/frost|ice|chill|freeze|winter/.test(text)) return "assets/audio/sfx/frost-cast.mp3";
   if (/storm|thunder|lightning|spark|bolt|shock/.test(text)) return "assets/audio/sfx/lightning-cast.mp3";
   return null;
+}
+
+function getYokaiTransformSfxPath(spellName) {
+  const yokaiSfxMap = {
+    "Nue-Shape": "assets/audio/sfx/yokai-transform-nue.mp3",
+    "Hō-ō-Shape": "assets/audio/sfx/yokai-transform-hoo.mp3",
+    "Komainu-Shape": "assets/audio/sfx/yokai-transform-komainu.mp3",
+    "Kirin-Shape": "assets/audio/sfx/yokai-transform-kirin.mp3",
+    "Bakeneko-Shape": "assets/audio/sfx/yokai-transform-bakeneko.mp3",
+    "Raijū-Shape": "assets/audio/sfx/yokai-transform-raiju.mp3"
+  };
+  return yokaiSfxMap[spellName] || null;
 }
 
 function getSongSfxPath(spellName) {
@@ -186,6 +198,10 @@ function toKebabCase(str) {
 }
 
 function getNarrationAudioPath(dungeonId, roomId) {
+  const imagePath = getRoomImage(dungeonId, roomId);
+  if (imagePath) {
+    return imagePath.replace("assets/images/", "assets/audio/narration/").replace(/\.png$/, ".mp3");
+  }
   return `assets/audio/narration/${toKebabCase(dungeonId)}/${toKebabCase(roomId)}.mp3`;
 }
 
@@ -1198,11 +1214,63 @@ function buildWeaponOrArmorCard(skillId, itemName, isArmor) {
   return card;
 }
 
+const ARMOR_SLOTS = ["head", "chest", "legs", "gloves", "boots"];
+const ARMOR_SLOT_FIELD_NAMES = {
+  head: { skill: "equippedHeadSkill", item: "equippedHeadItemName" },
+  chest: { skill: "equippedChestSkill", item: "equippedChestItemName" },
+  legs: { skill: "equippedLegsSkill", item: "equippedLegsItemName" },
+  gloves: { skill: "equippedGlovesSkill", item: "equippedGlovesItemName" },
+  boots: { skill: "equippedBootsSkill", item: "equippedBootsItemName" }
+};
+
+function getOwnedItemsForSlot(slotName) {
+  return playerCharacter.inventory.filter((item) =>
+    Object.values(CRAFTING_RECIPES).some((r) => r.slot === slotName && item.startsWith(`${r.name} (`))
+  );
+}
+
+function buildArmorSlotCard(slotName, itemName) {
+  const fields = ARMOR_SLOT_FIELD_NAMES[slotName];
+  const recipe = Object.values(CRAFTING_RECIPES).find(
+    (r) => r.slot === slotName && itemName.startsWith(`${r.name} (`)
+  );
+  const isEquipped = playerCharacter[fields.item] === itemName;
+  const card = document.createElement("div");
+  card.className = "cc-card";
+  if (isEquipped) card.classList.add("selected");
+  card.innerHTML = `
+    <div class="cc-card-name">${itemName}</div>
+    <div class="cc-card-desc">${isEquipped ? "Equipped" : "Click to equip"}</div>
+  `;
+  card.addEventListener("click", () => {
+    if (!recipe) return;
+    if (!playerCharacter.skills[recipe.linkedSkill]) {
+      playerCharacter.skills[recipe.linkedSkill] = { timesUsed: 0 };
+    }
+    playerCharacter[fields.skill] = recipe.linkedSkill;
+    playerCharacter[fields.item] = itemName;
+    renderEquipSection();
+    saveGameState();
+  });
+  return card;
+}
+
+function renderArmorSlotSection(slotName) {
+  const grid = document.getElementById(`equip-${slotName}-grid`);
+  grid.innerHTML = "";
+  const ownedItems = getOwnedItemsForSlot(slotName);
+  if (ownedItems.length === 0) {
+    grid.innerHTML = '<div class="cc-skill-count">No items for this slot yet.</div>';
+  } else {
+    ownedItems.forEach((itemName) => {
+      grid.appendChild(buildArmorSlotCard(slotName, itemName));
+    });
+  }
+}
+
 function renderEquipSection() {
   const weaponGrid = document.getElementById("equip-weapon-grid");
-  const armorGrid = document.getElementById("equip-armor-grid");
   weaponGrid.innerHTML = "";
-  armorGrid.innerHTML = "";
 
   const trainedWeaponIds = Object.keys(playerCharacter.skills).filter(
     (id) => SKILLS[id] && SKILLS[id].category === "Weapon"
@@ -1221,23 +1289,7 @@ function renderEquipSection() {
     }
   });
 
-  const trainedArmorIds = Object.keys(playerCharacter.skills).filter(
-    (id) => SKILLS[id] && SKILLS[id].category === "Armor"
-  );
-  if (trainedArmorIds.length === 0) {
-    armorGrid.innerHTML = '<div class="cc-skill-count">No armor trained yet.</div>';
-  } else {
-    trainedArmorIds.forEach((skillId) => {
-      const ownedItems = getOwnedItemsForSkill(skillId);
-      if (ownedItems.length === 0) {
-        armorGrid.appendChild(buildWeaponOrArmorCard(skillId, null, true));
-      } else {
-        ownedItems.forEach((itemName) => {
-          armorGrid.appendChild(buildWeaponOrArmorCard(skillId, itemName, true));
-        });
-      }
-    });
-  }
+  ARMOR_SLOTS.forEach((slotName) => renderArmorSlotSection(slotName));
 
   renderShieldOffhandSections();
 }
@@ -2125,6 +2177,15 @@ function getEnemyAmbientGlowClass() {
   return "";
 }
 
+const YOKAI_FORM_IMAGES = {
+  "Nue-Shape": "assets/images/effects/yokai-nue.png",
+  "Hō-ō-Shape": "assets/images/effects/yokai-hoo.png",
+  "Komainu-Shape": "assets/images/effects/yokai-komainu.png",
+  "Kirin-Shape": "assets/images/effects/yokai-kirin.png",
+  "Bakeneko-Shape": "assets/images/effects/yokai-bakeneko.png",
+  "Raijū-Shape": "assets/images/effects/yokai-raiju.png"
+};
+
 function getActorImageForLogEntry(entry) {
   if (entry.actor === "enemy") {
     const enemyTemplate = ENEMIES[currentCombat.enemyId];
@@ -2136,7 +2197,17 @@ function getActorImageForLogEntry(entry) {
   if (entry.actor === "follower" && entry.followerName) {
     const follower = followers.find((f) => f.name === entry.followerName);
     if (follower) {
+      const activeYokaiForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && e.owner === follower);
+      if (activeYokaiForm && YOKAI_FORM_IMAGES[activeYokaiForm.spellName]) {
+        return YOKAI_FORM_IMAGES[activeYokaiForm.spellName];
+      }
       return follower.portraitImage || (RACES[follower.raceId] ? RACES[follower.raceId].image : null);
+    }
+  }
+  if (entry.actor === "player") {
+    const activeYokaiForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && !e.owner);
+    if (activeYokaiForm && YOKAI_FORM_IMAGES[activeYokaiForm.spellName]) {
+      return YOKAI_FORM_IMAGES[activeYokaiForm.spellName];
     }
   }
   return playerCharacter.portraitImage || (RACES[playerCharacter.raceId] ? RACES[playerCharacter.raceId].image : null);
@@ -2219,8 +2290,11 @@ function playRoundSequenceThenRender(entries) {
     }
 
     if (isSpellCast) {
+      const yokaiSfx = entry.skillId === "wayYokai" ? getYokaiTransformSfxPath(entry.spellName) : null;
       const songSfx = entry.skillId === "ancestralSiuloir" ? getSongSfxPath(entry.spellName) : null;
-      if (songSfx) {
+      if (yokaiSfx) {
+        playSfx(yokaiSfx);
+      } else if (songSfx) {
         playSfx(songSfx);
       } else if (entry.spellType === "heal") {
         playSfx(HEAL_CAST_SFX);
@@ -2239,7 +2313,8 @@ function playRoundSequenceThenRender(entries) {
     }
 
     if (entry.actor === "follower" && entry.action === "cast") {
-      playSfx(getSpellSfxPath(entry.spellName));
+      const followerYokaiSfx = entry.skillId === "wayYokai" ? getYokaiTransformSfxPath(entry.spellName) : null;
+      playSfx(followerYokaiSfx || getSpellSfxPath(entry.spellName));
     }
 
     if (entry.actor === "follower" && entry.action === "sing") {
@@ -2349,8 +2424,16 @@ function renderCombatScreen() {
 
   choicesEl.innerHTML = "";
 
+  const YOKAI_ATTACK_LABELS = {
+    "Nue-Shape": "Nue's Claws",
+    "Komainu-Shape": "Komainu's Bite",
+    "Kirin-Shape": "Kirin's Horn",
+    "Bakeneko-Shape": "Bakeneko's Claws"
+  };
+  const activeYokaiForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && !e.owner);
   const equippedWeaponId = playerCharacter.equippedWeaponSkill || "unarmedCombat";
-  addChoiceButton(choicesEl, `Attack - ${SKILLS[equippedWeaponId].name}`, () => {
+  const attackLabel = (activeYokaiForm && YOKAI_ATTACK_LABELS[activeYokaiForm.spellName]) || SKILLS[equippedWeaponId].name;
+  addChoiceButton(choicesEl, `Attack - ${attackLabel}`, () => {
     const startIndex = currentCombat.log.length;
     performPlayerAction(equippedWeaponId);
     saveGameState();
@@ -2686,25 +2769,37 @@ function renderEnchantSection(list, resultEl) {
     });
     list.appendChild(weaponCard);
 
-    const armorCard = document.createElement("div");
-    armorCard.className = "cc-card";
-    const currentArmorEnchant = playerCharacter.armorEnchantment ? playerCharacter.armorEnchantment.name : "None";
-    armorCard.innerHTML = `
-      <div class="cc-card-name">Enchant Armor</div>
-      <div class="cc-card-desc">Current: ${currentArmorEnchant}</div>
-      <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
-    `;
-    armorCard.addEventListener("click", () => {
-      craftingEnchantSlotPending = "armor";
-      renderCraftingScreen();
+    const armorSlotLabels = { head: "Head", chest: "Chest", legs: "Legs", gloves: "Gloves", boots: "Boots" };
+    const armorEnchantFields = {
+      head: "headEnchantment", chest: "chestEnchantment", legs: "legsEnchantment",
+      gloves: "glovesEnchantment", boots: "bootsEnchantment"
+    };
+    Object.keys(armorSlotLabels).forEach((slotName) => {
+      const enchantField = armorEnchantFields[slotName];
+      const current = playerCharacter[enchantField];
+      const slotCard = document.createElement("div");
+      slotCard.className = "cc-card";
+      slotCard.innerHTML = `
+        <div class="cc-card-name">Enchant ${armorSlotLabels[slotName]}</div>
+        <div class="cc-card-desc">Current: ${current ? current.name : "None"}</div>
+        <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
+      `;
+      slotCard.addEventListener("click", () => {
+        craftingEnchantSlotPending = slotName;
+        renderCraftingScreen();
+      });
+      list.appendChild(slotCard);
     });
-    list.appendChild(armorCard);
     return;
   }
 
+  const armorEnchantFieldsLookup = {
+    head: "headEnchantment", chest: "chestEnchantment", legs: "legsEnchantment",
+    gloves: "glovesEnchantment", boots: "bootsEnchantment"
+  };
   const currentEnchantment = craftingEnchantSlotPending === "weapon"
     ? playerCharacter.weaponEnchantment
-    : playerCharacter.armorEnchantment;
+    : playerCharacter[armorEnchantFieldsLookup[craftingEnchantSlotPending]];
   const currentTypeId = currentEnchantment ? currentEnchantment.type : null;
 
   Object.values(ENCHANTMENT_TYPES).forEach((type) => {
@@ -2764,8 +2859,14 @@ function attemptCraft(recipeId) {
   saveGameState();
 }
 
+const ARMOR_ENCHANT_FIELD_BY_SLOT = {
+  head: "headEnchantment", chest: "chestEnchantment", legs: "legsEnchantment",
+  gloves: "glovesEnchantment", boots: "bootsEnchantment"
+};
+
 function attemptEnchant(slot, typeId) {
-  const currentEnchantment = slot === "weapon" ? playerCharacter.weaponEnchantment : playerCharacter.armorEnchantment;
+  const enchantField = slot === "weapon" ? "weaponEnchantment" : ARMOR_ENCHANT_FIELD_BY_SLOT[slot];
+  const currentEnchantment = playerCharacter[enchantField];
   if (currentEnchantment && currentEnchantment.type === typeId) {
     document.getElementById("crafting-result").innerHTML =
       `<span class="craft-result-fail">This item is already ${ENCHANTMENT_TYPES[typeId].name}-Enchanted — choose a different type to change it.</span>`;
@@ -2793,11 +2894,7 @@ function attemptEnchant(slot, typeId) {
       if (idx !== -1) playerCharacter.inventory.splice(idx, 1);
     }
     const enchantment = { type: typeId, name: typeInfo.name, tierWhenMade: craftingTierBefore };
-    if (slot === "weapon") {
-      playerCharacter.weaponEnchantment = enchantment;
-    } else {
-      playerCharacter.armorEnchantment = enchantment;
-    }
+    playerCharacter[enchantField] = enchantment;
     resultMessage = `<span class="craft-result-success">Success! Your ${slot} is now <strong>${typeInfo.name}-Enchanted</strong>.</span>`;
   } else {
     resultMessage = `<span class="craft-result-fail">The enchantment fails to take hold. No materials lost — but you've learned something from the mistake.</span>`;

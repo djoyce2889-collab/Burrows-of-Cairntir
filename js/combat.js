@@ -616,6 +616,10 @@ function tickCombatEffects() {
       currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: effect.spellName, outOfMana: true, ownerName: owner.name });
       return false;
     }
+    if (effect._justCast) {
+      effect._justCast = false;
+      return true;
+    }
     if (effect.roundsRemaining === null) return true;
     effect.roundsRemaining -= 1;
     if (effect.roundsRemaining <= 0) {
@@ -972,6 +976,53 @@ function performFollowerDebuffCast(follower, skillId, spell) {
   });
 }
 
+const FOLLOWER_YOKAI_FORM_SPELL_IDS = ["nueShape", "komainuShape", "kirinShape"];
+
+/**
+ * Followers cast at most one persistent Way of the Yōkai
+ * transformation per fight — mirrors getFollowerWardOption's
+ * "already warded" pattern, just checking for an existing
+ * yokaiForm effect owned by this follower instead.
+ */
+function getFollowerYokaiFormOption(follower) {
+  const alreadyTransformed = currentCombat.activeEffects.some(
+    (e) => e.kind === "yokaiForm" && e.owner === follower
+  );
+  if (alreadyTransformed) return null;
+  const knownIds = (follower.knownSpells && follower.knownSpells.wayYokai) || [];
+  if (knownIds.length === 0) return null;
+  const allSpells = SPELLS.wayYokai || [];
+  const castable = allSpells.find((s) => FOLLOWER_YOKAI_FORM_SPELL_IDS.includes(s.id) && knownIds.includes(s.id));
+  return castable ? { skillId: "wayYokai", spell: castable } : null;
+}
+
+function performFollowerYokaiFormCast(follower, skillId, spell) {
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  currentCombat.activeEffects = currentCombat.activeEffects.filter(
+    (e) => !(e.kind === "yokaiForm" && e.owner === follower)
+  );
+  currentCombat.activeEffects.push({ kind: "yokaiForm", spellName: spell.name, owner: follower, roundsRemaining: YOKAI_FORM_DURATION, _justCast: true });
+
+  if (spell.type === "buff") {
+    currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: YOKAI_FORM_DURATION, owner: follower, _justCast: true });
+  } else if (spell.type === "acBuff") {
+    currentCombat.activeEffects.push({ kind: "acBuff", rankBonus: 1, roundsRemaining: YOKAI_FORM_DURATION, owner: follower, _justCast: true });
+  } else if (spell.type === "damageDebuff") {
+    currentCombat.activeEffects.push({ kind: "damageDebuff", rankBonus: -1, roundsRemaining: YOKAI_FORM_DURATION, _justCast: true });
+  }
+
+  currentCombat.log.push({
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    skillId: skillId,
+    spellName: spell.name,
+    castKind: "yokaiForm"
+  });
+}
+
 function performFollowersTurn() {
   const activeFollowers = getActiveFollowers();
   if (!activeFollowers || activeFollowers.length === 0) return;
@@ -1021,6 +1072,12 @@ function performFollowersTurn() {
     const debuffOption = getFollowerDebuffOption(follower);
     if (debuffOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
       performFollowerDebuffCast(follower, debuffOption.skillId, debuffOption.spell);
+      return;
+    }
+
+    const yokaiFormOption = getFollowerYokaiFormOption(follower);
+    if (yokaiFormOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
+      performFollowerYokaiFormCast(follower, yokaiFormOption.skillId, yokaiFormOption.spell);
       return;
     }
 
@@ -1214,9 +1271,16 @@ function resolveEnemyAttack() {
       damage = Math.max(0, damage - absorbed);
     }
     target.currentHP = Math.max(0, target.currentHP - damage);
-    if (target.equippedArmorSkill && target.skills[target.equippedArmorSkill]) {
-      useSkill(target, target.equippedArmorSkill);
-    }
+    const armorSlotSkillFields = [
+      "equippedHeadSkill", "equippedChestSkill", "equippedLegsSkill",
+      "equippedGlovesSkill", "equippedBootsSkill"
+    ];
+    armorSlotSkillFields.forEach((field) => {
+      const skillId = target[field];
+      if (skillId && target.skills[skillId]) {
+        useSkill(target, skillId);
+      }
+    });
     if (target.equippedShield && target.skills.shields) {
       useSkill(target, "shields");
     }
@@ -1376,11 +1440,19 @@ function performPlayerAction(skillId) {
   return currentCombat;
 }
 
+const PERSISTENT_YOKAI_SPELL_IDS = ["nueShape", "komainuShape", "kirinShape", "bakenekoShape"];
+const YOKAI_FORM_DURATION = 5;
+
 function performPlayerCast(skillId, spell) {
   if (!currentCombat || currentCombat.result) return currentCombat;
   if (playerCharacter.currentMana < MANA_CONFIG.costPerCast) return currentCombat;
 
-  const isSong = skillId === "ancestralSiuloir";
+  if (skillId === "wayYokai" && PERSISTENT_YOKAI_SPELL_IDS.includes(spell.id)) {
+    currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "yokaiForm");
+    currentCombat.activeEffects.push({ kind: "yokaiForm", spellName: spell.name, roundsRemaining: YOKAI_FORM_DURATION, _justCast: true });
+  }
+
+  const isSong = skillId === "ancestralSiuloir" || skillId === "waySuijin";
   if (isSong && getActiveSongCount() >= 2) return currentCombat;
 
   playerCharacter.currentMana -= MANA_CONFIG.costPerCast;
@@ -1642,6 +1714,15 @@ function performPlayerCast(skillId, spell) {
     currentCombat.activeEffects.push({ kind: "companion", rankBonus: 0, roundsRemaining: null, casterTierName: tierBefore });
   }
 
+  if (skillId === "wayYokai" && PERSISTENT_YOKAI_SPELL_IDS.includes(spell.id)) {
+    const yokaiEffectKind = spell.type === "buff" ? "playerAttackBonus" : spell.type;
+    const justAddedEffect = [...currentCombat.activeEffects].reverse().find((e) => e.kind === yokaiEffectKind && !e.owner);
+    if (justAddedEffect) {
+      justAddedEffect.roundsRemaining = YOKAI_FORM_DURATION;
+      justAddedEffect._justCast = true;
+    }
+  }
+
   currentCombat.log.push(logEntry);
 
   performFollowersTurn();
@@ -1785,6 +1866,9 @@ function describeLogEntry(entry) {
       }
       if (entry.castKind === "debuff") {
         return `${entry.followerName} calls on ${entry.spellName}, and their foe falters.`;
+      }
+      if (entry.castKind === "yokaiForm") {
+        return `${entry.followerName} calls on ${entry.spellName}, and their shape shifts.`;
       }
       if (entry.hit === undefined) {
         return `${entry.followerName} calls on ${entry.spellName}, a curse taking hold.`;

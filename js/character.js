@@ -27,15 +27,46 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
   });
 
   const inventory = [];
+  const startingSlotEquip = {};
   startingSkillIds.forEach((skillId) => {
     if (STARTING_EQUIPMENT[skillId]) {
       inventory.push(STARTING_EQUIPMENT[skillId]);
     }
+    if (STARTING_ARMOR_SETS[skillId]) {
+      STARTING_ARMOR_SETS[skillId].forEach((itemName) => {
+        inventory.push(itemName);
+        const recipe = Object.values(CRAFTING_RECIPES).find((r) => itemName.startsWith(`${r.name} (`));
+        if (recipe) startingSlotEquip[recipe.slot] = { skillId, itemName };
+      });
+    }
   });
+
+  let equippedShieldStart = false;
+  if (combatStyle === "swordShield" || combatStyle === "axeShield") {
+    const shieldRecipe = CRAFTING_RECIPES.craftShield;
+    if (shieldRecipe) {
+      inventory.push(`${shieldRecipe.name} (Novice-crafted)`);
+      equippedShieldStart = true;
+    }
+  }
 
   const startingWeaponId = startingSkillIds.find(
     (id) => SKILLS[id] && SKILLS[id].category === "Weapon"
   ) || "unarmedCombat";
+
+  let equippedOffhandStart = null;
+  if (combatStyle === "dual") {
+    const secondWeaponId = startingSkillIds.find(
+      (id) => SKILLS[id] && SKILLS[id].category === "Weapon" && id !== startingWeaponId
+    );
+    if (secondWeaponId) {
+      equippedOffhandStart = secondWeaponId;
+      if (STARTING_EQUIPMENT[secondWeaponId]) {
+        inventory.push(STARTING_EQUIPMENT[secondWeaponId]);
+      }
+    }
+  }
+
   const startingArmorId = startingSkillIds.find(
     (id) => SKILLS[id] && SKILLS[id].category === "Armor"
   ) || null;
@@ -57,12 +88,29 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     portraitImage: portraitImage || null,
     equippedWeaponSkill: startingWeaponId,
     equippedArmorSkill: startingArmorId,
-    equippedShield: false,
-    equippedOffhandSkill: null,
+    equippedShield: equippedShieldStart,
+    equippedOffhandSkill: equippedOffhandStart,
     equippedRing: null,
     equippedAmulet: null,
     equippedWeaponItemName: null,
     equippedArmorItemName: null,
+
+    equippedHeadSkill: startingSlotEquip.head ? startingSlotEquip.head.skillId : null,
+    equippedChestSkill: startingSlotEquip.chest ? startingSlotEquip.chest.skillId : null,
+    equippedLegsSkill: startingSlotEquip.legs ? startingSlotEquip.legs.skillId : null,
+    equippedGlovesSkill: startingSlotEquip.gloves ? startingSlotEquip.gloves.skillId : null,
+    equippedBootsSkill: startingSlotEquip.boots ? startingSlotEquip.boots.skillId : null,
+    equippedHeadItemName: startingSlotEquip.head ? startingSlotEquip.head.itemName : null,
+    equippedChestItemName: startingSlotEquip.chest ? startingSlotEquip.chest.itemName : null,
+    equippedLegsItemName: startingSlotEquip.legs ? startingSlotEquip.legs.itemName : null,
+    equippedGlovesItemName: startingSlotEquip.gloves ? startingSlotEquip.gloves.itemName : null,
+    equippedBootsItemName: startingSlotEquip.boots ? startingSlotEquip.boots.itemName : null,
+    headEnchantment: null,
+    chestEnchantment: null,
+    legsEnchantment: null,
+    glovesEnchantment: null,
+    bootsEnchantment: null,
+
     inventory: inventory,
     active: true,
     flags: {}

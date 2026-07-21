@@ -6,21 +6,43 @@
 const STARTING_EQUIPMENT = {
   swords: "Old Sword",
   axes: "Worn Axe",
-  archery: "Simple Bow",
-  plateArmor: "Worn Plate Armor",
-  chainArmor: "Worn Chainmail",
-  leatherArmor: "Worn Leather Armor",
-  clothArmor: "Worn Cloth Robes"
+  archery: "Simple Bow"
+};
+
+const STARTING_ARMOR_SETS = {
+  plateArmor: ["Plate Helm (Novice-crafted)", "Plate Cuirass (Novice-crafted)", "Plate Greaves (Novice-crafted)", "Plate Gauntlets (Novice-crafted)", "Plate Boots (Novice-crafted)"],
+  chainArmor: ["Chain Coif (Novice-crafted)", "Chain Hauberk (Novice-crafted)", "Chain Chausses (Novice-crafted)", "Chain Gauntlets (Novice-crafted)", "Chain Boots (Novice-crafted)"],
+  leatherArmor: ["Leather Cap (Novice-crafted)", "Leather Jerkin (Novice-crafted)", "Leather Leggings (Novice-crafted)", "Leather Gloves (Novice-crafted)", "Leather Boots (Novice-crafted)"],
+  clothArmor: ["Cloth Hood (Novice-crafted)", "Cloth Robe (Novice-crafted)", "Cloth Trousers (Novice-crafted)", "Cloth Gloves (Novice-crafted)", "Cloth Shoes (Novice-crafted)"]
 };
 
 const CRAFTING_RECIPES = {
   craftSword: { id: "craftSword", name: "Sword", category: "weapon", craftingSkill: "smithing", linkedSkill: "swords", material: "Old Ore", materialCost: 2 },
   craftAxe: { id: "craftAxe", name: "Axe", category: "weapon", craftingSkill: "smithing", linkedSkill: "axes", material: "Old Ore", materialCost: 2 },
   craftBow: { id: "craftBow", name: "Bow", category: "weapon", craftingSkill: "smithing", linkedSkill: "archery", material: "Old Ore", materialCost: 1 },
-  craftPlate: { id: "craftPlate", name: "Plate Armor", category: "armor", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 3 },
-  craftChain: { id: "craftChain", name: "Chainmail", category: "armor", craftingSkill: "smithing", linkedSkill: "chainArmor", material: "Old Ore", materialCost: 2 },
-  craftLeather: { id: "craftLeather", name: "Leather Armor", category: "armor", craftingSkill: "tailoring", linkedSkill: "leatherArmor", material: "Hide", materialCost: 2 },
-  craftCloth: { id: "craftCloth", name: "Cloth Robes", category: "armor", craftingSkill: "tailoring", linkedSkill: "clothArmor", material: "Hide", materialCost: 1 },
+  craftPlateHelm: { id: "craftPlateHelm", name: "Plate Helm", category: "armor", slot: "head", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
+  craftPlateCuirass: { id: "craftPlateCuirass", name: "Plate Cuirass", category: "armor", slot: "chest", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 3 },
+  craftPlateGreaves: { id: "craftPlateGreaves", name: "Plate Greaves", category: "armor", slot: "legs", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
+  craftPlateGauntlets: { id: "craftPlateGauntlets", name: "Plate Gauntlets", category: "armor", slot: "gloves", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
+  craftPlateBoots: { id: "craftPlateBoots", name: "Plate Boots", category: "armor", slot: "boots", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
+
+  craftChainCoif: { id: "craftChainCoif", name: "Chain Coif", category: "armor", slot: "head", craftingSkill: "smithing", linkedSkill: "chainArmor", material: "Old Ore", materialCost: 1 },
+  craftChainHauberk: { id: "craftChainHauberk", name: "Chain Hauberk", category: "armor", slot: "chest", craftingSkill: "smithing", linkedSkill: "chainArmor", material: "Old Ore", materialCost: 2 },
+  craftChainChausses: { id: "craftChainChausses", name: "Chain Chausses", category: "armor", slot: "legs", craftingSkill: "smithing", linkedSkill: "chainArmor", material: "Old Ore", materialCost: 1 },
+  craftChainGauntlets: { id: "craftChainGauntlets", name: "Chain Gauntlets", category: "armor", slot: "gloves", craftingSkill: "smithing", linkedSkill: "chainArmor", material: "Old Ore", materialCost: 1 },
+  craftChainBoots: { id: "craftChainBoots", name: "Chain Boots", category: "armor", slot: "boots", craftingSkill: "smithing", linkedSkill: "chainArmor", material: "Old Ore", materialCost: 1 },
+
+  craftLeatherCap: { id: "craftLeatherCap", name: "Leather Cap", category: "armor", slot: "head", craftingSkill: "tailoring", linkedSkill: "leatherArmor", material: "Hide", materialCost: 1 },
+  craftLeatherJerkin: { id: "craftLeatherJerkin", name: "Leather Jerkin", category: "armor", slot: "chest", craftingSkill: "tailoring", linkedSkill: "leatherArmor", material: "Hide", materialCost: 2 },
+  craftLeatherLeggings: { id: "craftLeatherLeggings", name: "Leather Leggings", category: "armor", slot: "legs", craftingSkill: "tailoring", linkedSkill: "leatherArmor", material: "Hide", materialCost: 1 },
+  craftLeatherGloves: { id: "craftLeatherGloves", name: "Leather Gloves", category: "armor", slot: "gloves", craftingSkill: "tailoring", linkedSkill: "leatherArmor", material: "Hide", materialCost: 1 },
+  craftLeatherBoots: { id: "craftLeatherBoots", name: "Leather Boots", category: "armor", slot: "boots", craftingSkill: "tailoring", linkedSkill: "leatherArmor", material: "Hide", materialCost: 1 },
+
+  craftClothHood: { id: "craftClothHood", name: "Cloth Hood", category: "armor", slot: "head", craftingSkill: "tailoring", linkedSkill: "clothArmor", material: "Hide", materialCost: 1 },
+  craftClothRobe: { id: "craftClothRobe", name: "Cloth Robe", category: "armor", slot: "chest", craftingSkill: "tailoring", linkedSkill: "clothArmor", material: "Hide", materialCost: 1 },
+  craftClothTrousers: { id: "craftClothTrousers", name: "Cloth Trousers", category: "armor", slot: "legs", craftingSkill: "tailoring", linkedSkill: "clothArmor", material: "Hide", materialCost: 1 },
+  craftClothGloves: { id: "craftClothGloves", name: "Cloth Gloves", category: "armor", slot: "gloves", craftingSkill: "tailoring", linkedSkill: "clothArmor", material: "Hide", materialCost: 1 },
+  craftClothShoes: { id: "craftClothShoes", name: "Cloth Shoes", category: "armor", slot: "boots", craftingSkill: "tailoring", linkedSkill: "clothArmor", material: "Hide", materialCost: 1 },
   craftShield: { id: "craftShield", name: "Shield", category: "armor", craftingSkill: "smithing", linkedSkill: "shields", material: "Old Ore", materialCost: 2 }
 };
 

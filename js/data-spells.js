@@ -126,5 +126,32 @@ const SPELLS = {
     { id: "gravehand", name: "Gravehand", type: "undeadSlayer", description: "A grave-cold hand that reaches out and grips your foe — devastating against the undead, merely painful against the living." },
     { id: "shroudtouch", name: "Shroudtouch", type: "resurrect", description: "A burial-cloth touch that calls a fallen companion back from the edge, restoring them to the fight." },
     { id: "wraithcall", name: "Wraithcall", type: "burst", description: "A restless spirit hurled at your foe in a single devastating strike." }
+  ],
+
+  wayTengu: [
+    { id: "galeFistStrike", name: "Gale-Fist Strike", type: "damage", description: "A martial strike infused with mountain wind." },
+    { id: "crowsTalon", name: "Crow's Talon", type: "burst", description: "A rapid flurry of strikes, harder-hitting than a normal blow." },
+    { id: "rootStanceDiscipline", name: "Root-Stance Discipline", type: "guard", description: "A grounding stance that braces against incoming harm." },
+    { id: "featherStep", name: "Feather-Step", type: "dodgeBuff", description: "Inhuman lightness of foot, slipping past incoming blows." },
+    { id: "tengusEye", name: "Tengu's Eye", type: "guaranteedHit", description: "Perfect martial clarity — your next strike cannot miss." },
+    { id: "mountainBreaker", name: "Mountain-Breaker", type: "execute", description: "A finishing blow that lands far harder against a badly wounded foe." }
+  ],
+
+  waySuijin: [
+    { id: "kotoOfTheDeepCurrent", name: "Koto of the Deep Current", type: "hot", description: "A sustained, flowing melody that mends the whole party's wounds over time." },
+    { id: "kotoOfTheReturningTide", name: "Koto of the Returning Tide", type: "groupHeal", description: "A fuller melody, restoring everyone at your side at once." },
+    { id: "taikoOfTheStormsApproach", name: "Taiko of the Storm's Approach", type: "buff", description: "A driving rhythm that strengthens every ally's strikes." },
+    { id: "taikoOfTheRagingSurf", name: "Taiko of the Raging Surf", type: "fortify", description: "A surging beat that grants the whole party temporary Hit Points." },
+    { id: "shakuhachiOfTheWanderingDead", name: "Shakuhachi of the Wandering Dead", type: "fear", description: "A haunting tone that grips a foe with dread." },
+    { id: "shakuhachiOfTheHollowWind", name: "Shakuhachi of the Hollow Wind", type: "accuracyDebuff", description: "An unsettling, off-key note that throws off a foe's aim." }
+  ],
+
+  wayYokai: [
+    { id: "nueShape", name: "Nue-Shape", type: "buff", description: "Chimeric monstrous strength floods your limbs." },
+    { id: "hooShape", name: "Hō-ō-Shape", type: "lifetap", description: "The firebird's rebirth draws life from your foe back into you." },
+    { id: "komainuShape", name: "Komainu-Shape", type: "acBuff", description: "A shrine guardian's stone-hardened hide turns aside blows." },
+    { id: "kirinShape", name: "Kirin-Shape", type: "damageDebuff", description: "An omen-beast's judgment saps a foe's striking power." },
+    { id: "bakenekoShape", name: "Bakeneko-Shape", type: "guaranteedDodge", description: "A monstrous cat-spirit's unnatural quickness lets you slip free of the next blow entirely." },
+    { id: "raijuShape", name: "Raijū-Shape", type: "burst", description: "A lightning-wreathed beast's swift, vicious extra strike." }
   ]
 };
