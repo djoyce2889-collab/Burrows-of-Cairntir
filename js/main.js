@@ -54,6 +54,7 @@ const HEAL_CAST_SFX = "assets/audio/sfx/heal-cast.mp3";
 let musicVolume = 0.18;
 
 const MAIN_THEME_SRC = "assets/audio/main-theme.mp3";
+const TRAINING_GROUNDS_MUSIC_SRC = "assets/audio/training-grounds-theme.mp3";
 const gameMusic = new Audio();
 gameMusic.loop = true;
 gameMusic.volume = musicVolume;
@@ -1666,6 +1667,95 @@ function confirmEnterDungeon() {
   }
 }
 
+function goToTrainingDifficultyScreen() {
+  showScreen("screen-training-difficulty");
+  renderTrainingDifficultyScreen();
+}
+
+let inTrainingGrounds = false;
+let trainingGroundsDefeatCount = 0;
+
+/**
+ * Every enemy you've ever encountered across all dungeons is
+ * fair game — pulled fresh from ENEMIES each fight, so as you
+ * unlock more dungeons over time, the pool naturally grows too.
+ */
+/**
+ * Boss enemy IDs are pulled dynamically from every dungeon's
+ * bossRoom, rather than hardcoded — so this stays correct
+ * automatically as new dungeons (and new bosses) get added later,
+ * with nothing to remember to update here.
+ */
+function getBossEnemyIds() {
+  const bossIds = new Set();
+  Object.values(DUNGEON_CONTENT).forEach((dungeonData) => {
+    const bossRoom = dungeonData.rooms && dungeonData.rooms.bossRoom;
+    if (!bossRoom) return;
+    bossRoom.choices.forEach((choice) => {
+      if (choice.type === "combat") bossIds.add(choice.enemyId);
+    });
+  });
+  return bossIds;
+}
+
+const TRAINING_GROUNDS_ENEMY_IDS = ["arenaMinotaur", "arenaWyvern", "arenaDirewolf", "arenaTroll", "arenaBasilisk"];
+
+function pickRandomTrainingEnemy() {
+  return TRAINING_GROUNDS_ENEMY_IDS[Math.floor(Math.random() * TRAINING_GROUNDS_ENEMY_IDS.length)];
+}
+
+function startTrainingGauntlet() {
+  inTrainingGrounds = true;
+  trainingGroundsDefeatCount = 0;
+  combatReturnRoomId = null;
+  const enemyId = pickRandomTrainingEnemy();
+  showScreen("screen-game");
+  startCombat(enemyId);
+  setGameViewportImage(ENEMIES[enemyId].image, ENEMIES[enemyId].name);
+  playMusic(TRAINING_GROUNDS_MUSIC_SRC);
+  applyAmbientGlows(true);
+  stopAllNarration();
+  renderCombatScreen();
+  saveGameState();
+}
+
+function continueTrainingGauntlet() {
+  trainingGroundsDefeatCount += 1;
+  const enemyId = pickRandomTrainingEnemy();
+  startCombat(enemyId);
+  setGameViewportImage(ENEMIES[enemyId].image, ENEMIES[enemyId].name);
+  applyAmbientGlows(true);
+  renderCombatScreen();
+  saveGameState();
+}
+
+function leaveTrainingGrounds() {
+  inTrainingGrounds = false;
+  currentCombat = null;
+  goToHomebaseScreen();
+}
+
+function renderTrainingDifficultyScreen() {
+  const grid = document.getElementById("training-difficulty-grid");
+  grid.innerHTML = "";
+
+  Object.values(DIFFICULTY_SETTINGS).forEach((diff) => {
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    if (selectedDifficulty === diff.id) card.classList.add("selected");
+    card.innerHTML = `
+      <div class="cc-card-name">${diff.name}</div>
+      <div class="cc-card-desc">${diff.description}</div>
+    `;
+    card.addEventListener("click", () => {
+      selectedDifficulty = diff.id;
+      saveGameState();
+      renderTrainingDifficultyScreen();
+    });
+    grid.appendChild(card);
+  });
+}
+
 function renderDungeonList() {
   const tabsContainer = document.getElementById("region-tabs-grid");
   const mapImage = document.getElementById("region-map-image");
@@ -2344,6 +2434,17 @@ function renderCombatScreen() {
     saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
+
+  if (inTrainingGrounds) {
+    addChoiceButton(choicesEl, "Return to Homebase", () => {
+      const confirmStoryEl = document.getElementById("game-story-text");
+      const confirmChoicesEl = document.getElementById("game-choices");
+      confirmStoryEl.innerHTML = "Leave the Training Grounds and return to Homebase? This ends your current session.";
+      confirmChoicesEl.innerHTML = "";
+      addChoiceButton(confirmChoicesEl, "Yes, return to Homebase", leaveTrainingGrounds);
+      addChoiceButton(confirmChoicesEl, "No, keep fighting", () => renderCombatScreen());
+    });
+  }
 }
 
 function renderCombatOutcome() {
@@ -2360,39 +2461,66 @@ function renderCombatOutcome() {
     playSfx(getEnemyDeathSfxPath(currentCombat.enemyId));
 
     const loot = claimVictoryLoot();
-    storyEl.innerHTML = `
-      <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
-      You recover: ${loot.join(", ") || "nothing of note"}.
-    `;
-    addChoiceButton(choicesEl, "Continue", () => {
-      currentCombat = null;
-      if (combatReturnRoomId) {
-        renderDungeonRoom(combatReturnRoomId);
-      } else {
-        goToHomebaseScreen();
-      }
-    });
+
+    if (inTrainingGrounds) {
+      storyEl.innerHTML = `
+        <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
+        Enemies defeated: ${trainingGroundsDefeatCount + 1}
+      `;
+      addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
+      addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
+    } else {
+      storyEl.innerHTML = `
+        <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
+        You recover: ${loot.join(", ") || "nothing of note"}.
+      `;
+      addChoiceButton(choicesEl, "Continue", () => {
+        currentCombat = null;
+        if (combatReturnRoomId) {
+          renderDungeonRoom(combatReturnRoomId);
+        } else {
+          goToHomebaseScreen();
+        }
+      });
+    }
   } else if (currentCombat.result === "defeat") {
     applyDefeatFade();
 
-    storyEl.innerHTML = `
-      Everything goes dark. <strong>${playerCharacter.name}</strong> falls before ${currentCombat.enemyName}.<br /><br />
-      You wake later, battered but alive, back at Homebase.
-    `;
-    addChoiceButton(choicesEl, "Return to Homebase", () => {
-      currentCombat = null;
-      combatReturnRoomId = null;
-      goToHomebaseScreen();
-    });
+    if (inTrainingGrounds) {
+      storyEl.innerHTML = `
+        Everything goes dark. <strong>${playerCharacter.name}</strong> falls before ${currentCombat.enemyName}.<br /><br />
+        Enemies defeated this session: ${trainingGroundsDefeatCount}.<br />
+        You wake later, battered but alive, back at Homebase.
+      `;
+      addChoiceButton(choicesEl, "Return to Homebase", leaveTrainingGrounds);
+    } else {
+      storyEl.innerHTML = `
+        Everything goes dark. <strong>${playerCharacter.name}</strong> falls before ${currentCombat.enemyName}.<br /><br />
+        You wake later, battered but alive, back at Homebase.
+      `;
+      addChoiceButton(choicesEl, "Return to Homebase", () => {
+        currentCombat = null;
+        combatReturnRoomId = null;
+        goToHomebaseScreen();
+      });
+    }
   } else if (currentCombat.result === "fled") {
-    storyEl.innerHTML = `
-      You break away from ${currentCombat.enemyName} and don't look back.
-    `;
-    addChoiceButton(choicesEl, "Return to Homebase", () => {
-      currentCombat = null;
-      combatReturnRoomId = null;
-      goToHomebaseScreen();
-    });
+    if (inTrainingGrounds) {
+      storyEl.innerHTML = `
+        You break away from ${currentCombat.enemyName} and don't look back.<br /><br />
+        Enemies defeated this session: ${trainingGroundsDefeatCount}.
+      `;
+      addChoiceButton(choicesEl, "Return to Homebase", leaveTrainingGrounds);
+    } else {
+      storyEl.innerHTML = `
+        You break away from ${currentCombat.enemyName} and don't look back.
+      `;
+      addChoiceButton(choicesEl, "Return to Homebase", () => {
+        currentCombat = null;
+        combatReturnRoomId = null;
+        goToHomebaseScreen();
+      });
+    }
   }
 
   saveGameState();
@@ -3131,6 +3259,9 @@ document.getElementById("btn-teach-skill-back").addEventListener("click", goToPa
 document.getElementById("btn-teach-spell-back").addEventListener("click", goToPartyScreen);
 document.getElementById("btn-dungeon-difficulty-back").addEventListener("click", goToDungeonSelectScreen);
 document.getElementById("btn-dungeon-difficulty-enter").addEventListener("click", confirmEnterDungeon);
+document.getElementById("btn-training-grounds").addEventListener("click", goToTrainingDifficultyScreen);
+document.getElementById("btn-training-difficulty-back").addEventListener("click", goToHomebaseScreen);
+document.getElementById("btn-training-difficulty-enter").addEventListener("click", startTrainingGauntlet);
 
 try {
   const oldSave = localStorage.getItem("burrowsOfCairntirSave");

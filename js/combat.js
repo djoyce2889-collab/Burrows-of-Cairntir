@@ -92,8 +92,8 @@ function getPlayerPowerRank() {
 function getAdaptiveScaling() {
   const powerRank = getPlayerPowerRank();
   return {
-    hpMultiplier: 1 + powerRank * 1.14,
-    damageMultiplier: 1 + powerRank * 0.45
+    hpMultiplier: 1 + powerRank * 0.95,
+    damageMultiplier: 1 + powerRank * 0.38
   };
 }
 
@@ -1067,7 +1067,7 @@ function tryArmorEnchantProc(enemyEffectiveTier) {
   return false;
 }
 
-const ENEMY_SELF_HEAL_IDS = [];
+const ENEMY_SELF_HEAL_IDS = ["arenaTroll"];
 
 /**
  * Finds a heal/hot-type spell from the current dungeon's
@@ -1108,15 +1108,13 @@ function tryEnemySelfHeal() {
   if (hpPct >= 0.4) return false;
 
   const healOption = getEnemyHealSpell();
-  if (!healOption) return false;
-
   const healAmt = rollDamage(currentCombat.enemyThreatTier);
   currentCombat.enemyCurrentHP = Math.min(currentCombat.enemyMaxHP, currentCombat.enemyCurrentHP + healAmt);
 
   currentCombat.log.push({
     actor: "enemy",
     action: "heal",
-    spellName: healOption.spell.name,
+    spellName: healOption ? healOption.spell.name : null,
     healAmount: healAmt
   });
 
@@ -1211,6 +1209,9 @@ function resolveEnemyAttack() {
       damage = Math.max(0, damage - absorbed);
     }
     target.currentHP = Math.max(0, target.currentHP - damage);
+    if (target.equippedArmorSkill && target.skills[target.equippedArmorSkill]) {
+      useSkill(target, target.equippedArmorSkill);
+    }
     if (target.currentHP <= 0) {
       const wardIndex = currentCombat.activeEffects.findIndex((e) => e.kind === "autoRevive");
       if (wardIndex !== -1) {

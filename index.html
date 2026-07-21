@@ -157,6 +157,9 @@
     </section>
 
     <section id="screen-homebase" class="screen">
+      <div id="viewport">
+        <img src="assets/images/homebase.png" alt="A cozy stone longhouse interior, warm hearth fire crackling, weapon racks and a workbench along one wall." />
+      </div>
       <div id="panel">
         <span class="cc-label">Homebase</span>
         <div id="story-text">
@@ -170,8 +173,26 @@
           <button class="choice-button" id="btn-go-to-give-items">Give Items to a Follower</button>
           <button class="choice-button" id="btn-your-spells">Your Spells</button>
           <button class="choice-button" id="btn-continue-to-dungeon-select">Set Out to a Dungeon</button>
+          <button class="choice-button" id="btn-training-grounds">Training Grounds</button>
           <button class="choice-button" id="btn-start-another-game">Start Another Game</button>
           <button class="choice-button" id="btn-delete-game">Delete Game</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-training-difficulty" class="screen">
+      <div id="viewport">
+        <img src="assets/images/training-grounds.png" alt="A weathered outdoor training yard, weapon racks and straw dummies along its edges." />
+      </div>
+      <div id="panel">
+        <span class="cc-label">Training Grounds</span>
+        <div id="story-text">
+          One enemy after another, without pause, until you fall or choose to retreat. Choose your difficulty.
+        </div>
+        <div id="training-difficulty-grid" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-training-difficulty-back">Back</button>
+          <button class="choice-button" id="btn-training-difficulty-enter">Enter</button>
         </div>
       </div>
     </section>

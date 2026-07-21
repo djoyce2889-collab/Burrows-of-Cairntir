@@ -585,5 +585,61 @@ const ENEMIES = {
     threatTier: "Adept",
     soundCategory: "spectral",
     lootTable: ["Tide-Mother's Pearl", "Grave Essence", "Grave Essence"]
+  },
+
+  arenaMinotaur: {
+    id: "arenaMinotaur",
+    name: "Minotaur",
+    description: "A hulking bull-headed brute, powerful and muscular, hardened by countless bouts in the arena.",
+    image: "assets/images/enemies/arena-minotaur.png",
+    hitPoints: 34,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  arenaWyvern: {
+    id: "arenaWyvern",
+    name: "Wyvern",
+    description: "A lean, two-legged wyvern, leathery wings half-spread, fast and vicious in close quarters.",
+    image: "assets/images/enemies/arena-wyvern.png",
+    hitPoints: 26,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  arenaDirewolf: {
+    id: "arenaDirewolf",
+    name: "Direwolf",
+    description: "An oversized, powerfully built wolf, bristling with raw aggression, built for a real fight.",
+    image: "assets/images/enemies/arena-direwolf.png",
+    hitPoints: 28,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  arenaTroll: {
+    id: "arenaTroll",
+    name: "Troll",
+    description: "A hulking, warty troll, thick hide already scarring and healing visibly before your eyes.",
+    image: "assets/images/enemies/arena-troll.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  arenaBasilisk: {
+    id: "arenaBasilisk",
+    name: "Basilisk",
+    description: "A large serpentine creature, scales dark and glistening, coiled and ready to strike.",
+    image: "assets/images/enemies/arena-basilisk.png",
+    hitPoints: 24,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
   }
 };

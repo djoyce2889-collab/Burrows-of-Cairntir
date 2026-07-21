@@ -34,11 +34,11 @@ const ENCHANTMENT_TYPES = {
 };
 
 const ARMOR_ENCHANT_EFFECTS = {
-  flame: { defenseBonus: 1, procType: "counterBurn", procChance: 0.25 },
-  frost: { defenseBonus: 1, procType: "chill", procChance: 0.25 },
-  storm: { defenseBonus: 1, procType: "deflect", procChance: 0.25 },
+  flame: { defenseBonus: 1, procType: "counterBurn", procChance: 0.5 },
+  frost: { defenseBonus: 1, procType: "chill", procChance: 0.5 },
+  storm: { defenseBonus: 1, procType: "deflect", procChance: 0.5 },
   ward: { defenseBonus: 2, procType: null, procChance: 0 },
-  curse: { defenseBonus: 1, procType: "counterCurse", procChance: 0.25 },
+  curse: { defenseBonus: 1, procType: "counterCurse", procChance: 0.5 },
   vision: { defenseBonus: 2, procType: null, procChance: 0 }
 };
 
