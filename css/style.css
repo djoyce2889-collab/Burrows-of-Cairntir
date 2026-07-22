@@ -292,6 +292,28 @@ body {
   transition: filter 0.15s ease, transform 0.1s ease;
 }
 
+.choice-button.has-banner-icon {
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-image-source: none;
+  border-color: var(--moss-border);
+  border-width: 2px;
+}
+
+.choice-button-icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
 .choice-button:hover,
 .choice-button:focus-visible {
   filter: brightness(1.2);

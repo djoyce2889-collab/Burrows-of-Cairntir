@@ -1443,9 +1443,11 @@ function performPlayerAction(skillId) {
 const PERSISTENT_YOKAI_SPELL_IDS = ["nueShape", "komainuShape", "kirinShape", "bakenekoShape"];
 const YOKAI_FORM_DURATION = 5;
 
-function performPlayerCast(skillId, spell) {
+function performPlayerCast(skillId, spell, target) {
   if (!currentCombat || currentCombat.result) return currentCombat;
   if (playerCharacter.currentMana < MANA_CONFIG.costPerCast) return currentCombat;
+
+  const healTarget = target || playerCharacter;
 
   if (skillId === "wayYokai" && PERSISTENT_YOKAI_SPELL_IDS.includes(spell.id)) {
     currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "yokaiForm");
@@ -1561,9 +1563,10 @@ function performPlayerCast(skillId, spell) {
   } else if (spell.type === "heal") {
     const healTier = getEffectivePlayerHealTier(tierBefore);
     const healAmount = rollDamage(healTier);
-    const maxHP = getHitPoints(playerCharacter);
-    playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + healAmount);
+    const targetMaxHP = getHitPoints(healTarget);
+    healTarget.currentHP = Math.min(targetMaxHP, healTarget.currentHP + healAmount);
     logEntry.healAmount = healAmount;
+    logEntry.healTargetName = healTarget === playerCharacter ? null : healTarget.name;
   } else if (spell.type === "enchant" || spell.type === "buff") {
     currentCombat.activeEffects.push({
       kind: "playerAttackBonus",
@@ -1911,7 +1914,9 @@ function describeLogEntry(entry) {
     const actionName = entry.spellName || SKILLS[entry.skillId].name;
 
     if (entry.spellType === "heal") {
-      return `You call on ${actionName}, restoring ${entry.healAmount} Hit Points.`;
+      return entry.healTargetName
+        ? `You call on ${actionName}, restoring ${entry.healAmount} Hit Points to ${entry.healTargetName}.`
+        : `You call on ${actionName}, restoring ${entry.healAmount} Hit Points.`;
     }
     if (entry.spellType === "enchant" || entry.spellType === "buff") {
       return `You call on ${actionName}, and feel your strikes grow stronger.`;

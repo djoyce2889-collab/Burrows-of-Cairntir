@@ -112,7 +112,13 @@ function getSongSfxPath(spellName) {
     "Ballad of Vigor": "assets/audio/sfx/song-ballad-of-vigor.mp3",
     "Hymn of Power": "assets/audio/sfx/song-hymn-of-power.mp3",
     "Lute-Song of the Deep Well": "assets/audio/sfx/song-lute-deep-well.mp3",
-    "Dirge of Ruin": "assets/audio/sfx/song-dirge-of-ruin.mp3"
+    "Dirge of Ruin": "assets/audio/sfx/song-dirge-of-ruin.mp3",
+    "Koto of the Deep Current": "assets/audio/sfx/song-koto.mp3",
+    "Koto of the Returning Tide": "assets/audio/sfx/song-koto.mp3",
+    "Taiko of the Storm's Approach": "assets/audio/sfx/song-taiko.mp3",
+    "Taiko of the Raging Surf": "assets/audio/sfx/song-taiko.mp3",
+    "Shakuhachi of the Wandering Dead": "assets/audio/sfx/song-shakuhachi.mp3",
+    "Shakuhachi of the Hollow Wind": "assets/audio/sfx/song-shakuhachi.mp3"
   };
   return songSfxMap[spellName] || null;
 }
@@ -2368,6 +2374,30 @@ function performPlayerIncapacitatedTurn(incapacitateType) {
   return currentCombat;
 }
 
+function promptHealTarget(skillId, spell) {
+  const choicesEl = document.getElementById("game-choices");
+  choicesEl.innerHTML = "";
+
+  addChoiceButton(choicesEl, "Heal Yourself", () => {
+    const startIndex = currentCombat.log.length;
+    performPlayerCast(skillId, spell, playerCharacter);
+    saveGameState();
+    playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
+  });
+
+  getActiveFollowers().forEach((follower) => {
+    if (follower.currentHP <= 0) return;
+    addChoiceButton(choicesEl, `Heal ${follower.name}`, () => {
+      const startIndex = currentCombat.log.length;
+      performPlayerCast(skillId, spell, follower);
+      saveGameState();
+      playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
+    });
+  });
+
+  addChoiceButton(choicesEl, "Cancel", () => renderCombatScreen());
+}
+
 function renderCombatScreen() {
   if (currentCombat.result) {
     renderCombatOutcome();
@@ -2493,6 +2523,10 @@ function renderCombatScreen() {
       }
       if (hasEnoughMana) {
         addChoiceButton(choicesEl, `${verb} - ${spell.name} (${MANA_CONFIG.costPerCast} mana): ${spell.description}`, () => {
+          if (spell.type === "heal") {
+            promptHealTarget(skillId, spell);
+            return;
+          }
           const startIndex = currentCombat.log.length;
           performPlayerCast(skillId, spell);
           saveGameState();
