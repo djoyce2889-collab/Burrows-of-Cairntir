@@ -153,6 +153,36 @@ const DUNGEONS = {
       "quiet reverence — the ancestors who watched over it have " +
       "grown resentful of the living, and no longer watch kindly."
   },
+  dragonShrine: {
+    id: "dragonShrine",
+    name: "Dragon's Shrine",
+    difficulty: "Adept",
+    musicSrc: "assets/audio/dragon-shrine.mp3",
+    mapHotspot: { top: "62%", left: "50%" },
+    culture: "yorenshi",
+    hotspotColor: "#d4a574",
+    image: "assets/images/dragon-shrine.png",
+    description:
+      "An ancient island shrine, mist-wrapped and timeless, " +
+      "devoted to a dragon older than any Yorenshi name — " +
+      "and the dragon has not forgotten its worshippers."
+  },
+
+  theForsakenManor: {
+    id: "theForsakenManor",
+    name: "The Forsaken Manor",
+    difficulty: "Adept",
+    musicSrc: "assets/audio/forsaken-manor.mp3",
+    mapHotspot: { top: "32%", left: "25%" },
+    culture: "yorenshi",
+    hotspotColor: "#8b7355",
+    image: "assets/images/forsaken-manor.png",
+    description:
+      "An isolated manor hidden deep in mountain valleys, " +
+      "where a corrupted Daimyo's will still commands the halls — " +
+      "and the spirits trapped within have forgotten what freedom feels like."
+  },
+
   drownedShrine: {
     id: "drownedShrine",
     name: "The Drowned Shrine",
@@ -167,6 +197,8 @@ const DUNGEONS = {
       "now flooded and turned hostile — whatever protected this " +
       "place has forgotten how to do anything but guard it against " +
       "everyone."
+
+  
   },
   emberScarredOutcrop: {
     id: "emberScarredOutcrop",
@@ -1531,6 +1563,296 @@ const DUNGEON_CONTENT = {
     }
   },
 
+  theForsakenManor: {
+    startRoomId: "mazeEntrance",
+    rooms: {
+      mazeEntrance: {
+        text: "Mist clings to the manor's outer walls, swallowing sound. An entrance appears — a narrow passage leading deeper into shadow. The air feels wrong here, thick with watching presence.",
+        choices: [
+          { label: "Enter the maze", type: "goto", target: "mazeCorridorOne" }
+        ]
+      },
+
+      mazeCorridorOne: {
+        text: "Twisting corridors stretch in multiple directions, their geometry refusing to follow any logical pattern. Mist obscures the way ahead. The walls seem to shift when you're not looking.",
+        choices: [
+          { label: "Take the left passage", type: "goto", target: "mazeLeft" },
+          { label: "Take the right passage", type: "goto", target: "mazeRight" },
+          { label: "Push forward", type: "goto", target: "mazeStraight" }
+        ]
+      },
+
+      mazeLeft: {
+        text: "The left corridor narrows, walls closing in. A servant spirit drifts toward you, eyes vacant and wrong.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "enthralledAttendant", target: "mazeMeeting" }
+        ]
+      },
+
+      mazeRight: {
+        text: "The right passage opens into a wider space. Something shifts in the shadows — a form that's never quite solid.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "yokaiSpirit", target: "mazeMeeting" }
+        ]
+      },
+
+      mazeStraight: {
+        text: "The forward path leads to a dead end. Only by retracing your steps can you escape.",
+        choices: [
+          { label: "Return to the fork", type: "goto", target: "mazeCorridorOne" }
+        ]
+      },
+
+      mazeMeeting: {
+        text: "Both paths converge in a circular chamber. At its center, a stone well reaches down into darkness. A narrow doorway opposite suggests the maze continues deeper.",
+        loot: ["Grave Essence"],
+        choices: [
+          { label: "Continue deeper", type: "goto", target: "deeperCorridor" }
+        ]
+      },
+
+      deeperCorridor: {
+        text: "The maze tightens around you. A warrior spirit materializes, still bearing the weight of duty and damnation.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "enthralledSamurai", target: "mazeExit" }
+        ]
+      },
+
+      mazeExit: {
+        text: "The maze suddenly opens. Stone archways form a tunnel ahead, and you glimpse the manor's grand hall beyond — vast, empty, and wrong.",
+        choices: [
+          { label: "Enter the manor proper", type: "goto", target: "castleHall" }
+        ]
+      },
+
+      castleHall: {
+        text: "A grand hall stretches before you, its high ceilings lost in shadow. Carved pillars support the weight of centuries. Moonlight filters through broken screens. Two passages branch ahead.",
+        choices: [
+          { label: "Take the left corridor", type: "goto", target: "servantQuarters" },
+          { label: "Take the right corridor", type: "goto", target: "throneApproach" }
+        ]
+      },
+
+      servantQuarters: {
+        text: "Cramped servant rooms line both sides of the corridor. In one alcove, old scrolls remain on a shelf, their ink barely visible.",
+        loot: ["Old Ore"],
+        choices: [
+          { label: "Study the scrolls (Way of Tengu)", type: "discover", skillId: "wayTengu", spellId: "galeStrike", target: "mainHall" },
+          { label: "Leave them and continue", type: "goto", target: "mainHall" }
+        ]
+      },
+
+      mainHall: {
+        text: "You emerge into the manor's central chamber. A servant spirit drifts past, unseeing. Three paths branch deeper into the estate.",
+        choices: [
+          { label: "Go left", type: "goto", target: "leftWing" },
+          { label: "Go right", type: "goto", target: "rightWing" },
+          { label: "Go straight ahead", type: "goto", target: "throneApproach" }
+        ]
+      },
+
+      leftWing: {
+        text: "The left wing is pristine, frozen in time. A guardian spirit stands at its center, its form twisted by the Daimyo's will — loyal even in corruption.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "corruptedGuardian", target: "throneApproach" }
+        ]
+      },
+
+      rightWing: {
+        text: "The right wing smells of incense and decay. A servant maid manifests from the shadows, trapped in endless service.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "enthralledMaid", target: "innerSanctum" }
+        ]
+      },
+
+      innerSanctum: {
+        text: "A private chamber, the Daimyo's own space. Scrolls and artifacts line shelves. One scroll bears markings of deep significance.",
+        loot: ["Old Ore"],
+        choices: [
+          { label: "Study the scroll (Way of the Yōkai)", type: "discover", skillId: "wayYokai", spellId: "nueTransform", target: "throneApproach" },
+          { label: "Leave it and press on", type: "goto", target: "throneApproach" }
+        ]
+      },
+
+      throneApproach: {
+        text: "All paths lead to a vast hall dominated by a raised platform. A throne sits empty, but the presence it commands fills the space. Shadows gather at its base.",
+        choices: [
+          { label: "Ascend to the throne", type: "goto", target: "preBoss" }
+        ]
+      },
+
+      preBoss: {
+        text: "At the throne's summit, the air itself seems to resist. The Daimyo's form takes shape — translucent, terrible, watching with eyes that haven't blinked in centuries.",
+        choices: [
+          { label: "Approach carefully (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "bossRoom", failureTarget: "bossRoom" }
+        ]
+      },
+
+      bossRoom: {
+        text: "The Corrupted Daimyo rises fully, wreathed in spectral darkness. This was once a lord of honor. Now he is only hunger and command.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theCorruptedDaimyo", target: "epilogue" }
+        ]
+      },
+
+      epilogue: {
+        text: "The Daimyo falls. His form dissolves like smoke. The manor shudders. The walls lose their tension. The spirits trapped here feel the weight lift — finally, they are free.",
+        choices: [
+          { label: "Return to Homebase", type: "end" }
+        ]
+      }
+    }
+  },
+
+  dragonShrine: {
+    startRoomId: "shrineApproach",
+    rooms: {
+      shrineApproach: {
+        text: "Mist clings thick to the approach of an ancient shrine, its stone markers overgrown with moss and age. A great torii gate stands ahead, painted red and gold, weathered but watchful. The air itself feels warmer here, faintly touched with smoke.",
+        choices: [
+          { label: "Approach the gate", type: "goto", target: "outerGates" }
+        ]
+      },
+
+      outerGates: {
+        text: "The torii towers above you, its paint faded but its purpose undiminished. Stone statues flank the entry --- lesser dragons, their eyes somehow aware. A stone guardian blocks the way, moss-thick but alert.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "youngDragon", target: "pillarCourt" },
+          { label: "Try to slip past quietly (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "pillarCourt", failureTarget: "guardianAmbush" }
+        ]
+      },
+
+      guardianAmbush: {
+        text: "The stone sentinel stirs before you can pass, ancient magic grinding its limbs into motion.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "youngDragon", target: "pillarCourt" }
+        ]
+      },
+
+      pillarCourt: {
+        text: "A courtyard opens beyond the gate, ringed with carved pillars, each bearing a dragon in a different pose. At the courtyard's center, a shrine bell hangs from a wooden frame, untouched for years. A side path leads toward what looks like a treasure house.",
+        choices: [
+          { label: "Enter the main shrine", type: "goto", target: "shrineInterior" },
+          { label: "Search the treasure house (Survival)", type: "check", skillId: "survival", difficulty: "Adept", successTarget: "treasureHouse", failureTarget: "shrineInterior" }
+        ]
+      },
+
+      treasureHouse: {
+        text: "Dust-laden shelves hold old offerings --- coins, bolts of silk, jade. One scroll remains legible.",
+        loot: ["Old Ore", "Old Ore"],
+        choices: [
+          { label: "Study the scroll (Way of Tengu)", type: "discover", skillId: "wayTengu", spellId: "galeStrike", target: "shrineInterior" },
+          { label: "Leave it and continue", type: "goto", target: "shrineInterior" }
+        ]
+      },
+
+      shrineInterior: {
+        text: "The main shrine hall opens before you, its ceiling lost in shadow and smoke. A great statue of a dragon dominates the far wall, carved with terrible artistry, its expression both benevolent and hungry. Two paths branch from here --- one leading left toward smaller chambers, the other right toward ritual grounds.",
+        choices: [
+          { label: "Take the left path", type: "goto", target: "leftWing" },
+          { label: "Take the right path", type: "goto", target: "rightWing" }
+        ]
+      },
+
+      leftWing: {
+        text: "Smaller chambers line this passage, each holding a shrine within the shrine. Incense hangs thick in the air. A priestess in robes blocks the way ahead, her eyes bright with conviction.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "dragonCultPriest", target: "innerChapel" },
+          { label: "Appeal to her faith (Persuasion)", type: "persuade", skillId: "wayYokai", spellId: "nueTransform", enemyId: "dragonCultPriest", target: "innerChapel", failDialogue: ["She smiles sadly.", "The dragon has already chosen her.", "No appeal will reach what she has become."], finalFailDialogue: "Her faith is absolute. Nothing you say matters." }
+        ]
+      },
+
+      innerChapel: {
+        text: "A smaller shrine, intimate and heavy with devotion. Offerings cover every surface. A single tablet catches your eye, carved with archaic Yorenshi script.",
+        loot: ["Grave Essence"],
+        choices: [
+          { label: "Study the tablet (Way of Suijin)", type: "discover", skillId: "waySuijin", spellId: "kotonsMelody", target: "rightWing" },
+          { label: "Leave it and continue", type: "goto", target: "rightWing" }
+        ]
+      },
+
+      rightWing: {
+        text: "The ritual grounds stretch before you, a broad open space marked with circles and runes for ceremonies long since abandoned. The air grows hotter. A wyvern stands motionless in the center, eyes fixed and predatory.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "wyvern", target: "ceremonyHall" }
+        ]
+      },
+
+      ceremonyHall: {
+        text: "The ritual grounds open into a vast circular chamber, its floor painted with an enormous dragon mandala. At its center, a stone basin holds ash and what might once have been incense. Two new passages lead onward.",
+        choices: [
+          { label: "Follow the ascending path", type: "goto", target: "ascendingPath" },
+          { label: "Descend into the lower shrine", type: "goto", target: "lowerShrine" }
+        ]
+      },
+
+      ascendingPath: {
+        text: "Stone steps climb steeply, spiraling upward along the shrine's inner wall. Murals of dragons in flight cover the walls, each gesture more reverent than the last. The air grows almost unbearably warm.",
+        choices: [
+          { label: "Continue climbing (Survival)", type: "check", skillId: "survival", difficulty: "Adept", successTarget: "upperSanctum", failureTarget: "spiralFight" }
+        ]
+      },
+
+      spiralFight: {
+        text: "Exhaustion makes you stumble. A fire drake rises from an alcove you didn't see, blocking the climb.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "fireDrake", target: "upperSanctum" }
+        ]
+      },
+
+      upperSanctum: {
+        text: "You reach a high chamber, the shrine's beating heart. An eternal flame burns in an ornate brazier at the center.",
+        choices: [
+          { label: "Continue toward the inner sanctum", type: "goto", target: "innerSanctumDoor" }
+        ]
+      },
+
+      lowerShrine: {
+        text: "Steps descend into older darkness, where the original shrine still stands --- a simple stone altar, marked with age beyond measure. A young dragon coils nearby, guardian of forgotten rites.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "youngDragon", target: "ancientOfferings" }
+        ]
+      },
+
+      ancientOfferings: {
+        text: "The altar holds treasures from centuries of worship --- some jade, some bone, some things that defy naming.",
+        loot: ["Old Ore"],
+        choices: [
+          { label: "Study the ancient artifacts (Way of the Yōkai)", type: "discover", skillId: "wayYokai", spellId: "nueTransform", target: "innerSanctumDoor" },
+          { label: "Head for the inner sanctum", type: "goto", target: "innerSanctumDoor" }
+        ]
+      },
+
+      innerSanctumDoor: {
+        text: "Both paths converge at a final set of doors, ornate and carved with a single enormous dragon wrapping around both panels. The doors are cold to the touch.",
+        choices: [
+          { label: "Open the doors", type: "goto", target: "preBoss" }
+        ]
+      },
+
+      preBoss: {
+        text: "The innermost chamber waits beyond. You can hear it breathing --- long, slow, patient breaths like wind through a canyon. The dragon-shrine keeper stands motionless at the threshold, wreathed in sacred flame.",
+        choices: [
+          { label: "Approach carefully (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "bossRoom", failureTarget: "bossRoom" }
+        ]
+      },
+
+      bossRoom: {
+        text: "The Dragon-Shrine Keeper rises before you, wreathed in sacred flame, the dragon's will made manifest in mortal form. This is what devotion becomes.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theDragonShrineKeeper", target: "epilogue" }
+        ]
+      },
+
+      epilogue: {
+  text: "The keeper falls, and the sacred flame dies with them. The shrine shudders. Whatever bound the dragon's will to this place has broken. The shrine is empty now, just old stone and older memories.",
+  choices: [
+    { label: "Return to Homebase", type: "end" }
+  ]
+}
+    }
+  },
+
   emberScarredOutcrop: {
     startRoomId: "outcropApproach",
     rooms: {
@@ -1851,6 +2173,49 @@ const ROOM_IMAGES = {
     bossRoom: "assets/images/drowned-shrine/boss-room.png",
     epilogue: "assets/images/drowned-shrine/epilogue.png"
   },
+  theForsakenManor: {
+    mazeEntrance: "assets/images/forsaken-manor/maze-entrance.png",
+    mazeCorridorOne: "assets/images/forsaken-manor/maze-corridor-one.png",
+    mazeLeft: "assets/images/forsaken-manor/maze-left.png",
+    mazeRight: "assets/images/forsaken-manor/maze-right.png",
+    mazeStraight: "assets/images/forsaken-manor/maze-straight.png",
+    mazeMeeting: "assets/images/forsaken-manor/maze-meeting.png",
+    deeperCorridor: "assets/images/forsaken-manor/deeper-corridor.png",
+    mazeExit: "assets/images/forsaken-manor/maze-exit.png",
+    castleHall: "assets/images/forsaken-manor/castle-hall.png",
+    servantQuarters: "assets/images/forsaken-manor/servant-quarters.png",
+    mainHall: "assets/images/forsaken-manor/main-hall.png",
+    leftWing: "assets/images/forsaken-manor/left-wing.png",
+    rightWing: "assets/images/forsaken-manor/right-wing.png",
+    innerSanctum: "assets/images/forsaken-manor/inner-sanctum.png",
+    throneApproach: "assets/images/forsaken-manor/throne-approach.png",
+    preBoss: "assets/images/forsaken-manor/pre-boss.png",
+    bossRoom: "assets/images/forsaken-manor/boss-room.png",
+    epilogue: "assets/images/forsaken-manor/epilogue.png"
+  },
+
+  dragonShrine: {
+    shrineApproach: "assets/images/dragon-shrine/shrine-approach.png",
+    outerGates: "assets/images/dragon-shrine/outer-gates.png",
+    guardianAmbush: "assets/images/dragon-shrine/outer-gates.png",
+    pillarCourt: "assets/images/dragon-shrine/pillar-court.png",
+    treasureHouse: "assets/images/dragon-shrine/treasure-house.png",
+    shrineInterior: "assets/images/dragon-shrine/shrine-interior.png",
+    leftWing: "assets/images/dragon-shrine/left-wing.png",
+    innerChapel: "assets/images/dragon-shrine/inner-chapel.png",
+    rightWing: "assets/images/dragon-shrine/right-wing.png",
+    ceremonyHall: "assets/images/dragon-shrine/ceremony-hall.png",
+    ascendingPath: "assets/images/dragon-shrine/ascending-path.png",
+    spiralFight: "assets/images/dragon-shrine/ascending-path.png",
+    upperSanctum: "assets/images/dragon-shrine/upper-sanctum.png",
+    lowerShrine: "assets/images/dragon-shrine/lower-shrine.png",
+    ancientOfferings: "assets/images/dragon-shrine/ancient-offerings.png",
+    innerSanctumDoor: "assets/images/dragon-shrine/inner-sanctum-door.png",
+    preBoss: "assets/images/dragon-shrine/pre-boss.png",
+    bossRoom: "assets/images/dragon-shrine/boss-room.png",
+    epilogue: "assets/images/dragon-shrine/epilogue.png"
+  },
+
   emberScarredOutcrop: {
     outcropApproach: "assets/images/ember-scarred-outcrop/outcrop-approach.png",
     blackenedPath: "assets/images/ember-scarred-outcrop/blackened-path.png",

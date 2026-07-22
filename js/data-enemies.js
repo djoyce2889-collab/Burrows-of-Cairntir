@@ -687,7 +687,7 @@ const ENEMIES = {
     soundCategory: "stone",
     lootTable: ["Old Ore"]
   },
-  theUnyieldingFlame: {
+theUnyieldingFlame: {
     id: "theUnyieldingFlame",
     name: "The Unyielding Flame",
     description: "A towering ancient spirit composed of living ember and blackened stone, ceremonial regalia scorched but intact, an intense fiery glow radiating from deep cracks across its form.",
@@ -698,5 +698,140 @@ const ENEMIES = {
     threatTier: "Adept",
     soundCategory: "spectral",
     lootTable: ["Unyielding Ember", "Grave Essence", "Grave Essence"]
+  },
+
+  youngDragon: {
+    id: "youngDragon",
+    name: "Young Dragon",
+    description: "A young dragon, massive and terrifying, scales in deep crimsons and golds, eyes glowing with hunger and ancient intelligence.",
+    image: "assets/images/enemies/young-dragon.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "fire",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
+
+  wyvern: {
+    id: "wyvern",
+    name: "Wyvern",
+    description: "A two-legged draconic creature, wings half-spread and ready, serpentine tail coiled, smaller than a true dragon but no less dangerous.",
+    image: "assets/images/enemies/wyvern.png",
+    hitPoints: 32,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+
+  fireDrake: {
+    id: "fireDrake",
+    name: "Fire Drake",
+    description: "A dragon specialized in flame, scaled body in deep crimsons and golds, wisps of smoke and embers trailing from nostrils, predatory and terrible.",
+    image: "assets/images/enemies/fire-drake.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "fire",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+
+  dragonCultPriest: {
+    id: "dragonCultPriest",
+    name: "Dragon Cult Priest",
+    description: "A robed shrine keeper marked with dragon sigils, their eyes clouded with reverence and flame-touched magic.",
+    image: "assets/images/enemies/dragon-cult-priest.png",
+    hitPoints: 28,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+
+  theDragonShrineKeeper: {
+    id: "theDragonShrineKeeper",
+    name: "The Dragon-Shrine Keeper",
+    description: "Once a devoted priest, now something far stranger --- the dragon's will made flesh, wreathed in sacred flame and elder magic.",
+    image: "assets/images/enemies/the-dragon-shrine-keeper.png",
+    deathImage: "assets/images/deaths/dragon-shrine-keeper-death.png",
+    hitPoints: 45,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "fire",
+    lootTable: ["Dragon-Keeper's Sigil", "Grave Essence", "Grave Essence"]
+  },
+
+  enthralledMaid: {
+    id: "enthralledMaid",
+    name: "Enthralled Maid",
+    description: "A servant spirit twisted by the Daimyo's corruption, moving with jerking, unnatural motions, eyes hollow and vacant.",
+    image: "assets/images/enemies/enthralled-maid.png",
+    hitPoints: 24,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+
+  enthralledSamurai: {
+    id: "enthralledSamurai",
+    name: "Enthralled Samurai",
+    description: "A warrior spirit enslaved to the Daimyo's will, still bearing the ghost of armor and blade, moving with precise but soulless discipline.",
+    image: "assets/images/enemies/enthralled-samurai.png",
+    hitPoints: 32,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
+
+  enthralledAttendant: {
+    id: "enthralledAttendant",
+    name: "Enthralled Attendant",
+    description: "A twisted servant spirit, bound to endless servitude within these halls, its form barely holding human shape.",
+    image: "assets/images/enemies/enthralled-attendant.png",
+    hitPoints: 22,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+
+  yokaiSpirit: {
+    id: "yokaiSpirit",
+    name: "Yokai Spirit",
+    description: "A shapeshifting creature of the manor, manifesting between forms, drawn to the corruption that fills these halls.",
+    image: "assets/images/enemies/yokai-spirit.png",
+    hitPoints: 28,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+
+  corruptedGuardian: {
+    id: "corruptedGuardian",
+    name: "Corrupted Guardian",
+    description: "A powerful spirit bound to protect the manor's inner sanctum, its form shifted and twisted by the Daimyo's dark will.",
+    image: "assets/images/enemies/corrupted-guardian.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
+
+  theCorruptedDaimyo: {
+    id: "theCorruptedDaimyo",
+    name: "The Corrupted Daimyo",
+    description: "Once a noble lord, now a twisted shade of himself --- wreathed in spectral darkness, commanding the very manor as an extension of his corrupted will.",
+    image: "assets/images/enemies/the-corrupted-daimyo.png",
+    deathImage: "assets/images/deaths/corrupted-daimyo-death.png",
+    hitPoints: 48,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Daimyo's Seal", "Grave Essence", "Grave Essence"]
   }
+
 };

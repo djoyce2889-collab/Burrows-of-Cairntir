@@ -1673,7 +1673,8 @@ const REGION_MAPS = {
   deveran: "assets/images/deveran-map.png",
   drakvarr: "assets/images/drakvarr-map.png",
   gaeldrim: "assets/images/gaeldrim-map.png",
-  vandiri: "assets/images/vandiri-map.png"
+  vandiri: "assets/images/vandiri-map.png",
+  yorenshi: "assets/images/yorenshi-map.png"
 };
 
 let dungeonSelectRegionId = null;
