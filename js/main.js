@@ -3493,15 +3493,10 @@ resultEl.style.color = "#ffffff";
     tabCard.className = "cc-card";
     if (teachSpellViewCultureId === culture.id) tabCard.classList.add("selected");
     tabCard.style.setProperty("--card-accent", culture.accentColor);
-    tabCard.style.backgroundImage = `url("../assets/images/cultures/${culture.id}-icon.png")`;
-    tabCard.style.backgroundSize = "cover";
-    tabCard.style.backgroundPosition = "center";
-    tabCard.style.minHeight = "120px";
-    tabCard.style.color = "#ffffff !important";
-    tabCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     tabCard.innerHTML = `
-      <div class="cc-card-name" style="color: #ffffff !important;">${culture.name}</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;"><em style="color: #ffffff !important;">Click to explore</em></div>
+      <div class="cc-card-name">${culture.name}</div>
+      <div class="cc-card-desc"><em>Click to explore</em></div>
+      <div class="cc-card-image" style="background-image: url('../assets/images/cultures/${culture.id}-icon.png')"></div>
     `;
     tabCard.addEventListener("click", () => {
       teachSpellViewCultureId = culture.id;
@@ -3556,10 +3551,11 @@ resultEl.style.color = "#ffffff";
       
       const statusLabel = !isKnown ? "Click to teach" : (isActive ? "Active" : "Known (benched)");
       
-      tabCard.innerHTML = `
-      <div class="cc-card-name">${culture.name}</div>
-      <div class="cc-card-desc"><em>Click to explore</em></div>
-      <div class="cc-card-image" style="background-image: url('../assets/images/cultures/${culture.id}-icon.png')"></div>
+      card.innerHTML = `
+      <div class="cc-card-name">${spell.name}</div>
+      <div class="cc-card-desc">${spell.description}</div>
+      <div class="cc-card-desc"><em>${statusLabel}</em></div>
+      <div class="cc-card-image" style="background-image: url('../assets/images/spells/${culture.id}/${spell.id}.png')"></div>
     `;
       card.addEventListener("click", () => {
         if (isKnown) {
