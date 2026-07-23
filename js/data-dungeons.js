@@ -156,7 +156,7 @@ const DUNGEONS = {
   dragonShrine: {
     id: "dragonShrine",
     name: "Dragon's Shrine",
-    difficulty: "Adept",
+    difficulty: "Novice",
     musicSrc: "assets/audio/dragon-shrine.mp3",
     mapHotspot: { top: "62%", left: "50%" },
     culture: "yorenshi",
@@ -186,6 +186,7 @@ const DUNGEONS = {
   drownedShrine: {
     id: "drownedShrine",
     name: "The Drowned Shrine",
+    difficulty: "Expert",
     musicSrc: "assets/audio/drowned-shrine-theme.mp3",
     hotspotColor: "#5dade2",
     mapHotspot: { top: "50%", left: "85%" },
@@ -203,6 +204,7 @@ const DUNGEONS = {
   emberScarredOutcrop: {
     id: "emberScarredOutcrop",
     name: "The Ember-Scarred Outcrop",
+    difficulty: "Adept",
     musicSrc: "assets/audio/ember-scarred-outcrop-theme.mp3",
     mapHotspot: { top: "50%", left: "26%" },
     culture: "vandiri",

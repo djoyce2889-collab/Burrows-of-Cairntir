@@ -2341,12 +2341,12 @@ if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
 
     if (isSpellCast) {
       const yokaiSfx = entry.skillId === "wayYokai" ? getYokaiTransformSfxPath(entry.spellName) : null;
-      const songSfx = entry.skillId === "ancestralSiuloir" ? getSongSfxPath(entry.spellName) : null;
+      const songSfx = (entry.skillId === "ancestralSiuloir" || entry.skillId === "waySuijin") ? getSongSfxPath(entry.spellName) : null;
       if (yokaiSfx) {
         playSfx(yokaiSfx);
       } else if (songSfx) {
         playSfx(songSfx);
-      } else if (entry.spellType === "heal") {
+      } else if (["heal", "hot", "groupHeal"].includes(entry.spellType)) {
         playSfx(HEAL_CAST_SFX);
       } else {
         playSfx(getSpellSfxPath(entry.spellName));
