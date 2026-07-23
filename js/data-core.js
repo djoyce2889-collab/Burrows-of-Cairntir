@@ -146,10 +146,12 @@ const RACES = {
     name: "Wulver",
     origin: "Old blood of the Deverans",
     description:
-      "A wolf-headed people descended, the old clans say, from the " +
-      "first hunters to walk the northern crags. Solitary by nature, " +
-      "the Wulver are known to leave a fresh catch on a stranger's " +
-      "doorstep rather than cause them any trouble.",
+      "A werewolf-like people descended, the old clans say, from the " +
+      "first hunters to walk the northern crags — mostly human in " +
+      "shape, but marked with fangs, fur, and a wolfish edge that " +
+      "never quite fades. Solitary by nature, the Wulver are known " +
+      "to leave a fresh catch on a stranger's doorstep rather than " +
+      "cause them any trouble.",
     image: "assets/images/characters/wulver.png"
   },
   sidhe: {
@@ -392,9 +394,11 @@ const DEFEND_SUCCESS_PENALTY = 0.20;
 const SPELL_EFFECT_DURATION = 3;
 
 const ARCHETYPES = [
+  { id: "single", name: "Single Weapon", fileSlug: "single" },
   { id: "swordShield", name: "Sword & Shield", fileSlug: "sword-shield" },
   { id: "axeShield", name: "Axe & Shield", fileSlug: "axe-shield" },
   { id: "dualWield", name: "Dual-Wield", fileSlug: "dual-wield" },
   { id: "archer", name: "Archer", fileSlug: "archer" },
-  { id: "spellcaster", name: "Spellcaster", fileSlug: "spellcaster" }
+  { id: "spellcaster", name: "Spellcaster", fileSlug: "spellcaster" },
+  { id: "martialArts", name: "Martial Arts", fileSlug: "martial-arts" }
 ];
