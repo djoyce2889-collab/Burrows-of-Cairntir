@@ -311,6 +311,22 @@ body {
   background-color: var(--ink);
 }
 
+.choice-button-label {
+  display: block;
+  color: #ffffff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1);
+  margin-bottom: 6px;
+}
+
+.choice-button-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+}
+
 .choice-button-icon {
   position: absolute;
   inset: 0;

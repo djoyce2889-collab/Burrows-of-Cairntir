@@ -214,6 +214,17 @@ const DUNGEONS = {
       "smoldering — whatever justice this place once served, it " +
       "no longer distinguishes the guilty from anyone else who " +
       "wanders in."
+  },
+  crowWindDojo: {
+    id: "crowWindDojo",
+    name: "The Crow-Wind Dojo",
+    culture: "yorenshi",
+    difficulty: "Expert",
+    description: "A mountain dojo where an unnatural wind has spent years twisting its once-disciplined guardian spirits into something feral and territorial.",
+    image: "assets/images/crow-wind-dojo.png",
+    musicSrc: "assets/audio/crow-wind-dojo.mp3",
+    mapHotspot: { top: "40%", left: "80%" },
+    hotspotColor: "#8a6fb0"
   }
 };
 
@@ -1935,6 +1946,109 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+
+  crowWindDojo: {
+    startRoomId: "gateApproach",
+    rooms: {
+      gateApproach: {
+        text: "A weathered torii gate marks the start of the climb, stone steps vanishing upward into drifting mist. The wind here is wrong — not cold exactly, but unsettled, gusting in directions that don't match the slope of the mountain. Somewhere above, faint and distant, you hear something that might be a crow.",
+        choices: [{ type: "goto", label: "Climb the steps", target: "trainingYard" }]
+      },
+      trainingYard: {
+        text: "An outer courtyard, packed dirt worn smooth by generations of disciplined drilling. The wooden practice posts stand crooked now, some snapped clean through. Whatever trained here once kept better order than this.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "karasuTenguScout", target: "weaponsCorridor" }]
+      },
+      weaponsCorridor: {
+        text: "Racks of old practice weapons line this narrow hall — bokken, naginata, worn training staves. Dust hangs undisturbed in the amber light, except where something has clearly passed through recently, and left the weapons rattling faintly in their brackets.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "kodamaGrove" }]
+      },
+      kodamaGrove: {
+        text: "An inner garden where the dojo's oldest support beams have grown wild, bark and living wood fused into the structure itself. The knots in the wood glow faintly, and you get the distinct, uncomfortable sense that the grove is aware of you standing in it.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "kodamaSentinel", target: "meditationHall" }]
+      },
+      meditationHall: {
+        text: "A quiet tatami-floored hall, worn cushions still arranged in a circle from whoever meditated here last. A single shaft of dusk light falls through a torn paper screen. For a moment, despite everything, the wind outside seems to still — and something ancient, wordless, and grounded settles into you.",
+        choices: [
+          { type: "discover", label: "Study the stance (Way of Tengu)", skillId: "wayTengu", spellId: "rootStanceDiscipline", target: "fork" },
+          { type: "goto", label: "Leave it and press on", target: "fork" }
+        ]
+      },
+      fork: {
+        text: "The corridor splits ahead — one path climbing toward the open cliffs, wind audible even from here; the other leading deeper into shadowed halls where the wind, strangely, cannot seem to reach at all.",
+        choices: [
+          { type: "goto", label: "Take the cliffside path", target: "ropeBridgePath" },
+          { type: "goto", label: "Take the inner path", target: "konohaShrine" }
+        ]
+      },
+      ropeBridgePath: {
+        text: "A narrow rope-and-plank bridge stretches across a misty ravine, prayer flags snapping wildly along its length. The wind here is relentless, but you notice — with growing unease — that it seems to move around you rather than through you, as if deciding whether to let you cross.",
+        choices: [
+          { type: "discover", label: "Practice the footing (Way of Tengu)", skillId: "wayTengu", spellId: "featherStep", target: "converge" },
+          { type: "goto", label: "Cross carefully", target: "converge" }
+        ]
+      },
+      konohaShrine: {
+        text: "A small garden shrine, its stone lantern half-buried beneath a drift of leaves that never seem to stop falling. The leaves stir without any wind you can feel, circling something — or someone — you can't quite see yet.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "konohaTenguAdept", target: "converge" }]
+      },
+      converge: {
+        text: "The two paths reunite in a wider hallway, lanterns flickering unevenly along the walls. Whatever's wrong with the wind out here seems to have found its way inside too.",
+        choices: [{ type: "goto", label: "Continue", target: "armory" }]
+      },
+      armory: {
+        text: "Racks of mounted blades and folded armor line this room, and at its center, a scroll glows faintly on a weapon stand — untouched by the same wrongness that's crept into everything else here.",
+        choices: [
+          { type: "discover", label: "Study the scroll (Way of Tengu)", skillId: "wayTengu", spellId: "crowsTalon", target: "discipleHall" },
+          { type: "goto", label: "Leave it and press on", target: "discipleHall" }
+        ]
+      },
+      discipleHall: {
+        text: "A wide sparring hall beneath a high raftered ceiling, training dummies still lined along the walls. This was once where the dojo's finest trained — and it seems something here still remembers that, and doesn't take kindly to spectators.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "bladeWingTengu", target: "lookoutPoint" }]
+      },
+      lookoutPoint: {
+        text: "A cliffside overlook near the summit, clouds and distant peaks spread out below. The wind is strongest here, and for the first time it doesn't feel random — it feels like it's watching, the way the air seems to hold its breath around you.",
+        choices: [
+          { type: "discover", label: "Watch the wind (Way of Tengu)", skillId: "wayTengu", spellId: "tengusEye", target: "guardianRoom" },
+          { type: "goto", label: "Move on", target: "guardianRoom" }
+        ]
+      },
+      guardianRoom: {
+        text: "A narrow passage carved straight into the mountainside, lined with ancient horned guardian statues. Their carved eyes glow faintly — steady once, you suspect, but flickering now, like a ward slowly failing.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "oniTouchedGuardian", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Worn stone steps climb toward the summit through thickening mist. The wind carries something like crow-calls now, though no crow you've ever heard sounded quite like that. Whatever waits above, it knows you're coming.",
+        choices: [
+          { type: "goto", label: "Face one more challenger", target: "extraFight" },
+          { type: "goto", label: "Press on to the summit", target: "bossDoor" }
+        ]
+      },
+      extraFight: {
+        text: "A narrow, wind-whipped ledge just below the summit — exposed, precarious, and occupied. Someone, or something, has been waiting here a long time for someone to finally climb this far.",
+        choices: [{ type: "combat", label: "Fight", enemyId: "bladeWingTengu", target: "bossDoor" }]
+      },
+      bossDoor: {
+        text: "Massive weathered doors mark the summit shrine's entrance, feather and wind motifs carved deep into the frame. Golden light leaks from the seams, and beyond it, the wind isn't gusting anymore — it's breathing.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "A grand summit chamber, open to the sky, torn paper screens snapping in a wind that no longer feels like weather at all. At the far end, wreathed in amber light, something ancient — and now, unmistakably, dangerous — waits for you.",
+        choices: [{ type: "combat", label: "Fight the Daitengu", enemyId: "daitengu", target: "preEpilogue" }]
+      },
+      preEpilogue: {
+        text: "The Daitengu falls still, and with it, the wind. In the sudden quiet, you catch the last of its technique before it fades entirely.",
+        choices: [
+          { type: "discover", label: "Learn Mountain-Breaker (Way of Tengu)", skillId: "wayTengu", spellId: "mountainBreaker", target: "epilogue" }
+        ]
+      },
+      epilogue: {
+        text: "Dawn breaks clear over the mountain, the mist finally dispersing, the wind at last settling into something ordinary. Feathers drift down over the quiet dojo grounds, and for the first time since you arrived, the silence feels earned rather than watchful.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -2233,6 +2347,28 @@ const ROOM_IMAGES = {
     bossDoor: "assets/images/ember-scarred-outcrop/boss-door.png",
     bossRoom: "assets/images/ember-scarred-outcrop/boss-room.png",
     epilogue: "assets/images/ember-scarred-outcrop/epilogue.png"
+  },
+
+  crowWindDojo: {
+    gateApproach: "assets/images/crow-wind-dojo/gate-approach.png",
+    trainingYard: "assets/images/crow-wind-dojo/training-yard.png",
+    weaponsCorridor: "assets/images/crow-wind-dojo/weapons-corridor.png",
+    kodamaGrove: "assets/images/crow-wind-dojo/kodama-grove.png",
+    meditationHall: "assets/images/crow-wind-dojo/meditation-hall.png",
+    fork: "assets/images/crow-wind-dojo/fork.png",
+    ropeBridgePath: "assets/images/crow-wind-dojo/rope-bridge-path.png",
+    konohaShrine: "assets/images/crow-wind-dojo/konoha-shrine.png",
+    converge: "assets/images/crow-wind-dojo/converge.png",
+    armory: "assets/images/crow-wind-dojo/armory.png",
+    discipleHall: "assets/images/crow-wind-dojo/disciple-hall.png",
+    lookoutPoint: "assets/images/crow-wind-dojo/lookout-point.png",
+    guardianRoom: "assets/images/crow-wind-dojo/guardian-room.png",
+    preBoss: "assets/images/crow-wind-dojo/pre-boss.png",
+    extraFight: "assets/images/crow-wind-dojo/extra-fight.png",
+    bossDoor: "assets/images/crow-wind-dojo/boss-door.png",
+    bossRoom: "assets/images/crow-wind-dojo/boss-room.png",
+    preEpilogue: "assets/images/crow-wind-dojo/boss-room.png",
+    epilogue: "assets/images/crow-wind-dojo/epilogue.png"
   }
 };
 

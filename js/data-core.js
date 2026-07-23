@@ -187,6 +187,18 @@ const RACES = {
       "people tells the old story a little differently, and none of " +
       "them quite agree on how it ends.",
     image: "assets/images/characters/giant.png"
+  },
+  dragonkin: {
+    id: "dragonkin",
+    name: "Dragonkin",
+    origin: "Old blood of the Yorenshi",
+    description:
+      "Said to carry the blood of the dragons long honored at the " +
+      "island shrines, the Dragonkin bear scaled skin and eyes that " +
+      "catch the light like an ember. Reverence and wariness follow " +
+      "them in equal measure — old debts, the shrine-keepers say, " +
+      "run both ways.",
+    image: "assets/images/characters/dragonkin.png"
   }
 };
 
@@ -238,10 +250,10 @@ const SKILLS = {
   unarmedCombat: { id: "unarmedCombat", name: "Unarmed Combat", category: "Weapon", description: "Fighting with fists, feet, and improvised force." },
 
   shields: { id: "shields", name: "Shields", category: "Armor", description: "Wielding a shield effectively — deflecting and absorbing blows that would otherwise land." },
-  plateArmor: { id: "plateArmor", name: "Plate", category: "Armor", description: "Moving and fighting effectively in heavy plate — the strongest protection there is." },
-  chainArmor: { id: "chainArmor", name: "Chain", category: "Armor", description: "Wearing chainmail without it slowing you down — strong, second only to plate." },
-  leatherArmor: { id: "leatherArmor", name: "Leather", category: "Armor", description: "Light, flexible armor that trades protection for speed." },
-  clothArmor: { id: "clothArmor", name: "Cloth", category: "Armor", description: "Light robes and wraps, favored by those who cast — the least protective armor." },
+  plateArmor: { id: "plateArmor", name: "Plate", category: "Armor", description: "Moving and fighting effectively in heavy plate — the strongest Armor Class bonus of any armor, at the cost of any Dodge or mana benefit." },
+  chainArmor: { id: "chainArmor", name: "Chain", category: "Armor", description: "Wearing chainmail without it slowing you down — a strong Armor Class bonus, second only to plate, plus a modest boost to Dodge." },
+  leatherArmor: { id: "leatherArmor", name: "Leather", category: "Armor", description: "Light, flexible armor that trades protection for speed — a light Armor Class bonus, but the best Dodge boost of any armor." },
+  clothArmor: { id: "clothArmor", name: "Cloth", category: "Armor", description: "Light robes and wraps, favored by those who cast — no Armor Class or Dodge benefit, but a real boost to your maximum mana." },
 
   smithing: { id: "smithing", name: "Smithing", category: "Crafting", description: "Forging weapons and heavy/medium armor from ore and metal." },
   tailoring: { id: "tailoring", name: "Tailoring", category: "Crafting", description: "Working hide and cloth into leather and cloth armor." },
@@ -301,6 +313,20 @@ const ARMOR_PROTECTION_RANK_BONUS = {
   chainArmor: 2,
   leatherArmor: 1,
   clothArmor: 0
+};
+
+const ARMOR_DODGE_RANK_BONUS = {
+  leatherArmor: 2,
+  chainArmor: 1,
+  plateArmor: 0,
+  clothArmor: 0
+};
+
+const ARMOR_MANA_BONUS = {
+  clothArmor: 15,
+  leatherArmor: 0,
+  chainArmor: 0,
+  plateArmor: 0
 };
 
 // ----------------------------------------------------------

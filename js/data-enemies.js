@@ -832,6 +832,79 @@ theUnyieldingFlame: {
     threatTier: "Adept",
     soundCategory: "spectral",
     lootTable: ["Daimyo's Seal", "Grave Essence", "Grave Essence"]
+  },
+
+  karasuTenguScout: {
+    id: "karasuTenguScout",
+    name: "Karasu-Tengu Scout",
+    description: "A crow-tengu once tasked with watching the mountain paths, its patient discipline curdled into something sharp and paranoid by the wind that shouldn't blow the way it does.",
+    image: "assets/images/enemies/karasu-tengu-scout.png",
+    hitPoints: 26,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+
+  kodamaSentinel: {
+    id: "kodamaSentinel",
+    name: "Kodama Sentinel",
+    description: "A tree spirit fused into the dojo's oldest beams, its slow patient growth turned hungry and wrong, reaching for anything that moves.",
+    image: "assets/images/enemies/kodama-sentinel.png",
+    hitPoints: 32,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+
+  konohaTenguAdept: {
+    id: "konohaTenguAdept",
+    name: "Konoha-Tengu Adept",
+    description: "A leaf-winged tengu whose wind-craft was once precise and gentle, now thrown into fits of discordant, unpredictable gusts.",
+    image: "assets/images/enemies/konoha-tengu-adept.png",
+    hitPoints: 30,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+
+  bladeWingTengu: {
+    id: "bladeWingTengu",
+    name: "Blade-Wing Tengu",
+    description: "Once the dojo's finest warrior-caste tengu, its trained discipline replaced by a restless, territorial fury it can no longer master.",
+    image: "assets/images/enemies/blade-wing-tengu.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+
+  oniTouchedGuardian: {
+    id: "oniTouchedGuardian",
+    name: "Oni-Touched Guardian",
+    description: "A living stone guardian that has stood watch over this mountain for centuries, its ancient purpose warped by the wrongness now soaked into the rock itself.",
+    image: "assets/images/enemies/oni-touched-guardian.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "stone",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+
+  daitengu: {
+    id: "daitengu",
+    name: "The Daitengu",
+    description: "Once a wise and controlled master, the Great Tengu has been worn down by years of the mountain's unnatural wind — no longer a teacher, but something closer to a cornered, dangerous thing defending the last place it has left.",
+    image: "assets/images/enemies/daitengu.png",
+    deathImage: "assets/images/deaths/daitengu-death.png",
+    hitPoints: 62,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Sōjōbō's Feather", "Grave Essence", "Grave Essence"]
   }
 
 };

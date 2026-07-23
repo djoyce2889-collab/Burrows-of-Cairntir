@@ -259,6 +259,14 @@ function getAdvantageTier(character, advantageId) {
     tier = getHighestTierAmong(character, drivingSkillIds);
   }
 
+  if (advantageId === "dodge" && character.equippedArmorSkill) {
+    const armorDodgeBonus = ARMOR_DODGE_RANK_BONUS[character.equippedArmorSkill] || 0;
+    if (armorDodgeBonus > 0) {
+      const boostedRank = Math.min(SKILL_TIERS.length - 1, getTierRankLocal(tier.name) + armorDodgeBonus);
+      tier = SKILL_TIERS[boostedRank];
+    }
+  }
+
   if (advantageId === "dodge" && character.traits && character.traits.includes("quickfooted")) {
     const boostedRank = Math.min(SKILL_TIERS.length - 1, getTierRankLocal(tier.name) + 1);
     tier = SKILL_TIERS[boostedRank];
@@ -298,8 +306,13 @@ function getManaPoolMax(character) {
     });
   }
 
-  if (base === 0 && traitBonus === 0) return 0;
-  return base + traitBonus;
+  let armorBonus = 0;
+  if (magicSkillIds.length > 0 && character.equippedArmorSkill) {
+    armorBonus = ARMOR_MANA_BONUS[character.equippedArmorSkill] || 0;
+  }
+
+  if (base === 0 && traitBonus === 0 && armorBonus === 0) return 0;
+  return base + traitBonus + armorBonus;
 }
 
 function refillMana(character) {

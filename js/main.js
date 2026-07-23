@@ -33,7 +33,8 @@ const RACE_TO_CULTURE = {
   dwarf: "drakvarr",
   wulver: "deveran",
   sidhe: "gaeldrim",
-  leopardkin: "vandiri"
+  leopardkin: "vandiri",
+  dragonkin: "yorenshi"
 };
 
 let selectedDungeonId = null;
@@ -532,13 +533,16 @@ function showScreen(screenId) {
 function addChoiceButton(container, label, onClick, disabled, backgroundImage) {
   const btn = document.createElement("button");
   btn.className = "choice-button";
-  btn.textContent = label;
-  btn.style.color = "#ffffff";
-  btn.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
   if (backgroundImage) {
     btn.classList.add("has-bg-image");
-    btn.style.setProperty("background", `url("${backgroundImage}") center / cover no-repeat`, "important");
-    btn.style.minHeight = "120px";
+    btn.innerHTML = `
+      <span class="choice-button-label">${label}</span>
+      <span class="choice-button-image" style="background-image: url('${backgroundImage}')"></span>
+    `;
+  } else {
+    btn.textContent = label;
+    btn.style.color = "#ffffff";
+    btn.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
   }
   if (disabled) {
     btn.disabled = true;
@@ -657,8 +661,21 @@ const SKIN_TONES = [
  * (handled by the existing image-existence check). No tone
  * wording ever shows on screen.
  */
+const GENDERLESS_RACES = ["dragonkin"];
+
 function buildPortraitOptions(raceId) {
   const options = [];
+
+  if (GENDERLESS_RACES.includes(raceId)) {
+    ARCHETYPES.forEach((arch) => {
+      options.push({
+        path: `assets/images/characters/full-set/${raceId}-${arch.fileSlug}.png`,
+        label: arch.name
+      });
+    });
+    return options;
+  }
+
   const tones = SKIN_TONE_RACES.includes(raceId) ? SKIN_TONES : [{ slug: "" }];
 
   ARCHETYPES.forEach((arch) => {
