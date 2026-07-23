@@ -582,6 +582,7 @@ function renderCombatStyleGrid() {
     card.innerHTML = `
       <div class="cc-card-name">${style.name}</div>
       <div class="cc-card-desc">${style.description}</div>
+      <div class="cc-card-image" style="background-image: url('${getCombatStyleImagePath(style.id)}')"></div>
     `;
     card.addEventListener("click", () => {
       creationState.combatStyle = style.id;
@@ -795,6 +796,7 @@ function renderSkillGrid() {
     card.innerHTML = `
       <div class="cc-card-name">${skill.name}</div>
       <div class="cc-card-desc">${skill.description}</div>
+      <div class="cc-card-image" style="background-image: url('${getSkillImagePath(skill.id)}')"></div>
     `;
     card.addEventListener("click", () => {
       if (isSelected) {
@@ -1707,6 +1709,7 @@ function renderInventoryScreen() {
     card.innerHTML = `
       <div class="cc-card-name">${style.name}</div>
       <div class="cc-card-desc">${style.description}</div>
+      <div class="cc-card-image" style="background-image: url('${getCombatStyleImagePath(style.id)}')"></div>
     `;
     grid.appendChild(card);
     list.appendChild(grid);
@@ -3014,6 +3017,16 @@ function getRecipeImageSlug(recipeId) {
     .replace(/([A-Z])/g, (match, letter, offset) => (offset > 0 ? "-" : "") + letter.toLowerCase());
 }
 
+function getSkillImagePath(skillId) {
+  const slug = skillId.replace(/([A-Z])/g, (match, letter) => "-" + letter.toLowerCase());
+  return `assets/images/skills/${slug}.png`;
+}
+
+function getCombatStyleImagePath(styleId) {
+  const slug = styleId.replace(/([A-Z])/g, (match, letter) => "-" + letter.toLowerCase());
+  return `assets/images/combat-styles/${slug}.png`;
+}
+
 function getItemImagePath(itemName) {
   const startingImageMap = { "Old Sword": "sword", "Worn Axe": "axe", "Simple Bow": "bow" };
   if (startingImageMap[itemName]) {
@@ -3416,6 +3429,7 @@ function renderTeachSkillScreen() {
         <div class="cc-card-name">${skill.name}</div>
         <div class="cc-card-desc">${skill.description}</div>
         <div class="cc-card-desc"><em>${isKnown ? "Learned (click to remove)" : "Click to teach"}</em></div>
+        <div class="cc-card-image" style="background-image: url('${getSkillImagePath(skill.id)}')"></div>
       `;
       card.addEventListener("click", () => {
         if (isKnown) {

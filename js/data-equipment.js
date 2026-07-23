@@ -82,7 +82,8 @@ const COMBAT_STYLES = {
     attackBonus: 0,
     defenseBonus: 0,
     spellDamageBonus: 0,
-    healBonus: 0
+    healBonus: 0,
+    supportBonus: 0
   },
   dual: {
     id: "dual",
@@ -127,7 +128,18 @@ const COMBAT_STYLES = {
     attackBonus: 0,
     defenseBonus: 0,
     spellDamageBonus: 0,
-    healBonus: 1
+    healBonus: 1,
+    supportBonus: 0
+  },
+  bard: {
+    id: "bard",
+    name: "Bard",
+    description: "Focuses magic toward buffs and hexes rather than raw damage or healing — songs and rites land stronger and last longer in your hands.",
+    attackBonus: 0,
+    defenseBonus: 0,
+    spellDamageBonus: 0,
+    healBonus: 0,
+    supportBonus: 1
   },
   archer: {
     id: "archer",

@@ -167,7 +167,7 @@ function getEffectRankSum(kind, owner) {
  */
 function getCombatStyleBonusFor(character) {
   const style = COMBAT_STYLES[character.combatStyle];
-  if (!style) return { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0 };
+  if (!style) return { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0, supportBonus: 0 };
 
   const result = Object.assign({}, style);
 
@@ -203,6 +203,11 @@ function getEffectiveHealTierFor(character, baseTierName) {
   return shiftTierByRank(baseTierName, healBonus);
 }
 
+function getEffectiveSupportTierFor(character, baseTierName) {
+  const supportBonus = getCombatStyleBonusFor(character).supportBonus || 0;
+  return shiftTierByRank(baseTierName, supportBonus);
+}
+
 /**
  * Bard songs (Line of Siuloir) are persistent effects — they
  * never expire on their own, but only 2 can play at once.
@@ -236,7 +241,7 @@ const SHIELD_TIER_BONUS = { Untrained: 0, Novice: 0, Adept: 1, Expert: 2, Master
 
 function getPlayerCombatStyleBonus() {
   const style = COMBAT_STYLES[playerCharacter.combatStyle];
-  if (!style) return { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0 };
+  if (!style) return { attackBonus: 0, defenseBonus: 0, spellDamageBonus: 0, healBonus: 0, supportBonus: 0 };
 
   const result = Object.assign({}, style);
 
@@ -272,6 +277,11 @@ function getEffectivePlayerSpellDamageTier(baseTierName) {
 function getEffectivePlayerHealTier(baseTierName) {
   const healBonus = getPlayerCombatStyleBonus().healBonus || 0;
   return shiftTierByRank(baseTierName, healBonus);
+}
+
+function getEffectivePlayerSupportTier(baseTierName) {
+  const supportBonus = getPlayerCombatStyleBonus().supportBonus || 0;
+  return shiftTierByRank(baseTierName, supportBonus);
 }
 
 function getEffectiveEnemyTier() {
@@ -714,8 +724,9 @@ function performFollowerSongCast(follower, skillId, spell) {
       source: "song", spellName: spell.name, owner: follower, partyWide: true
     });
   } else if (spell.type === "buff") {
+    const supportBonus = getCombatStyleBonusFor(follower).supportBonus || 0;
     currentCombat.activeEffects.push({
-      kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: null,
+      kind: "playerAttackBonus", rankBonus: 1 + supportBonus, roundsRemaining: null,
       source: "song", spellName: spell.name, owner: follower, partyWide: true
     });
   } else if (spell.type === "fortify") {
@@ -727,8 +738,9 @@ function performFollowerSongCast(follower, skillId, spell) {
     });
     logEntry.healAmount = bonusAmount;
   } else if (spell.type === "spellDamageBuff") {
+    const supportBonus = getCombatStyleBonusFor(follower).supportBonus || 0;
     currentCombat.activeEffects.push({
-      kind: "spellDamageBuff", rankBonus: 1, roundsRemaining: null,
+      kind: "spellDamageBuff", rankBonus: 1 + supportBonus, roundsRemaining: null,
       source: "song", spellName: spell.name, owner: follower, partyWide: true
     });
   } else if (spell.type === "manaRegen") {

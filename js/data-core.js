@@ -400,5 +400,6 @@ const ARCHETYPES = [
   { id: "dualWield", name: "Dual-Wield", fileSlug: "dual-wield" },
   { id: "archer", name: "Archer", fileSlug: "archer" },
   { id: "spellcaster", name: "Spellcaster", fileSlug: "spellcaster" },
-  { id: "martialArts", name: "Martial Arts", fileSlug: "martial-arts" }
+  { id: "martialArts", name: "Martial Arts", fileSlug: "martial-arts" },
+  { id: "bard", name: "Bard", fileSlug: "bard" }
 ];
