@@ -866,15 +866,10 @@ function renderStartingSpellsGrid() {
     tabCard.className = "cc-card";
     if (spellsViewCultureId === culture.id) tabCard.classList.add("selected");
     tabCard.style.setProperty("--card-accent", culture.accentColor);
-    tabCard.style.backgroundImage = `url("../assets/images/cultures/${culture.id}-icon.png")`;
-    tabCard.style.backgroundSize = "cover";
-    tabCard.style.backgroundPosition = "center";
-    tabCard.style.minHeight = "120px";
-    tabCard.style.color = "#ffffff !important";
-    tabCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     tabCard.innerHTML = `
-      <div class="cc-card-name" style="color: #ffffff !important;">${culture.name}</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;"><em style="color: #ffffff !important;">Click to explore</em></div>
+      <div class="cc-card-name">${culture.name}</div>
+      <div class="cc-card-desc"><em>Click to explore</em></div>
+      <div class="cc-card-image" style="background-image: url('../assets/images/cultures/${culture.id}-icon.png')"></div>
     `;
     tabCard.addEventListener("click", () => {
       spellsViewCultureId = culture.id;
@@ -918,16 +913,10 @@ function renderStartingSpellsGrid() {
       card.className = "cc-card";
       if (isSelected) card.classList.add("selected");
       card.style.setProperty("--card-accent", culture.accentColor);
-      card.style.backgroundImage = `url("../assets/images/spells/${culture.id}/${spell.id}.png")`;
-      card.style.backgroundSize = "cover";
-      card.style.backgroundPosition = "center";
-      card.style.backgroundRepeat = "no-repeat";
-      card.style.minHeight = "180px";
-      card.style.color = "#ffffff !important";
-      card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
       card.innerHTML = `
-        <div class="cc-card-name" style="color: #ffffff !important;">${spell.name}</div>
-        <div class="cc-card-desc" style="color: #ffffff !important;">${spell.description}</div>
+        <div class="cc-card-name">${spell.name}</div>
+        <div class="cc-card-desc">${spell.description}</div>
+        <div class="cc-card-image" style="background-image: url('../assets/images/spells/${culture.id}/${spell.id}.png')"></div>
       `;
       card.addEventListener("click", () => {
         if (isSelected) {
@@ -1233,9 +1222,11 @@ function buildWeaponOrArmorCard(skillId, itemName, isArmor) {
     : (playerCharacter[equippedSkillField] === skillId && !playerCharacter[equippedItemField]);
 
   if (isSelected) card.classList.add("selected");
+  const itemImage = itemName ? getItemImagePath(itemName) : null;
   card.innerHTML = `
     <div class="cc-card-name">${itemName || SKILLS[skillId].name}</div>
     <div class="cc-card-desc">${isSelected ? "Equipped" : (itemName ? "Click to equip" : "No item — click to use this skill")}</div>
+    ${itemImage ? `<div class="cc-card-image" style="background-image: url('${itemImage}')"></div>` : ""}
   `;
   card.addEventListener("click", () => {
     if (isArmor) {
@@ -1275,9 +1266,17 @@ function buildArmorSlotCard(slotName, itemName) {
   const card = document.createElement("div");
   card.className = "cc-card";
   if (isEquipped) card.classList.add("selected");
+  const itemImage = getItemImagePath(itemName);
+  if (itemImage) {
+    card.style.backgroundImage = `url("${itemImage}")`;
+    card.style.backgroundSize = "cover";
+    card.style.backgroundPosition = "center";
+    card.style.minHeight = "160px";
+    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
+  }
   card.innerHTML = `
-    <div class="cc-card-name">${itemName}</div>
-    <div class="cc-card-desc">${isEquipped ? "Equipped" : "Click to equip"}</div>
+    <div class="cc-card-name" style="color: #ffffff !important;">${itemName}</div>
+    <div class="cc-card-desc" style="color: #ffffff !important;">${isEquipped ? "Equipped" : "Click to equip"}</div>
   `;
   card.addEventListener("click", () => {
     if (!recipe) return;
@@ -1502,6 +1501,7 @@ function renderShieldOffhandSections() {
       card.innerHTML = `
         <div class="cc-card-name">Shield</div>
         <div class="cc-card-desc">${playerCharacter.equippedShield ? "Equipped" : "Not equipped"}</div>
+        <div class="cc-card-image" style="background-image: url('assets/images/items/shield.png')"></div>
       `;
       card.addEventListener("click", () => {
         playerCharacter.equippedShield = !playerCharacter.equippedShield;
@@ -1617,9 +1617,11 @@ function renderInventoryScreen() {
       const statusText = isEquipped
         ? "Equipped"
         : (count > 1 ? `Quantity: ${count}` : "Carried");
+      const itemImage = getItemImagePath(name);
       card.innerHTML = `
         <div class="cc-card-name">${name}</div>
         <div class="cc-card-desc">${statusText}</div>
+        ${itemImage ? `<div class="cc-card-image" style="background-image: url('${itemImage}')"></div>` : ""}
       `;
       if (requiredSkill) {
         card.addEventListener("click", () => {
@@ -1848,8 +1850,6 @@ function renderTrainingDifficultyScreen() {
 
 function renderDungeonList() {
   const tabsContainer = document.getElementById("region-tabs-grid");
-  const mapImage = document.getElementById("region-map-image");
-  const hotspotsContainer = document.getElementById("region-hotspots");
   const list = document.getElementById("dungeon-list");
   tabsContainer.innerHTML = "";
   list.innerHTML = "";
@@ -1872,8 +1872,6 @@ function renderDungeonList() {
     });
     tabsContainer.appendChild(tabCard);
   });
-
-  mapImage.src = REGION_MAPS[dungeonSelectRegionId];
 
   const regionDungeons = Object.values(DUNGEONS).filter((d) => d.culture === dungeonSelectRegionId);
 
@@ -2809,10 +2807,15 @@ function renderCraftingScreen() {
     const craftingTier = getCharacterSkillTier(playerCharacter, recipe.craftingSkill).name;
     const card = document.createElement("div");
     card.className = "cc-card";
+    card.style.backgroundImage = `url("assets/images/items/${getRecipeImageSlug(recipe.id)}.png")`;
+    card.style.backgroundSize = "cover";
+    card.style.backgroundPosition = "center";
+    card.style.minHeight = "160px";
+    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     card.innerHTML = `
-      <div class="cc-card-name">${recipe.name}</div>
-      <div class="cc-card-desc">Requires: ${recipe.materialCost} &times; ${recipe.material} (you have ${have})</div>
-      <div class="cc-card-desc">Your ${SKILLS[recipe.craftingSkill].name}: ${craftingTier}</div>
+      <div class="cc-card-name" style="color: #ffffff !important;">${recipe.name}</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;">Requires: ${recipe.materialCost} &times; ${recipe.material} (you have ${have})</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;">Your ${SKILLS[recipe.craftingSkill].name}: ${craftingTier}</div>
     `;
     card.addEventListener("click", () => {
       attemptCraft(recipe.id);
@@ -2831,10 +2834,18 @@ function renderEnchantSection(list, resultEl) {
     const weaponCard = document.createElement("div");
     weaponCard.className = "cc-card";
     const currentWeaponEnchant = playerCharacter.weaponEnchantment ? playerCharacter.weaponEnchantment.name : "None";
+    const equippedWeaponImage = playerCharacter.equippedWeaponItemName ? getItemImagePath(playerCharacter.equippedWeaponItemName) : null;
+    if (equippedWeaponImage) {
+      weaponCard.style.backgroundImage = `url("${equippedWeaponImage}")`;
+      weaponCard.style.backgroundSize = "cover";
+      weaponCard.style.backgroundPosition = "center";
+      weaponCard.style.minHeight = "160px";
+      weaponCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
+    }
     weaponCard.innerHTML = `
-      <div class="cc-card-name">Enchant Weapon</div>
-      <div class="cc-card-desc">Current: ${currentWeaponEnchant}</div>
-      <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
+      <div class="cc-card-name" style="color: #ffffff !important;">Enchant Weapon</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;">Current: ${currentWeaponEnchant}</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
     `;
     weaponCard.addEventListener("click", () => {
       craftingEnchantSlotPending = "weapon";
@@ -2847,15 +2858,28 @@ function renderEnchantSection(list, resultEl) {
       head: "headEnchantment", chest: "chestEnchantment", legs: "legsEnchantment",
       gloves: "glovesEnchantment", boots: "bootsEnchantment"
     };
+    const armorItemNameFields = {
+      head: "equippedHeadItemName", chest: "equippedChestItemName", legs: "equippedLegsItemName",
+      gloves: "equippedGlovesItemName", boots: "equippedBootsItemName"
+    };
     Object.keys(armorSlotLabels).forEach((slotName) => {
       const enchantField = armorEnchantFields[slotName];
       const current = playerCharacter[enchantField];
       const slotCard = document.createElement("div");
       slotCard.className = "cc-card";
+      const equippedSlotItemName = playerCharacter[armorItemNameFields[slotName]];
+      const equippedSlotImage = equippedSlotItemName ? getItemImagePath(equippedSlotItemName) : null;
+      if (equippedSlotImage) {
+        slotCard.style.backgroundImage = `url("${equippedSlotImage}")`;
+        slotCard.style.backgroundSize = "cover";
+        slotCard.style.backgroundPosition = "center";
+        slotCard.style.minHeight = "160px";
+        slotCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
+      }
       slotCard.innerHTML = `
-        <div class="cc-card-name">Enchant ${armorSlotLabels[slotName]}</div>
-        <div class="cc-card-desc">Current: ${current ? current.name : "None"}</div>
-        <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
+        <div class="cc-card-name" style="color: #ffffff !important;">Enchant ${armorSlotLabels[slotName]}</div>
+        <div class="cc-card-desc" style="color: #ffffff !important;">Current: ${current ? current.name : "None"}</div>
+        <div class="cc-card-desc" style="color: #ffffff !important;">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
       `;
       slotCard.addEventListener("click", () => {
         craftingEnchantSlotPending = slotName;
@@ -2989,6 +3013,28 @@ function getItemRequiredSkill(itemName) {
     itemName.startsWith(`${recipe.name} (`)
   );
   if (recipeMatch) return recipeMatch.linkedSkill;
+
+  return null;
+}
+
+function getRecipeImageSlug(recipeId) {
+  return recipeId
+    .replace(/^craft/, "")
+    .replace(/([A-Z])/g, (match, letter, offset) => (offset > 0 ? "-" : "") + letter.toLowerCase());
+}
+
+function getItemImagePath(itemName) {
+  const startingImageMap = { "Old Sword": "sword", "Worn Axe": "axe", "Simple Bow": "bow" };
+  if (startingImageMap[itemName]) {
+    return `assets/images/items/${startingImageMap[itemName]}.png`;
+  }
+
+  const recipeMatch = Object.values(CRAFTING_RECIPES).find((recipe) =>
+    itemName.startsWith(`${recipe.name} (`)
+  );
+  if (recipeMatch) {
+    return `assets/images/items/${getRecipeImageSlug(recipeMatch.id)}.png`;
+  }
 
   return null;
 }
@@ -3256,17 +3302,12 @@ function renderManageSpellsScreen() {
     card.className = "cc-card";
     if (isActive) card.classList.add("selected");
     const cultureForSpell = Object.values(CULTURES).find(c => c.magicSkillIds.includes(skillId));
-    card.style.backgroundImage = `url("../assets/images/spells/${cultureForSpell.id}/${spell.id}.png")`;
-    card.style.backgroundSize = "cover";
-    card.style.backgroundPosition = "center";
-    card.style.backgroundRepeat = "no-repeat";
-    card.style.minHeight = "180px";
-    card.style.color = "#ffffff !important";
-    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
+    const spellImagePath = `../assets/images/spells/${cultureForSpell.id}/${spell.id}.png`;
     card.innerHTML = `
-      <div class="cc-card-name" style="color: #ffffff !important;">${spell.name}</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;">${spell.description}</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;"><em>${SKILLS[skillId] ? SKILLS[skillId].name : skillId}</em></div>
+      <div class="cc-card-name">${spell.name}</div>
+      <div class="cc-card-desc">${spell.description}</div>
+      <div class="cc-card-desc"><em>${SKILLS[skillId] ? SKILLS[skillId].name : skillId}</em></div>
+      <div class="cc-card-image" style="background-image: url('${spellImagePath}')"></div>
     `;
     card.addEventListener("click", () => {
       const changed = toggleActiveSpell(character, spell.id);
@@ -3508,19 +3549,11 @@ resultEl.style.color = "#ffffff";
       
       const statusLabel = !isKnown ? "Click to teach" : (isActive ? "Active" : "Known (benched)");
       
-      card.style.backgroundImage = `url("../assets/images/spells/${culture.id}/${spell.id}.png")`;
-      card.style.backgroundSize = "cover";
-      card.style.backgroundPosition = "center";
-      card.style.backgroundRepeat = "no-repeat";
-      card.style.minHeight = "180px";
-      card.style.color = "#ffffff !important";
-      card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
-      
-      card.innerHTML = `
-  <div class="cc-card-name" style="color: #ffffff !important;">${spell.name}</div>
-  <div class="cc-card-desc" style="color: #ffffff !important;">${spell.description}</div>
-  <div class="cc-card-desc" style="color: #ffffff !important;"><em style="color: #ffffff !important;">${statusLabel}</em></div>
-`;
+      tabCard.innerHTML = `
+      <div class="cc-card-name">${culture.name}</div>
+      <div class="cc-card-desc"><em>Click to explore</em></div>
+      <div class="cc-card-image" style="background-image: url('../assets/images/cultures/${culture.id}-icon.png')"></div>
+    `;
       card.addEventListener("click", () => {
         if (isKnown) {
           const nowActive = toggleActiveSpell(follower, spell.id);
