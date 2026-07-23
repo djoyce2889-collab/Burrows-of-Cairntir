@@ -1267,16 +1267,10 @@ function buildArmorSlotCard(slotName, itemName) {
   card.className = "cc-card";
   if (isEquipped) card.classList.add("selected");
   const itemImage = getItemImagePath(itemName);
-  if (itemImage) {
-    card.style.backgroundImage = `url("${itemImage}")`;
-    card.style.backgroundSize = "cover";
-    card.style.backgroundPosition = "center";
-    card.style.minHeight = "160px";
-    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
-  }
   card.innerHTML = `
-    <div class="cc-card-name" style="color: #ffffff !important;">${itemName}</div>
-    <div class="cc-card-desc" style="color: #ffffff !important;">${isEquipped ? "Equipped" : "Click to equip"}</div>
+    <div class="cc-card-name">${itemName}</div>
+    <div class="cc-card-desc">${isEquipped ? "Equipped" : "Click to equip"}</div>
+    ${itemImage ? `<div class="cc-card-image" style="background-image: url('${itemImage}')"></div>` : ""}
   `;
   card.addEventListener("click", () => {
     if (!recipe) return;
@@ -1879,14 +1873,10 @@ function renderDungeonList() {
     const card = document.createElement("div");
     card.className = "cc-card";
     card.style.setProperty("--card-accent", dungeon.hotspotColor || "var(--ember)");
-    card.style.backgroundImage = `url("${dungeon.image}")`;
-    card.style.backgroundSize = "cover";
-    card.style.backgroundPosition = "center";
-    card.style.minHeight = "220px";
-    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     card.innerHTML = `
-      <div class="cc-card-name" style="color: #ffffff !important;">${dungeon.name}</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;">${dungeon.description}</div>
+      <div class="cc-card-name">${dungeon.name}</div>
+      <div class="cc-card-desc">${dungeon.description}</div>
+      <div class="cc-card-image" style="background-image: url('${dungeon.image}')"></div>
     `;
     card.addEventListener("click", () => selectDungeon(dungeon));
     list.appendChild(card);
@@ -2807,15 +2797,11 @@ function renderCraftingScreen() {
     const craftingTier = getCharacterSkillTier(playerCharacter, recipe.craftingSkill).name;
     const card = document.createElement("div");
     card.className = "cc-card";
-    card.style.backgroundImage = `url("assets/images/items/${getRecipeImageSlug(recipe.id)}.png")`;
-    card.style.backgroundSize = "cover";
-    card.style.backgroundPosition = "center";
-    card.style.minHeight = "160px";
-    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     card.innerHTML = `
-      <div class="cc-card-name" style="color: #ffffff !important;">${recipe.name}</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;">Requires: ${recipe.materialCost} &times; ${recipe.material} (you have ${have})</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;">Your ${SKILLS[recipe.craftingSkill].name}: ${craftingTier}</div>
+      <div class="cc-card-name">${recipe.name}</div>
+      <div class="cc-card-desc">Requires: ${recipe.materialCost} &times; ${recipe.material} (you have ${have})</div>
+      <div class="cc-card-desc">Your ${SKILLS[recipe.craftingSkill].name}: ${craftingTier}</div>
+      <div class="cc-card-image" style="background-image: url('assets/images/items/${getRecipeImageSlug(recipe.id)}.png')"></div>
     `;
     card.addEventListener("click", () => {
       attemptCraft(recipe.id);
@@ -2835,17 +2821,11 @@ function renderEnchantSection(list, resultEl) {
     weaponCard.className = "cc-card";
     const currentWeaponEnchant = playerCharacter.weaponEnchantment ? playerCharacter.weaponEnchantment.name : "None";
     const equippedWeaponImage = playerCharacter.equippedWeaponItemName ? getItemImagePath(playerCharacter.equippedWeaponItemName) : null;
-    if (equippedWeaponImage) {
-      weaponCard.style.backgroundImage = `url("${equippedWeaponImage}")`;
-      weaponCard.style.backgroundSize = "cover";
-      weaponCard.style.backgroundPosition = "center";
-      weaponCard.style.minHeight = "160px";
-      weaponCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
-    }
     weaponCard.innerHTML = `
-      <div class="cc-card-name" style="color: #ffffff !important;">Enchant Weapon</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;">Current: ${currentWeaponEnchant}</div>
-      <div class="cc-card-desc" style="color: #ffffff !important;">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
+      <div class="cc-card-name">Enchant Weapon</div>
+      <div class="cc-card-desc">Current: ${currentWeaponEnchant}</div>
+      <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
+      ${equippedWeaponImage ? `<div class="cc-card-image" style="background-image: url('${equippedWeaponImage}')"></div>` : ""}
     `;
     weaponCard.addEventListener("click", () => {
       craftingEnchantSlotPending = "weapon";
@@ -2869,17 +2849,11 @@ function renderEnchantSection(list, resultEl) {
       slotCard.className = "cc-card";
       const equippedSlotItemName = playerCharacter[armorItemNameFields[slotName]];
       const equippedSlotImage = equippedSlotItemName ? getItemImagePath(equippedSlotItemName) : null;
-      if (equippedSlotImage) {
-        slotCard.style.backgroundImage = `url("${equippedSlotImage}")`;
-        slotCard.style.backgroundSize = "cover";
-        slotCard.style.backgroundPosition = "center";
-        slotCard.style.minHeight = "160px";
-        slotCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
-      }
       slotCard.innerHTML = `
-        <div class="cc-card-name" style="color: #ffffff !important;">Enchant ${armorSlotLabels[slotName]}</div>
-        <div class="cc-card-desc" style="color: #ffffff !important;">Current: ${current ? current.name : "None"}</div>
-        <div class="cc-card-desc" style="color: #ffffff !important;">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
+        <div class="cc-card-name">Enchant ${armorSlotLabels[slotName]}</div>
+        <div class="cc-card-desc">Current: ${current ? current.name : "None"}</div>
+        <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
+        ${equippedSlotImage ? `<div class="cc-card-image" style="background-image: url('${equippedSlotImage}')"></div>` : ""}
       `;
       slotCard.addEventListener("click", () => {
         craftingEnchantSlotPending = slotName;
@@ -3067,9 +3041,11 @@ function renderGiveItemsScreen() {
       const card = document.createElement("div");
       card.className = "cc-card";
       if (selectedGiveItemName === itemName) card.classList.add("selected");
+      const itemImage = getItemImagePath(itemName);
       card.innerHTML = `
         <div class="cc-card-name">${itemName}</div>
         <div class="cc-card-desc">${count > 1 ? `Quantity: ${count}` : "Carried"}</div>
+        ${itemImage ? `<div class="cc-card-image" style="background-image: url('${itemImage}')"></div>` : ""}
       `;
       card.addEventListener("click", () => {
         selectedGiveItemName = itemName;
