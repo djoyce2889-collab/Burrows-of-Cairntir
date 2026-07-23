@@ -976,7 +976,7 @@ function performFollowerDebuffCast(follower, skillId, spell) {
   });
 }
 
-const FOLLOWER_YOKAI_FORM_SPELL_IDS = ["nueShape", "komainuShape", "kirinShape"];
+const FOLLOWER_YOKAI_FORM_SPELL_IDS = ["fireForm", "earthForm", "windForm"];
 
 /**
  * Followers cast at most one persistent Way of the Yōkai
@@ -1440,7 +1440,7 @@ function performPlayerAction(skillId) {
   return currentCombat;
 }
 
-const PERSISTENT_YOKAI_SPELL_IDS = ["nueShape", "komainuShape", "kirinShape", "bakenekoShape"];
+const PERSISTENT_YOKAI_SPELL_IDS = ["fireForm", "earthForm", "windForm", "mistForm"];
 const YOKAI_FORM_DURATION = 5;
 
 function performPlayerCast(skillId, spell, target) {

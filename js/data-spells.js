@@ -40,12 +40,12 @@ const SPELLS = {
     { id: "ironbloodWard", name: "Ironblood Ward", type: "acBuff", description: "Hardens your bearing with ancestral resolve, turning aside blows more readily for a time." }
   ],
   ancestralSiuloir: [
-    { id: "layOfMending", name: "Lay of Mending", type: "hot", description: "A soft healing song, sung to a lute's quiet rhythm — a steady mending for as long as it plays." },
-    { id: "warChant", name: "War-Chant", type: "buff", description: "A driving battle-song that strengthens your physical strikes for as long as it plays." },
-    { id: "balladOfVigor", name: "Ballad of Vigor", type: "fortify", description: "A rousing ballad that grants a reserve of extra Hit Points for as long as it plays." },
-    { id: "hymnOfPower", name: "Hymn of Power", type: "spellDamageBuff", description: "A resonant hymn that strengthens your magic for as long as it plays." },
-    { id: "luteSongOfTheDeepWell", name: "Lute-Song of the Deep Well", type: "manaRegen", description: "A slow, meditative melody that steadily restores your mana for as long as it plays." },
-    { id: "dirgeOfRuin", name: "Dirge of Ruin", type: "dot", description: "A mournful dirge that wears away at your foe for as long as it plays." }
+    { id: "layOfMending", name: "Lay of Mending", type: "hot", description: "A soft healing song, sung to a guitar's quiet rhythm — a steady mending for as long as it plays." },
+    { id: "warChant", name: "War-Chant", type: "buff", description: "A driving battle-song beaten out on a bodhrán that strengthens your physical strikes for as long as it plays." },
+    { id: "balladOfVigor", name: "Ballad of Vigor", type: "fortify", description: "A rousing ballad strummed on a guitar that grants a reserve of extra Hit Points for as long as it plays." },
+    { id: "hymnOfPower", name: "Hymn of Power", type: "spellDamageBuff", description: "A resonant hymn beaten out on a bodhrán that strengthens your magic for as long as it plays." },
+    { id: "luteSongOfTheDeepWell", name: "Lute-Song of the Deep Well", type: "manaRegen", description: "A slow, meditative melody plucked on a lute that steadily restores your mana for as long as it plays." },
+    { id: "dirgeOfRuin", name: "Dirge of Ruin", type: "dot", description: "A mournful dirge piped on the bagpipes that wears away at your foe for as long as it plays." }
   ],
 
   ancestralEmyrs: [
@@ -121,9 +121,7 @@ const SPELLS = {
     type: "lifetap"
   },
     { id: "graspOfTheDead", name: "Grasp of the Dead", type: "dot", description: "Unseen hands from below drag at your foe, over and over." },
-    { id: "barrowsChill", name: "Barrow's Chill", type: "dot", description: "A grave-chill that saps strength over a few rounds." },
     { id: "bonewhisper", name: "Bonewhisper", type: "fear", description: "A whisper from old bones that unravels your foe's nerve, leaving them too shaken to act some rounds." },
-    { id: "gravehand", name: "Gravehand", type: "undeadSlayer", description: "A grave-cold hand that reaches out and grips your foe — devastating against the undead, merely painful against the living." },
     { id: "shroudtouch", name: "Shroudtouch", type: "resurrect", description: "A burial-cloth touch that calls a fallen companion back from the edge, restoring them to the fight." },
     { id: "wraithcall", name: "Wraithcall", type: "burst", description: "A restless spirit hurled at your foe in a single devastating strike." }
   ],
@@ -138,8 +136,8 @@ const SPELLS = {
   ],
 
   waySuijin: [
-    { id: "kotoOfTheDeepCurrent", name: "Koto of the Deep Current", type: "hot", description: "A sustained, flowing melody that mends the whole party's wounds over time." },
-    { id: "kotoOfTheReturningTide", name: "Koto of the Returning Tide", type: "groupHeal", description: "A fuller melody, restoring everyone at your side at once." },
+    { id: "biwaOfTheDeepCurrent", name: "Biwa of the Deep Current", type: "hot", description: "A sustained, flowing melody that mends the whole party's wounds over time." },
+    { id: "biwaOfTheReturningTide", name: "Biwa of the Returning Tide", type: "groupHeal", description: "A fuller melody, restoring everyone at your side at once." },
     { id: "taikoOfTheStormsApproach", name: "Taiko of the Storm's Approach", type: "buff", description: "A driving rhythm that strengthens every ally's strikes." },
     { id: "taikoOfTheRagingSurf", name: "Taiko of the Raging Surf", type: "fortify", description: "A surging beat that grants the whole party temporary Hit Points." },
     { id: "shakuhachiOfTheWanderingDead", name: "Shakuhachi of the Wandering Dead", type: "fear", description: "A haunting tone that grips a foe with dread." },
@@ -147,11 +145,11 @@ const SPELLS = {
   ],
 
   wayYokai: [
-    { id: "nueShape", name: "Nue-Shape", type: "buff", description: "Chimeric monstrous strength floods your limbs." },
-    { id: "hooShape", name: "Hō-ō-Shape", type: "lifetap", description: "The firebird's rebirth draws life from your foe back into you." },
-    { id: "komainuShape", name: "Komainu-Shape", type: "acBuff", description: "A shrine guardian's stone-hardened hide turns aside blows." },
-    { id: "kirinShape", name: "Kirin-Shape", type: "damageDebuff", description: "An omen-beast's judgment saps a foe's striking power." },
-    { id: "bakenekoShape", name: "Bakeneko-Shape", type: "guaranteedDodge", description: "A monstrous cat-spirit's unnatural quickness lets you slip free of the next blow entirely." },
-    { id: "raijuShape", name: "Raijū-Shape", type: "burst", description: "A lightning-wreathed beast's swift, vicious extra strike." }
+    { id: "fireForm", name: "Fire Form", type: "buff", description: "Living flame wreathes your limbs, strengthening every strike." },
+    { id: "waterForm", name: "Water Form", type: "lifetap", description: "Your body turns to living water, drawing life from your foe back into you." },
+    { id: "earthForm", name: "Earth Form", type: "acBuff", description: "Your skin hardens to living stone, turning aside blows." },
+    { id: "windForm", name: "Wind Form", type: "damageDebuff", description: "A scattering gale saps the force from your foe's every strike." },
+    { id: "mistForm", name: "Mist Form", type: "guaranteedDodge", description: "Your body dissolves into drifting mist, letting the next blow pass through you entirely." },
+    { id: "lightningForm", name: "Lightning Form", type: "burst", description: "Lightning wreathes your limbs for a swift, vicious extra strike." }
   ]
 };

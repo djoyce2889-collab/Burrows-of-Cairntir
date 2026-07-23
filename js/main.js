@@ -84,6 +84,16 @@ function playWeaponSfx(skillId) {
   }
 }
 
+function getElementalAttackSfxPath(spellName) {
+  const elementalAttackSfxMap = {
+    "Fire Form": "assets/audio/sfx/element-attack-fire.mp3",
+    "Earth Form": "assets/audio/sfx/element-attack-earth.mp3",
+    "Wind Form": "assets/audio/sfx/element-attack-wind.mp3",
+    "Mist Form": "assets/audio/sfx/element-attack-mist.mp3"
+  };
+  return elementalAttackSfxMap[spellName] || null;
+}
+
 function getSpellSfxPath(spellName) {
   if (!spellName) return null;
   const text = spellName.toLowerCase();
@@ -95,12 +105,12 @@ function getSpellSfxPath(spellName) {
 
 function getYokaiTransformSfxPath(spellName) {
   const yokaiSfxMap = {
-    "Nue-Shape": "assets/audio/sfx/yokai-transform-nue.mp3",
-    "Hō-ō-Shape": "assets/audio/sfx/yokai-transform-hoo.mp3",
-    "Komainu-Shape": "assets/audio/sfx/yokai-transform-komainu.mp3",
-    "Kirin-Shape": "assets/audio/sfx/yokai-transform-kirin.mp3",
-    "Bakeneko-Shape": "assets/audio/sfx/yokai-transform-bakeneko.mp3",
-    "Raijū-Shape": "assets/audio/sfx/yokai-transform-raiju.mp3"
+    "Fire Form": "assets/audio/sfx/element-transform-fire.mp3",
+    "Water Form": "assets/audio/sfx/element-transform-water.mp3",
+    "Earth Form": "assets/audio/sfx/element-transform-earth.mp3",
+    "Wind Form": "assets/audio/sfx/element-transform-wind.mp3",
+    "Mist Form": "assets/audio/sfx/element-transform-mist.mp3",
+    "Lightning Form": "assets/audio/sfx/element-transform-lightning.mp3"
   };
   return yokaiSfxMap[spellName] || null;
 }
@@ -113,12 +123,12 @@ function getSongSfxPath(spellName) {
     "Hymn of Power": "assets/audio/sfx/song-hymn-of-power.mp3",
     "Lute-Song of the Deep Well": "assets/audio/sfx/song-lute-deep-well.mp3",
     "Dirge of Ruin": "assets/audio/sfx/song-dirge-of-ruin.mp3",
-    "Koto of the Deep Current": "assets/audio/sfx/song-koto.mp3",
-    "Koto of the Returning Tide": "assets/audio/sfx/song-koto.mp3",
-    "Taiko of the Storm's Approach": "assets/audio/sfx/song-taiko.mp3",
-    "Taiko of the Raging Surf": "assets/audio/sfx/song-taiko.mp3",
-    "Shakuhachi of the Wandering Dead": "assets/audio/sfx/song-shakuhachi.mp3",
-    "Shakuhachi of the Hollow Wind": "assets/audio/sfx/song-shakuhachi.mp3"
+    "Biwa of the Deep Current": "assets/audio/sfx/song-biwa-deep-current.mp3",
+    "Biwa of the Returning Tide": "assets/audio/sfx/song-biwa-returning-tide.mp3",
+    "Taiko of the Storm's Approach": "assets/audio/sfx/song-taiko-storms-approach.mp3",
+    "Taiko of the Raging Surf": "assets/audio/sfx/song-taiko-raging-surf.mp3",
+    "Shakuhachi of the Wandering Dead": "assets/audio/sfx/song-shakuhachi-wandering-dead.mp3",
+    "Shakuhachi of the Hollow Wind": "assets/audio/sfx/song-shakuhachi-hollow-wind.mp3"
   };
   return songSfxMap[spellName] || null;
 }
@@ -519,10 +529,17 @@ function showScreen(screenId) {
   window.scrollTo(0, 0);
 }
 
-function addChoiceButton(container, label, onClick, disabled) {
+function addChoiceButton(container, label, onClick, disabled, backgroundImage) {
   const btn = document.createElement("button");
   btn.className = "choice-button";
   btn.textContent = label;
+  btn.style.color = "#ffffff";
+  btn.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
+  if (backgroundImage) {
+    btn.classList.add("has-bg-image");
+    btn.style.setProperty("background", `url("${backgroundImage}") center / cover no-repeat`, "important");
+    btn.style.minHeight = "120px";
+  }
   if (disabled) {
     btn.disabled = true;
   } else {
@@ -849,9 +866,15 @@ function renderStartingSpellsGrid() {
     tabCard.className = "cc-card";
     if (spellsViewCultureId === culture.id) tabCard.classList.add("selected");
     tabCard.style.setProperty("--card-accent", culture.accentColor);
+    tabCard.style.backgroundImage = `url("../assets/images/cultures/${culture.id}-icon.png")`;
+    tabCard.style.backgroundSize = "cover";
+    tabCard.style.backgroundPosition = "center";
+    tabCard.style.minHeight = "120px";
+    tabCard.style.color = "#ffffff !important";
+    tabCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     tabCard.innerHTML = `
-      <div class="cc-card-name">${culture.name}</div>
-      <div class="cc-card-desc"><em>Click to explore</em></div>
+      <div class="cc-card-name" style="color: #ffffff !important;">${culture.name}</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;"><em style="color: #ffffff !important;">Click to explore</em></div>
     `;
     tabCard.addEventListener("click", () => {
       spellsViewCultureId = culture.id;
@@ -879,11 +902,12 @@ function renderStartingSpellsGrid() {
     const allSpells = SPELLS[skillId] || [];
     if (!skill || allSpells.length === 0) return;
 
-    const subHeading = document.createElement("div");
-    subHeading.className = "cc-culture-subheading";
-    subHeading.style.setProperty("--card-accent", culture.accentColor);
-    subHeading.innerHTML = `<span>${skill.name}</span>`;
-    container.appendChild(subHeading);
+   const subHeading = document.createElement("div");
+   subHeading.className = "cc-culture-subheading";
+   subHeading.style.setProperty("--card-accent", culture.accentColor);
+   subHeading.style.color = "#ffffff !important";
+   subHeading.innerHTML = `<span style="color: #ffffff !important;">${skill.name}</span>`;
+   container.appendChild(subHeading);
 
     const grid = document.createElement("div");
     grid.className = "cc-grid";
@@ -894,9 +918,16 @@ function renderStartingSpellsGrid() {
       card.className = "cc-card";
       if (isSelected) card.classList.add("selected");
       card.style.setProperty("--card-accent", culture.accentColor);
+      card.style.backgroundImage = `url("../assets/images/spells/${culture.id}/${spell.id}.png")`;
+      card.style.backgroundSize = "cover";
+      card.style.backgroundPosition = "center";
+      card.style.backgroundRepeat = "no-repeat";
+      card.style.minHeight = "180px";
+      card.style.color = "#ffffff !important";
+      card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
       card.innerHTML = `
-        <div class="cc-card-name">${spell.name}</div>
-        <div class="cc-card-desc">${spell.description}</div>
+        <div class="cc-card-name" style="color: #ffffff !important;">${spell.name}</div>
+        <div class="cc-card-desc" style="color: #ffffff !important;">${spell.description}</div>
       `;
       card.addEventListener("click", () => {
         if (isSelected) {
@@ -1843,29 +1874,21 @@ function renderDungeonList() {
   });
 
   mapImage.src = REGION_MAPS[dungeonSelectRegionId];
-  hotspotsContainer.innerHTML = "";
 
   const regionDungeons = Object.values(DUNGEONS).filter((d) => d.culture === dungeonSelectRegionId);
-
-  regionDungeons.forEach((dungeon) => {
-    if (!dungeon.mapHotspot) return;
-    const hotspot = document.createElement("div");
-    hotspot.className = "map-hotspot";
-    hotspot.style.top = dungeon.mapHotspot.top;
-    hotspot.style.left = dungeon.mapHotspot.left;
-    hotspot.style.background = dungeon.hotspotColor || "var(--ember)";
-    hotspot.title = dungeon.name;
-    hotspot.addEventListener("click", () => selectDungeon(dungeon));
-    hotspotsContainer.appendChild(hotspot);
-  });
 
   regionDungeons.forEach((dungeon) => {
     const card = document.createElement("div");
     card.className = "cc-card";
     card.style.setProperty("--card-accent", dungeon.hotspotColor || "var(--ember)");
+    card.style.backgroundImage = `url("${dungeon.image}")`;
+    card.style.backgroundSize = "cover";
+    card.style.backgroundPosition = "center";
+    card.style.minHeight = "220px";
+    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     card.innerHTML = `
-      <div class="cc-card-name">${dungeon.name}</div>
-      <div class="cc-card-desc">${dungeon.description}</div>
+      <div class="cc-card-name" style="color: #ffffff !important;">${dungeon.name}</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;">${dungeon.description}</div>
     `;
     card.addEventListener("click", () => selectDungeon(dungeon));
     list.appendChild(card);
@@ -2185,12 +2208,12 @@ function getEnemyAmbientGlowClass() {
 }
 
 const YOKAI_FORM_IMAGES = {
-  "Nue-Shape": "assets/images/effects/yokai-nue.png",
-  "Hō-ō-Shape": "assets/images/effects/yokai-hoo.png",
-  "Komainu-Shape": "assets/images/effects/yokai-komainu.png",
-  "Kirin-Shape": "assets/images/effects/yokai-kirin.png",
-  "Bakeneko-Shape": "assets/images/effects/yokai-bakeneko.png",
-  "Raijū-Shape": "assets/images/effects/yokai-raiju.png"
+  "Fire Form": "assets/images/effects/element-fire.png",
+  "Water Form": "assets/images/effects/element-water.png",
+  "Earth Form": "assets/images/effects/element-earth.png",
+  "Wind Form": "assets/images/effects/element-wind.png",
+  "Mist Form": "assets/images/effects/element-mist.png",
+  "Lightning Form": "assets/images/effects/element-lightning.png"
 };
 
 function getActorImageForLogEntry(entry) {
@@ -2287,9 +2310,21 @@ function playRoundSequenceThenRender(entries) {
     applyAmbientGlows(entry.actor === "enemy");
     applySidheGlow(getActorRaceId(entry));
 
-    if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
-      playWeaponSfx(entry.skillId);
-    } else if (entry.actor === "enemy" && entry.hit) {
+if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
+  let activeForm;
+  if (entry.actor === "player") {
+    activeForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && !e.owner);
+  } else {
+    const attackingFollower = followers.find((f) => f.name === entry.followerName);
+    activeForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && e.owner === attackingFollower);
+  }
+  const elementalAttackSfx = activeForm ? getElementalAttackSfxPath(activeForm.spellName) : null;
+  if (elementalAttackSfx) {
+    playSfx(elementalAttackSfx);
+  } else {
+    playWeaponSfx(entry.skillId);
+  }
+} else if (entry.actor === "enemy" && entry.hit) {
       const enemySfx = currentCombat.enemyAttackType === "physical"
         ? "assets/audio/sfx/weapon-slash.mp3"
         : getSpellSfxPath(currentCombat.enemyName);
@@ -2455,12 +2490,12 @@ function renderCombatScreen() {
 
   choicesEl.innerHTML = "";
 
-  const YOKAI_ATTACK_LABELS = {
-    "Nue-Shape": "Nue's Claws",
-    "Komainu-Shape": "Komainu's Bite",
-    "Kirin-Shape": "Kirin's Horn",
-    "Bakeneko-Shape": "Bakeneko's Claws"
-  };
+const YOKAI_ATTACK_LABELS = {
+   "Fire Form": "Flame Strike",
+   "Earth Form": "Stone Fist",
+   "Wind Form": "Gale Slash",
+   "Mist Form": "Mist Strike"
+};
   const activeYokaiForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && !e.owner);
   const equippedWeaponId = playerCharacter.equippedWeaponSkill || "unarmedCombat";
   const attackLabel = (activeYokaiForm && YOKAI_ATTACK_LABELS[activeYokaiForm.spellName]) || SKILLS[equippedWeaponId].name;
@@ -2522,6 +2557,9 @@ function renderCombatScreen() {
         addChoiceButton(choicesEl, `${verb} - ${spell.name} (stop a song first)`, null, true);
         return;
       }
+      const cultureForSpell = Object.values(CULTURES).find(c => c.magicSkillIds.includes(skillId));
+      const spellImagePath = cultureForSpell ? `assets/images/spells/${cultureForSpell.id}/${spell.id}.png` : null;
+
       if (hasEnoughMana) {
         addChoiceButton(choicesEl, `${verb} - ${spell.name} (${MANA_CONFIG.costPerCast} mana): ${spell.description}`, () => {
           if (spell.type === "heal") {
@@ -2532,7 +2570,7 @@ function renderCombatScreen() {
           performPlayerCast(skillId, spell);
           saveGameState();
           playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-        });
+        }, false, spellImagePath);
       } else {
         addChoiceButton(choicesEl, `${verb} - ${spell.name} (not enough mana)`, null, true);
       }
@@ -3217,10 +3255,18 @@ function renderManageSpellsScreen() {
     const card = document.createElement("div");
     card.className = "cc-card";
     if (isActive) card.classList.add("selected");
+    const cultureForSpell = Object.values(CULTURES).find(c => c.magicSkillIds.includes(skillId));
+    card.style.backgroundImage = `url("../assets/images/spells/${cultureForSpell.id}/${spell.id}.png")`;
+    card.style.backgroundSize = "cover";
+    card.style.backgroundPosition = "center";
+    card.style.backgroundRepeat = "no-repeat";
+    card.style.minHeight = "180px";
+    card.style.color = "#ffffff !important";
+    card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
     card.innerHTML = `
-      <div class="cc-card-name">${spell.name}</div>
-      <div class="cc-card-desc">${spell.description}</div>
-      <div class="cc-card-desc"><em>${SKILLS[skillId] ? SKILLS[skillId].name : skillId}</em></div>
+      <div class="cc-card-name" style="color: #ffffff !important;">${spell.name}</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;">${spell.description}</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;"><em>${SKILLS[skillId] ? SKILLS[skillId].name : skillId}</em></div>
     `;
     card.addEventListener("click", () => {
       const changed = toggleActiveSpell(character, spell.id);
@@ -3371,79 +3417,142 @@ function goToTeachSpellScreen(followerIndex) {
   renderTeachSpellScreen();
 }
 
+let teachSpellViewCultureId = null;
+
 function renderTeachSpellScreen() {
   const follower = followers[teachSpellFollowerIndex];
   const nameEl = document.getElementById("teach-spell-name");
   const resultEl = document.getElementById("teach-spell-result");
   const container = document.getElementById("teach-spell-grid");
-  nameEl.textContent = follower.name;
+
+nameEl.textContent = follower.name;
+nameEl.style.color = "#ffffff";
+resultEl.style.color = "#ffffff";
   container.innerHTML = "";
   resultEl.textContent = "";
-
+  
+  if (!teachSpellViewCultureId || !CULTURES[teachSpellViewCultureId]) {
+    teachSpellViewCultureId = Object.keys(CULTURES)[0];
+  }
+  
+  // Culture tabs row
+  const cultureTabsRow = document.createElement("div");
+  cultureTabsRow.className = "cc-grid";
+  cultureTabsRow.style.marginBottom = "18px";
+  
   Object.values(CULTURES).forEach((culture) => {
-    culture.magicSkillIds.forEach((skillId) => {
-      const skill = SKILLS[skillId];
-      const allSpells = SPELLS[skillId] || [];
-      const knownIds = (follower.knownSpells && follower.knownSpells[skillId]) || [];
-      if (!skill || allSpells.length === 0) return;
-
-      const subHeading = document.createElement("div");
-      subHeading.className = "cc-culture-subheading";
-      subHeading.style.setProperty("--card-accent", culture.accentColor);
-      subHeading.innerHTML = `<span>${skill.name}</span>`;
-      container.appendChild(subHeading);
-
-      const grid = document.createElement("div");
-      grid.className = "cc-grid";
-
-      allSpells.forEach((spell) => {
-        const isKnown = knownIds.includes(spell.id);
-        const isActive = (follower.activeSpellIds || []).includes(spell.id);
-        const card = document.createElement("div");
-        card.className = "cc-card";
-        if (isKnown && isActive) card.classList.add("selected");
-        card.style.setProperty("--card-accent", culture.accentColor);
-        const statusLabel = !isKnown ? "Click to teach" : (isActive ? "Active" : "Known (benched)");
-        card.innerHTML = `
-          <div class="cc-card-name">${spell.name}</div>
-          <div class="cc-card-desc">${spell.description}</div>
-          <div class="cc-card-desc"><em>${statusLabel}</em></div>
-        `;
-        card.addEventListener("click", () => {
-          if (isKnown) {
-            const nowActive = toggleActiveSpell(follower, spell.id);
-            resultEl.textContent = nowActive
-              ? `${spell.name} is now active for ${follower.name}.`
-              : `${spell.name} is now benched for ${follower.name}.`;
-          } else {
-            if (!follower.skills[skillId]) {
-              follower.skills[skillId] = { timesUsed: 0 };
-            }
-            if (!follower.knownSpells) follower.knownSpells = {};
-            if (!follower.knownSpells[skillId]) follower.knownSpells[skillId] = [];
-            follower.knownSpells[skillId].push(spell.id);
-
-            if ((follower.activeSpellIds || []).length < 4) {
-              toggleActiveSpell(follower, spell.id);
-            }
-
-            resultEl.textContent = `${follower.name} has learned ${spell.name}.`;
-          }
-          renderTeachSpellScreen();
-          saveGameState();
-        });
-        grid.appendChild(card);
-      });
-
-      container.appendChild(grid);
+    const tabCard = document.createElement("div");
+    tabCard.className = "cc-card";
+    if (teachSpellViewCultureId === culture.id) tabCard.classList.add("selected");
+    tabCard.style.setProperty("--card-accent", culture.accentColor);
+    tabCard.style.backgroundImage = `url("../assets/images/cultures/${culture.id}-icon.png")`;
+    tabCard.style.backgroundSize = "cover";
+    tabCard.style.backgroundPosition = "center";
+    tabCard.style.minHeight = "120px";
+    tabCard.style.color = "#ffffff !important";
+    tabCard.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
+    tabCard.innerHTML = `
+      <div class="cc-card-name" style="color: #ffffff !important;">${culture.name}</div>
+      <div class="cc-card-desc" style="color: #ffffff !important;"><em style="color: #ffffff !important;">Click to explore</em></div>
+    `;
+    tabCard.addEventListener("click", () => {
+      teachSpellViewCultureId = culture.id;
+      renderTeachSpellScreen();
     });
+    cultureTabsRow.appendChild(tabCard);
   });
-
-  if (container.innerHTML === "") {
+  
+  container.appendChild(cultureTabsRow);
+  
+  // Selected culture info
+  const culture = CULTURES[teachSpellViewCultureId];
+  
+  const cultureHeading = document.createElement("div");
+  cultureHeading.className = "cc-category-heading";
+  cultureHeading.textContent = `${culture.name} --- ${culture.magicName}`;
+  container.appendChild(cultureHeading);
+  
+  const cultureDesc = document.createElement("div");
+  cultureDesc.className = "cc-card-desc";
+  cultureDesc.style.marginBottom = "14px";
+  cultureDesc.textContent = culture.magicDescription;
+  container.appendChild(cultureDesc);
+  
+  // Spell lines for selected culture
+  culture.magicSkillIds.forEach((skillId) => {
+    const skill = SKILLS[skillId];
+    const allSpells = SPELLS[skillId] || [];
+    
+    if (!skill || allSpells.length === 0) return;
+    
+    const subHeading = document.createElement("div");
+    subHeading.className = "cc-culture-subheading";
+    subHeading.style.setProperty("--card-accent", culture.accentColor);
+    subHeading.style.color = "#ffffff !important";
+    subHeading.innerHTML = `<span style="color: #ffffff !important;">${skill.name}</span>`;
+    container.appendChild(subHeading);
+    
+    const grid = document.createElement("div");
+    grid.className = "cc-grid";
+    
+    const knownIds = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+    
+    allSpells.forEach((spell) => {
+      const isKnown = knownIds.includes(spell.id);
+      const isActive = (follower.activeSpellIds || []).includes(spell.id);
+      
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      if (isKnown && isActive) card.classList.add("selected");
+      card.style.setProperty("--card-accent", culture.accentColor);
+      
+      const statusLabel = !isKnown ? "Click to teach" : (isActive ? "Active" : "Known (benched)");
+      
+      card.style.backgroundImage = `url("../assets/images/spells/${culture.id}/${spell.id}.png")`;
+      card.style.backgroundSize = "cover";
+      card.style.backgroundPosition = "center";
+      card.style.backgroundRepeat = "no-repeat";
+      card.style.minHeight = "180px";
+      card.style.color = "#ffffff !important";
+      card.style.textShadow = "0 0 2px rgba(0, 0, 0, 1), 0 0 4px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 1)";
+      
+      card.innerHTML = `
+  <div class="cc-card-name" style="color: #ffffff !important;">${spell.name}</div>
+  <div class="cc-card-desc" style="color: #ffffff !important;">${spell.description}</div>
+  <div class="cc-card-desc" style="color: #ffffff !important;"><em style="color: #ffffff !important;">${statusLabel}</em></div>
+`;
+      card.addEventListener("click", () => {
+        if (isKnown) {
+          const nowActive = toggleActiveSpell(follower, spell.id);
+          resultEl.textContent = nowActive
+            ? `${spell.name} is now active for ${follower.name}.`
+            : `${spell.name} is now benched for ${follower.name}.`;
+        } else {
+          if (!follower.skills[skillId]) {
+            follower.skills[skillId] = { timesUsed: 0 };
+          }
+          if (!follower.knownSpells) follower.knownSpells = {};
+          if (!follower.knownSpells[skillId]) follower.knownSpells[skillId] = [];
+          follower.knownSpells[skillId].push(spell.id);
+          if ((follower.activeSpellIds || []).length < 4) {
+            toggleActiveSpell(follower, spell.id);
+          }
+          resultEl.textContent = `${follower.name} has learned ${spell.name}.`;
+        }
+        renderTeachSpellScreen();
+        saveGameState();
+      });
+      
+      grid.appendChild(card);
+    });
+    
+    container.appendChild(grid);
+  });
+  
+  if (container.innerHTML.includes("cc-grid") === false) {
     container.innerHTML = '<div class="cc-skill-count">They already know every spell.</div>';
   }
 }
-
 document.getElementById("btn-teach-skill-back").addEventListener("click", goToPartyScreen);
 document.getElementById("btn-teach-spell-back").addEventListener("click", goToPartyScreen);
 document.getElementById("btn-dungeon-difficulty-back").addEventListener("click", goToDungeonSelectScreen);

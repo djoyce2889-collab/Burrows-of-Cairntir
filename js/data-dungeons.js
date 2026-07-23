@@ -105,7 +105,7 @@ const DUNGEONS = {
     hotspotColor: "#7f8c8d",
     mapHotspot: { top: "50%", left: "50%" },
     culture: "drakvarr",
-    image: "assets/images/blackforge-deep/hall-entrance.png",
+    image: "assets/images/blackforge-deep.png",
     description:
       "An ancient dwarven stronghold, overrun from below by something " +
       "wearing the shape of its own kin."
@@ -1669,7 +1669,7 @@ const DUNGEON_CONTENT = {
         text: "A private chamber, the Daimyo's own space. Scrolls and artifacts line shelves. One scroll bears markings of deep significance.",
         loot: ["Old Ore"],
         choices: [
-          { label: "Study the scroll (Way of the Yōkai)", type: "discover", skillId: "wayYokai", spellId: "nueTransform", target: "throneApproach" },
+          { label: "Study the scroll (Way of the Elements)", type: "discover", skillId: "wayYokai", spellId: "fireForm", target: "throneApproach" },
           { label: "Leave it and press on", type: "goto", target: "throneApproach" }
         ]
       },
@@ -1758,7 +1758,7 @@ const DUNGEON_CONTENT = {
         text: "Smaller chambers line this passage, each holding a shrine within the shrine. Incense hangs thick in the air. A priestess in robes blocks the way ahead, her eyes bright with conviction.",
         choices: [
           { label: "Fight", type: "combat", enemyId: "dragonCultPriest", target: "innerChapel" },
-          { label: "Appeal to her faith (Persuasion)", type: "persuade", skillId: "wayYokai", spellId: "nueTransform", enemyId: "dragonCultPriest", target: "innerChapel", failDialogue: ["She smiles sadly.", "The dragon has already chosen her.", "No appeal will reach what she has become."], finalFailDialogue: "Her faith is absolute. Nothing you say matters." }
+          { label: "Appeal to her faith (Persuasion)", type: "persuade", skillId: "wayYokai", spellId: "fireForm", enemyId: "dragonCultPriest", target: "innerChapel", failDialogue: ["She smiles sadly.", "The dragon has already chosen her.", "No appeal will reach what she has become."], finalFailDialogue: "Her faith is absolute. Nothing you say matters." }
         ]
       },
 
@@ -1766,7 +1766,7 @@ const DUNGEON_CONTENT = {
         text: "A smaller shrine, intimate and heavy with devotion. Offerings cover every surface. A single tablet catches your eye, carved with archaic Yorenshi script.",
         loot: ["Grave Essence"],
         choices: [
-          { label: "Study the tablet (Way of Suijin)", type: "discover", skillId: "waySuijin", spellId: "kotonsMelody", target: "rightWing" },
+          { label: "Study the tablet (Way of Suijin)", type: "discover", skillId: "waySuijin", spellId: "biwaOfTheDeepCurrent", target: "rightWing" },
           { label: "Leave it and continue", type: "goto", target: "rightWing" }
         ]
       },
@@ -1818,7 +1818,7 @@ const DUNGEON_CONTENT = {
         text: "The altar holds treasures from centuries of worship --- some jade, some bone, some things that defy naming.",
         loot: ["Old Ore"],
         choices: [
-          { label: "Study the ancient artifacts (Way of the Yōkai)", type: "discover", skillId: "wayYokai", spellId: "nueTransform", target: "innerSanctumDoor" },
+          { label: "Study the ancient artifacts (Way of the Elements)", type: "discover", skillId: "wayYokai", spellId: "fireForm", target: "innerSanctumDoor" },
           { label: "Head for the inner sanctum", type: "goto", target: "innerSanctumDoor" }
         ]
       },

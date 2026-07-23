@@ -4,27 +4,6 @@
    ============================================================ */
 
 const CULTURES = {
-  vandiri: {
-    id: "vandiri",
-    name: "Vandiri",
-    tagline: "Storm-blessed, water-guarded.",
-    description:
-      "A people whose magic is granted by ancient, deeply revered " +
-      "spirits — not inherited by blood, but sought through devotion " +
-      "and rite. Three great spirits answer those who call upon them " +
-      "today, each with its own domain and its own demands.",
-    magicName: "Rite Magic",
-    magicDescription:
-      "Power granted through sacred rite rather than bloodline or " +
-      "rune. The Thunder-Wrath answers with fire and righteous fury, " +
-      "Unmaking answers with storm and the unweaving of a foe's " +
-      "strength, and Protection answers by guarding those you hold " +
-      "dear, even without being called.",
-    socialStructure: "Devotional Rite-Society",
-    magicSkillIds: ["riteThunderWrath", "riteUnmaking", "riteProtection"],
-    accentColor: "#c17a3d",
-    magicOrigin: "The Vandiri dwell among sun-warmed savanna, tropical rivers, and coastal storm — and it is devotion to the old spirits of that land, given form through sacred rite, that grants their magic its power."
-  },
   deveran: {
     id: "deveran",
     name: "Deverans",
@@ -86,6 +65,27 @@ const CULTURES = {
     accentColor: "#5a8f5a",
     magicOrigin: "The Gaeldrim dwell among ancient groves, bogs, and green hills — and it is that same living land, older than any people upon it, that gives their magic its power."
   },
+  vandiri: {
+    id: "vandiri",
+    name: "Vandiri",
+    tagline: "Storm-blessed, water-guarded.",
+    description:
+      "A people whose magic is granted by ancient, deeply revered " +
+      "spirits — not inherited by blood, but sought through devotion " +
+      "and rite. Three great spirits answer those who call upon them " +
+      "today, each with its own domain and its own demands.",
+    magicName: "Rite Magic",
+    magicDescription:
+      "Power granted through sacred rite rather than bloodline or " +
+      "rune. The Thunder-Wrath answers with fire and righteous fury, " +
+      "Unmaking answers with storm and the unweaving of a foe's " +
+      "strength, and Protection answers by guarding those you hold " +
+      "dear, even without being called.",
+    socialStructure: "Devotional Rite-Society",
+    magicSkillIds: ["riteThunderWrath", "riteUnmaking", "riteProtection"],
+    accentColor: "#c17a3d",
+    magicOrigin: "The Vandiri dwell among sun-warmed savanna, tropical rivers, and coastal storm — and it is devotion to the old spirits of that land, given form through sacred rite, that grants their magic its power."
+  },
   yorenshi: {
     id: "yorenshi",
     name: "Yorenshi",
@@ -100,8 +100,8 @@ const CULTURES = {
       "Power granted by the kami. The Way of Tengu sharpens body and " +
       "blade through pure martial discipline, the Way of Suijin calls " +
       "on the river-spirit's favor through song and instrument, and " +
-      "the Way of the Yōkai lets the caster take on a monstrous shape " +
-      "for a time.",
+      "the Way of the Elements lets the caster take on the raw form " +
+      "of fire, water, earth, wind, mist, or lightning for a time.",
     socialStructure: "Shrine-Keeper Hierarchy",
     magicSkillIds: ["wayTengu", "waySuijin", "wayYokai"],
     accentColor: "#d17b9e",
@@ -230,7 +230,7 @@ const SKILLS = {
 
   wayTengu: { id: "wayTengu", name: "Way of Tengu", category: "Magic", cultureLocked: "yorenshi", description: "A mountain-spirit's martial discipline — inhuman precision and wind-aided strikes, honed through combat mastery alone." },
   waySuijin: { id: "waySuijin", name: "Way of Suijin", category: "Magic", cultureLocked: "yorenshi", description: "The river-spirit's favor, called through song and instrument — koto, taiko, and shakuhachi each answering differently." },
-  wayYokai: { id: "wayYokai", name: "Way of the Yōkai", category: "Magic", cultureLocked: "yorenshi", description: "A brief, monstrous transformation, borrowing the shape and gift of a yōkai spirit." },
+  wayYokai: { id: "wayYokai", name: "Way of the Elements", category: "Magic", cultureLocked: "yorenshi", description: "A brief transformation, channeling the raw power of a natural element." },
 
   swords: { id: "swords", name: "Sword", category: "Weapon", description: "Skill with blades in close combat." },
   axes: { id: "axes", name: "Axe", category: "Weapon", description: "Heavy, cleaving strikes with an axe." },
