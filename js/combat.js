@@ -689,19 +689,23 @@ function getFollowerSongCount(follower) {
  * and isn't already singing — she won't try to sing the same
  * song twice in one fight.
  */
+const BARD_SKILL_IDS = ["ancestralSiuloir", "waySuijin", "runeSong", "riteGriot"];
+
 function getFollowerSongOption(follower) {
-  const skillId = "ancestralSiuloir";
-  if (!follower.skills[skillId]) return null;
-  const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
-  const allSpells = SPELLS[skillId] || [];
   const alreadySinging = currentCombat.activeEffects
     .filter((e) => e.source === "song" && e.owner === follower)
     .map((e) => e.spellName);
 
-  const songSpell = allSpells.find(
-    (s) => known.includes(s.id) && isSpellActive(follower, s.id) && !alreadySinging.includes(s.name)
-  );
-  return songSpell ? { skillId, spell: songSpell } : null;
+  for (const skillId of BARD_SKILL_IDS) {
+    if (!follower.skills[skillId]) continue;
+    const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+    const allSpells = SPELLS[skillId] || [];
+    const songSpell = allSpells.find(
+      (s) => known.includes(s.id) && isSpellActive(follower, s.id) && !alreadySinging.includes(s.name)
+    );
+    if (songSpell) return { skillId, spell: songSpell };
+  }
+  return null;
 }
 
 /**
@@ -1470,7 +1474,7 @@ function performPlayerCast(skillId, spell, target) {
     currentCombat.activeEffects.push({ kind: "yokaiForm", spellName: spell.name, roundsRemaining: YOKAI_FORM_DURATION, _justCast: true });
   }
 
-  const isSong = skillId === "ancestralSiuloir" || skillId === "waySuijin";
+  const isSong = BARD_SKILL_IDS.includes(skillId);
   if (isSong && getActiveSongCount() >= 2) return currentCombat;
 
   playerCharacter.currentMana -= MANA_CONFIG.costPerCast;
