@@ -1825,6 +1825,7 @@ function getActiveEffectsSummary() {
     if (e.kind === "curseBack") return `Foe's fortune turned (${e.roundsRemaining} rounds left)`;
     if (e.kind === "stun") return "Foe knocked down, losing their next turn";
     if (e.kind === "companion") return "Beast companion at your side";
+    if (e.kind === "onHitWard") return `${e.spellName} watching, ready to answer the next blow`;
     return "";
   });
   return parts.filter(Boolean).join(" &middot; ");

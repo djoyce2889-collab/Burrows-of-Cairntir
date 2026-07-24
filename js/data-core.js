@@ -40,7 +40,7 @@ const CULTURES = {
       "Vision unbalances a foe, and the Curse is spoken of more " +
       "quietly — a hex that lingers and festers.",
     socialStructure: "Warrior-Caste Shamanic Society",
-    magicSkillIds: ["runeBlade", "runeVision", "runeCurse"],
+    magicSkillIds: ["runeBlade", "runeVision", "runeCurse", "runeSong"],
     accentColor: "#4f7ca6",
     magicOrigin: "The Drakvarr carve out a hard life among fjord and battle-hall — and their magic is carved too, etched into rune and skin by warriors and shamans alike."
   },
@@ -82,7 +82,7 @@ const CULTURES = {
       "strength, and Protection answers by guarding those you hold " +
       "dear, even without being called.",
     socialStructure: "Devotional Rite-Society",
-    magicSkillIds: ["riteThunderWrath", "riteUnmaking", "riteProtection"],
+    magicSkillIds: ["riteThunderWrath", "riteUnmaking", "riteProtection", "riteGriot"],
     accentColor: "#c17a3d",
     magicOrigin: "The Vandiri dwell among sun-warmed savanna, tropical rivers, and coastal storm — and it is devotion to the old spirits of that land, given form through sacred rite, that grants their magic its power."
   },
@@ -247,6 +247,8 @@ const SKILLS = {
   wayTengu: { id: "wayTengu", name: "Way of Tengu", category: "Magic", cultureLocked: "yorenshi", description: "A mountain-spirit's martial discipline — inhuman precision and wind-aided strikes, honed through combat mastery alone." },
   waySuijin: { id: "waySuijin", name: "Way of Suijin", category: "Magic", cultureLocked: "yorenshi", description: "The river-spirit's favor, called through song and instrument — koto, taiko, and shakuhachi each answering differently." },
   wayYokai: { id: "wayYokai", name: "Way of the Elements", category: "Magic", cultureLocked: "yorenshi", description: "A brief transformation, channeling the raw power of a natural element." },
+  runeSong: { id: "runeSong", name: "Rune-Song of the Skald", category: "Magic", cultureLocked: "drakvarr", description: "A skald's verse, carried on nyckelharpa strings — song and rune woven together to hearten allies or wear down a foe." },
+  riteGriot: { id: "riteGriot", name: "Rite of the Griot", category: "Magic", cultureLocked: "vandiri", description: "The griot's drum and kalimba, praise-singer and historian both — rhythm called on to heal, hearten, or wear down a foe." },
 
   swords: { id: "swords", name: "Sword", category: "Weapon", description: "Skill with blades in close combat." },
   axes: { id: "axes", name: "Axe", category: "Weapon", description: "Heavy, cleaving strikes with an axe." },

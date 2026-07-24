@@ -151,5 +151,23 @@ const SPELLS = {
     { id: "windForm", name: "Wind Form", type: "damageDebuff", description: "A scattering gale saps the force from your foe's every strike." },
     { id: "mistForm", name: "Mist Form", type: "guaranteedDodge", description: "Your body dissolves into drifting mist, letting the next blow pass through you entirely." },
     { id: "lightningForm", name: "Lightning Form", type: "burst", description: "Lightning wreathes your limbs for a swift, vicious extra strike." }
+  ],
+
+  runeSong: [
+    { id: "skaldsLayOfMending", name: "Skald's Lay of Mending", type: "hot", description: "A slow healing verse, sung to a nyckelharpa's droning strings — a steady mending for as long as it plays." },
+    { id: "skaldsWarVerse", name: "Skald's War-Verse", type: "buff", description: "A driving battle-verse that strengthens your physical strikes for as long as it plays." },
+    { id: "sagaOfVigor", name: "Saga of Vigor", type: "fortify", description: "A rousing saga that grants a reserve of extra Hit Points for as long as it plays." },
+    { id: "skaldsRuneHymn", name: "Skald's Rune-Hymn", type: "spellDamageBuff", description: "A resonant rune-hymn that strengthens your magic for as long as it plays." },
+    { id: "talharpasDeepDrone", name: "Talharpa's Deep Drone", type: "manaRegen", description: "A slow, meditative drone that steadily restores your mana for as long as it plays." },
+    { id: "skaldsCurseVerse", name: "Skald's Curse-Verse", type: "dot", description: "A mournful curse-verse that wears away at your foe for as long as it plays." }
+  ],
+
+  riteGriot: [
+    { id: "griotsHealingRefrain", name: "Griot's Healing Refrain", type: "hot", description: "A slow healing rhythm, drummed out steadily — a mending that continues for as long as it plays." },
+    { id: "griotsWarPraise", name: "Griot's War-Praise", type: "buff", description: "A driving praise-rhythm that strengthens your physical strikes for as long as it plays." },
+    { id: "griotsSongOfEndurance", name: "Griot's Song of Endurance", type: "fortify", description: "A rousing song of endurance that grants a reserve of extra Hit Points for as long as it plays." },
+    { id: "griotsRhythmOfPower", name: "Griot's Rhythm of Power", type: "spellDamageBuff", description: "A resonant rhythm that strengthens your magic for as long as it plays." },
+    { id: "kalimbasDeepPulse", name: "Kalimba's Deep Pulse", type: "manaRegen", description: "A slow, plucked pulse that steadily restores your mana for as long as it plays." },
+    { id: "griotsLament", name: "Griot's Lament", type: "dot", description: "A mournful lament that wears away at your foe for as long as it plays." }
   ]
 };

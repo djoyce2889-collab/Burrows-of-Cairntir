@@ -51,6 +51,10 @@ let cachedVoice = null;
 const SPECTRAL_COMPANION_IMAGE = "assets/images/effects/spectral-companion.png";
 const ATTACK_MISS_SFX = "assets/audio/sfx/attack-miss.mp3";
 const HEAL_CAST_SFX = "assets/audio/sfx/heal-cast.mp3";
+const ARENA_CROWD_HIT_SFX = "assets/audio/sfx/arena-crowd-hit.mp3";
+const ARENA_CROWD_BOO_SFX = "assets/audio/sfx/arena-crowd-boo.mp3";
+const ARENA_CROWD_VICTORY_SFX = "assets/audio/sfx/arena-crowd-victory.mp3";
+const ARENA_CROWD_AMBIENCE_SRC = "assets/audio/sfx/arena-crowd-ambience.mp3";
 
 let musicVolume = 0.18;
 
@@ -993,6 +997,7 @@ function renderTraitGrid() {
     card.innerHTML = `
       <div class="cc-card-name">${trait.name}</div>
       <div class="cc-card-desc">${trait.description}</div>
+      <div class="cc-card-image" style="background-image: url('${getTraitImagePath(trait.id)}')"></div>
     `;
 
     card.addEventListener("click", () => {
@@ -1233,6 +1238,7 @@ function renderSkillsScreen() {
           <div class="cc-card-name">${SKILLS[skillId].name}</div>
           <div class="cc-card-desc"><em>${tier.name}</em> &middot; used ${timesUsed} times</div>
           <div class="cc-card-desc">${nextTier ? `${nextTier.usesNeeded} more uses to reach ${nextTier.tierName}` : "Already at Master."}</div>
+          <div class="cc-card-image" style="background-image: url('${getSkillImagePath(skillId)}')"></div>
         `;
         grid.appendChild(card);
       });
@@ -1840,9 +1846,9 @@ function startTrainingGauntlet() {
   showScreen("screen-game");
   startCombat(enemyId);
   setGameViewportImage(ENEMIES[enemyId].image, ENEMIES[enemyId].name);
-  playMusic(TRAINING_GROUNDS_MUSIC_SRC);
   applyAmbientGlows(true);
   stopAllNarration();
+  playMusic(ARENA_CROWD_AMBIENCE_SRC);
   renderCombatScreen();
   saveGameState();
 }
@@ -3047,6 +3053,11 @@ function getSkillImagePath(skillId) {
 function getCombatStyleImagePath(styleId) {
   const slug = styleId.replace(/([A-Z])/g, (match, letter) => "-" + letter.toLowerCase());
   return `assets/images/combat-styles/${slug}.png`;
+}
+
+function getTraitImagePath(traitId) {
+  const slug = traitId.replace(/([A-Z])/g, (match, letter) => "-" + letter.toLowerCase());
+  return `assets/images/traits/${slug}.png`;
 }
 
 function getItemImagePath(itemName) {
