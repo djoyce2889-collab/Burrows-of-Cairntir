@@ -169,5 +169,14 @@ const SPELLS = {
     { id: "griotsRhythmOfPower", name: "Griot's Rhythm of Power", type: "spellDamageBuff", description: "A resonant rhythm that strengthens your magic for as long as it plays." },
     { id: "kalimbasDeepPulse", name: "Kalimba's Deep Pulse", type: "manaRegen", description: "A slow, plucked pulse that steadily restores your mana for as long as it plays." },
     { id: "griotsLament", name: "Griot's Lament", type: "dot", description: "A mournful lament that wears away at your foe for as long as it plays." }
+  ],
+
+  ancestralFetch: [
+    { id: "beithirForm", name: "Beithir Form", type: "burst", description: "A vast, wingless serpent-dragon of the glens, lightning-fast and venomous, striking once with a single devastating bite." },
+    { id: "baobhanSithForm", name: "Baobhan Sìth Form", type: "lifetap", description: "A beautiful, deadly fae drains the life from your foe and makes it your own." },
+    { id: "cuSidheForm", name: "Cù Sídhe Form", type: "buff", description: "A death-omen hound's silent ferocity floods your limbs, strengthening every strike." },
+    { id: "catSithForm", name: "Cat-Sìth Form", type: "guaranteedDodge", description: "A soul-stealing fae cat's uncanny stillness lets the next blow pass you by entirely." },
+    { id: "stagForm", name: "Stag Form", type: "acBuff", description: "A phantom Otherworld-stag's antlered bearing turns aside blows that would otherwise land true." },
+    { id: "nuckelaveeForm", name: "Nuckelavee Form", type: "damageDebuff", description: "A skinless horse-shaped abomination's withering breath saps the force from your foe's every strike." }
   ]
 };

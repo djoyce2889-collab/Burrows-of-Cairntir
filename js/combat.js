@@ -215,7 +215,7 @@ function getEffectiveSupportTierFor(character, baseTierName) {
  * never expire on their own, but only 2 can play at once.
  */
 function getActiveSongCount() {
-  return currentCombat.activeEffects.filter((e) => e.source === "song").length;
+  return currentCombat.activeEffects.filter((e) => e.source === "song" && (e.owner || playerCharacter) === playerCharacter).length;
 }
 
 function stopSong(spellName) {
@@ -230,6 +230,26 @@ function stopSong(spellName) {
   currentCombat.activeEffects.splice(idx, 1);
   currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: spellName });
   return true;
+}
+
+function stopAllSongsFor(character) {
+  const isPlayer = character === playerCharacter;
+  const songs = currentCombat.activeEffects.filter((e) =>
+    e.source === "song" && (isPlayer ? (e.owner || playerCharacter) === playerCharacter : e.owner === character)
+  );
+  songs.forEach((effect) => {
+    if (effect.kind === "fortify" && effect.bonusHP) {
+      const fortifyTargets = effect.partyWide ? [playerCharacter, ...getActiveFollowers()] : [character];
+      fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
+    }
+    currentCombat.log.push({
+      actor: "effect",
+      kind: "songStopped",
+      spellName: effect.spellName,
+      ownerName: isPlayer ? undefined : character.name
+    });
+  });
+  currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => !songs.includes(e));
 }
 
 /**
@@ -467,6 +487,19 @@ function consumeGuaranteedEffect(kind) {
 }
 
 /**
+ * Same idea as consumeGuaranteedEffect, but scoped to a specific
+ * character — needed for guaranteedDodge now that both the player
+ * and followers can each have their own, so consuming one doesn't
+ * accidentally consume someone else's.
+ */
+function consumeGuaranteedEffectFor(character) {
+  const idx = currentCombat.activeEffects.findIndex((e) => e.kind === "guaranteedDodge" && e.target === character);
+  if (idx === -1) return false;
+  currentCombat.activeEffects.splice(idx, 1);
+  return true;
+}
+
+/**
  * AC and Dodge are now tracked as separate buffable tiers (via
  * "acBuff" and "dodgeBuff" effect kinds) so a spell can boost
  * one without the other, then the higher of the two still wins
@@ -573,6 +606,10 @@ function applyPassiveManaRegen() {
 function tickCombatEffects() {
   currentCombat.activeEffects.forEach((effect) => {
     const owner = effect.owner || playerCharacter;
+
+    if (effect.source === "song") {
+      effect.roundsSung = (effect.roundsSung || 0) + 1;
+    }
 
     if (effect.kind === "dot") {
       const dmg = applyDamageToEnemy(Math.max(1, Math.floor(rollDamage(effect.casterTierName) / 2)));
@@ -692,9 +729,10 @@ function getFollowerSongCount(follower) {
 const BARD_SKILL_IDS = ["ancestralSiuloir", "waySuijin", "runeSong", "riteGriot"];
 
 function getFollowerSongOption(follower) {
-  const alreadySinging = currentCombat.activeEffects
-    .filter((e) => e.source === "song" && e.owner === follower)
-    .map((e) => e.spellName);
+  const currentSong = currentCombat.activeEffects.find((e) => e.source === "song" && e.owner === follower);
+  if (currentSong && (currentSong.roundsSung || 0) < 5) return null;
+
+  const alreadySinging = currentSong ? [currentSong.spellName] : [];
 
   for (const skillId of BARD_SKILL_IDS) {
     if (!follower.skills[skillId]) continue;
@@ -735,7 +773,7 @@ function performFollowerSongCast(follower, skillId, spell) {
     const supportBonus = getCombatStyleBonusFor(follower).supportBonus || 0;
     currentCombat.activeEffects.push({
       kind: "playerAttackBonus", rankBonus: 1 + supportBonus, roundsRemaining: null,
-      source: "song", spellName: spell.name, owner: follower, partyWide: true
+      source: "song", spellName: spell.name, owner: follower, partyWide: true, roundsSung: 0
     });
   } else if (spell.type === "fortify") {
     const bonusAmount = rollDamage(tierBefore);
@@ -749,7 +787,7 @@ function performFollowerSongCast(follower, skillId, spell) {
     const supportBonus = getCombatStyleBonusFor(follower).supportBonus || 0;
     currentCombat.activeEffects.push({
       kind: "spellDamageBuff", rankBonus: 1 + supportBonus, roundsRemaining: null,
-      source: "song", spellName: spell.name, owner: follower, partyWide: true
+      source: "song", spellName: spell.name, owner: follower, partyWide: true, roundsSung: 0
     });
   } else if (spell.type === "manaRegen") {
     currentCombat.activeEffects.push({
@@ -766,7 +804,7 @@ function performFollowerSongCast(follower, skillId, spell) {
   currentCombat.log.push(logEntry);
 }
 
-const FOLLOWER_ATTACK_SPELL_TYPES = ["damage", "burst", "undeadSlayer", "execute", "lifetap", "dot", "doubleDrain", "powerSteal"];
+const FOLLOWER_ATTACK_SPELL_TYPES = ["damage", "undeadSlayer", "execute", "dot", "doubleDrain", "powerSteal"];
 
 function getFollowerAttackSpellOption(follower) {
   const magicSkillIds = Object.keys(follower.skills).filter(
@@ -996,7 +1034,7 @@ function performFollowerDebuffCast(follower, skillId, spell) {
   });
 }
 
-const FOLLOWER_YOKAI_FORM_SPELL_IDS = ["fireForm", "earthForm", "windForm"];
+const FOLLOWER_YOKAI_FORM_SPELL_IDS = ["fireForm", "waterForm", "earthForm", "windForm", "mistForm", "lightningForm"];
 
 /**
  * Followers cast at most one persistent Way of the Yōkai
@@ -1012,18 +1050,28 @@ function getFollowerYokaiFormOption(follower) {
   const knownIds = (follower.knownSpells && follower.knownSpells.wayYokai) || [];
   if (knownIds.length === 0) return null;
   const allSpells = SPELLS.wayYokai || [];
-  const castable = allSpells.find((s) => FOLLOWER_YOKAI_FORM_SPELL_IDS.includes(s.id) && knownIds.includes(s.id));
+  const castable = allSpells.find((s) => FOLLOWER_YOKAI_FORM_SPELL_IDS.includes(s.id) && knownIds.includes(s.id) && isSpellActive(follower, s.id));
   return castable ? { skillId: "wayYokai", spell: castable } : null;
 }
 
 function performFollowerYokaiFormCast(follower, skillId, spell) {
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
   follower.currentMana -= MANA_CONFIG.costPerCast;
   useSkill(follower, skillId);
 
   currentCombat.activeEffects = currentCombat.activeEffects.filter(
-    (e) => !(e.kind === "yokaiForm" && e.owner === follower)
+    (e) => !((e.kind === "yokaiForm" || e.kind === "fetchForm") && e.owner === follower)
   );
   currentCombat.activeEffects.push({ kind: "yokaiForm", spellName: spell.name, owner: follower, roundsRemaining: YOKAI_FORM_DURATION, _justCast: true });
+
+  const logEntry = {
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    skillId: skillId,
+    spellName: spell.name,
+    castKind: "yokaiForm"
+  };
 
   if (spell.type === "buff") {
     currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: YOKAI_FORM_DURATION, owner: follower, _justCast: true });
@@ -1031,16 +1079,29 @@ function performFollowerYokaiFormCast(follower, skillId, spell) {
     currentCombat.activeEffects.push({ kind: "acBuff", rankBonus: 1, roundsRemaining: YOKAI_FORM_DURATION, owner: follower, _justCast: true });
   } else if (spell.type === "damageDebuff") {
     currentCombat.activeEffects.push({ kind: "damageDebuff", rankBonus: -1, roundsRemaining: YOKAI_FORM_DURATION, _justCast: true });
+  } else if (spell.type === "lifetap") {
+    const attackTier = getEffectiveAttackTierFor(follower, tierBefore);
+    const hit = rollSuccess(attackTier, getEffectiveEnemyTier());
+    let damage = 0;
+    if (hit) {
+      damage = applyDamageToEnemy(rollDamage(attackTier));
+      const followerMax = getHitPoints(follower);
+      follower.currentHP = Math.min(followerMax, follower.currentHP + damage);
+    }
+    logEntry.hit = hit;
+    logEntry.damage = damage;
+  } else if (spell.type === "burst") {
+    const attackTier = shiftTierByRank(getEffectiveAttackTierFor(follower, tierBefore), 2);
+    const hit = rollSuccess(attackTier, getEffectiveEnemyTier());
+    let damage = 0;
+    if (hit) damage = applyDamageToEnemy(rollDamage(attackTier));
+    logEntry.hit = hit;
+    logEntry.damage = damage;
+  } else if (spell.type === "guaranteedDodge") {
+    currentCombat.activeEffects.push({ kind: "guaranteedDodge", rankBonus: 0, roundsRemaining: null, target: follower });
   }
 
-  currentCombat.log.push({
-    actor: "follower",
-    followerName: follower.name,
-    action: "cast",
-    skillId: skillId,
-    spellName: spell.name,
-    castKind: "yokaiForm"
-  });
+  currentCombat.log.push(logEntry);
 }
 
 function performFollowersTurn() {
@@ -1066,7 +1127,8 @@ function performFollowersTurn() {
     }
 
     const songOption = getFollowerSongOption(follower);
-    if (songOption && follower.currentMana >= MANA_CONFIG.costPerCast && getFollowerSongCount(follower) < 2) {
+    if (songOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
+      stopAllSongsFor(follower);
       performFollowerSongCast(follower, songOption.skillId, songOption.spell);
       return;
     }
@@ -1099,7 +1161,13 @@ function performFollowersTurn() {
     if (yokaiFormOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
       performFollowerYokaiFormCast(follower, yokaiFormOption.skillId, yokaiFormOption.spell);
       return;
-    }
+}
+
+const fetchFormOption = getFollowerFetchFormOption(follower);
+if (fetchFormOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
+  performFollowerFetchFormCast(follower, fetchFormOption.skillId, fetchFormOption.spell);
+  return;
+}
 
     const pick = getFollowerAttackPick(follower);
     useSkill(follower, pick.skillId);
@@ -1247,8 +1315,8 @@ function resolveEnemyAttack() {
   const defenderTier = getDefendingTierName(attackType, target);
   const adjustment = isPlayerTarget && currentCombat.playerDefending ? -DEFEND_SUCCESS_PENALTY : 0;
 
-  const targetHasGuaranteedDodge = isPlayerTarget && currentCombat.activeEffects.some((e) => e.kind === "guaranteedDodge");
-  const hit = targetHasGuaranteedDodge ? (consumeGuaranteedEffect("guaranteedDodge") ? false : rollSuccess(enemyEffectiveTier, defenderTier, adjustment)) : rollSuccess(enemyEffectiveTier, defenderTier, adjustment);
+  const targetHasGuaranteedDodge = currentCombat.activeEffects.some((e) => e.kind === "guaranteedDodge" && e.target === target);
+  const hit = targetHasGuaranteedDodge ? (consumeGuaranteedEffectFor(target) ? false : rollSuccess(enemyEffectiveTier, defenderTier, adjustment)) : rollSuccess(enemyEffectiveTier, defenderTier, adjustment);
   let damage = 0;
   let deflected = false;
 
@@ -1460,8 +1528,74 @@ function performPlayerAction(skillId) {
   return currentCombat;
 }
 
-const PERSISTENT_YOKAI_SPELL_IDS = ["fireForm", "earthForm", "windForm", "mistForm"];
+const PERSISTENT_YOKAI_SPELL_IDS = ["fireForm", "waterForm", "earthForm", "windForm", "mistForm", "lightningForm"];
 const YOKAI_FORM_DURATION = 5;
+
+const PERSISTENT_FETCH_SPELL_IDS = ["beithirForm", "baobhanSithForm", "cuSidheForm", "catSithForm", "stagForm", "nuckelaveeForm"];
+const FETCH_FORM_DURATION = 5;
+const FOLLOWER_FETCH_FORM_SPELL_IDS = ["beithirForm", "baobhanSithForm", "cuSidheForm", "catSithForm", "stagForm", "nuckelaveeForm"];
+
+function getFollowerFetchFormOption(follower) {
+  const alreadyTransformed = currentCombat.activeEffects.some(
+    (e) => e.kind === "fetchForm" && e.owner === follower
+  );
+  if (alreadyTransformed) return null;
+  const knownIds = (follower.knownSpells && follower.knownSpells.ancestralFetch) || [];
+  if (knownIds.length === 0) return null;
+  const allSpells = SPELLS.ancestralFetch || [];
+  const castable = allSpells.find((s) => FOLLOWER_FETCH_FORM_SPELL_IDS.includes(s.id) && knownIds.includes(s.id) && isSpellActive(follower, s.id));
+  return castable ? { skillId: "ancestralFetch", spell: castable } : null;
+}
+
+function performFollowerFetchFormCast(follower, skillId, spell) {
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  currentCombat.activeEffects = currentCombat.activeEffects.filter(
+    (e) => !((e.kind === "fetchForm" || e.kind === "yokaiForm") && e.owner === follower)
+  );
+  currentCombat.activeEffects.push({ kind: "fetchForm", spellName: spell.name, owner: follower, roundsRemaining: FETCH_FORM_DURATION, _justCast: true });
+
+  const logEntry = {
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    skillId: skillId,
+    spellName: spell.name,
+    castKind: "fetchForm"
+  };
+
+  if (spell.type === "buff") {
+    currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: FETCH_FORM_DURATION, owner: follower, _justCast: true });
+  } else if (spell.type === "acBuff") {
+    currentCombat.activeEffects.push({ kind: "acBuff", rankBonus: 1, roundsRemaining: FETCH_FORM_DURATION, owner: follower, _justCast: true });
+  } else if (spell.type === "damageDebuff") {
+    currentCombat.activeEffects.push({ kind: "damageDebuff", rankBonus: -1, roundsRemaining: FETCH_FORM_DURATION, _justCast: true });
+  } else if (spell.type === "lifetap") {
+    const attackTier = getEffectiveAttackTierFor(follower, tierBefore);
+    const hit = rollSuccess(attackTier, getEffectiveEnemyTier());
+    let damage = 0;
+    if (hit) {
+      damage = applyDamageToEnemy(rollDamage(attackTier));
+      const followerMax = getHitPoints(follower);
+      follower.currentHP = Math.min(followerMax, follower.currentHP + damage);
+    }
+    logEntry.hit = hit;
+    logEntry.damage = damage;
+  } else if (spell.type === "burst") {
+    const attackTier = shiftTierByRank(getEffectiveAttackTierFor(follower, tierBefore), 2);
+    const hit = rollSuccess(attackTier, getEffectiveEnemyTier());
+    let damage = 0;
+    if (hit) damage = applyDamageToEnemy(rollDamage(attackTier));
+    logEntry.hit = hit;
+    logEntry.damage = damage;
+  } else if (spell.type === "guaranteedDodge") {
+    currentCombat.activeEffects.push({ kind: "guaranteedDodge", rankBonus: 0, roundsRemaining: null, target: follower });
+  }
+
+  currentCombat.log.push(logEntry);
+}
 
 function performPlayerCast(skillId, spell, target) {
   if (!currentCombat || currentCombat.result) return currentCombat;
@@ -1470,7 +1604,7 @@ function performPlayerCast(skillId, spell, target) {
   const healTarget = target || playerCharacter;
 
   if (skillId === "wayYokai" && PERSISTENT_YOKAI_SPELL_IDS.includes(spell.id)) {
-    currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "yokaiForm");
+    currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => !((e.kind === "yokaiForm" || e.kind === "fetchForm") && !e.owner));
     currentCombat.activeEffects.push({ kind: "yokaiForm", spellName: spell.name, roundsRemaining: YOKAI_FORM_DURATION, _justCast: true });
   }
 

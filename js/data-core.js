@@ -15,12 +15,12 @@ const CULTURES = {
       "chief, and loyalty to one's bloodline is sacred.",
     magicName: "Ancestral Magic",
     magicDescription:
-      "Power inherited through bloodline. Three lines carry it in " +
+      "Power inherited through bloodline. Four lines carry it in " +
       "Cairntír today — Averick imbues weapons with elemental force, " +
       "Siuloir mends wounds, and the Line of Emyrs is rarer and " +
       "stranger, said to command the raw elements directly.",
     socialStructure: "Hereditary Clan Chief",
-    magicSkillIds: ["ancestralAverick", "ancestralSiuloir", "ancestralEmyrs"],
+    magicSkillIds: ["ancestralAverick", "ancestralSiuloir", "ancestralEmyrs", "ancestralFetch"],
     accentColor: "#7d5ba6",
     magicOrigin: "The Deverans hold to the misted Highlands and stone circles of their ancestors — and it is that same bloodline, passed down through the clans, that gives their magic its power."
   },
@@ -249,6 +249,7 @@ const SKILLS = {
   wayYokai: { id: "wayYokai", name: "Way of the Elements", category: "Magic", cultureLocked: "yorenshi", description: "A brief transformation, channeling the raw power of a natural element." },
   runeSong: { id: "runeSong", name: "Rune-Song of the Skald", category: "Magic", cultureLocked: "drakvarr", description: "A skald's verse, carried on nyckelharpa strings — song and rune woven together to hearten allies or wear down a foe." },
   riteGriot: { id: "riteGriot", name: "Rite of the Griot", category: "Magic", cultureLocked: "vandiri", description: "The griot's drum and kalimba, praise-singer and historian both — rhythm called on to heal, hearten, or wear down a foe." },
+  ancestralFetch: { id: "ancestralFetch", name: "Line of Alistair", category: "Magic", cultureLocked: "deveran", description: "A shapeshifter's bloodline gift, calling on the dread beasts and fae of Highland legend — kelpie, hound, stag, and worse — to lend their shape and strength for a time." },
 
   swords: { id: "swords", name: "Sword", category: "Weapon", description: "Skill with blades in close combat." },
   axes: { id: "axes", name: "Axe", category: "Weapon", description: "Heavy, cleaving strikes with an axe." },

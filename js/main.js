@@ -84,13 +84,30 @@ function playMusic(src) {
   } catch (e) {}
 }
 
+const activeSfxInstances = [];
+
 function playSfx(path) {
   if (!path) return;
   try {
     const sfx = new Audio(path);
     sfx.volume = 0.6;
+    activeSfxInstances.push(sfx);
+    sfx.addEventListener("ended", () => {
+      const idx = activeSfxInstances.indexOf(sfx);
+      if (idx !== -1) activeSfxInstances.splice(idx, 1);
+    });
     sfx.play().catch(() => {});
   } catch (e) {}
+}
+
+function stopAllSfx() {
+  activeSfxInstances.forEach((sfx) => {
+    try {
+      sfx.pause();
+      sfx.currentTime = 0;
+    } catch (e) {}
+  });
+  activeSfxInstances.length = 0;
 }
 
 function playWeaponSfx(skillId) {
@@ -104,7 +121,11 @@ function getElementalAttackSfxPath(spellName) {
     "Fire Form": "assets/audio/sfx/element-attack-fire.mp3",
     "Earth Form": "assets/audio/sfx/element-attack-earth.mp3",
     "Wind Form": "assets/audio/sfx/element-attack-wind.mp3",
-    "Mist Form": "assets/audio/sfx/element-attack-mist.mp3"
+    "Mist Form": "assets/audio/sfx/element-attack-mist.mp3",
+    "Beithir Form": "assets/audio/sfx/fetch-attack-beithir.mp3",
+    "Cù Sídhe Form": "assets/audio/sfx/fetch-attack-cu-sidhe.mp3",
+    "Stag Form": "assets/audio/sfx/fetch-attack-stag.mp3",
+    "Nuckelavee Form": "assets/audio/sfx/fetch-attack-nuckelavee.mp3"
   };
   return elementalAttackSfxMap[spellName] || null;
 }
@@ -130,6 +151,18 @@ function getYokaiTransformSfxPath(spellName) {
   return yokaiSfxMap[spellName] || null;
 }
 
+function getFetchTransformSfxPath(spellName) {
+  const fetchSfxMap = {
+    "Beithir Form": "assets/audio/sfx/fetch-transform-beithir.mp3",
+    "Baobhan Sìth Form": "assets/audio/sfx/fetch-transform-baobhan-sith.mp3",
+    "Cù Sídhe Form": "assets/audio/sfx/fetch-transform-cu-sidhe.mp3",
+    "Cat-Sìth Form": "assets/audio/sfx/fetch-transform-cat-sith.mp3",
+    "Stag Form": "assets/audio/sfx/fetch-transform-stag.mp3",
+    "Nuckelavee Form": "assets/audio/sfx/fetch-transform-nuckelavee.mp3"
+  };
+  return fetchSfxMap[spellName] || null;
+}
+
 function getSongSfxPath(spellName) {
   const songSfxMap = {
     "Lay of Mending": "assets/audio/sfx/song-lay-of-mending.mp3",
@@ -143,7 +176,19 @@ function getSongSfxPath(spellName) {
     "Taiko of the Storm's Approach": "assets/audio/sfx/song-taiko-storms-approach.mp3",
     "Taiko of the Raging Surf": "assets/audio/sfx/song-taiko-raging-surf.mp3",
     "Shakuhachi of the Wandering Dead": "assets/audio/sfx/song-shakuhachi-wandering-dead.mp3",
-    "Shakuhachi of the Hollow Wind": "assets/audio/sfx/song-shakuhachi-hollow-wind.mp3"
+    "Shakuhachi of the Hollow Wind": "assets/audio/sfx/song-shakuhachi-hollow-wind.mp3",
+    "Skald's Lay of Mending": "assets/audio/sfx/song-skalds-lay-of-mending.mp3",
+    "Skald's War-Verse": "assets/audio/sfx/song-skalds-war-verse.mp3",
+    "Saga of Vigor": "assets/audio/sfx/song-saga-of-vigor.mp3",
+    "Skald's Rune-Hymn": "assets/audio/sfx/song-skalds-rune-hymn.mp3",
+    "Talharpa's Deep Drone": "assets/audio/sfx/song-talharpas-deep-drone.mp3",
+    "Skald's Curse-Verse": "assets/audio/sfx/song-skalds-curse-verse.mp3",
+    "Griot's Healing Refrain": "assets/audio/sfx/song-griots-healing-refrain.mp3",
+    "Griot's War-Praise": "assets/audio/sfx/song-griots-war-praise.mp3",
+    "Griot's Song of Endurance": "assets/audio/sfx/song-griots-song-of-endurance.mp3",
+    "Griot's Rhythm of Power": "assets/audio/sfx/song-griots-rhythm-of-power.mp3",
+    "Kalimba's Deep Pulse": "assets/audio/sfx/song-kalimbas-deep-pulse.mp3",
+    "Griot's Lament": "assets/audio/sfx/song-griots-lament.mp3"
   };
   return songSfxMap[spellName] || null;
 }
@@ -2252,6 +2297,15 @@ const YOKAI_FORM_IMAGES = {
   "Lightning Form": "assets/images/effects/element-lightning.png"
 };
 
+const FETCH_FORM_IMAGES = {
+  "Beithir Form": "assets/images/effects/beithir-form.png",
+  "Baobhan Sìth Form": "assets/images/effects/baobhan-sith-form.png",
+  "Cù Sídhe Form": "assets/images/effects/cu-sidhe-form.png",
+  "Cat-Sìth Form": "assets/images/effects/cat-sith-form.png",
+  "Stag Form": "assets/images/effects/stag-form.png",
+  "Nuckelavee Form": "assets/images/effects/nuckelavee-form.png"
+};
+
 function getActorImageForLogEntry(entry) {
   if (entry.actor === "enemy") {
     const enemyTemplate = ENEMIES[currentCombat.enemyId];
@@ -2264,16 +2318,24 @@ function getActorImageForLogEntry(entry) {
     const follower = followers.find((f) => f.name === entry.followerName);
     if (follower) {
       const activeYokaiForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && e.owner === follower);
-      if (activeYokaiForm && YOKAI_FORM_IMAGES[activeYokaiForm.spellName]) {
-        return YOKAI_FORM_IMAGES[activeYokaiForm.spellName];
-      }
-      return follower.portraitImage || (RACES[follower.raceId] ? RACES[follower.raceId].image : null);
+    if (activeYokaiForm && YOKAI_FORM_IMAGES[activeYokaiForm.spellName]) {
+      return YOKAI_FORM_IMAGES[activeYokaiForm.spellName];
+    }
+    const activeFetchForm = currentCombat.activeEffects.find((e) => e.kind === "fetchForm" && e.owner === follower);
+    if (activeFetchForm && FETCH_FORM_IMAGES[activeFetchForm.spellName]) {
+      return FETCH_FORM_IMAGES[activeFetchForm.spellName];
+    }
+    return follower.portraitImage || (RACES[follower.raceId] ? RACES[follower.raceId].image : null);
     }
   }
   if (entry.actor === "player") {
     const activeYokaiForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && !e.owner);
     if (activeYokaiForm && YOKAI_FORM_IMAGES[activeYokaiForm.spellName]) {
       return YOKAI_FORM_IMAGES[activeYokaiForm.spellName];
+    }
+    const activeFetchForm = currentCombat.activeEffects.find((e) => e.kind === "fetchForm" && !e.owner);
+    if (activeFetchForm && FETCH_FORM_IMAGES[activeFetchForm.spellName]) {
+      return FETCH_FORM_IMAGES[activeFetchForm.spellName];
     }
   }
   return playerCharacter.portraitImage || (RACES[playerCharacter.raceId] ? RACES[playerCharacter.raceId].image : null);
@@ -2349,10 +2411,10 @@ function playRoundSequenceThenRender(entries) {
 if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
   let activeForm;
   if (entry.actor === "player") {
-    activeForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && !e.owner);
+    activeForm = currentCombat.activeEffects.find((e) => (e.kind === "yokaiForm" || e.kind === "fetchForm") && !e.owner);
   } else {
     const attackingFollower = followers.find((f) => f.name === entry.followerName);
-    activeForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && e.owner === attackingFollower);
+    activeForm = currentCombat.activeEffects.find((e) => (e.kind === "yokaiForm" || e.kind === "fetchForm") && e.owner === attackingFollower);
   }
   const elementalAttackSfx = activeForm ? getElementalAttackSfxPath(activeForm.spellName) : null;
   if (elementalAttackSfx) {
@@ -2369,9 +2431,12 @@ if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
 
     if (isSpellCast) {
       const yokaiSfx = entry.skillId === "wayYokai" ? getYokaiTransformSfxPath(entry.spellName) : null;
-      const songSfx = (entry.skillId === "ancestralSiuloir" || entry.skillId === "waySuijin") ? getSongSfxPath(entry.spellName) : null;
+      const fetchSfx = entry.skillId === "ancestralFetch" ? getFetchTransformSfxPath(entry.spellName) : null;
+      const songSfx = BARD_SKILL_IDS.includes(entry.skillId) ? getSongSfxPath(entry.spellName) : null;
       if (yokaiSfx) {
         playSfx(yokaiSfx);
+      } else if (fetchSfx) {
+        playSfx(fetchSfx);
       } else if (songSfx) {
         playSfx(songSfx);
       } else if (["heal", "hot", "groupHeal"].includes(entry.spellType)) {
@@ -2392,7 +2457,8 @@ if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
 
     if (entry.actor === "follower" && entry.action === "cast") {
       const followerYokaiSfx = entry.skillId === "wayYokai" ? getYokaiTransformSfxPath(entry.spellName) : null;
-      playSfx(followerYokaiSfx || getSpellSfxPath(entry.spellName));
+      const followerFetchSfx = entry.skillId === "ancestralFetch" ? getFetchTransformSfxPath(entry.spellName) : null;
+      playSfx(followerYokaiSfx || followerFetchSfx || getSpellSfxPath(entry.spellName));
     }
 
     if (entry.actor === "follower" && entry.action === "sing") {
@@ -2532,9 +2598,17 @@ const YOKAI_ATTACK_LABELS = {
    "Wind Form": "Gale Slash",
    "Mist Form": "Mist Strike"
 };
+const FETCH_ATTACK_LABELS = {
+   "Cù Sídhe Form": "Cù Sídhe's Bite",
+   "Stag Form": "Stag's Antlers",
+   "Nuckelavee Form": "Nuckelavee's Wrath"
+};
   const activeYokaiForm = currentCombat.activeEffects.find((e) => e.kind === "yokaiForm" && !e.owner);
+  const activeFetchForm = currentCombat.activeEffects.find((e) => e.kind === "fetchForm" && !e.owner);
   const equippedWeaponId = playerCharacter.equippedWeaponSkill || "unarmedCombat";
-  const attackLabel = (activeYokaiForm && YOKAI_ATTACK_LABELS[activeYokaiForm.spellName]) || SKILLS[equippedWeaponId].name;
+  const attackLabel = (activeYokaiForm && YOKAI_ATTACK_LABELS[activeYokaiForm.spellName])
+    || (activeFetchForm && FETCH_ATTACK_LABELS[activeFetchForm.spellName])
+    || SKILLS[equippedWeaponId].name;
   addChoiceButton(choicesEl, `Attack - ${attackLabel}`, () => {
     const startIndex = currentCombat.log.length;
     performPlayerAction(equippedWeaponId);
