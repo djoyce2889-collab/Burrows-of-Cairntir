@@ -60,6 +60,19 @@ const gameMusic = new Audio();
 gameMusic.loop = true;
 gameMusic.volume = musicVolume;
 
+const MUSIC_DUCK_MULTIPLIER = 0.2;
+const IS_APPLE_PLATFORM = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+
+function duckMusicForNarration() {
+  if (IS_APPLE_PLATFORM) return;
+  gameMusic.volume = musicVolume * MUSIC_DUCK_MULTIPLIER;
+}
+
+function restoreMusicVolume() {
+  if (IS_APPLE_PLATFORM) return;
+  gameMusic.volume = musicVolume;
+}
+
 function playMusic(src) {
   if (!src || !musicEnabled) return;
   try {
@@ -168,6 +181,9 @@ function getPreferredVoice() {
 const narrationAudio = new Audio();
 let narrationRequestId = 0;
 
+narrationAudio.addEventListener("ended", restoreMusicVolume);
+narrationAudio.addEventListener("pause", restoreMusicVolume);
+
 function stopAllNarration() {
   narrationRequestId += 1;
   try {
@@ -179,6 +195,7 @@ function stopAllNarration() {
       window.speechSynthesis.cancel();
     } catch (e) {}
   }
+  restoreMusicVolume();
 }
 
 function speak(text) {
@@ -198,6 +215,9 @@ function speak(text) {
     utterance.rate = 1;
     utterance.pitch = 1;
     utterance.volume = 1;
+    utterance.onstart = duckMusicForNarration;
+    utterance.onend = restoreMusicVolume;
+    utterance.onerror = restoreMusicVolume;
     const voice = getPreferredVoice();
     if (voice) utterance.voice = voice;
     window.speechSynthesis.speak(utterance);
@@ -252,18 +272,21 @@ function playRoomNarration(dungeonId, roomId, fallbackText) {
     if (!voiceEnabled) return;
 
     if (exists) {
-      try {
-        narrationAudio.src = path;
-        narrationAudio.volume = 1;
-        narrationAudio.play().catch(() => {
-          if (thisRequestId === narrationRequestId) speak(fallbackText);
-        });
-      } catch (e) {
-        speak(fallbackText);
-      }
-    } else {
-      speak(fallbackText);
-    }
+  try {
+    narrationAudio.src = path;
+    narrationAudio.volume = 1;
+    duckMusicForNarration();
+    narrationAudio.play().catch(() => {
+      restoreMusicVolume();
+      if (thisRequestId === narrationRequestId) speak(fallbackText);
+    });
+  } catch (e) {
+    restoreMusicVolume();
+    speak(fallbackText);
+  }
+} else {
+  speak(fallbackText);
+}
   });
 }
 
@@ -1956,7 +1979,7 @@ function attemptDiscoverOrLearn(room, choice) {
   } else if (choice.type === "persuade") {
     tierName = getCharacterSkillTier(playerCharacter, "persuasion").name;
     difficulty = "Adept";
-    if (playerCharacter.traits && playerCharacter.traits.includes("silverTongue")) {
+    if (playerCharacter.traits && playerCharacter.traits.includes("honeyedTongue")) {
       adjustment = 0.15;
     }
   } else {
@@ -2052,9 +2075,9 @@ function buildRoomChoices(room) {
         useSkill(playerCharacter, choice.skillId);
         const hasSureFooted = choice.skillId === "survival" &&
           playerCharacter.traits && playerCharacter.traits.includes("surefooted");
-        const hasSilverTongue = choice.skillId === "persuasion" &&
-          playerCharacter.traits && playerCharacter.traits.includes("silverTongue");
-        const bonus = (hasSureFooted || hasSilverTongue) ? 0.15 : 0;
+        const hasHoneyedTongue = choice.skillId === "persuasion" &&
+          playerCharacter.traits && playerCharacter.traits.includes("honeyedTongue");
+        const bonus = (hasSureFooted || hasHoneyedTongue) ? 0.15 : 0;
         const success = rollSuccess(tierBeforeName, choice.difficulty, bonus);
         renderDungeonRoom(success ? choice.successTarget : choice.failureTarget);
       });

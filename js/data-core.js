@@ -211,12 +211,14 @@ const TRAITS = {
   faeCunning: { id: "faeCunning", name: "Fae Cunning", description: "A quick, slippery wit — good for talking around trouble." },
   adaptable: { id: "adaptable", name: "Adaptable", description: "Picks up new skills a little faster than most." },
   ironWill: { id: "ironWill", name: "Iron Will", description: "Steady under fear, pain, and the pull of strange magic." },
-  silverTongue: { id: "silverTongue", name: "Silver Tongue", description: "A natural, persuasive way with words and people." },
+  honeyedTongue: { id: "honeyedTongue", name: "Honeyed Tongue", description: "A natural, persuasive way with words and people." },
   surefooted: { id: "surefooted", name: "Sure-Footed", description: "Steady on cliffs, ice, and ground that shifts underfoot." },
   nightsight: { id: "nightsight", name: "Nightsight", description: "Sees clearly in near-darkness, where others go blind." },
   beastkinship: { id: "beastkinship", name: "Kinship with Beasts", description: "Animals read as calm, trusting, or wary around you — rarely hostile without cause." },
   quickfooted: { id: "quickfooted", name: "Quickfooted", description: "Instinct and agility let you slip free of blows before they land — a permanent boost to your Dodge." },
-  deepWell: { id: "deepWell", name: "Deep Well", description: "A reservoir of magical strength deeper than most carry — permanently increases your maximum mana." }
+  deepWell: { id: "deepWell", name: "Deep Well", description: "A reservoir of magical strength deeper than most carry — permanently increases your maximum mana." },
+  weightedStrike: { id: "weightedStrike", name: "Weighted Strike", description: "A natural sense for where a blow lands hardest — permanently increases your physical weapon damage." },
+  arcaneGift: { id: "arcaneGift", name: "Arcane Gift", description: "A natural affinity for raw magic, sharpening the force behind every spell you cast — permanently increases your spell damage." }
 };
 
 const TRAIT_SELECTION_MIN = 2;
@@ -338,6 +340,14 @@ const ARMOR_MANA_BONUS = {
 // ----------------------------------------------------------
 const TRAIT_MANA_BONUS = {
   deepWell: 15
+};
+
+const TRAIT_SPELL_DAMAGE_RANK_BONUS = {
+  arcaneGift: 1
+};
+
+const TRAIT_ATTACK_DAMAGE_RANK_BONUS = {
+  weightedStrike: 1
 };
 
 const MANA_CONFIG = {

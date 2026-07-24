@@ -188,14 +188,16 @@ function getEffectiveAttackTierFor(character, baseTierName) {
   const equipBonus = character.weaponEnchantment ? 1 : 0;
   const styleBonus = getCombatStyleBonusFor(character).attackBonus;
   const craftedBonus = getCraftedItemBonus(character, character.equippedWeaponSkill);
-  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus", character) + equipBonus + styleBonus + craftedBonus);
+  const traitBonus = (character.traits && character.traits.includes("weightedStrike")) ? TRAIT_ATTACK_DAMAGE_RANK_BONUS.weightedStrike : 0;
+  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus", character) + equipBonus + styleBonus + craftedBonus + traitBonus);
 }
 
 function getEffectiveSpellDamageTierFor(character, baseTierName) {
   const baseAttackTier = getEffectiveAttackTierFor(character, baseTierName);
   const spellBonus = getCombatStyleBonusFor(character).spellDamageBonus || 0;
   const songBonus = getEffectRankSum("spellDamageBuff", character);
-  return shiftTierByRank(baseAttackTier, spellBonus + songBonus);
+  const traitBonus = (character.traits && character.traits.includes("arcaneGift")) ? TRAIT_SPELL_DAMAGE_RANK_BONUS.arcaneGift : 0;
+  return shiftTierByRank(baseAttackTier, spellBonus + songBonus + traitBonus);
 }
 
 function getEffectiveHealTierFor(character, baseTierName) {
@@ -264,12 +266,14 @@ function getEffectivePlayerAttackTier(baseTierName) {
   const equipBonus = playerCharacter.weaponEnchantment ? 1 : 0;
   const styleBonus = getPlayerCombatStyleBonus().attackBonus;
   const craftedBonus = getCraftedItemBonus(playerCharacter, playerCharacter.equippedWeaponSkill);
-  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus + craftedBonus);
+  const traitBonus = (playerCharacter.traits && playerCharacter.traits.includes("weightedStrike")) ? TRAIT_ATTACK_DAMAGE_RANK_BONUS.weightedStrike : 0;
+  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus + craftedBonus + traitBonus);
 }
 
 function getEffectivePlayerSpellDamageTier(baseTierName) {
   const baseAttackTier = getEffectivePlayerAttackTier(baseTierName);
   const spellBonus = getPlayerCombatStyleBonus().spellDamageBonus || 0;
+  const traitBonus = (playerCharacter.traits && playerCharacter.traits.includes("arcaneGift")) ? TRAIT_SPELL_DAMAGE_RANK_BONUS.arcaneGift : 0;
   const songBonus = getEffectRankSum("spellDamageBuff");
   return shiftTierByRank(baseAttackTier, spellBonus + songBonus);
 }
@@ -578,7 +582,7 @@ function tickCombatEffects() {
       const heavyTier = shiftTierByRank(effect.casterTierName || "Novice", 2 + kinshipBonus);
       const dmg = applyDamageToEnemy(rollDamage(heavyTier));
       currentCombat.log.push({ actor: "effect", kind: "companion", damage: dmg });
-    } else if (effect.kind === "hot") {
+    } else if (effect.kind === "hot" && owner.currentHP > 0) {
       const healTargets = effect.partyWide ? [playerCharacter, ...getActiveFollowers()] : [owner];
       healTargets.forEach((target) => {
         if (target.currentHP <= 0) return;
@@ -1580,10 +1584,11 @@ function performPlayerCast(skillId, spell, target) {
     logEntry.healAmount = healAmount;
     logEntry.healTargetName = healTarget === playerCharacter ? null : healTarget.name;
   } else if (spell.type === "enchant" || spell.type === "buff") {
+    const buffDuration = skillId === "ancestralAverick" ? 5 : SPELL_EFFECT_DURATION;
     currentCombat.activeEffects.push({
       kind: "playerAttackBonus",
       rankBonus: 1,
-      roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
+      roundsRemaining: isSong ? null : buffDuration,
       source: isSong ? "song" : undefined,
       spellName: spell.name,
       partyWide: isSong
@@ -1849,9 +1854,12 @@ function describeLogEntry(entry) {
     if (entry.kind === "wardTriggered") return `${entry.wardName} answers the blow — ${entry.effectText}.`;
     if (entry.kind === "wardOfTheDeepSave") return `Ward of the Deep pulls ${entry.targetName} back from the edge, restoring them well beyond an ordinary revival.`;
     if (entry.kind === "songStopped") {
+      const isYou = !entry.ownerName || entry.ownerName === playerCharacter.name;
+      const possessive = isYou ? "your" : `${entry.ownerName}'s`;
+      const subject = isYou ? "You let" : `${entry.ownerName} lets`;
       return entry.outOfMana
-        ? `${entry.spellName} fades as your mana runs dry.`
-        : `You let ${entry.spellName} fade to silence.`;
+        ? `${entry.spellName} fades as ${possessive} mana runs dry.`
+        : `${subject} ${entry.spellName} fade to silence.`;
     }
     if (entry.kind === "songContinues") return `${entry.spellName} continues to play, its magic humming steadily.`;
     if (entry.kind === "enchantProc") {
