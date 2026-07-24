@@ -60,16 +60,13 @@ const gameMusic = new Audio();
 gameMusic.loop = true;
 gameMusic.volume = musicVolume;
 
-const MUSIC_DUCK_MULTIPLIER = 0.2;
-const IS_APPLE_PLATFORM = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+const MUSIC_DUCK_MULTIPLIER = 0.03;
 
 function duckMusicForNarration() {
-  if (IS_APPLE_PLATFORM) return;
   gameMusic.volume = musicVolume * MUSIC_DUCK_MULTIPLIER;
 }
 
 function restoreMusicVolume() {
-  if (IS_APPLE_PLATFORM) return;
   gameMusic.volume = musicVolume;
 }
 
@@ -199,6 +196,7 @@ function stopAllNarration() {
 }
 
 function speak(text) {
+  return;
   if (!voiceEnabled || !text) return;
   if (!("speechSynthesis" in window)) return;
 
@@ -260,6 +258,7 @@ function checkAudioExists(path) {
 }
 
 function playRoomNarration(dungeonId, roomId, fallbackText) {
+  return;
   if (!voiceEnabled) return;
 
   stopAllNarration();
