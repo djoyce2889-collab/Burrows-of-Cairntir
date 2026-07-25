@@ -226,6 +226,13 @@ function getCombatStyleBonusFor(character) {
     }
   }
 
+  if (character.chronicleBonuses) {
+    result.attackBonus = (result.attackBonus || 0) + (character.chronicleBonuses.attackBonus || 0);
+    result.spellDamageBonus = (result.spellDamageBonus || 0) + (character.chronicleBonuses.spellDamageBonus || 0);
+    result.healBonus = (result.healBonus || 0) + (character.chronicleBonuses.healBonus || 0);
+    result.supportBonus = (result.supportBonus || 0) + (character.chronicleBonuses.supportBonus || 0);
+  }
+
   return result;
 }
 
@@ -322,6 +329,13 @@ function getPlayerCombatStyleBonus() {
 
   if (playerCharacter.combatStyle === "dual" && !playerCharacter.equippedOffhandSkill) {
     result.attackBonus = 0;
+  }
+
+  if (playerCharacter.chronicleBonuses) {
+    result.attackBonus = (result.attackBonus || 0) + (playerCharacter.chronicleBonuses.attackBonus || 0);
+    result.spellDamageBonus = (result.spellDamageBonus || 0) + (playerCharacter.chronicleBonuses.spellDamageBonus || 0);
+    result.healBonus = (result.healBonus || 0) + (playerCharacter.chronicleBonuses.healBonus || 0);
+    result.supportBonus = (result.supportBonus || 0) + (playerCharacter.chronicleBonuses.supportBonus || 0);
   }
 
   return result;

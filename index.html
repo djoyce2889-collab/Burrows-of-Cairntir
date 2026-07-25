@@ -17,6 +17,10 @@
     <div class="cabinet-corner corner-tr"></div>
     <div class="cabinet-corner corner-bl"></div>
     <div class="cabinet-corner corner-br"></div>
+    <div class="cabinet-edge edge-top"></div>
+    <div class="cabinet-edge edge-bottom"></div>
+    <div class="cabinet-edge edge-left"></div>
+    <div class="cabinet-edge edge-right"></div>
     <div id="cabinet-title">BURROWS OF CAIRNTÍR</div>
     <div class="cabinet-controls">
       <button id="btn-toggle-voice" class="voice-toggle">🗣</button>
@@ -128,6 +132,14 @@
           <button class="choice-button" id="btn-step5-back">Back</button>
           <button class="choice-button" id="btn-step5-next">Next</button>
         </div>
+      </div>
+    </section>
+
+    <section id="screen-creation-chronicle" class="screen">
+      <div id="panel">
+        <span class="cc-label">Before You Descend</span>
+        <div id="chronicle-story-text" class="cc-skill-count"></div>
+        <div id="chronicle-choices" class="cc-grid"></div>
       </div>
     </section>
 
@@ -380,6 +392,7 @@
   <script src="js/data-spells.js"></script>
   <script src="js/data-equipment.js"></script>
   <script src="js/data-dungeons.js"></script>
+  <script src="js/data-chronicle.js"></script>
   <script src="js/character.js"></script>
   <script src="js/combat.js"></script>
   <script src="js/main.js"></script>

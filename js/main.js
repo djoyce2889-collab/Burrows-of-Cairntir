@@ -16,7 +16,11 @@ const creationState = {
   traits: [],
   combatStyle: "single",
   portraitImage: null,
-  startingSpellIds: []
+  startingSpellIds: [],
+  chronicleIndex: 0,
+  chronicleAnswers: [],
+  chronicleQ1Answer: null,
+  chronicleWildcardMap: null
 };
 
 const CREATION_STEP_SCREENS = [
@@ -25,6 +29,7 @@ const CREATION_STEP_SCREENS = [
   "screen-creation-step3",
   "screen-creation-step4",
   "screen-creation-step5",
+  "screen-creation-chronicle",
   "screen-creation-review"
 ];
 
@@ -428,7 +433,8 @@ function getAllSaveSummaries() {
         summaries.push({
           slot: slot,
           name: data.playerCharacter.name,
-          raceId: data.playerCharacter.raceId
+          raceId: data.playerCharacter.raceId,
+          portraitImage: data.playerCharacter.portraitImage
         });
       }
     } catch (e) {}
@@ -501,9 +507,11 @@ function renderChooseHeroScreen() {
 
   summaries.forEach((summary) => {
     const race = RACES[summary.raceId];
+    const portraitSrc = summary.portraitImage || (race ? race.image : null);
     const card = document.createElement("div");
     card.className = "cc-card";
     card.innerHTML = `
+      ${portraitSrc ? `<img src="${portraitSrc}" class="cc-portrait-thumb" alt="${summary.name}" />` : ""}
       <div class="cc-card-name">${summary.name}</div>
       <div class="cc-card-desc">${race ? race.name : ""}</div>
     `;
@@ -608,7 +616,7 @@ function setGameViewportImage(src, altText, glow, shake, flash, roomFade) {
       img.style.display = "block";
       placeholder.style.display = "none";
       img.classList.remove("fading-out");
-    }, 250);
+    }, 120);
   } else {
     img.style.display = "none";
     placeholder.style.display = "flex";
@@ -730,9 +738,188 @@ function renderCombatStyleGrid() {
 
 function goToCreationStep(index) {
   showScreen(CREATION_STEP_SCREENS[index]);
+  if (CREATION_STEP_SCREENS[index] === "screen-creation-chronicle") {
+    creationState.chronicleIndex = 0;
+    creationState.chronicleAnswers = [];
+    creationState.chronicleQ1Answer = null;
+    creationState.chronicleWildcardMap = shuffleWildcardStatMap();
+    renderChronicleStep();
+  }
   if (CREATION_STEP_SCREENS[index] === "screen-creation-review") {
     renderReviewScreen();
   }
+}
+
+const CHRONICLE_STEP_ORDER = [
+  "q1_origin", "q2_followup", "q3_race", "q4_weaponSkill", "q5_magicSkill",
+  "q6_combatStyle", "q7_trait", "q8_lineage", "q9_fear", "q10_wildcard"
+];
+
+function getChronicleWeaponSkillId() {
+  return creationState.skills.find((id) => SKILLS[id] && SKILLS[id].category === "Weapon") || null;
+}
+
+function getChronicleMagicSkillId() {
+  return creationState.skills.find((id) => SKILLS[id] && SKILLS[id].category === "Magic") || null;
+}
+
+function getChronicleStatTotalsSoFar() {
+  const totals = { spellDamageBonus: 0, healBonus: 0, supportBonus: 0, attackBonus: 0, maxHpBonus: 0 };
+  creationState.chronicleAnswers.forEach((a) => {
+    if (a.stat && totals[a.stat] !== undefined) totals[a.stat] += 1;
+  });
+  return totals;
+}
+
+function getChronicleTraitToAsk() {
+  const eligible = creationState.traits.filter((id) => CHRONICLE_QUESTIONS.q7_trait[id]);
+  if (eligible.length === 0) return null;
+  const totals = getChronicleStatTotalsSoFar();
+  let leadStat = null;
+  let leadValue = 0;
+  Object.keys(totals).forEach((stat) => {
+    if (totals[stat] > leadValue) {
+      leadValue = totals[stat];
+      leadStat = stat;
+    }
+  });
+  if (leadStat) {
+    const match = eligible.find((id) =>
+      CHRONICLE_QUESTIONS.q7_trait[id].options.some((opt) => opt.stat === leadStat)
+    );
+    if (match) return match;
+  }
+  return eligible[0];
+}
+
+function getChronicleMostPickedCulture() {
+  const counts = {};
+  (creationState.startingSpellIds || []).forEach((spellId) => {
+    const skillId = getSkillIdForSpellId(spellId);
+    const skill = skillId && SKILLS[skillId];
+    if (skill && skill.cultureLocked) {
+      counts[skill.cultureLocked] = (counts[skill.cultureLocked] || 0) + 1;
+    }
+  });
+  let best = creationState.culture;
+  let bestCount = 0;
+  Object.keys(counts).forEach((cultureId) => {
+    if (counts[cultureId] > bestCount) {
+      bestCount = counts[cultureId];
+      best = cultureId;
+    }
+  });
+  return best;
+}
+
+function recordChronicleAnswer(questionId, optionId, stat) {
+  creationState.chronicleAnswers.push({ questionId: questionId, optionId: optionId, stat: stat || null });
+}
+
+function advanceChronicle() {
+  creationState.chronicleIndex++;
+  if (creationState.chronicleIndex >= CHRONICLE_STEP_ORDER.length) {
+    creationState.chronicleBonuses = getChronicleBonuses(creationState.chronicleAnswers);
+    renderChronicleSummary();
+    return;
+  }
+  renderChronicleStep();
+}
+
+function renderChronicleSummary() {
+  const storyEl = document.getElementById("chronicle-story-text");
+  const choicesEl = document.getElementById("chronicle-choices");
+  storyEl.textContent = getChronicleSummaryText(creationState.chronicleBonuses);
+  choicesEl.innerHTML = "";
+  addChoiceButton(choicesEl, "Set out", () => {
+    goToCreationStep(CREATION_STEP_SCREENS.indexOf("screen-creation-review"));
+  });
+}
+
+function renderChronicleStep() {
+  const storyEl = document.getElementById("chronicle-story-text");
+  const choicesEl = document.getElementById("chronicle-choices");
+  choicesEl.innerHTML = "";
+
+  const stepKey = CHRONICLE_STEP_ORDER[creationState.chronicleIndex];
+  let prompt = "";
+  let options = [];
+
+  if (stepKey === "q1_origin") {
+    const race = RACES[creationState.race];
+    const style = COMBAT_STYLES[creationState.combatStyle];
+    prompt = CHRONICLE_QUESTIONS.q1_origin.prompt
+      .replace("{race}", race ? race.name : "someone")
+      .replace("{styleFlavor}", style ? style.description.toLowerCase() : "someone who gets by");
+    options = CHRONICLE_QUESTIONS.q1_origin.options;
+  } else if (stepKey === "q2_followup") {
+    const branch = CHRONICLE_QUESTIONS.q2_followup[creationState.chronicleQ1Answer];
+    prompt = branch.prompt;
+    options = branch.options;
+  } else if (stepKey === "q3_race") {
+    const branch = CHRONICLE_QUESTIONS.q3_race[creationState.race];
+    if (!branch) { advanceChronicle(); return; }
+    prompt = branch.prompt;
+    options = branch.options;
+  } else if (stepKey === "q4_weaponSkill") {
+    const weaponId = getChronicleWeaponSkillId();
+    if (!weaponId) {
+      const fb = CHRONICLE_QUESTIONS.q4_weaponSkill.noSkillFallback;
+      recordChronicleAnswer(stepKey, fb.id, fb.stat);
+      advanceChronicle();
+      return;
+    }
+    prompt = CHRONICLE_QUESTIONS.q4_weaponSkill.prompt.replace("{weaponSkillName}", SKILLS[weaponId].name);
+    options = CHRONICLE_QUESTIONS.q4_weaponSkill.options;
+  } else if (stepKey === "q5_magicSkill") {
+    const magicId = getChronicleMagicSkillId();
+    if (!magicId) {
+      const fb = CHRONICLE_QUESTIONS.q5_magicSkill.noSkillFallback;
+      recordChronicleAnswer(stepKey, fb.id, fb.stat);
+      advanceChronicle();
+      return;
+    }
+    prompt = CHRONICLE_QUESTIONS.q5_magicSkill.prompt.replace("{magicSkillName}", SKILLS[magicId].name);
+    options = CHRONICLE_QUESTIONS.q5_magicSkill.options;
+  } else if (stepKey === "q6_combatStyle") {
+    const branch = CHRONICLE_QUESTIONS.q6_combatStyle[creationState.combatStyle];
+    if (!branch) { advanceChronicle(); return; }
+    prompt = branch.prompt;
+    options = branch.options;
+  } else if (stepKey === "q7_trait") {
+    const traitId = getChronicleTraitToAsk();
+    if (!traitId) { advanceChronicle(); return; }
+    const branch = CHRONICLE_QUESTIONS.q7_trait[traitId];
+    prompt = branch.prompt;
+    options = branch.options;
+  } else if (stepKey === "q8_lineage") {
+    const cultureId = getChronicleMostPickedCulture();
+    if (!cultureId || !CHRONICLE_LINEAGES[cultureId]) { advanceChronicle(); return; }
+    prompt = CHRONICLE_LINEAGE_PROMPTS[cultureId];
+    options = CHRONICLE_LINEAGES[cultureId];
+  } else if (stepKey === "q9_fear") {
+    prompt = CHRONICLE_QUESTIONS.q9_fear.prompt;
+    options = CHRONICLE_QUESTIONS.q9_fear.options;
+  } else if (stepKey === "q10_wildcard") {
+    prompt = CHRONICLE_QUESTIONS.q10_wildcard.prompt;
+    options = CHRONICLE_QUESTIONS.q10_wildcard.options;
+  }
+
+  storyEl.textContent = prompt;
+
+  options.forEach((opt) => {
+    addChoiceButton(choicesEl, opt.label, () => {
+      let stat = opt.stat;
+      if (stepKey === "q10_wildcard") {
+        stat = creationState.chronicleWildcardMap[opt.id];
+      }
+      recordChronicleAnswer(stepKey, opt.id, stat);
+      if (stepKey === "q1_origin") {
+        creationState.chronicleQ1Answer = opt.id;
+      }
+      advanceChronicle();
+    });
+  });
 }
 
 function resetCreationState(mode) {
@@ -1161,7 +1348,8 @@ function attemptConfirmCharacter() {
     creationState.traits,
     creationState.combatStyle,
     creationState.portraitImage,
-    creationState.startingSpellIds
+    creationState.startingSpellIds,
+    creationState.chronicleBonuses
   );
 
   if (creationState.mode === "player") {

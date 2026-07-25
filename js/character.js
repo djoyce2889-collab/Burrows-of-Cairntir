@@ -12,7 +12,7 @@ function getSkillIdForSpellId(spellId) {
   return null;
 }
 
-function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, combatStyle, portraitImage, startingSpellIds) {
+function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, combatStyle, portraitImage, startingSpellIds, chronicleBonuses) {
   const skills = {};
   startingSkillIds.forEach((skillId) => {
     skills[skillId] = { timesUsed: 0 };
@@ -86,6 +86,7 @@ function createCharacter(name, raceId, cultureId, startingSkillIds, traitIds, co
     traits: traitIds.slice(),
     combatStyle: combatStyle || "single",
     portraitImage: portraitImage || null,
+    chronicleBonuses: chronicleBonuses || null,
     equippedWeaponSkill: startingWeaponId,
     equippedArmorSkill: startingArmorId,
     equippedShield: equippedShieldStart,
@@ -279,7 +280,8 @@ function getHitPoints(character) {
   const hpAdvantage = ADVANTAGES.hitPoints;
   const survivalTier = getHighestTierAmong(character, hpAdvantage.drivenBy);
   const bonus = hpAdvantage.tierBonus[survivalTier.name] || 0;
-  return hpAdvantage.base + bonus;
+  const chronicleBonus = (character.chronicleBonuses && character.chronicleBonuses.maxHpBonus) || 0;
+  return hpAdvantage.base + bonus + chronicleBonus;
 }
 
 /**
