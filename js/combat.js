@@ -607,6 +607,11 @@ function tickCombatEffects() {
   currentCombat.activeEffects.forEach((effect) => {
     const owner = effect.owner || playerCharacter;
 
+    if (effect.source === "song" && owner.currentHP <= 0) {
+      effect._ownerDowned = true;
+      return;
+    }
+
     if (effect.source === "song") {
       effect.roundsSung = (effect.roundsSung || 0) + 1;
     }
@@ -665,6 +670,14 @@ function tickCombatEffects() {
         fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
       }
       currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: effect.spellName, outOfMana: true, ownerName: owner.name });
+      return false;
+    }
+
+    if (effect._ownerDowned) {
+      if (effect.kind === "fortify" && effect.bonusHP) {
+        fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
+      }
+      currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: effect.spellName, ownerDowned: true, ownerName: owner.name });
       return false;
     }
     if (effect._justCast) {
@@ -1996,6 +2009,9 @@ function describeLogEntry(entry) {
       const isYou = !entry.ownerName || entry.ownerName === playerCharacter.name;
       const possessive = isYou ? "your" : `${entry.ownerName}'s`;
       const subject = isYou ? "You let" : `${entry.ownerName} lets`;
+      if (entry.ownerDowned) {
+        return `${entry.spellName} falls silent as ${possessive} strength gives out.`;
+      }
       return entry.outOfMana
         ? `${entry.spellName} fades as ${possessive} mana runs dry.`
         : `${subject} ${entry.spellName} fade to silence.`;

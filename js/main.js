@@ -139,6 +139,52 @@ function getSpellSfxPath(spellName) {
   return null;
 }
 
+function getGenericSpellTypeSfxPath(spellType) {
+  const typeSfxMap = {
+    damage: "assets/audio/sfx/generic-damage-cast.mp3",
+    buff: "assets/audio/sfx/generic-buff-cast.mp3",
+    debuff: "assets/audio/sfx/generic-debuff-cast.mp3",
+    lifetap: "assets/audio/sfx/generic-lifetap-cast.mp3",
+    fortify: "assets/audio/sfx/generic-fortify-cast.mp3",
+    guard: "assets/audio/sfx/generic-guard-cast.mp3",
+    burst: "assets/audio/sfx/generic-burst-cast.mp3",
+    execute: "assets/audio/sfx/generic-execute-cast.mp3",
+    dot: "assets/audio/sfx/generic-dot-cast.mp3",
+    spellDamageBuff: "assets/audio/sfx/generic-spelldamagebuff-cast.mp3",
+    acBuff: "assets/audio/sfx/generic-acbuff-cast.mp3",
+    dodgeBuff: "assets/audio/sfx/generic-dodgebuff-cast.mp3",
+    defenseDebuff: "assets/audio/sfx/generic-defensedebuff-cast.mp3",
+    accuracyDebuff: "assets/audio/sfx/generic-accuracydebuff-cast.mp3",
+    damageAmpDebuff: "assets/audio/sfx/generic-damageampdebuff-cast.mp3",
+    spellLock: "assets/audio/sfx/generic-spelllock-cast.mp3",
+    stun: "assets/audio/sfx/generic-stun-cast.mp3",
+    fear: "assets/audio/sfx/generic-fear-cast.mp3",
+    guaranteedHit: "assets/audio/sfx/generic-guaranteedhit-cast.mp3",
+    guaranteedSpellHit: "assets/audio/sfx/generic-guaranteedspellhit-cast.mp3",
+    guaranteedDodge: "assets/audio/sfx/generic-guaranteeddodge-cast.mp3",
+    guaranteedStun: "assets/audio/sfx/generic-guaranteedstun-cast.mp3",
+    guaranteedFollowerAction: "assets/audio/sfx/generic-guaranteedfolloweraction-cast.mp3",
+    manaRefund: "assets/audio/sfx/generic-manarefund-cast.mp3",
+    absorb: "assets/audio/sfx/generic-absorb-cast.mp3",
+    groupAbsorb: "assets/audio/sfx/generic-groupabsorb-cast.mp3",
+    resurrect: "assets/audio/sfx/generic-resurrect-cast.mp3",
+    autoRevive: "assets/audio/sfx/generic-autorevive-cast.mp3",
+    thornward: "assets/audio/sfx/generic-thornward-cast.mp3",
+    companion: "assets/audio/sfx/generic-companion-cast.mp3",
+    cooldownBuff: "assets/audio/sfx/generic-cooldownbuff-cast.mp3",
+    curseBack: "assets/audio/sfx/generic-curseback-cast.mp3",
+    buffAndDebuff: "assets/audio/sfx/generic-buffanddebuff-cast.mp3",
+    undeadSlayer: "assets/audio/sfx/generic-undeadslayer-cast.mp3",
+    powerSteal: "assets/audio/sfx/generic-powersteal-cast.mp3",
+    doubleDrain: "assets/audio/sfx/generic-doubledrain-cast.mp3"
+  };
+  return typeSfxMap[spellType] || null;
+}
+
+function getSpellSfxPathWithType(spellName, spellType) {
+  return getSpellSfxPath(spellName) || getGenericSpellTypeSfxPath(spellType);
+}
+
 function getYokaiTransformSfxPath(spellName) {
   const yokaiSfxMap = {
     "Fire Form": "assets/audio/sfx/element-transform-fire.mp3",
@@ -2442,7 +2488,7 @@ if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
       } else if (["heal", "hot", "groupHeal"].includes(entry.spellType)) {
         playSfx(HEAL_CAST_SFX);
       } else {
-        playSfx(getSpellSfxPath(entry.spellName));
+        playSfx(getSpellSfxPathWithType(entry.spellName, entry.spellType));
       }
     }
 
