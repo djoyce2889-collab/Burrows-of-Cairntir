@@ -156,10 +156,12 @@ function getAdaptiveScaling() {
  * only one instance of any specific curse can ever be active at
  * once, no matter who cast it or how many times it's recast.
  */
-function pushDotEffect(newEffect) {
-  currentCombat.activeEffects = currentCombat.activeEffects.filter(
-    (e) => !(e.kind === "dot" && e.spellName === newEffect.spellName)
-  );
+function pushDotEffect(newEffect, allowStack) {
+  if (!allowStack) {
+    currentCombat.activeEffects = currentCombat.activeEffects.filter(
+      (e) => !(e.kind === "dot" && e.spellName === newEffect.spellName)
+    );
+  }
   currentCombat.activeEffects.push(newEffect);
 }
 
@@ -191,8 +193,9 @@ function setSpellCooldown(character, spellId, rounds) {
 
 function tickSpellCooldowns() {
   if (!currentCombat.spellCooldowns) return;
+  const nimbleRecovery = playerCharacter.equippedArmorSkill === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "nimbleRecovery");
   currentCombat.spellCooldowns.forEach((c) => {
-    c.roundsRemaining -= 1;
+    c.roundsRemaining -= (nimbleRecovery && c.character === playerCharacter) ? 2 : 1;
   });
   currentCombat.spellCooldowns = currentCombat.spellCooldowns.filter((c) => c.roundsRemaining > 0);
 }
@@ -325,6 +328,8 @@ function getPlayerCombatStyleBonus() {
   } else if (needsShield && playerCharacter.equippedShield) {
     const shieldTierName = getCharacterSkillTier(playerCharacter, "shields").name;
     result.defenseBonus += SHIELD_TIER_BONUS[shieldTierName] || 0;
+    if (hasChosenPerk(playerCharacter, "shields", "bracedStance")) result.defenseBonus += 1;
+    if (hasChosenPerk(playerCharacter, "shields", "unbreakableWall")) result.defenseBonus += 1;
   }
 
   if (playerCharacter.combatStyle === "dual" && !playerCharacter.equippedOffhandSkill) {
@@ -346,7 +351,13 @@ function getEffectivePlayerAttackTier(baseTierName) {
   const styleBonus = getPlayerCombatStyleBonus().attackBonus;
   const craftedBonus = getCraftedItemBonus(playerCharacter, playerCharacter.equippedWeaponSkill);
   const traitBonus = (playerCharacter.traits && playerCharacter.traits.includes("weightedStrike")) ? TRAIT_ATTACK_DAMAGE_RANK_BONUS.weightedStrike : 0;
-  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus + craftedBonus + traitBonus);
+  let weaponMasteryBonus = 0;
+  const equippedWeapon = playerCharacter.equippedWeaponSkill;
+  if (equippedWeapon === "swords" && hasChosenPerk(playerCharacter, "swords", "mastersForm")) weaponMasteryBonus += 1;
+  if (equippedWeapon === "axes" && hasChosenPerk(playerCharacter, "axes", "cleavingForce")) weaponMasteryBonus += 1;
+  if (equippedWeapon === "archery" && hasChosenPerk(playerCharacter, "archery", "practicedVolley")) weaponMasteryBonus += 1;
+  if (equippedWeapon === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "disciplinedForm")) weaponMasteryBonus += 1;
+  return shiftTierByRank(baseTierName, getEffectRankSum("playerAttackBonus") + equipBonus + styleBonus + craftedBonus + traitBonus + weaponMasteryBonus);
 }
 
 function getEffectivePlayerSpellDamageTier(baseTierName) {
@@ -354,7 +365,8 @@ function getEffectivePlayerSpellDamageTier(baseTierName) {
   const spellBonus = getPlayerCombatStyleBonus().spellDamageBonus || 0;
   const traitBonus = (playerCharacter.traits && playerCharacter.traits.includes("arcaneGift")) ? TRAIT_SPELL_DAMAGE_RANK_BONUS.arcaneGift : 0;
   const songBonus = getEffectRankSum("spellDamageBuff");
-  return shiftTierByRank(baseAttackTier, spellBonus + songBonus);
+  const clothBonus = (playerCharacter.equippedArmorSkill === "clothArmor" && hasChosenPerk(playerCharacter, "clothArmor", "practicedCasting")) ? 1 : 0;
+  return shiftTierByRank(baseAttackTier, spellBonus + songBonus + traitBonus + clothBonus);
 }
 
 function getEffectivePlayerHealTier(baseTierName) {
@@ -457,19 +469,30 @@ function triggerOnHitWards(character) {
 
   wards.forEach((ward) => {
     if (ward.wardType === "onHitBuff") {
-      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: 1 });
+      const rank = (ward.spellName === "Fury's Answer" && hasChosenPerk(playerCharacter, "riteProtection", "furysEdge")) ? 2 : 1;
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: rank, roundsRemaining: 1 });
       currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: "grows stronger" });
     } else if (ward.wardType === "onHitHeal") {
       const maxHP = getHitPoints(character);
-      const healAmt = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+      let healAmt = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+      if (ward.spellName === "Mercy's Touch" && hasChosenPerk(playerCharacter, "riteProtection", "mercysDepth")) {
+        healAmt = Math.round(healAmt * 1.5);
+      }
       character.currentHP = Math.min(maxHP, character.currentHP + healAmt);
       currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: `mends ${healAmt} Hit Points` });
     } else if (ward.wardType === "onHitManaRegen") {
       const manaMax = getManaPoolMax(character);
-      character.currentMana = Math.min(manaMax, character.currentMana + 5);
-      currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: "returns 5 mana" });
+      let manaAmt = 5;
+      if (ward.spellName === "Deep Current" && hasChosenPerk(playerCharacter, "riteProtection", "deeperCurrent")) {
+        manaAmt = 8;
+      }
+      character.currentMana = Math.min(manaMax, character.currentMana + manaAmt);
+      currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: `returns ${manaAmt} mana` });
     } else if (ward.wardType === "onHitGroupHeal") {
-      const healAmt = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+      let healAmt = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+      if (ward.spellName === "Mother's Circle" && hasChosenPerk(playerCharacter, "riteProtection", "widerCircle")) {
+        healAmt = Math.round(healAmt * 1.5);
+      }
       [playerCharacter, ...getActiveFollowers()].forEach((member) => {
         if (member.currentHP <= 0) return;
         const maxHP = getHitPoints(member);
@@ -477,7 +500,8 @@ function triggerOnHitWards(character) {
       });
       currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: `mends the whole party for ${healAmt}` });
     } else if (ward.wardType === "onHitDebuff") {
-      currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: 1 });
+      const debuffRank = (ward.spellName === "Undertow" && hasChosenPerk(playerCharacter, "riteProtection", "undertowsGrip")) ? -2 : -1;
+      currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: debuffRank, roundsRemaining: 1 });
       currentCombat.log.push({ actor: "effect", kind: "wardTriggered", wardName: ward.spellName, effectText: "drags your foe down" });
     }
   });
@@ -541,6 +565,7 @@ function getEnemyCultureSpell() {
 function consumeGuaranteedEffect(kind) {
   const idx = currentCombat.activeEffects.findIndex((e) => e.kind === kind);
   if (idx === -1) return false;
+  if (hasChosenPerk(playerCharacter, "runeVision", "twiceSeen") && Math.random() < 0.3) return true;
   currentCombat.activeEffects.splice(idx, 1);
   return true;
 }
@@ -582,9 +607,28 @@ function getDefendingTierName(attackType, character) {
 
   const equipBonus = character === playerCharacter ? getArmorEnchantDefenseBonus() : 0;
   const styleBonus = getCombatStyleBonusFor(character).defenseBonus;
+  let armorAcBonus = 0;
+  let armorDodgeBonus = 0;
+  if (character === playerCharacter) {
+    const armor = character.equippedArmorSkill;
+    if (armor === "plateArmor") {
+      if (hasChosenPerk(character, "plateArmor", "reinforcedPlating")) armorAcBonus += 1;
+      if (hasChosenPerk(character, "plateArmor", "weightedGuard")) armorAcBonus += 1;
+    } else if (armor === "chainArmor") {
+      if (hasChosenPerk(character, "chainArmor", "flexibleLinks")) armorAcBonus += 1;
+      if (hasChosenPerk(character, "chainArmor", "sturdyChain")) armorAcBonus += 1;
+      if (hasChosenPerk(character, "chainArmor", "balancedWeight")) armorDodgeBonus += 1;
+      if (hasChosenPerk(character, "chainArmor", "practicedBearing")) armorDodgeBonus += 1;
+    } else if (armor === "leatherArmor") {
+      if (hasChosenPerk(character, "leatherArmor", "suppleHide")) armorDodgeBonus += 1;
+      if (hasChosenPerk(character, "leatherArmor", "evasiveInstinct")) armorDodgeBonus += 1;
+    } else if (armor === "clothArmor") {
+      if (hasChosenPerk(character, "clothArmor", "lightBearing")) armorDodgeBonus += 1;
+    }
+  }
   const generalBonus = getEffectRankSum("playerDefenseBonus", character) + equipBonus + styleBonus;
-  acTierName = shiftTierByRank(acTierName, generalBonus + getEffectRankSum("acBuff", character));
-  dodgeTierName = shiftTierByRank(dodgeTierName, generalBonus + getEffectRankSum("dodgeBuff", character));
+  acTierName = shiftTierByRank(acTierName, generalBonus + getEffectRankSum("acBuff", character) + armorAcBonus);
+  dodgeTierName = shiftTierByRank(dodgeTierName, generalBonus + getEffectRankSum("dodgeBuff", character) + armorDodgeBonus);
 
   return getTierRank(acTierName) >= getTierRank(dodgeTierName) ? acTierName : dodgeTierName;
 }
@@ -639,6 +683,16 @@ function startCombat(enemyId) {
     }
   });
 
+  if (hasChosenPerk(playerCharacter, "runeVision", "wardedInstinct")) {
+    initialEffects.push({ kind: "guaranteedDodge", rankBonus: 0, roundsRemaining: null, target: playerCharacter });
+  }
+  if (hasChosenPerk(playerCharacter, "runeVision", "theLongSight")) {
+    initialEffects.push({ kind: "guaranteedDodge", rankBonus: 0, roundsRemaining: null, target: playerCharacter });
+  }
+  if (hasChosenPerk(playerCharacter, "pathStorm", "eyeOfTheStorm")) {
+    initialEffects.push({ kind: "eyeOfTheStorm", rankBonus: 0, roundsRemaining: null });
+  }
+
   currentCombat = {
     enemyId: enemyId,
     enemyName: enemyTemplate.name,
@@ -688,11 +742,17 @@ function tickCombatEffects() {
     }
 
     if (effect.kind === "dot") {
-      const dmg = applyDamageToEnemy(Math.max(1, Math.floor(rollDamage(effect.casterTierName) / 2)));
+      const dmg = applyDamageToEnemy(Math.max(1, Math.floor(rollDamage(effect.casterTierName) / 2 * (1 + (effect.tickBonusPct || 0)))));
       currentCombat.log.push({ actor: "effect", kind: "dot", damage: dmg, spellName: effect.spellName });
     } else if (effect.kind === "companion") {
       const kinshipBonus = playerCharacter.traits && playerCharacter.traits.includes("beastkinship") ? 1 : 0;
-      const heavyTier = shiftTierByRank(effect.casterTierName || "Novice", 2 + kinshipBonus);
+      let companionBonusRank = 0;
+      if (effect.spellName === "Wolf's Call" && hasChosenPerk(playerCharacter, "pathWild", "loyalWolf")) companionBonusRank = 1;
+      if (effect.spellName === "Hollow Hound" && hasChosenPerk(playerCharacter, "pathBarrow", "hollowHunger")) companionBonusRank = 1;
+      if (effect.spellName === "Onryō's Wrath" && hasChosenPerk(playerCharacter, "wayOnmyoji", "vengefulBond")) companionBonusRank = 1;
+      if (effect.spellName === "Ember-Lash" && hasChosenPerk(playerCharacter, "riteThunderWrath", "embersCall")) companionBonusRank = 1;
+      if (effect.spellName === "Thunder Caller" && hasChosenPerk(playerCharacter, "riteThunderWrath", "thundersCall")) companionBonusRank = 1;
+      const heavyTier = shiftTierByRank(effect.casterTierName || "Novice", 2 + kinshipBonus + companionBonusRank);
       const dmg = applyDamageToEnemy(rollDamage(heavyTier));
       currentCombat.log.push({ actor: "effect", kind: "companion", damage: dmg });
     } else if (effect.kind === "hot" && owner.currentHP > 0) {
@@ -701,7 +761,7 @@ function tickCombatEffects() {
         if (target.currentHP <= 0) return;
         const maxHP = getHitPoints(target);
         if (target.currentHP < maxHP) {
-          const healAmt = Math.max(1, Math.floor(rollDamage(effect.casterTierName || "Novice") / 2));
+          const healAmt = Math.max(1, Math.floor(rollDamage(effect.casterTierName || "Novice") / 2 * (1 + (effect.healBonusPct || 0))));
           target.currentHP = Math.min(maxHP, target.currentHP + healAmt);
           currentCombat.log.push({ actor: "effect", kind: "hot", healAmount: healAmt, spellName: effect.spellName, ownerName: target.name });
         }
@@ -709,7 +769,7 @@ function tickCombatEffects() {
     } else if (effect.kind === "manaRegen") {
       const manaMax = getManaPoolMax(owner);
       const before = owner.currentMana;
-      owner.currentMana = Math.min(manaMax, owner.currentMana + 8);
+      owner.currentMana = Math.min(manaMax, owner.currentMana + 8 + (effect.regenBonus || 0));
       const actualGain = owner.currentMana - before;
       if (actualGain > 0) {
         currentCombat.log.push({ actor: "effect", kind: "manaRegen", manaAmount: actualGain, spellName: effect.spellName, ownerName: owner.name });
@@ -722,7 +782,16 @@ function tickCombatEffects() {
     }
 
     if (effect.source === "song") {
-      const songDrainAmount = 3;
+      let songDrainAmount = 3;
+      if (effect.spellName === "Lay of Mending" && hasChosenPerk(playerCharacter, "ancestralSiuloir", "lingeringMelody")) {
+        songDrainAmount = 2;
+      }
+      if (effect.spellName === "Skald's Lay of Mending" && hasChosenPerk(playerCharacter, "runeSong", "skaldsMemory")) {
+        songDrainAmount = 2;
+      }
+      if (effect.spellName === "Griot's Healing Refrain" && hasChosenPerk(playerCharacter, "riteGriot", "healingRhythm")) {
+        songDrainAmount = 2;
+      }
       if (owner.currentMana >= songDrainAmount) {
         owner.currentMana -= songDrainAmount;
       } else {
@@ -739,6 +808,10 @@ function tickCombatEffects() {
     if (effect._outOfMana) {
       if (effect.kind === "fortify" && effect.bonusHP) {
         fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
+      }
+      if ((hasChosenPerk(playerCharacter, "ancestralSiuloir", "endlessRefrain") || hasChosenPerk(playerCharacter, "riteGriot", "unbrokenRhythm")) && Math.random() < 0.35) {
+        owner.currentMana = 1;
+        return true;
       }
       currentCombat.log.push({ actor: "effect", kind: "songStopped", spellName: effect.spellName, outOfMana: true, ownerName: owner.name });
       return false;
@@ -758,6 +831,18 @@ function tickCombatEffects() {
     if (effect.roundsRemaining === null) return true;
     effect.roundsRemaining -= 1;
     if (effect.roundsRemaining <= 0) {
+      const isAverickBuffEffect = effect.kind === "playerAttackBonus" &&
+        ["Flametouched Blade", "Glacial Edge", "Warblood Fury"].includes(effect.spellName);
+      if (isAverickBuffEffect && hasChosenPerk(playerCharacter, "ancestralAverick", "undyingBloodline") && Math.random() < 0.35) {
+        effect.roundsRemaining = 5;
+        return true;
+      }
+      const isRuneBladeBuffEffect = effect.kind === "playerAttackBonus" &&
+        ["Bloodfury Mark", "Warcry Rune"].includes(effect.spellName);
+      if (isRuneBladeBuffEffect && hasChosenPerk(playerCharacter, "runeBlade", "runesRenewed") && Math.random() < 0.35) {
+        effect.roundsRemaining = SPELL_EFFECT_DURATION;
+        return true;
+      }
       if (effect.kind === "fortify" && effect.bonusHP) {
         fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
       }
@@ -1400,7 +1485,20 @@ function resolveEnemyAttack() {
   const adjustment = isPlayerTarget && currentCombat.playerDefending ? -DEFEND_SUCCESS_PENALTY : 0;
 
   const targetHasGuaranteedDodge = currentCombat.activeEffects.some((e) => e.kind === "guaranteedDodge" && e.target === target);
-  const hit = targetHasGuaranteedDodge ? (consumeGuaranteedEffectFor(target) ? false : rollSuccess(enemyEffectiveTier, defenderTier, adjustment)) : rollSuccess(enemyEffectiveTier, defenderTier, adjustment);
+  let hit = targetHasGuaranteedDodge ? (consumeGuaranteedEffectFor(target) ? false : rollSuccess(enemyEffectiveTier, defenderTier, adjustment)) : rollSuccess(enemyEffectiveTier, defenderTier, adjustment);
+
+  if (hit && isPlayerTarget) {
+    const armor = playerCharacter.equippedArmorSkill;
+    const ghostStepDodge = armor === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "ghostStep") && Math.random() < 0.2;
+    const untouchableDodge = armor === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "untouchable") && !currentCombat.untouchableUsed;
+    const shadowsGraceDodge = armor === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "shadowsGrace") && Math.random() < 0.2;
+    const plateBlock = armor === "plateArmor" && hasChosenPerk(playerCharacter, "plateArmor", "deflectingSteel") && Math.random() < 0.2;
+    const chainBlock = armor === "chainArmor" && hasChosenPerk(playerCharacter, "chainArmor", "chainmailMastery") && Math.random() < 0.2;
+    if (untouchableDodge) currentCombat.untouchableUsed = true;
+    if (ghostStepDodge || untouchableDodge || shadowsGraceDodge || plateBlock || chainBlock) {
+      hit = false;
+    }
+  }
   let damage = 0;
   let deflected = false;
 
@@ -1418,8 +1516,9 @@ function resolveEnemyAttack() {
 
   let backfired = false;
   if (hit && !deflected && isPlayerTarget) {
-    const hasIllFortune = currentCombat.activeEffects.some((e) => e.kind === "curseBack");
-    if (hasIllFortune && Math.random() < 0.35) {
+    const illFortuneEffect = currentCombat.activeEffects.find((e) => e.kind === "curseBack");
+    const backfireChance = (illFortuneEffect && illFortuneEffect.hasFortuneReversed) ? 0.5 : 0.35;
+    if (illFortuneEffect && Math.random() < backfireChance) {
       backfired = true;
     }
   }
@@ -1438,7 +1537,28 @@ function resolveEnemyAttack() {
       damage = Math.max(1, Math.round(damage * 0.75));
     }
 
-    const absorbed = getFlatDamageAbsorb(target) + getThickHideReduction(target, attackType);
+    let absorbed = getFlatDamageAbsorb(target) + getThickHideReduction(target, attackType);
+    if (isPlayerTarget) {
+      const armor = playerCharacter.equippedArmorSkill;
+      if (armor === "chainArmor" && hasChosenPerk(playerCharacter, "chainArmor", "reactiveMail") && Math.random() < 0.3) {
+        const counterDmg = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+        currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - counterDmg);
+        currentCombat.log.push({ actor: "effect", kind: "thornProc", damage: counterDmg });
+      }
+      if (armor === "chainArmor" && hasChosenPerk(playerCharacter, "chainArmor", "layeredProtection")) {
+        absorbed += 2;
+      }
+      if (armor === "plateArmor" && hasChosenPerk(playerCharacter, "plateArmor", "livingFortress")) {
+        absorbed += 2;
+      }
+      if (attackType === "magic" && armor === "clothArmor") {
+        if (hasChosenPerk(playerCharacter, "clothArmor", "arcaneWard") && Math.random() < 0.2) {
+          absorbed += damage;
+        } else if (hasChosenPerk(playerCharacter, "clothArmor", "wardedCloth")) {
+          absorbed += 2;
+        }
+      }
+    }
     if (absorbed > 0) {
       damage = Math.max(0, damage - absorbed);
     }
@@ -1459,10 +1579,18 @@ function resolveEnemyAttack() {
     if (target.currentHP <= 0) {
       const wardIndex = currentCombat.activeEffects.findIndex((e) => e.kind === "autoRevive");
       if (wardIndex !== -1) {
-        currentCombat.activeEffects.splice(wardIndex, 1);
+        const savingEffect = currentCombat.activeEffects[wardIndex];
+        savingEffect.charges = (savingEffect.charges || 1) - 1;
+        if (savingEffect.charges <= 0) {
+          currentCombat.activeEffects.splice(wardIndex, 1);
+        }
         const maxHP = getHitPoints(target);
         const manaMax = getManaPoolMax(target);
-        target.currentHP = Math.max(1, Math.round(maxHP * 0.3));
+        let restorePct = (savingEffect.spellName === "Onryō's Vigil" && hasChosenPerk(playerCharacter, "wayOnmyoji", "vigilantSpirit")) ? 0.5 : 0.3;
+        if (savingEffect.spellName === "Ward of the Deep" && hasChosenPerk(playerCharacter, "riteProtection", "deepsMercy")) {
+          restorePct += 0.15;
+        }
+        target.currentHP = Math.max(1, Math.round(maxHP * restorePct));
         target.currentMana = Math.min(manaMax, target.currentMana + Math.round(manaMax * 0.2));
         currentCombat.log.push({ actor: "effect", kind: "wardOfTheDeepSave", targetName: target.name });
       }
@@ -1473,6 +1601,15 @@ function resolveEnemyAttack() {
     );
   }
 
+  if (currentCombat.playerDefending && isPlayerTarget && !hit) {
+    currentCombat.justDefendedSuccess = true;
+  }
+  if (currentCombat.playerDefending && isPlayerTarget && hit && playerCharacter.equippedShield &&
+    hasChosenPerk(playerCharacter, "shields", "punishingBlock")) {
+    const counterDmg = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+    currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - counterDmg);
+    currentCombat.log.push({ actor: "effect", kind: "thornProc", damage: counterDmg });
+  }
   currentCombat.playerDefending = false;
   currentCombat.log.push({
     actor: "enemy",
@@ -1492,7 +1629,18 @@ function resolveEnemyAttack() {
 
   if (hit && !deflected && isPlayerTarget) {
     const hasIronWill = playerCharacter.traits && playerCharacter.traits.includes("ironWill");
-    const procChance = hasIronWill ? 0.06 : 0.15;
+    const hasMomentumResist = (playerCharacter.equippedWeaponSkill === "axes" && hasChosenPerk(playerCharacter, "axes", "unstoppableMomentum")) ||
+      (playerCharacter.equippedWeaponSkill === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "unbrokenFocus"));
+    let procChance = hasIronWill ? 0.06 : 0.15;
+    if (hasMomentumResist) procChance = Math.max(0.02, procChance - 0.1);
+    const armorForResist = playerCharacter.equippedArmorSkill;
+    if ((armorForResist === "plateArmor" && hasChosenPerk(playerCharacter, "plateArmor", "unshakeable")) ||
+        (armorForResist === "chainArmor" && hasChosenPerk(playerCharacter, "chainArmor", "unyieldingLinks"))) {
+      procChance = Math.max(0.02, procChance - 0.1);
+    }
+    if ((armorForResist === "plateArmor" && hasChosenPerk(playerCharacter, "plateArmor", "immovable")) && Math.random() < 0.3) {
+      procChance = 0;
+    }
     if (Math.random() < procChance) {
       const inflictFear = Math.random() < 0.5;
       currentCombat.activeEffects.push({
@@ -1504,9 +1652,10 @@ function resolveEnemyAttack() {
       currentCombat.log.push({ actor: "effect", kind: "enemyInflicted", inflictType: inflictFear ? "fear" : "stun" });
     }
 
-    const hasThornward = currentCombat.activeEffects.some((e) => e.kind === "thornward");
-    if (hasThornward) {
-      const counterDmg = Math.max(1, Math.floor(rollDamage("Novice") / 2));
+    const thornwardEffect = currentCombat.activeEffects.find((e) => e.kind === "thornward");
+    if (thornwardEffect) {
+      const counterMultiplier = thornwardEffect.thornedWard ? 0.75 : 0.5;
+      const counterDmg = Math.max(1, Math.floor(rollDamage("Novice") * counterMultiplier));
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - counterDmg);
       currentCombat.log.push({ actor: "effect", kind: "thornProc", damage: counterDmg });
     }
@@ -1530,7 +1679,8 @@ const SHIELD_BASH_ID = "shieldBash";
  */
 function performShieldBash() {
   if (!currentCombat || currentCombat.result) return currentCombat;
-  if (getSpellCooldownRemaining(playerCharacter, SHIELD_BASH_ID) > 0) return currentCombat;
+  const hasBulwarksAnswer = hasChosenPerk(playerCharacter, "shields", "bulwarksAnswer") && !currentCombat.bulwarksAnswerUsed;
+  if (getSpellCooldownRemaining(playerCharacter, SHIELD_BASH_ID) > 0 && !hasBulwarksAnswer) return currentCombat;
 
   const skillId = playerCharacter.equippedWeaponSkill || "unarmedCombat";
   const tierBefore = getCharacterSkillTier(playerCharacter, skillId).name;
@@ -1538,19 +1688,31 @@ function performShieldBash() {
 
   const attackTier = shiftTierByRank(getEffectivePlayerAttackTier(tierBefore), -2);
   const enemyTier = getEffectiveEnemyTier();
-  const hit = rollSuccess(attackTier, enemyTier);
+  const hasAegisBearer = hasChosenPerk(playerCharacter, "shields", "aegisBearer") && Math.random() < 0.25;
+  const hit = hasAegisBearer || rollSuccess(attackTier, enemyTier);
   let damage = 0;
   let stunned = false;
 
   if (hit) {
     damage = applyDamageToEnemy(rollDamage(attackTier));
-    if (Math.random() < 0.6) {
+    const stunChance = hasChosenPerk(playerCharacter, "shields", "steadyGuard") ? 0.8 : 0.6;
+    if (Math.random() < stunChance) {
       currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
       stunned = true;
     }
+    if (currentCombat.justDefendedSuccess && hasChosenPerk(playerCharacter, "shields", "riposte")) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.3));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
   }
 
-  setSpellCooldown(playerCharacter, SHIELD_BASH_ID, 3);
+  const shieldCooldown = hasChosenPerk(playerCharacter, "shields", "quickRecovery") ? 2 : 3;
+  if (hasBulwarksAnswer && getSpellCooldownRemaining(playerCharacter, SHIELD_BASH_ID) > 0) {
+    currentCombat.bulwarksAnswerUsed = true;
+  } else {
+    setSpellCooldown(playerCharacter, SHIELD_BASH_ID, shieldCooldown);
+  }
 
   currentCombat.log.push({
     actor: "player",
@@ -1580,8 +1742,23 @@ function performPlayerAction(skillId) {
   const attackTier = getEffectivePlayerAttackTier(tierBefore);
   const isArcherShot = playerCharacter.combatStyle === "archer" && skillId === "archery";
   const keenSensesBonus = consumeKeenSensesBonus();
-  const accuracyTier = shiftTierByRank(attackTier, (isArcherShot ? 2 : 0) + keenSensesBonus + getNightsightBonus());
+  let weaponAccuracyBonus = 0;
+  if (skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "balancedGrip")) weaponAccuracyBonus += 1;
+  if (skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "steadyAim")) weaponAccuracyBonus += 1;
+  if (playerCharacter.equippedArmorSkill === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "quietStep") && !currentCombat.firstAttackUsed) {
+    weaponAccuracyBonus += 1;
+  }
+  const accuracyTier = shiftTierByRank(attackTier, (isArcherShot ? 2 : 0) + keenSensesBonus + getNightsightBonus() + weaponAccuracyBonus);
   let enemyTier = getEffectiveEnemyTier();
+  if ((skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "precisionStrike")) ||
+      (skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "piercingShot"))) {
+    enemyTier = shiftTierByRank(enemyTier, -1);
+  }
+  const hasRecklessPower = skillId === "axes" && hasChosenPerk(playerCharacter, "axes", "recklessPower");
+  const hasCalledShot = skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "calledShot");
+  if (hasRecklessPower || hasCalledShot) {
+    enemyTier = shiftTierByRank(enemyTier, 1);
+  }
   const AVERICK_BUFF_SPELL_NAMES = ["Flametouched Blade", "Glacial Edge", "Warblood Fury"];
   const hasAverickReckoning = characterHasLegendary(playerCharacter, "Averick's Reckoning") &&
     currentCombat.activeEffects.some((e) => e.kind === "playerAttackBonus" && AVERICK_BUFF_SPELL_NAMES.includes(e.spellName));
@@ -1590,12 +1767,96 @@ function performPlayerAction(skillId) {
   }
   const hasGuaranteedHit = consumeGuaranteedEffect("guaranteedHit");
   const hasPerfectStep = characterHasLegendary(playerCharacter, "Kurogane's Perfect Step") && !currentCombat.firstAttackUsed;
+  const hasPerfectLoose = skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "perfectLoose") && Math.random() < 0.3;
+  const isFirstAttack = !currentCombat.firstAttackUsed;
   currentCombat.firstAttackUsed = true;
-  const hit = hasGuaranteedHit || hasPerfectStep || rollSuccess(accuracyTier, enemyTier);
+  let hit = hasGuaranteedHit || hasPerfectStep || hasPerfectLoose || rollSuccess(accuracyTier, enemyTier);
+  if (!hit && skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "unyieldingSteel") && Math.random() < 0.25) {
+    hit = rollSuccess(accuracyTier, enemyTier);
+  }
   let damage = 0;
 
   if (hit) {
-    damage = applyDamageToEnemy(rollDamage(attackTier));
+    let baseDamage = rollDamage(attackTier);
+    if (hasRecklessPower || hasCalledShot) baseDamage = Math.round(baseDamage * 1.3);
+    damage = applyDamageToEnemy(baseDamage);
+    if (skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "honedEdge")) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.15));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (skillId === "axes" && hasChosenPerk(playerCharacter, "axes", "heavySwing")) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.15));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (skillId === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "ironFists")) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.15));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    const woundedPctForWeapon = 1 - currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
+    if (skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "practicedCut") && woundedPctForWeapon >= 0.5) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.25));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (skillId === "axes" && hasChosenPerk(playerCharacter, "axes", "brutalFollowThrough") && woundedPctForWeapon >= 0.5) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.25));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (skillId === "axes" && hasChosenPerk(playerCharacter, "axes", "executionersArc") && woundedPctForWeapon >= 0.7) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.5));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "rangersFocus") && isFirstAttack) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.3));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (skillId === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "onePerfectStrike") && isFirstAttack) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.5));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (currentCombat.justDefendedSuccess &&
+      ((skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "riposteInstinct")) ||
+       (skillId === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "counterStrike")))) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.3));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (skillId === "axes" && hasChosenPerk(playerCharacter, "axes", "sunderingBlow") && Math.random() < 0.3) {
+      currentCombat.activeEffects.push({ kind: "defenseDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+    }
+    if (skillId === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "pressurePointStrike") && Math.random() < 0.25) {
+      currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
+    }
+    if (skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "blademastersReflex") && Math.random() < 0.25) {
+      const echoDamage = applyDamageToEnemy(rollDamage(attackTier));
+      currentCombat.log.push({ actor: "effect", kind: "ancestralEcho", damage: echoDamage });
+    }
+    if (skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "rainOfArrows") && Math.random() < 0.25) {
+      const echoDamage = applyDamageToEnemy(rollDamage(attackTier));
+      currentCombat.log.push({ actor: "effect", kind: "ancestralEcho", damage: echoDamage });
+    }
+    if (hasChosenPerk(playerCharacter, "runeBlade", "berserkersGift") && playerCharacter.currentHP < getHitPoints(playerCharacter) * 0.5) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.2));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (hasPerfectStep === false && hasChosenPerk(playerCharacter, "wayTengu", "disciplineUnbroken") && !currentCombat.firstAttackUsed) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.5));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (!currentCombat.windWalkerUsed && hasChosenPerk(playerCharacter, "wayTengu", "windWalker")) {
+      currentCombat.windWalkerUsed = true;
+      const echoDamage = applyDamageToEnemy(rollDamage(attackTier));
+      currentCombat.log.push({ actor: "effect", kind: "ancestralEcho", damage: echoDamage });
+    }
   }
 
   if (hit && playerCharacter.traits && playerCharacter.traits.includes("predatorInstinct")) {
@@ -1620,6 +1881,24 @@ function performPlayerAction(skillId) {
       currentCombat.ivarrStreak = 0;
     }
   }
+
+  const hasMomentumPerk = (skillId === "axes" && hasChosenPerk(playerCharacter, "axes", "momentum")) ||
+    (skillId === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "focusedChi"));
+  if (hasMomentumPerk) {
+    if (hit) {
+      currentCombat.weaponStreak = (currentCombat.weaponStreak || 0) + 1;
+      const streakStacks = Math.min(4, currentCombat.weaponStreak - 1);
+      if (streakStacks > 0) {
+        const bonusDmg = Math.max(1, Math.round(damage * streakStacks * 0.05));
+        damage += bonusDmg;
+        currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+      }
+    } else {
+      currentCombat.weaponStreak = 0;
+    }
+  }
+
+  currentCombat.justDefendedSuccess = false;
 
   currentCombat.log.push({ actor: "player", skillId: skillId, spellName: null, hit: hit, damage: damage });
 
@@ -1820,9 +2099,60 @@ function performPlayerCast(skillId, spell, target) {
   }
 
   const isSong = BARD_SKILL_IDS.includes(skillId);
-  if (isSong && getActiveSongCount() >= 2) return currentCombat;
+  const songCap = (hasChosenPerk(playerCharacter, "ancestralSiuloir", "twinVerse") || hasChosenPerk(playerCharacter, "runeSong", "twinVerseSkald") || hasChosenPerk(playerCharacter, "waySuijin", "twinMelody") || hasChosenPerk(playerCharacter, "riteGriot", "twinSong")) ? 3 : 2;
+  if (isSong && getActiveSongCount() >= songCap) return currentCombat;
+
+  if (spell.type === "companion" && dungeonCompanionUsed) {
+    const alreadyRecast = dungeonCompanion && dungeonCompanion.recastUsed;
+    const canPacksReturn = spell.name === "Wolf's Call" && hasChosenPerk(playerCharacter, "pathWild", "packsReturn") && !alreadyRecast;
+    if (!canPacksReturn) return currentCombat;
+  }
 
   playerCharacter.currentMana -= MANA_CONFIG.costPerCast;
+
+  if (playerCharacter.equippedArmorSkill === "clothArmor" && hasChosenPerk(playerCharacter, "clothArmor", "boundlessFocus") && Math.random() < 0.25) {
+    playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+  }
+
+  if (skillId === "ancestralFetch" && hasChosenPerk(playerCharacter, "ancestralFetch", "betweenForms") && Math.random() < 0.3) {
+    playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+  }
+
+  if (skillId === "pathWild" && hasChosenPerk(playerCharacter, "pathWild", "oneWithTheWild") && Math.random() < 0.3) {
+    playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+  }
+
+  if (skillId === "pathStorm" && hasChosenPerk(playerCharacter, "pathStorm", "stormEverlasting") && Math.random() < 0.3) {
+    playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+  }
+
+  if (skillId === "waySuijin" && hasChosenPerk(playerCharacter, "waySuijin", "endlessCurrent") && Math.random() < 0.3) {
+    playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+  }
+
+  if (skillId === "wayYokai" && hasChosenPerk(playerCharacter, "wayYokai", "formless") && Math.random() < 0.3) {
+    playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+  }
+
+  if (skillId === "wayOnmyoji" && hasChosenPerk(playerCharacter, "wayOnmyoji", "shikigamiUnbound") && Math.random() < 0.3) {
+    playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+  }
+
+  if (skillId === "wayYokai" && hasChosenPerk(playerCharacter, "wayYokai", "everyElement") && Math.random() < 0.25) {
+    const echoTier = getEffectivePlayerAttackTier(getCharacterSkillTier(playerCharacter, skillId).name);
+    if (rollSuccess(echoTier, getEffectiveEnemyTier())) {
+      const echoDamage = applyDamageToEnemy(rollDamage(echoTier));
+      currentCombat.log.push({ actor: "effect", kind: "ancestralEcho", damage: echoDamage });
+    }
+  }
+
+  if (skillId === "ancestralFetch" && hasChosenPerk(playerCharacter, "ancestralFetch", "oldBloodRising") && Math.random() < 0.25) {
+    const echoTier = getEffectivePlayerAttackTier(getCharacterSkillTier(playerCharacter, skillId).name);
+    if (rollSuccess(echoTier, getEffectiveEnemyTier())) {
+      const echoDamage = applyDamageToEnemy(rollDamage(echoTier));
+      currentCombat.log.push({ actor: "effect", kind: "ancestralEcho", damage: echoDamage });
+    }
+  }
 
   const tierBefore = getCharacterSkillTier(playerCharacter, skillId).name;
   useSkill(playerCharacter, skillId);
@@ -1841,49 +2171,78 @@ function performPlayerCast(skillId, spell, target) {
     const enemyTier = getEffectiveEnemyTier();
     const hasGuaranteedSpellHit = consumeGuaranteedEffect("guaranteedSpellHit");
     const hasUnbrokenSky = skillId === "pathStorm" && characterHasLegendary(playerCharacter, "Neasa's Unbroken Sky");
-    const hit = hasGuaranteedSpellHit || hasUnbrokenSky || rollSuccess(accuracyTier, enemyTier);
+    const hasEyeOfTheStorm = skillId === "pathStorm" && consumeGuaranteedEffect("eyeOfTheStorm");
+    const hit = hasGuaranteedSpellHit || hasUnbrokenSky || hasEyeOfTheStorm || rollSuccess(accuracyTier, enemyTier);
     let damage = 0;
     if (hit) {
       damage = applyDamageToEnemy(rollDamage(attackTier));
+      if (spell.name === "Lightning Lash" && hasChosenPerk(playerCharacter, "pathStorm", "lightningsEdge")) damage = Math.round(damage * 1.25);
+      if (spell.name === "Frostgale" && hasChosenPerk(playerCharacter, "pathStorm", "bitterGale")) damage = Math.round(damage * 1.25);
+      if (spell.name === "Venomstrike" && hasChosenPerk(playerCharacter, "pathGrove", "venomsBite")) damage = Math.round(damage * 1.25);
+      if (spell.name === "Gale-Fist Strike" && hasChosenPerk(playerCharacter, "wayTengu", "windsEdge")) damage = Math.round(damage * 1.25);
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
   } else if (spell.type === "damageAmpDebuff" || spell.type === "accuracyDebuff" || spell.type === "damageDebuff" || spell.type === "defenseDebuff") {
     const hasKwabenasUndoing = skillId === "riteUnmaking" && characterHasLegendary(playerCharacter, "Kwabena's Undoing");
+    const hasWitheringBreath = spell.name === "Nuckelavee Form" && hasChosenPerk(playerCharacter, "ancestralFetch", "witheringBreath");
+    const hasScatteringGale = spell.name === "Wind Form" && hasChosenPerk(playerCharacter, "wayYokai", "scatteringGale");
+    const hasHollowNote = spell.name === "Shakuhachi of the Hollow Wind" && hasChosenPerk(playerCharacter, "waySuijin", "hollowNote");
     const debuffKindByType = {
       damageAmpDebuff: "vulnerability",
       accuracyDebuff: "accuracyDebuff",
       damageDebuff: "damageDebuff",
       defenseDebuff: "defenseDebuff"
     };
+    const hasVulnerableGrasp = spell.name === "Vulnerability Curse" && hasChosenPerk(playerCharacter, "riteUnmaking", "vulnerableGrasp");
+    const hasBlindingGrip = spell.name === "Blinding Curse" && hasChosenPerk(playerCharacter, "riteUnmaking", "blindingGrip");
+    const hasCripplingGrasp = spell.name === "Crippling Curse" && hasChosenPerk(playerCharacter, "riteUnmaking", "cripplingGrasp");
+    const hasExposingGrip = spell.name === "Exposing Curse" && hasChosenPerk(playerCharacter, "riteUnmaking", "exposingGrip");
+    let debuffRank = spell.type === "damageAmpDebuff" ? (hasVulnerableGrasp ? 0.15 : 0) : (hasKwabenasUndoing ? -2 : -1);
+    if (hasWitheringBreath || hasScatteringGale || hasHollowNote || hasBlindingGrip || hasCripplingGrasp || hasExposingGrip) debuffRank -= 1;
+    let debuffDuration = SPELL_EFFECT_DURATION;
+    if (skillId === "riteUnmaking" && hasChosenPerk(playerCharacter, "riteUnmaking", "totalUnmaking") && Math.random() < 0.3) {
+      debuffDuration = null;
+    }
+    if (!(skillId === "riteUnmaking" && hasChosenPerk(playerCharacter, "riteUnmaking", "unmakingCompounds"))) {
+      currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== debuffKindByType[spell.type]);
+    }
     currentCombat.activeEffects.push({
       kind: debuffKindByType[spell.type],
-      rankBonus: spell.type === "damageAmpDebuff" ? 0 : (hasKwabenasUndoing ? -2 : -1),
-      roundsRemaining: SPELL_EFFECT_DURATION
+      rankBonus: debuffRank,
+      roundsRemaining: debuffDuration
     });
   } else if (spell.type === "spellLock") {
-    currentCombat.activeEffects.push({ kind: "silence", rankBonus: 0, roundsRemaining: null });
+    const silenceStack = (spell.name === "Silencing Curse" && hasChosenPerk(playerCharacter, "riteUnmaking", "silencingGrip")) ? 2 : 1;
+    for (let i = 0; i < silenceStack; i++) {
+      currentCombat.activeEffects.push({ kind: "silence", rankBonus: 0, roundsRemaining: null });
+    }
   } else if (spell.type === "autoRevive") {
+    const wardCharges = (spell.name === "Ward of the Deep" && hasChosenPerk(playerCharacter, "riteProtection", "theDeepAnswers")) ? 2 : 1;
     currentCombat.activeEffects.push({
       kind: "autoRevive",
       rankBonus: 0,
       roundsRemaining: null,
       owner: playerCharacter,
-      spellName: spell.name
+      spellName: spell.name,
+      charges: wardCharges
     });
   } else if (
     spell.type === "onHitBuff" || spell.type === "onHitHeal" ||
     spell.type === "onHitManaRegen" || spell.type === "onHitGroupHeal" ||
     spell.type === "onHitDebuff"
   ) {
-    currentCombat.activeEffects.push({
-      kind: "onHitWard",
-      rankBonus: 0,
-      roundsRemaining: null,
-      owner: playerCharacter,
-      wardType: spell.type,
-      spellName: spell.name
-    });
+    const wardStack = hasChosenPerk(playerCharacter, "riteProtection", "twiceWarded") ? 2 : 1;
+    for (let i = 0; i < wardStack; i++) {
+      currentCombat.activeEffects.push({
+        kind: "onHitWard",
+        rankBonus: 0,
+        roundsRemaining: null,
+        owner: playerCharacter,
+        wardType: spell.type,
+        spellName: spell.name
+      });
+    }
   } else if (spell.type === "powerSteal") {
     const attackTier = getEffectivePlayerSpellDamageTier(tierBefore);
     const enemyTier = getEffectiveEnemyTier();
@@ -1891,8 +2250,9 @@ function performPlayerCast(skillId, spell, target) {
     let damage = 0;
     if (hit) {
       damage = applyDamageToEnemy(rollDamage(attackTier));
-      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION });
-      currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+      const stealRank = hasChosenPerk(playerCharacter, "riteUnmaking", "devouringGalesDepth") ? 2 : 1;
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: stealRank, roundsRemaining: SPELL_EFFECT_DURATION });
+      currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -stealRank, roundsRemaining: SPELL_EFFECT_DURATION });
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
@@ -1903,6 +2263,9 @@ function performPlayerCast(skillId, spell, target) {
     let damage = 0;
     if (hit) {
       damage = applyDamageToEnemy(rollDamage(attackTier));
+      if (spell.name === "Thunderstrike" && hasChosenPerk(playerCharacter, "riteThunderWrath", "thunderstrikesFury")) {
+        damage = Math.round(damage * 1.3);
+      }
       const maxHP = getHitPoints(playerCharacter);
       const manaMax = getManaPoolMax(playerCharacter);
       playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + damage);
@@ -1920,50 +2283,163 @@ function performPlayerCast(skillId, spell, target) {
     if (hit) {
       damage = rollDamage(attackTier);
       const missingHpPct = 1 - currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
-      const executeMultiplier = 1 + missingHpPct * 1.5;
+      let executeMultiplier = 1 + missingHpPct * 1.5;
+      if (spell.name === "Omen's End" && hasChosenPerk(playerCharacter, "runeVision", "omensWeight")) {
+        executeMultiplier += 0.3;
+      }
+      if (spell.name === "Mountain-Breaker" && hasChosenPerk(playerCharacter, "wayTengu", "mountainsFall")) {
+        executeMultiplier += 0.3;
+      }
       damage = applyDamageToEnemy(Math.round(damage * executeMultiplier));
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
   } else if (spell.type === "guaranteedHit" || spell.type === "guaranteedSpellHit" || spell.type === "guaranteedStun") {
-    currentCombat.activeEffects.push({ kind: spell.type, rankBonus: 0, roundsRemaining: null });
+    const stackCount = (spell.name === "Threadcut Vision" && hasChosenPerk(playerCharacter, "runeVision", "threadcuttersPatience")) ? 2 : 1;
+    for (let i = 0; i < stackCount; i++) {
+      currentCombat.activeEffects.push({ kind: spell.type, rankBonus: 0, roundsRemaining: null });
+    }
+    if (spell.name === "Foreseen Opening" && hasChosenPerk(playerCharacter, "runeVision", "clearerSight")) {
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: 1, spellName: spell.name });
+    }
+    if (spell.name === "Ravensight Rune" && hasChosenPerk(playerCharacter, "runeVision", "ravensFocus")) {
+      currentCombat.activeEffects.push({ kind: "spellDamageBuff", rankBonus: 1, roundsRemaining: 1, spellName: spell.name });
+    }
+    if (spell.name === "Tengu's Eye" && hasChosenPerk(playerCharacter, "wayTengu", "tengusClarity")) {
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: 1, spellName: spell.name });
+    }
+    if (spell.name === "Gashadokuro's Eye" && hasChosenPerk(playerCharacter, "wayOnmyoji", "unerringSight")) {
+      currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: 1, spellName: spell.name });
+    }
   } else if (spell.type === "guaranteedDodge") {
-    currentCombat.activeEffects.push({ kind: "guaranteedDodge", rankBonus: 0, roundsRemaining: null, target: playerCharacter });
+    const dodgeStack = (spell.name === "Mist Form" && hasChosenPerk(playerCharacter, "wayYokai", "driftingMist")) ? 2 : 1;
+    for (let i = 0; i < dodgeStack; i++) {
+      currentCombat.activeEffects.push({ kind: "guaranteedDodge", rankBonus: 0, roundsRemaining: null, target: playerCharacter });
+    }
   } else if (spell.type === "guaranteedFollowerAction") {
-    currentCombat.activeEffects.push({ kind: "guaranteedFollowerAction", rankBonus: 0, roundsRemaining: null });
+    const followerStack = (spell.name === "Fateglimpse" && hasChosenPerk(playerCharacter, "runeVision", "sharedFate")) ? 2 : 1;
+    for (let i = 0; i < followerStack; i++) {
+      currentCombat.activeEffects.push({ kind: "guaranteedFollowerAction", rankBonus: 0, roundsRemaining: null });
+    }
   } else if (spell.type === "heal") {
     const healTier = getEffectivePlayerHealTier(tierBefore);
-    const healAmount = rollDamage(healTier);
-    const targetMaxHP = getHitPoints(healTarget);
+    let healAmount = rollDamage(healTier);
+    if (spell.name === "Grove's Blessing" && hasChosenPerk(playerCharacter, "pathGrove", "grovesGentleHand")) {
+      healAmount = Math.round(healAmount * 1.4);
+    }
+    if (spell.name === "Warrior's Resolve" && hasChosenPerk(playerCharacter, "riteThunderWrath", "resolvesDepth")) {
+      healAmount = Math.round(healAmount * 1.4);
+    }
+    if (spell.name === "Warrior's Resolve" && hasChosenPerk(playerCharacter, "riteThunderWrath", "unbrokenWrath") && Math.random() < 0.3) {
+      playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+    }
+    let targetMaxHP = getHitPoints(healTarget);
+    if (skillId === "pathGrove" && hasChosenPerk(playerCharacter, "pathGrove", "grovesMercy")) {
+      targetMaxHP = Math.round(targetMaxHP * 1.15);
+    }
     healTarget.currentHP = Math.min(targetMaxHP, healTarget.currentHP + healAmount);
     logEntry.healAmount = healAmount;
     logEntry.healTargetName = healTarget === playerCharacter ? null : healTarget.name;
+    if (skillId === "pathGrove" && hasChosenPerk(playerCharacter, "pathGrove", "evergreen") && Math.random() < 0.3) {
+      playerCharacter.currentMana += MANA_CONFIG.costPerCast;
+    }
   } else if (spell.type === "enchant" || spell.type === "buff") {
-    const buffDuration = skillId === "ancestralAverick" ? 5 : SPELL_EFFECT_DURATION;
+    const AVERICK_WEAPON_BUFFS = ["Flametouched Blade", "Glacial Edge", "Warblood Fury"];
+    const isAverickWeaponBuff = skillId === "ancestralAverick" && AVERICK_WEAPON_BUFFS.includes(spell.name);
+    let buffDuration = skillId === "ancestralAverick" ? 5 : SPELL_EFFECT_DURATION;
+    if (isAverickWeaponBuff && hasChosenPerk(playerCharacter, "ancestralAverick", "ancestorsEdge")) {
+      buffDuration += 1;
+    }
+    let buffRank = 1;
+    if (spell.name === "Warblood Fury" && hasChosenPerk(playerCharacter, "ancestralAverick", "warbloodFuryReborn")) {
+      buffRank += 1;
+    }
+    if (spell.name === "War-Chant" && hasChosenPerk(playerCharacter, "ancestralSiuloir", "warDrumsWeight")) {
+      buffRank += 1;
+    }
+    if (spell.name === "Cù Sídhe Form" && hasChosenPerk(playerCharacter, "ancestralFetch", "feralCunning")) {
+      buffRank += 1;
+    }
+    if (spell.name === "Skald's War-Verse" && hasChosenPerk(playerCharacter, "runeSong", "warVersesWeight")) {
+      buffRank += 1;
+    }
+    if (spell.name === "Bloodfury Mark" && hasChosenPerk(playerCharacter, "runeBlade", "battleFury")) {
+      buffDuration += 1;
+    }
+    if (spell.name === "Nature's Wraith" && hasChosenPerk(playerCharacter, "pathWild", "wildFury")) {
+      buffRank += 1;
+    }
+    if (spell.name === "Fire Form" && hasChosenPerk(playerCharacter, "wayYokai", "livingFlame")) {
+      buffRank += 1;
+    }
+    if (spell.name === "Taiko of the Storm's Approach" && hasChosenPerk(playerCharacter, "waySuijin", "stormsApproach")) {
+      buffRank += 1;
+    }
+    if (spell.name === "Griot's War-Praise" && hasChosenPerk(playerCharacter, "riteGriot", "warPraisesWeight")) {
+      buffRank += 1;
+    }
     currentCombat.activeEffects.push({
       kind: "playerAttackBonus",
-      rankBonus: 1,
+      rankBonus: buffRank,
       roundsRemaining: isSong ? null : buffDuration,
       source: isSong ? "song" : undefined,
       spellName: spell.name,
       partyWide: isSong
     });
+    if (isAverickWeaponBuff && hasChosenPerk(playerCharacter, "ancestralAverick", "ancestralReckoning") && Math.random() < 0.3) {
+      const echoTier = getEffectivePlayerAttackTier(tierBefore);
+      if (rollSuccess(echoTier, getEffectiveEnemyTier())) {
+        const echoDamage = applyDamageToEnemy(rollDamage(echoTier));
+        currentCombat.log.push({ actor: "effect", kind: "ancestralEcho", damage: echoDamage });
+      }
+    }
   } else if (spell.type === "guard") {
-    currentCombat.activeEffects.push({ kind: "playerDefenseBonus", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION });
+    const guardRank = ((spell.name === "Barkskin" && hasChosenPerk(playerCharacter, "pathGrove", "guardingBark")) ||
+      (spell.name === "Root-Stance Discipline" && hasChosenPerk(playerCharacter, "wayTengu", "groundedRoot"))) ? 2 : 1;
+    currentCombat.activeEffects.push({ kind: "playerDefenseBonus", rankBonus: guardRank, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "debuff") {
-    currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+    const debuffRank = ((spell.name === "Doomrune" && hasChosenPerk(playerCharacter, "runeCurse", "doomrunesWeight")) ||
+      (spell.name === "Withering Grasp" && hasChosenPerk(playerCharacter, "pathGrove", "witheringRoots")) ||
+      (spell.name === "Judgment's Weight" && hasChosenPerk(playerCharacter, "riteThunderWrath", "judgmentsWeight"))) ? -2 : -1;
+    currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: debuffRank, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "dot") {
+    let tickBonusPct = (spell.name === "Dirge of Ruin" && hasChosenPerk(playerCharacter, "ancestralSiuloir", "dirgesGrip")) ? 0.5 : 0;
+    if (spell.name === "Withering Hex" && hasChosenPerk(playerCharacter, "runeCurse", "witheringGrip")) tickBonusPct = 0.5;
+    if (spell.name === "Skald's Curse-Verse" && hasChosenPerk(playerCharacter, "runeSong", "curseVersesGrip")) tickBonusPct = 0.5;
+    if (spell.name === "Blightmist" && hasChosenPerk(playerCharacter, "pathWild", "creepingBlight")) tickBonusPct = 0.5;
+    if (spell.name === "Verdant Blight" && hasChosenPerk(playerCharacter, "pathGrove", "spreadingRot")) tickBonusPct = 0.5;
+    if (spell.name === "Stormcall" && hasChosenPerk(playerCharacter, "pathStorm", "stormsPatience")) tickBonusPct = 0.5;
+    if (spell.name === "Ashgale" && hasChosenPerk(playerCharacter, "pathStorm", "ashenWind")) tickBonusPct = 0.5;
+    if (spell.name === "Grasp of the Dead" && hasChosenPerk(playerCharacter, "pathBarrow", "graspingDead")) tickBonusPct = 0.5;
+    if (spell.name === "Wrath Unbound" && hasChosenPerk(playerCharacter, "riteThunderWrath", "wrathsGrip")) tickBonusPct = 0.5;
+    if (spell.name === "Griot's Lament" && hasChosenPerk(playerCharacter, "riteGriot", "lamentsGrip")) tickBonusPct = 0.5;
+    let dotDuration = SPELL_EFFECT_DURATION;
+    if (skillId === "runeCurse" && hasChosenPerk(playerCharacter, "runeCurse", "doomEverlasting") && Math.random() < 0.3) {
+      dotDuration = null;
+    }
+    if (skillId === "pathBarrow" && hasChosenPerk(playerCharacter, "pathBarrow", "undyingGrasp") && Math.random() < 0.3) {
+      dotDuration = null;
+    }
+    const allowStack = skillId === "runeCurse" && hasChosenPerk(playerCharacter, "runeCurse", "cursesCompound");
     pushDotEffect({
       kind: "dot",
       rankBonus: 0,
-      roundsRemaining: SPELL_EFFECT_DURATION,
+      roundsRemaining: dotDuration,
       casterTierName: tierBefore,
-      spellName: spell.name
-    });
+      spellName: spell.name,
+      tickBonusPct: tickBonusPct
+    }, allowStack);
   } else if (spell.type === "stun") {
-    currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
+    const stunRounds = ((spell.name === "Somnusbind" && hasChosenPerk(playerCharacter, "ancestralEmyrs", "deepSleep")) ||
+      (spell.name === "Hexbind" && hasChosenPerk(playerCharacter, "runeCurse", "bindingHex")) ||
+      (spell.name === "Windshear" && hasChosenPerk(playerCharacter, "pathStorm", "knockdownGust")) ||
+      (spell.name === "Nukekubi's Grip" && hasChosenPerk(playerCharacter, "wayOnmyoji", "dreadfulGrip"))) ? 2 : 1;
+    currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: stunRounds });
   } else if (spell.type === "fear") {
-    currentCombat.activeEffects.push({ kind: "fear", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
+    let fearDuration = SPELL_EFFECT_DURATION;
+    if (spell.name === "Bonewhisper" && hasChosenPerk(playerCharacter, "pathBarrow", "boneDeepWhisper")) fearDuration += 1;
+    if (spell.name === "Shakuhachi of the Wandering Dead" && hasChosenPerk(playerCharacter, "waySuijin", "wanderingDread")) fearDuration += 1;
+    currentCombat.activeEffects.push({ kind: "fear", rankBonus: 0, roundsRemaining: fearDuration });
   } else if (spell.type === "undeadSlayer") {
     const attackTier = getEffectivePlayerSpellDamageTier(tierBefore);
     const enemyTier = getEffectiveEnemyTier();
@@ -1979,13 +2455,21 @@ function performPlayerCast(skillId, spell, target) {
     logEntry.hit = hit;
     logEntry.damage = damage;
   } else if (spell.type === "resurrect") {
-    const downedFollower = followers.find((f) => f.currentHP <= 0);
-    if (downedFollower) {
-      const maxHP = getHitPoints(downedFollower);
-      downedFollower.currentHP = Math.max(1, Math.round(maxHP * 0.4));
-      logEntry.resurrectedName = downedFollower.name;
+    if (getSpellCooldownRemaining(playerCharacter, spell.id) > 0) {
+      logEntry.onCooldown = true;
     } else {
-      logEntry.resurrectFailed = true;
+      const downedFollower = followers.find((f) => f.currentHP <= 0);
+      if (downedFollower) {
+        const maxHP = getHitPoints(downedFollower);
+        const restorePct = hasChosenPerk(playerCharacter, "pathBarrow", "shroudsMercy") ? 0.6 : 0.4;
+        downedFollower.currentHP = Math.max(1, Math.round(maxHP * restorePct));
+        logEntry.resurrectedName = downedFollower.name;
+      } else {
+        logEntry.resurrectFailed = true;
+      }
+      if (!hasChosenPerk(playerCharacter, "pathBarrow", "theBarrowRemembers")) {
+        setSpellCooldown(playerCharacter, spell.id, 9999);
+      }
     }
   } else if (spell.type === "burst") {
     const attackTier = shiftTierByRank(getEffectivePlayerSpellDamageTier(tierBefore), 2);
@@ -1995,19 +2479,84 @@ function performPlayerCast(skillId, spell, target) {
     let damage = 0;
     if (hit) {
       damage = applyDamageToEnemy(rollDamage(attackTier));
+      if (spell.name === "Beithir Form" && hasChosenPerk(playerCharacter, "ancestralFetch", "hungeringBite")) {
+        damage = Math.round(damage * 1.25);
+      }
+      if (spell.name === "Furyrune" && hasChosenPerk(playerCharacter, "runeBlade", "furyrunesWrath")) {
+        damage = Math.round(damage * 1.25);
+      }
+      if (spell.name === "Wildfire Bolt" && hasChosenPerk(playerCharacter, "pathStorm", "wildfiresReach")) {
+        damage = Math.round(damage * 1.25);
+      }
+      if (spell.name === "Wraithcall" && hasChosenPerk(playerCharacter, "pathBarrow", "wraithsFury")) {
+        damage = Math.round(damage * 1.25);
+      }
+      if (spell.name === "Crow's Talon" && hasChosenPerk(playerCharacter, "wayTengu", "talonsFlurry")) {
+        damage = Math.round(damage * 1.25);
+      }
+      if (spell.name === "Lightning Form" && hasChosenPerk(playerCharacter, "wayYokai", "wreathedLightning")) {
+        damage = Math.round(damage * 1.25);
+      }
+    }
+    logEntry.hit = hit;
+    logEntry.damage = damage;
+  } else if (spell.type === "lifetap") {
+    const attackTier = getEffectivePlayerSpellDamageTier(tierBefore);
+    const enemyTier = getEffectiveEnemyTier();
+    const hit = rollSuccess(attackTier, enemyTier);
+    let damage = 0;
+    if (hit) {
+      damage = applyDamageToEnemy(rollDamage(attackTier));
+      if (spell.name === "Baobhan Sìth Form" && hasChosenPerk(playerCharacter, "ancestralFetch", "drainingGrasp")) {
+        damage = Math.round(damage * 1.3);
+      }
+      if (spell.name === "Gravehunger" && hasChosenPerk(playerCharacter, "pathBarrow", "deeperHunger")) {
+        damage = Math.round(damage * 1.3);
+      }
+      if (spell.name === "Water Form" && hasChosenPerk(playerCharacter, "wayYokai", "flowingWater")) {
+        damage = Math.round(damage * 1.3);
+      }
+      const maxHP = getHitPoints(playerCharacter);
+      playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + damage);
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
   } else if (spell.type === "thornward") {
-    currentCombat.activeEffects.push({ kind: "thornward", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
+    currentCombat.activeEffects.push({ kind: "thornward", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, thornedWard: hasChosenPerk(playerCharacter, "pathWild", "thornedWard") });
   } else if (spell.type === "fortify") {
-    const bonusAmount = rollDamage(tierBefore);
+    let bonusAmount = rollDamage(tierBefore);
+    const isAncestorsVigor = skillId === "ancestralAverick" && spell.name === "Ancestor's Vigor";
+    if (isAncestorsVigor && hasChosenPerk(playerCharacter, "ancestralAverick", "warbloodResilience")) {
+      bonusAmount = Math.round(bonusAmount * 1.4);
+    }
+    if (spell.name === "Ballad of Vigor" && hasChosenPerk(playerCharacter, "ancestralSiuloir", "unbrokenBallad")) {
+      bonusAmount = Math.round(bonusAmount * 1.4);
+    }
+    if (spell.name === "Stonewall Rune" && hasChosenPerk(playerCharacter, "runeBlade", "stonewallResolve")) {
+      bonusAmount = Math.round(bonusAmount * 1.4);
+    }
+    if (spell.name === "Saga of Vigor" && hasChosenPerk(playerCharacter, "runeSong", "sagasDepth")) {
+      bonusAmount = Math.round(bonusAmount * 1.4);
+    }
+    if (spell.name === "Nature's Fortitude" && hasChosenPerk(playerCharacter, "pathWild", "bloomingVigor")) {
+      bonusAmount = Math.round(bonusAmount * 1.4);
+    }
+    if (spell.name === "Taiko of the Raging Surf" && hasChosenPerk(playerCharacter, "waySuijin", "ragingSurfsHeight")) {
+      bonusAmount = Math.round(bonusAmount * 1.4);
+    }
+    if (spell.name === "Griot's Song of Endurance" && hasChosenPerk(playerCharacter, "riteGriot", "endurancesDepth")) {
+      bonusAmount = Math.round(bonusAmount * 1.4);
+    }
+    let fortifyDuration = isSong ? null : SPELL_EFFECT_DURATION;
+    if (isAncestorsVigor && !isSong && hasChosenPerk(playerCharacter, "ancestralAverick", "steadyHand")) {
+      fortifyDuration += 1;
+    }
     const fortifyTargets = isSong ? [playerCharacter, ...getActiveFollowers()] : [playerCharacter];
     fortifyTargets.forEach((t) => { t.currentHP += bonusAmount; });
     currentCombat.activeEffects.push({
       kind: "fortify",
       rankBonus: 0,
-      roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
+      roundsRemaining: fortifyDuration,
       bonusHP: bonusAmount,
       source: isSong ? "song" : undefined,
       spellName: spell.name,
@@ -2015,6 +2564,8 @@ function performPlayerCast(skillId, spell, target) {
     });
     logEntry.healAmount = bonusAmount;
   } else if (spell.type === "hot") {
+    let healBonusPct = (spell.name === "Nature's Bounty" && hasChosenPerk(playerCharacter, "pathWild", "bountysDepth")) ? 0.5 : 0;
+    if (spell.name === "Biwa of the Deep Current" && hasChosenPerk(playerCharacter, "waySuijin", "deepCurrentsFlow")) healBonusPct = 0.5;
     currentCombat.activeEffects.push({
       kind: "hot",
       rankBonus: 0,
@@ -2022,27 +2573,44 @@ function performPlayerCast(skillId, spell, target) {
       casterTierName: tierBefore,
       source: isSong ? "song" : undefined,
       spellName: spell.name,
-      partyWide: isSong
+      partyWide: isSong,
+      healBonusPct: healBonusPct
     });
   } else if (spell.type === "spellDamageBuff") {
+    let spellDmgRank = (spell.name === "Hymn of Power" && hasChosenPerk(playerCharacter, "ancestralSiuloir", "resonantHymn")) ? 2 : 1;
+    if (spell.name === "Skald's Rune-Hymn" && hasChosenPerk(playerCharacter, "runeSong", "runeHymnsPower")) spellDmgRank = 2;
+    if (spell.name === "Griot's Rhythm of Power" && hasChosenPerk(playerCharacter, "riteGriot", "rhythmOfPower")) spellDmgRank = 2;
     currentCombat.activeEffects.push({
       kind: "spellDamageBuff",
-      rankBonus: 1,
+      rankBonus: spellDmgRank,
       roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
       source: isSong ? "song" : undefined,
       spellName: spell.name,
       partyWide: isSong
     });
   } else if (spell.type === "manaRegen") {
+    let regenBonus = (spell.name === "Lute-Song of the Deep Well" && hasChosenPerk(playerCharacter, "ancestralSiuloir", "steadyTempo")) ? 3 : 0;
+    if (spell.name === "Talharpa's Deep Drone" && hasChosenPerk(playerCharacter, "runeSong", "deepDrone")) regenBonus = 3;
+    if (spell.name === "Kalimba's Deep Pulse" && hasChosenPerk(playerCharacter, "riteGriot", "deepPulse")) regenBonus = 3;
     currentCombat.activeEffects.push({
       kind: "manaRegen",
       rankBonus: 0,
       roundsRemaining: isSong ? null : SPELL_EFFECT_DURATION,
       source: isSong ? "song" : undefined,
-      spellName: spell.name
+      spellName: spell.name,
+      regenBonus: regenBonus
     });
   } else if (spell.type === "groupHeal") {
-    const healAmount = rollDamage(tierBefore);
+    let healAmount = rollDamage(tierBefore);
+    if (spell.name === "Bloodbond Hex" && hasChosenPerk(playerCharacter, "runeCurse", "bloodbondsDepth")) {
+      healAmount = Math.round(healAmount * 1.4);
+    }
+    if (spell.name === "Grove's Protection" && hasChosenPerk(playerCharacter, "pathGrove", "widerBlessing")) {
+      healAmount = Math.round(healAmount * 1.4);
+    }
+    if (spell.name === "Biwa of the Returning Tide" && hasChosenPerk(playerCharacter, "waySuijin", "returningTidesDepth")) {
+      healAmount = Math.round(healAmount * 1.4);
+    }
     const playerMaxHP = getHitPoints(playerCharacter);
     playerCharacter.currentHP = Math.min(playerMaxHP, playerCharacter.currentHP + healAmount);
     getActiveFollowers().forEach((follower) => {
@@ -2052,10 +2620,13 @@ function performPlayerCast(skillId, spell, target) {
     });
     logEntry.healAmount = healAmount;
   } else if (spell.type === "buffAndDebuff") {
-    currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION });
-    currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+    let bothRank = 1;
+    if (spell.name === "Warcry Rune" && hasChosenPerk(playerCharacter, "runeBlade", "warcrysEdge")) bothRank = 2;
+    if (spell.name === "Strengthsteal Rune" && hasChosenPerk(playerCharacter, "runeCurse", "strengthstealsGrasp")) bothRank = 2;
+    currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: bothRank, roundsRemaining: SPELL_EFFECT_DURATION, spellName: spell.name });
+    currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -bothRank, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "curseBack") {
-    currentCombat.activeEffects.push({ kind: "curseBack", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
+    currentCombat.activeEffects.push({ kind: "curseBack", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, hasFortuneReversed: hasChosenPerk(playerCharacter, "runeCurse", "fortuneReversed") });
   } else if (spell.type === "cooldownBuff") {
     if (getSpellCooldownRemaining(playerCharacter, spell.id) > 0) {
       logEntry.onCooldown = true;
@@ -2069,25 +2640,60 @@ function performPlayerCast(skillId, spell, target) {
       setSpellCooldown(playerCharacter, spell.id, 4);
     }
   } else if (spell.type === "manaRefund") {
-    const refundAmount = rollDamage(tierBefore);
+    let refundAmount = rollDamage(tierBefore);
+    if (spell.name === "Manaflow" && hasChosenPerk(playerCharacter, "ancestralEmyrs", "quickenedFlow")) {
+      refundAmount = Math.round(refundAmount * 1.4);
+    }
+    if (spell.name === "Ubume's Gift" && hasChosenPerk(playerCharacter, "wayOnmyoji", "sorrowsGift")) {
+      refundAmount = Math.round(refundAmount * 1.4);
+    }
     const manaMax = getManaPoolMax(playerCharacter);
     playerCharacter.currentMana = Math.min(manaMax, playerCharacter.currentMana + refundAmount);
     logEntry.manaAmount = refundAmount;
   } else if (spell.type === "absorb") {
-    const reduction = Math.max(2, Math.floor(rollDamage(tierBefore) / 2));
-    currentCombat.activeEffects.push({ kind: "absorb", rankBonus: 0, roundsRemaining: 2, target: playerCharacter, reduction: reduction });
+    let reduction = Math.max(2, Math.floor(rollDamage(tierBefore) / 2));
+    let absorbDuration = 2;
+    if (spell.name === "Aegis Ward" && hasChosenPerk(playerCharacter, "ancestralEmyrs", "steadyWard")) absorbDuration += 1;
+    if (spell.name === "Aegis Ward" && hasChosenPerk(playerCharacter, "ancestralEmyrs", "wardedTwice")) absorbDuration += 1;
+    if (spell.name === "Deflection Mark" && hasChosenPerk(playerCharacter, "runeBlade", "deflectingRune")) {
+      reduction = Math.round(reduction * 1.4);
+    }
+    if (spell.name === "Yūrei's Veil" && hasChosenPerk(playerCharacter, "wayOnmyoji", "trailingVeil")) {
+      reduction = Math.round(reduction * 1.4);
+    }
+    if (spell.name === "Yūrei's Veil" && hasChosenPerk(playerCharacter, "wayOnmyoji", "twiceBound")) {
+      absorbDuration += 1;
+    }
+    currentCombat.activeEffects.push({ kind: "absorb", rankBonus: 0, roundsRemaining: absorbDuration, target: playerCharacter, reduction: reduction });
   } else if (spell.type === "groupAbsorb") {
-    const reduction = Math.max(2, Math.floor(rollDamage(tierBefore) / 2));
+    let reduction = Math.max(2, Math.floor(rollDamage(tierBefore) / 2));
+    if (spell.name === "Circle of Aegis" && hasChosenPerk(playerCharacter, "ancestralEmyrs", "circleUnbroken")) {
+      reduction = Math.round(reduction * 1.4);
+    }
     currentCombat.activeEffects.push({ kind: "absorb", rankBonus: 0, roundsRemaining: 2, target: "all", reduction: reduction });
   } else if (spell.type === "dodgeBuff") {
-    currentCombat.activeEffects.push({ kind: "dodgeBuff", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION });
+    const dodgeRank = ((skillId === "ancestralAverick" && hasChosenPerk(playerCharacter, "ancestralAverick", "fleetbloodInstinct")) ||
+      (spell.name === "Feather-Step" && hasChosenPerk(playerCharacter, "wayTengu", "featherLight"))) ? 2 : 1;
+    currentCombat.activeEffects.push({ kind: "dodgeBuff", rankBonus: dodgeRank, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "acBuff") {
-    currentCombat.activeEffects.push({ kind: "acBuff", rankBonus: 1, roundsRemaining: SPELL_EFFECT_DURATION });
+    let acRank = 1;
+    if (skillId === "ancestralAverick" && hasChosenPerk(playerCharacter, "ancestralAverick", "steadfastAncestors")) acRank = 2;
+    if (spell.name === "Stag Form" && hasChosenPerk(playerCharacter, "ancestralFetch", "sureFooting")) acRank = 2;
+    if (spell.name === "Earth Form" && hasChosenPerk(playerCharacter, "wayYokai", "livingStone")) acRank = 2;
+    if (spell.name === "Ironrune Guard" && hasChosenPerk(playerCharacter, "runeBlade", "ironStance")) acRank = 2;
+    currentCombat.activeEffects.push({ kind: "acBuff", rankBonus: acRank, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "companion") {
-    dungeonCompanion = { casterTierName: tierBefore };
+    const wasRecast = dungeonCompanionUsed && spell.name === "Wolf's Call";
+    dungeonCompanion = { casterTierName: tierBefore, spellName: spell.name, recastUsed: wasRecast };
     dungeonCompanionUsed = true;
-    currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "companion");
-    currentCombat.activeEffects.push({ kind: "companion", rankBonus: 0, roundsRemaining: null, casterTierName: tierBefore });
+    const isTwinElemental = ["Ember-Lash", "Thunder Caller"].includes(spell.name) &&
+      hasChosenPerk(playerCharacter, "riteThunderWrath", "twinElementals");
+    if (isTwinElemental) {
+      currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => !(e.kind === "companion" && e.spellName === spell.name));
+    } else {
+      currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "companion");
+    }
+    currentCombat.activeEffects.push({ kind: "companion", rankBonus: 0, roundsRemaining: null, casterTierName: tierBefore, spellName: spell.name });
   }
 
   if (skillId === "wayYokai" && PERSISTENT_YOKAI_SPELL_IDS.includes(spell.id)) {
@@ -2133,7 +2739,8 @@ function performPlayerFlee() {
 
   const dodgeTier = getAdvantageTier(playerCharacter, "dodge").name;
   const faeCunningBonus = playerCharacter.traits && playerCharacter.traits.includes("faeCunning") ? 0.15 : 0;
-  const success = rollSuccess(dodgeTier, currentCombat.enemyThreatTier, faeCunningBonus);
+  const leatherFleeBonus = (playerCharacter.equippedArmorSkill === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "practicedMobility")) ? 0.15 : 0;
+  const success = rollSuccess(dodgeTier, currentCombat.enemyThreatTier, faeCunningBonus + leatherFleeBonus);
   currentCombat.log.push({ actor: "player", action: "flee", success: success });
 
   if (success) {
@@ -2210,6 +2817,7 @@ function describeLogEntry(entry) {
       return `${entry.spellName || "The lingering magic"} mends ${who} further, restoring ${entry.healAmount} Hit Points.`;
     }
     if (entry.kind === "thornProc") return `Your thorns lash back at ${currentCombat.enemyName} for ${entry.damage}.`;
+    if (entry.kind === "ancestralEcho") return `Your ancestors' fury answers in kind, striking again for ${entry.damage}.`;
     if (entry.kind === "manaRegen") {
       const who = entry.ownerName && entry.ownerName !== playerCharacter.name ? `${entry.ownerName}'s` : "your";
       return `${entry.spellName || "The song's melody"} restores ${entry.manaAmount} mana to ${who} pool.`;

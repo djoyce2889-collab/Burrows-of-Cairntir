@@ -1493,6 +1493,73 @@ function goToSkillsScreen() {
   renderSkillsScreen();
 }
 
+function goToMasteryScreen() {
+  showScreen("screen-mastery");
+  renderMasteryScreen();
+}
+
+function renderMasteryScreen() {
+  const list = document.getElementById("mastery-list");
+  list.innerHTML = "";
+
+  const trainedSkillIds = Object.keys(playerCharacter.skills).filter((id) => MASTERY_PERKS[id]);
+
+  if (trainedSkillIds.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "cc-skill-count";
+    empty.textContent = "Nothing trained yet worth mastering.";
+    list.appendChild(empty);
+    return;
+  }
+
+  trainedSkillIds.forEach((skillId) => {
+    const points = getMasteryPoints(playerCharacter, skillId);
+    const unlockedTier = getUnlockedMasteryTier(points);
+    const skillName = SKILLS[skillId] ? SKILLS[skillId].name : skillId;
+
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = `${skillName} — ${points} Mastery Point${points === 1 ? "" : "s"}`;
+    list.appendChild(heading);
+
+    if (unlockedTier === 0) {
+      const locked = document.createElement("div");
+      locked.className = "cc-skill-count";
+      locked.textContent = "Earn your first Mastery Point (a tier-up, or a new spell learned) to unlock Tier 1.";
+      list.appendChild(locked);
+      return;
+    }
+
+    for (let tier = 1; tier <= unlockedTier; tier++) {
+      const tierLabel = document.createElement("div");
+      tierLabel.className = "cc-skill-count";
+      tierLabel.textContent = `Tier ${tier}`;
+      list.appendChild(tierLabel);
+
+      const grid = document.createElement("div");
+      grid.className = "cc-grid";
+
+      MASTERY_PERKS[skillId][tier].forEach((perk) => {
+        const isChosen = getMasteryPick(playerCharacter, skillId, tier) === perk.id;
+        const card = document.createElement("div");
+        card.className = "cc-card" + (isChosen ? " selected" : "");
+        card.innerHTML = `
+          <div class="cc-card-name">${perk.name}</div>
+          <div class="cc-card-desc">${perk.description}</div>
+        `;
+        card.addEventListener("click", () => {
+          setMasteryPick(playerCharacter, skillId, tier, perk.id);
+          saveGameState();
+          renderMasteryScreen();
+        });
+        grid.appendChild(card);
+      });
+
+      list.appendChild(grid);
+    }
+  });
+}
+
 function renderSkillsScreen() {
   const list = document.getElementById("skills-list");
   list.innerHTML = "";
@@ -3634,6 +3701,8 @@ document.getElementById("btn-continue-to-homebase").addEventListener("click", go
 document.getElementById("btn-manage-party").addEventListener("click", goToPartyScreen);
 
 document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
+document.getElementById("btn-mastery").addEventListener("click", goToMasteryScreen);
+document.getElementById("btn-mastery-back").addEventListener("click", goToHomebaseScreen);
 
 document.getElementById("btn-skills-back").addEventListener("click", goToHomebaseScreen);
 
@@ -4015,5 +4084,4 @@ if (existingSaveSummaries.length > 0) {
   renderTraitGrid();
   renderCombatStyleGrid();
   playMusic(MAIN_THEME_SRC);
-  prewarmAllPortraitCaches();
 }

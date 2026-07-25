@@ -184,6 +184,7 @@
           <button class="choice-button has-banner-icon" id="btn-manage-party"><img class="choice-button-icon" src="assets/images/icons/icon-manage-party.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Manage Your Party</span></button>
           <button class="choice-button has-banner-icon" id="btn-go-to-give-items"><img class="choice-button-icon" src="assets/images/icons/icon-give-items.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Give Items to a Follower</span></button>
           <button class="choice-button has-banner-icon" id="btn-your-spells"><img class="choice-button-icon" src="assets/images/icons/icon-your-spells.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Your Spells</span></button>
+          <button class="choice-button has-banner-icon" id="btn-mastery"><img class="choice-button-icon" src="assets/images/icons/icon-mastery.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Mastery</span></button>
           <button class="choice-button has-banner-icon" id="btn-continue-to-dungeon-select"><img class="choice-button-icon" src="assets/images/icons/icon-set-out-dungeon.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Set Out to a Dungeon</span></button>
           <button class="choice-button has-banner-icon" id="btn-training-grounds"><img class="choice-button-icon" src="assets/images/icons/icon-grand-arena.png?v=2" alt="" /><span style="position: relative; z-index: 1;">The Grand Arena</span></button>
           <button class="choice-button has-banner-icon" id="btn-start-another-game"><img class="choice-button-icon" src="assets/images/icons/icon-start-another-game.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Start Another Game</span></button>
@@ -215,6 +216,20 @@
         <div id="skills-list"></div>
         <div id="choices">
           <button class="choice-button" id="btn-skills-back">Return to Homebase</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-mastery" class="screen">
+      <div id="viewport">
+        <img src="assets/images/mastery.png" alt="A quiet stone chamber lined with rune-tablets and talismans, a training dummy and weapon rack along the walls, an open spellbook glowing on a stone lectern." />
+      </div>
+      <div id="panel">
+        <span class="cc-label">Mastery</span>
+        <div class="cc-skill-count">Every skill you've grown earns its own points toward mastering it further. Spend them below.</div>
+        <div id="mastery-list"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-mastery-back">Return to Homebase</button>
         </div>
       </div>
     </section>
@@ -393,6 +408,8 @@
   <script src="js/data-equipment.js"></script>
   <script src="js/data-dungeons.js"></script>
   <script src="js/data-chronicle.js"></script>
+  <script src="js/data-legendary.js"></script>
+  <script src="js/data-mastery.js"></script>
   <script src="js/character.js"></script>
   <script src="js/combat.js"></script>
   <script src="js/main.js"></script>

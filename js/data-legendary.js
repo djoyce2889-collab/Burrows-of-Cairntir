@@ -48,6 +48,72 @@ const LEGENDARY_ARENA_ITEMS = {
     skillId: "riteUnmaking",
     cultureId: "vandiri",
     description: "Your unmaking spells ignore enemy resistances and immunities entirely.",
+  },
+  ancestralEmyrs: {
+    itemName: "Emyrs's Unbroken Ward",
+    skillId: "ancestralEmyrs",
+    cultureId: "deveran",
+    description: "Your first ward each fight can't be dispelled or overwritten by anything, friendly or hostile, for its full duration.",
+  },
+  ancestralSiuloir: {
+    itemName: "Siuloir's Undying Verse",
+    skillId: "ancestralSiuloir",
+    cultureId: "deveran",
+    description: "Your songs no longer count against the active-song cap — you can keep every song running at once.",
+  },
+  ancestralFetch: {
+    itemName: "Fraser's Second Skin",
+    skillId: "ancestralFetch",
+    cultureId: "deveran",
+    description: "Your Fetch form no longer has a countdown — once transformed, you stay transformed until you choose to change back or the fight ends.",
+  },
+  runeVision: {
+    itemName: "Sigrun's Foresight",
+    skillId: "runeVision",
+    cultureId: "drakvarr",
+    description: "You always see the enemy's next intended action before choosing yours.",
+  },
+  pathWild: {
+    itemName: "Fionnbharr's Unspent Fury",
+    skillId: "pathWild",
+    cultureId: "gaeldrim",
+    description: "Unused momentum carries between rounds — holding back a round makes your next attack hit harder.",
+  },
+  pathGrove: {
+    itemName: "Bríghid's Second Bloom",
+    skillId: "pathGrove",
+    cultureId: "gaeldrim",
+    description: "Your healing spells can push a target's HP briefly above their normal max for the rest of the fight.",
+  },
+  riteProtection: {
+    itemName: "Zuberi's Standing Vow",
+    skillId: "riteProtection",
+    cultureId: "vandiri",
+    description: "Your protection rite automatically re-triggers once, free, the instant it's consumed.",
+  },
+  riteThunderWrath: {
+    itemName: "Adaeze's Storm-Voice",
+    skillId: "riteThunderWrath",
+    cultureId: "vandiri",
+    description: "Warrior's Resolve no longer has a cooldown — call on it as often as you need.",
+  },
+  waySuijin: {
+    itemName: "Mizuhana's Deep Well",
+    skillId: "waySuijin",
+    cultureId: "yorenshi",
+    description: "Your healing spells cost no mana for the rest of the fight, after your first successful heal.",
+  },
+  wayYokai: {
+    itemName: "Kitsura's Stolen Form",
+    skillId: "wayYokai",
+    cultureId: "yorenshi",
+    description: "Your elemental form no longer has a cooldown between transformations — swap freely, whenever you want.",
+  },
+  wayOnmyoji: {
+    itemName: "Kage's Hidden Ward",
+    skillId: "wayOnmyoji",
+    cultureId: "yorenshi",
+    description: "Your first ward or omen effect each fight costs no turn.",
   }
 };
 

@@ -281,7 +281,12 @@ function getHitPoints(character) {
   const survivalTier = getHighestTierAmong(character, hpAdvantage.drivenBy);
   const bonus = hpAdvantage.tierBonus[survivalTier.name] || 0;
   const chronicleBonus = (character.chronicleBonuses && character.chronicleBonuses.maxHpBonus) || 0;
-  return hpAdvantage.base + bonus + chronicleBonus;
+  let armorMasteryHpBonus = 0;
+  if (character === playerCharacter && character.equippedArmorSkill === "plateArmor") {
+    if (hasChosenPerk(character, "plateArmor", "heavyBearing")) armorMasteryHpBonus += 8;
+    if (hasChosenPerk(character, "plateArmor", "fortressStance")) armorMasteryHpBonus += 12;
+  }
+  return hpAdvantage.base + bonus + chronicleBonus + armorMasteryHpBonus;
 }
 
 /**
@@ -313,8 +318,15 @@ function getManaPoolMax(character) {
     armorBonus = ARMOR_MANA_BONUS[character.equippedArmorSkill] || 0;
   }
 
-  if (base === 0 && traitBonus === 0 && armorBonus === 0) return 0;
-  return base + traitBonus + armorBonus;
+  let clothMasteryBonus = 0;
+  if (character === playerCharacter && character.equippedArmorSkill === "clothArmor") {
+    if (hasChosenPerk(character, "clothArmor", "wovenFocus")) clothMasteryBonus += 5;
+    if (hasChosenPerk(character, "clothArmor", "arcaneLining")) clothMasteryBonus += 5;
+    if (hasChosenPerk(character, "clothArmor", "deepReserves")) clothMasteryBonus += 10;
+  }
+
+  if (base === 0 && traitBonus === 0 && armorBonus === 0 && clothMasteryBonus === 0) return 0;
+  return base + traitBonus + armorBonus + clothMasteryBonus;
 }
 
 function refillMana(character) {
