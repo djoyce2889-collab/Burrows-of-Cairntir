@@ -147,7 +147,7 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-#viewport {
+#viewport, #game-viewport {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -159,14 +159,14 @@ body {
   overflow: hidden;
 }
 
-#viewport img {
+#viewport img, #game-viewport img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   image-rendering: auto;
 }
 
-#viewport .viewport-placeholder {
+#viewport .viewport-placeholder, #game-viewport .viewport-placeholder {
   font-family: var(--font-display);
   font-size: 16px;
   color: var(--parchment-dim);
@@ -175,7 +175,7 @@ body {
   line-height: 1.8;
 }
 
-#viewport img.companion-glow {
+#game-viewport img.companion-glow {
   animation: companionGlowPulse 1.4s ease-in-out infinite;
 }
 
@@ -188,20 +188,70 @@ body {
   }
 }
 
-#viewport img.hit-shake {
+#game-viewport img {
+  transition: opacity 0.25s ease;
+}
+
+#game-viewport img.fading-out {
+  opacity: 0;
+}
+
+#game-viewport img.hit-shake {
   animation: hitShake 0.35s ease-out;
 }
 
-@keyframes hitShake {
-  0% { filter: brightness(1); transform: translateX(0); }
-  15% { filter: brightness(2.2) saturate(0.3); transform: translateX(-6px); }
-  30% { transform: translateX(5px); }
-  45% { transform: translateX(-4px); }
-  60% { filter: brightness(1); transform: translateX(3px); }
-  100% { transform: translateX(0); }
+#game-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 999;
 }
 
-#viewport img.spell-flash {
+#game-viewport.hit-flash-fire::after { background: rgba(220, 40, 40, 1); animation: colorFlash 1.2s ease-out; }
+#game-viewport.hit-flash-physical::after { background: rgba(220, 40, 40, 1); animation: colorFlash 1.2s ease-out; }
+#game-viewport.hit-flash-lightning::after { background: rgba(255, 255, 255, 1); animation: colorFlash 0.7s ease-out; }
+#game-viewport.hit-flash-ice::after { background: rgba(255, 255, 255, 1); animation: colorFlash 0.7s ease-out; }
+#game-viewport.hit-flash-poison::after { background: rgba(255, 255, 255, 1); animation: colorFlash 0.7s ease-out; }
+#game-viewport.heal-flash::after { background: rgba(95, 191, 111, 1); animation: colorFlash 0.8s ease-out; }
+
+#game-viewport::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 998;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, rgba(220, 40, 40, 0) 55%, rgba(220, 40, 40, 0.65) 100%);
+}
+
+#game-viewport.low-hp-pulse::before {
+  animation: lowHpPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes lowHpPulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes colorFlash {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  45% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes hitShake {
+  0% { filter: brightness(1); transform: translateX(0) scale(1); }
+  15% { filter: brightness(1.15) saturate(0.3); transform: translateX(-6px) scale(1.08); }
+  30% { transform: translateX(5px) scale(1.05); }
+  45% { transform: translateX(-4px) scale(1.03); }
+  60% { filter: brightness(1); transform: translateX(3px) scale(1.01); }
+  100% { transform: translateX(0) scale(1); }
+}
+
+#game-viewport img.spell-flash {
   animation: spellFlash 0.4s ease-out;
 }
 
@@ -211,7 +261,7 @@ body {
   100% { filter: brightness(1) saturate(1); }
 }
 
-#viewport img.victory-pulse {
+#game-viewport img.victory-pulse {
   animation: victoryPulse 1.6s ease-in-out infinite;
 }
 
@@ -224,7 +274,7 @@ body {
   }
 }
 
-#viewport img.defeat-fade {
+#game-viewport img.defeat-fade {
   animation: defeatFade 2.2s ease-out forwards;
 }
 
@@ -236,7 +286,7 @@ body {
     filter: brightness(0.5) saturate(0);
   }
 }
-#viewport img.room-fade {
+#game-viewport img.room-fade {
   animation: roomFade 0.5s ease-in;
 }
 
@@ -694,26 +744,26 @@ body {
    Enchant glow reflects your equipped weapon's enchant type;
    spectral glow marks enemies in the "spectral" sound category.
    ------------------------------------------------------------ */
-#viewport img.enchant-glow-flame {
+#game-viewport img.enchant-glow-flame {
   filter: drop-shadow(0 0 22px rgba(230, 140, 60, 0.9)) brightness(1.06);
 }
-#viewport img.enchant-glow-frost {
+#game-viewport img.enchant-glow-frost {
   filter: drop-shadow(0 0 22px rgba(110, 190, 230, 0.9)) brightness(1.06);
 }
-#viewport img.enchant-glow-storm {
+#game-viewport img.enchant-glow-storm {
   filter: drop-shadow(0 0 22px rgba(180, 160, 255, 0.9)) brightness(1.06);
 }
-#viewport img.enchant-glow-ward {
+#game-viewport img.enchant-glow-ward {
   filter: drop-shadow(0 0 22px rgba(230, 200, 100, 0.9)) brightness(1.06);
 }
-#viewport img.enchant-glow-curse {
+#game-viewport img.enchant-glow-curse {
   filter: drop-shadow(0 0 22px rgba(150, 60, 160, 0.9)) brightness(1.06);
 }
-#viewport img.enchant-glow-vision {
+#game-viewport img.enchant-glow-vision {
   filter: drop-shadow(0 0 22px rgba(120, 220, 200, 0.9)) brightness(1.06);
 }
 
-#viewport img.spectral-glow {
+#game-viewport img.spectral-glow {
   animation: spectralGlowPulse 2.4s ease-in-out infinite;
 }
 
@@ -759,7 +809,7 @@ body {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
 }
 
-#viewport img.averick-glow {
+#game-viewport img.averick-glow {
   animation: averickGlowPulse 1.8s ease-in-out infinite;
 }
 
@@ -772,7 +822,7 @@ body {
   }
 }
 
-#viewport img.sidhe-glow {
+#game-viewport img.sidhe-glow {
   animation: sidheGlowPulse 2.2s ease-in-out infinite;
 }
 

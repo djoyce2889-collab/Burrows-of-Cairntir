@@ -6,10 +6,55 @@ let currentCombat = null;
 
 let dungeonCompanion = null;
 let dungeonCompanionUsed = false;
+let followerDungeonCompanions = {};
 
 function resetDungeonCompanionState() {
   dungeonCompanion = null;
   dungeonCompanionUsed = false;
+  followerDungeonCompanions = {};
+}
+
+function getFollowerCompanionOption(follower) {
+  if (followerDungeonCompanions[follower.name]) return null;
+  const magicSkillIds = Object.keys(follower.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Magic"
+  );
+  for (const skillId of magicSkillIds) {
+    const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+    const allSpells = SPELLS[skillId] || [];
+    const companionSpell = allSpells.find(
+      (s) => s.type === "companion" && known.includes(s.id) && isSpellActive(follower, s.id)
+    );
+    if (companionSpell) return { skillId, spell: companionSpell };
+  }
+  return null;
+}
+
+function performFollowerCompanionCast(follower, skillId, spell) {
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  followerDungeonCompanions[follower.name] = { casterTierName: tierBefore };
+  currentCombat.activeEffects = currentCombat.activeEffects.filter(
+    (e) => !(e.kind === "companion" && e.owner === follower)
+  );
+  currentCombat.activeEffects.push({
+    kind: "companion",
+    rankBonus: 0,
+    roundsRemaining: null,
+    casterTierName: tierBefore,
+    owner: follower
+  });
+
+  currentCombat.log.push({
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    skillId: skillId,
+    spellName: spell.name,
+    castKind: "companion"
+  });
 }
 
 /**
@@ -567,6 +612,18 @@ function startCombat(enemyId) {
       casterTierName: dungeonCompanion.casterTierName
     });
   }
+  getActiveFollowers().forEach((follower) => {
+    const followerCompanion = followerDungeonCompanions[follower.name];
+    if (followerCompanion) {
+      initialEffects.push({
+        kind: "companion",
+        rankBonus: 0,
+        roundsRemaining: null,
+        casterTierName: followerCompanion.casterTierName,
+        owner: follower
+      });
+    }
+  });
 
   currentCombat = {
     enemyId: enemyId,
@@ -1610,6 +1667,111 @@ function performFollowerFetchFormCast(follower, skillId, spell) {
   currentCombat.log.push(logEntry);
 }
 
+const FOLLOWER_UTILITY_SPELL_TYPES = ["absorb", "stun", "guaranteedHit", "manaRefund", "autoRevive"];
+
+function getFollowerUtilitySpellOption(follower) {
+  const magicSkillIds = Object.keys(follower.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Magic"
+  );
+  for (const skillId of magicSkillIds) {
+    const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+    const allSpells = SPELLS[skillId] || [];
+    const utilitySpell = allSpells.find((s) => {
+      if (!FOLLOWER_UTILITY_SPELL_TYPES.includes(s.type)) return false;
+      if (!known.includes(s.id)) return false;
+      if (!isSpellActive(follower, s.id)) return false;
+      if (s.type === "absorb") {
+        const alreadyActive = currentCombat.activeEffects.some((e) => e.kind === "absorb" && e.target === follower);
+        if (alreadyActive) return false;
+      }
+      if (s.type === "autoRevive") {
+        const alreadyWarded = currentCombat.activeEffects.some((e) => e.kind === "autoRevive" && e.owner === follower);
+        if (alreadyWarded) return false;
+      }
+      return true;
+    });
+    if (utilitySpell) return { skillId, spell: utilitySpell };
+  }
+  return null;
+}
+
+function performFollowerUtilitySpell(follower, skillId, spell) {
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  const logEntry = {
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    skillId: skillId,
+    spellName: spell.name,
+    castKind: "utility",
+    spellType: spell.type
+  };
+
+  if (spell.type === "absorb") {
+    const reduction = Math.max(2, Math.floor(rollDamage(tierBefore) / 2));
+    currentCombat.activeEffects.push({ kind: "absorb", rankBonus: 0, roundsRemaining: 2, target: follower, reduction: reduction });
+  } else if (spell.type === "stun") {
+    currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
+  } else if (spell.type === "guaranteedHit") {
+    currentCombat.activeEffects.push({ kind: "guaranteedFollowerAction", rankBonus: 0, roundsRemaining: null });
+  } else if (spell.type === "manaRefund") {
+    const refundAmount = rollDamage(tierBefore);
+    const manaMax = getManaPoolMax(follower);
+    follower.currentMana = Math.min(manaMax, follower.currentMana + refundAmount);
+    logEntry.manaAmount = refundAmount;
+  } else if (spell.type === "autoRevive") {
+    currentCombat.activeEffects.push({ kind: "autoRevive", rankBonus: 0, roundsRemaining: null, owner: follower, spellName: spell.name });
+  }
+
+  currentCombat.log.push(logEntry);
+}
+
+function getFollowerCompanionOption(follower) {
+  if (followerDungeonCompanions[follower.name]) return null;
+  const magicSkillIds = Object.keys(follower.skills).filter(
+    (id) => SKILLS[id] && SKILLS[id].category === "Magic"
+  );
+  for (const skillId of magicSkillIds) {
+    const known = (follower.knownSpells && follower.knownSpells[skillId]) || [];
+    const allSpells = SPELLS[skillId] || [];
+    const companionSpell = allSpells.find(
+      (s) => s.type === "companion" && known.includes(s.id) && isSpellActive(follower, s.id)
+    );
+    if (companionSpell) return { skillId, spell: companionSpell };
+  }
+  return null;
+}
+
+function performFollowerCompanionCast(follower, skillId, spell) {
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  follower.currentMana -= MANA_CONFIG.costPerCast;
+  useSkill(follower, skillId);
+
+  followerDungeonCompanions[follower.name] = { casterTierName: tierBefore };
+  currentCombat.activeEffects = currentCombat.activeEffects.filter(
+    (e) => !(e.kind === "companion" && e.owner === follower)
+  );
+  currentCombat.activeEffects.push({
+    kind: "companion",
+    rankBonus: 0,
+    roundsRemaining: null,
+    casterTierName: tierBefore,
+    owner: follower
+  });
+
+  currentCombat.log.push({
+    actor: "follower",
+    followerName: follower.name,
+    action: "cast",
+    skillId: skillId,
+    spellName: spell.name,
+    castKind: "companion"
+  });
+}
+
 function performPlayerCast(skillId, spell, target) {
   if (!currentCombat || currentCombat.result) return currentCombat;
   if (playerCharacter.currentMana < MANA_CONFIG.costPerCast) return currentCombat;
@@ -2038,6 +2200,24 @@ function describeLogEntry(entry) {
     if (entry.action === "cast") {
       if (entry.castKind === "ward") {
         return `${entry.followerName} calls on ${entry.spellName}, and a silent ward settles over her — ready to answer the next blow.`;
+      }
+      if (entry.castKind === "utility") {
+        if (entry.spellType === "absorb") {
+          return `${entry.followerName} calls on ${entry.spellName}, and a ward of raw force settles over her.`;
+        }
+        if (entry.spellType === "stun") {
+          return `${entry.followerName} calls on ${entry.spellName}, and their foe is knocked clean off their feet.`;
+        }
+        if (entry.spellType === "guaranteedHit") {
+          return `${entry.followerName} calls on ${entry.spellName}, and sees with perfect clarity exactly where the next strike will land.`;
+        }
+        if (entry.spellType === "manaRefund") {
+          return `${entry.followerName} calls on ${entry.spellName}, drawing ${entry.manaAmount} mana back into herself.`;
+        }
+        if (entry.spellType === "autoRevive") {
+          return `${entry.followerName} calls on ${entry.spellName}, and a silent watch settles over the party.`;
+        }
+        return `${entry.followerName} calls on ${entry.spellName}.`;
       }
       if (entry.castKind === "cooldownBuff") {
         return `${entry.followerName} calls on ${entry.spellName}, and her strikes burn brighter for a time.`;

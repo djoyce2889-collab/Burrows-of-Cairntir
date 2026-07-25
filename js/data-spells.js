@@ -178,5 +178,14 @@ const SPELLS = {
     { id: "catSithForm", name: "Cat-Sìth Form", type: "guaranteedDodge", description: "A soul-stealing fae cat's uncanny stillness lets the next blow pass you by entirely." },
     { id: "stagForm", name: "Stag Form", type: "acBuff", description: "A phantom Otherworld-stag's antlered bearing turns aside blows that would otherwise land true." },
     { id: "nuckelaveeForm", name: "Nuckelavee Form", type: "damageDebuff", description: "A skinless horse-shaped abomination's withering breath saps the force from your foe's every strike." }
+  ],
+
+  wayOnmyoji: [
+    { id: "onryosWrath", name: "Shikigami: Onryō's Wrath", type: "companion", description: "A vengeful ghost, bound to your will, answers your call — it will fight at your side for the rest of this dungeon." },
+    { id: "yureisVeil", name: "Shikigami: Yūrei's Veil", type: "absorb", description: "A pale, trailing spirit wraps itself around you, blunting the force of the next few blows you take." },
+    { id: "nukekubisGrip", name: "Shikigami: Nukekubi's Grip", type: "stun", description: "A detached, flying spirit-head locks your foe in place with sheer dread, unable to act." },
+    { id: "gashadokurosEye", name: "Shikigami: Gashadokuro's Eye", type: "guaranteedHit", description: "A vast skeletal spirit's unerring sight shows exactly where your next strike will land." },
+    { id: "ubumesGift", name: "Shikigami: Ubume's Gift", type: "manaRefund", description: "A sorrowful spirit's burden, passed briefly into your hands, returns a measure of power to you." },
+    { id: "onryosVigil", name: "Shikigami: Onryō's Vigil", type: "autoRevive", description: "The vengeful spirit keeps watch over the party, ready to pull a fallen ally back from the edge." }
   ]
 };

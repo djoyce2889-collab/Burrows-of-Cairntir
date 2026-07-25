@@ -130,6 +130,21 @@ function getElementalAttackSfxPath(spellName) {
   return elementalAttackSfxMap[spellName] || null;
 }
 
+function getHitFlashClass(entry) {
+  if (["heal", "hot", "groupHeal"].includes(entry.spellType)) return "heal-flash";
+  if (entry.actor === "follower" && entry.action === "heal") return "heal-flash";
+
+  const name = (entry.spellName || "").toLowerCase();
+  if (/fire|flame|ember|burn|blaze/.test(name)) return "hit-flash-fire";
+  if (/frost|ice|chill|freeze|winter/.test(name)) return "hit-flash-ice";
+  if (/storm|thunder|lightning|spark|bolt|shock/.test(name)) return "hit-flash-lightning";
+  if (/poison|venom|toxin|blight|rot/.test(name)) return "hit-flash-poison";
+
+  if (entry.hit && !entry.spellName) return "hit-flash-physical";
+
+  return null;
+}
+
 function getSpellSfxPath(spellName) {
   if (!spellName) return null;
   const text = spellName.toLowerCase();
@@ -586,10 +601,14 @@ function setGameViewportImage(src, altText, glow, shake, flash, roomFade) {
   const img = document.getElementById("game-viewport-img");
   const placeholder = document.getElementById("game-viewport-placeholder");
   if (src) {
-    img.src = src;
-    img.alt = altText || "";
-    img.style.display = "block";
-    placeholder.style.display = "none";
+    img.classList.add("fading-out");
+    setTimeout(() => {
+      img.src = src;
+      img.alt = altText || "";
+      img.style.display = "block";
+      placeholder.style.display = "none";
+      img.classList.remove("fading-out");
+    }, 250);
   } else {
     img.style.display = "none";
     placeholder.style.display = "flex";
@@ -1039,6 +1058,12 @@ function renderStartingSpellsGrid() {
    subHeading.style.color = "#ffffff !important";
    subHeading.innerHTML = `<span style="color: #ffffff !important;">${skill.name}</span>`;
    container.appendChild(subHeading);
+
+    const lineDesc = document.createElement("div");
+    lineDesc.className = "cc-card-desc";
+    lineDesc.style.marginBottom = "10px";
+    lineDesc.textContent = skill.description;
+    container.appendChild(lineDesc);
 
     const grid = document.createElement("div");
     grid.className = "cc-grid";
@@ -2454,6 +2479,16 @@ function playRoundSequenceThenRender(entries) {
     applyAmbientGlows(entry.actor === "enemy");
     applySidheGlow(getActorRaceId(entry));
 
+    document.getElementById("viewport").classList.remove(
+      "hit-flash-fire", "hit-flash-physical", "hit-flash-lightning",
+      "hit-flash-ice", "hit-flash-poison", "heal-flash"
+    );
+    const hitFlashClass = getHitFlashClass(entry);
+    if (hitFlashClass) {
+      void document.getElementById("viewport").offsetWidth;
+      document.getElementById("viewport").classList.add(hitFlashClass);
+    }
+
 if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
   let activeForm;
   if (entry.actor === "player") {
@@ -2504,7 +2539,7 @@ if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
     if (entry.actor === "follower" && entry.action === "cast") {
       const followerYokaiSfx = entry.skillId === "wayYokai" ? getYokaiTransformSfxPath(entry.spellName) : null;
       const followerFetchSfx = entry.skillId === "ancestralFetch" ? getFetchTransformSfxPath(entry.spellName) : null;
-      playSfx(followerYokaiSfx || followerFetchSfx || getSpellSfxPath(entry.spellName));
+      playSfx(followerYokaiSfx || followerFetchSfx || getSpellSfxPathWithType(entry.spellName, entry.spellType));
     }
 
     if (entry.actor === "follower" && entry.action === "sing") {
@@ -2608,6 +2643,10 @@ function renderCombatScreen() {
   const storyEl = document.getElementById("game-story-text");
   const choicesEl = document.getElementById("game-choices");
   const maxHP = getHitPoints(playerCharacter);
+  document.getElementById("game-viewport").classList.toggle(
+    "low-hp-pulse",
+    playerCharacter.currentHP > 0 && playerCharacter.currentHP / maxHP <= 0.25
+  );
   const manaMax = getManaPoolMax(playerCharacter);
   const enemyCondition = getEnemyConditionText();
   const effectsSummary = getActiveEffectsSummary();
@@ -3687,6 +3726,12 @@ resultEl.style.color = "#ffffff";
     subHeading.style.color = "#ffffff !important";
     subHeading.innerHTML = `<span style="color: #ffffff !important;">${skill.name}</span>`;
     container.appendChild(subHeading);
+    
+    const lineDesc = document.createElement("div");
+    lineDesc.className = "cc-card-desc";
+    lineDesc.style.marginBottom = "10px";
+    lineDesc.textContent = skill.description;
+    container.appendChild(lineDesc);
     
     const grid = document.createElement("div");
     grid.className = "cc-grid";
