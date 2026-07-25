@@ -2667,14 +2667,14 @@ function playRoundSequenceThenRender(entries) {
     applyAmbientGlows(entry.actor === "enemy");
     applySidheGlow(getActorRaceId(entry));
 
-    document.getElementById("viewport").classList.remove(
+    document.getElementById("game-viewport").classList.remove(
       "hit-flash-fire", "hit-flash-physical", "hit-flash-lightning",
       "hit-flash-ice", "hit-flash-poison", "heal-flash"
     );
     const hitFlashClass = getHitFlashClass(entry);
     if (hitFlashClass) {
-      void document.getElementById("viewport").offsetWidth;
-      document.getElementById("viewport").classList.add(hitFlashClass);
+      void document.getElementById("game-viewport").offsetWidth;
+      document.getElementById("game-viewport").classList.add(hitFlashClass);
     }
 
 if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
@@ -3411,6 +3411,18 @@ function getItemImagePath(itemName) {
   const startingImageMap = { "Old Sword": "sword", "Worn Axe": "axe", "Simple Bow": "bow" };
   if (startingImageMap[itemName]) {
     return `assets/images/items/${startingImageMap[itemName]}.png`;
+  }
+
+  const legendaryImageMap = {
+    "Averick's Reckoning": "avericks-reckoning",
+    "Kolgrim's Brand": "kolgrims-brand",
+    "Ivarr's Grudge": "ivarrs-grudge",
+    "Neasa's Unbroken Sky": "neasas-unbroken-sky",
+    "Kurogane's Perfect Step": "kuroganes-perfect-step",
+    "Kwabena's Undoing": "kwabenas-undoing"
+  };
+  if (legendaryImageMap[itemName]) {
+    return `assets/images/items/${legendaryImageMap[itemName]}.png`;
   }
 
   const recipeMatch = Object.values(CRAFTING_RECIPES).find((recipe) =>

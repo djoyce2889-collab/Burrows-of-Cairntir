@@ -224,12 +224,12 @@ body {
   z-index: 999;
 }
 
-#game-viewport.hit-flash-fire::after { background: rgba(220, 40, 40, 1); animation: colorFlash 1.2s ease-out; }
-#game-viewport.hit-flash-physical::after { background: rgba(220, 40, 40, 1); animation: colorFlash 1.2s ease-out; }
-#game-viewport.hit-flash-lightning::after { background: rgba(255, 255, 255, 1); animation: colorFlash 0.7s ease-out; }
-#game-viewport.hit-flash-ice::after { background: rgba(255, 255, 255, 1); animation: colorFlash 0.7s ease-out; }
-#game-viewport.hit-flash-poison::after { background: rgba(255, 255, 255, 1); animation: colorFlash 0.7s ease-out; }
-#game-viewport.heal-flash::after { background: rgba(95, 191, 111, 1); animation: colorFlash 0.8s ease-out; }
+#game-viewport.hit-flash-fire::after { background: rgba(220, 40, 40, 0.1); animation: colorFlash 1.2s ease-out; }
+#game-viewport.hit-flash-physical::after { background: rgba(220, 40, 40, 0.1); animation: colorFlash 1.2s ease-out; }
+#game-viewport.hit-flash-lightning::after { background: rgba(255, 235, 130, 0.1); animation: colorFlash 0.7s ease-out; }
+#game-viewport.hit-flash-ice::after { background: rgba(90, 170, 230, 0.1); animation: colorFlash 0.7s ease-out; }
+#game-viewport.hit-flash-poison::after { background: rgba(110, 200, 90, 0.1); animation: colorFlash 0.7s ease-out; }
+#game-viewport.heal-flash::after { background: rgba(95, 191, 111, 0.1); animation: colorFlash 0.8s ease-out; }
 
 #game-viewport::before {
   content: "";

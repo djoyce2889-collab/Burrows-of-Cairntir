@@ -9,7 +9,7 @@
    answers in getChronicleBonuses().
    ------------------------------------------------------------ */
 
-const CHRONICLE_NUDGE = 0.02; // per-answer nudge; ~0.15-0.20 max on a stat across a full playthrough
+const CHRONICLE_NUDGE = 0.34; // per-answer nudge; needs ~3 consistent answers to round up to a real +1 tier shift
 const CHRONICLE_HP_NUDGE = 3; // maxHpBonus uses flat HP points, not a tier-shift fraction like the others
 
 const CHRONICLE_LINEAGES = {

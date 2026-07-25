@@ -227,10 +227,10 @@ function getCombatStyleBonusFor(character) {
   }
 
   if (character.chronicleBonuses) {
-    result.attackBonus = (result.attackBonus || 0) + (character.chronicleBonuses.attackBonus || 0);
-    result.spellDamageBonus = (result.spellDamageBonus || 0) + (character.chronicleBonuses.spellDamageBonus || 0);
-    result.healBonus = (result.healBonus || 0) + (character.chronicleBonuses.healBonus || 0);
-    result.supportBonus = (result.supportBonus || 0) + (character.chronicleBonuses.supportBonus || 0);
+    result.attackBonus = Math.round((result.attackBonus || 0) + (character.chronicleBonuses.attackBonus || 0));
+    result.spellDamageBonus = Math.round((result.spellDamageBonus || 0) + (character.chronicleBonuses.spellDamageBonus || 0));
+    result.healBonus = Math.round((result.healBonus || 0) + (character.chronicleBonuses.healBonus || 0));
+    result.supportBonus = Math.round((result.supportBonus || 0) + (character.chronicleBonuses.supportBonus || 0));
   }
 
   return result;
@@ -332,10 +332,10 @@ function getPlayerCombatStyleBonus() {
   }
 
   if (playerCharacter.chronicleBonuses) {
-    result.attackBonus = (result.attackBonus || 0) + (playerCharacter.chronicleBonuses.attackBonus || 0);
-    result.spellDamageBonus = (result.spellDamageBonus || 0) + (playerCharacter.chronicleBonuses.spellDamageBonus || 0);
-    result.healBonus = (result.healBonus || 0) + (playerCharacter.chronicleBonuses.healBonus || 0);
-    result.supportBonus = (result.supportBonus || 0) + (playerCharacter.chronicleBonuses.supportBonus || 0);
+    result.attackBonus = Math.round((result.attackBonus || 0) + (playerCharacter.chronicleBonuses.attackBonus || 0));
+    result.spellDamageBonus = Math.round((result.spellDamageBonus || 0) + (playerCharacter.chronicleBonuses.spellDamageBonus || 0));
+    result.healBonus = Math.round((result.healBonus || 0) + (playerCharacter.chronicleBonuses.healBonus || 0));
+    result.supportBonus = Math.round((result.supportBonus || 0) + (playerCharacter.chronicleBonuses.supportBonus || 0));
   }
 
   return result;
@@ -1581,9 +1581,17 @@ function performPlayerAction(skillId) {
   const isArcherShot = playerCharacter.combatStyle === "archer" && skillId === "archery";
   const keenSensesBonus = consumeKeenSensesBonus();
   const accuracyTier = shiftTierByRank(attackTier, (isArcherShot ? 2 : 0) + keenSensesBonus + getNightsightBonus());
-  const enemyTier = getEffectiveEnemyTier();
+  let enemyTier = getEffectiveEnemyTier();
+  const AVERICK_BUFF_SPELL_NAMES = ["Flametouched Blade", "Glacial Edge", "Warblood Fury"];
+  const hasAverickReckoning = characterHasLegendary(playerCharacter, "Averick's Reckoning") &&
+    currentCombat.activeEffects.some((e) => e.kind === "playerAttackBonus" && AVERICK_BUFF_SPELL_NAMES.includes(e.spellName));
+  if (hasAverickReckoning) {
+    enemyTier = shiftTierByRank(enemyTier, -1);
+  }
   const hasGuaranteedHit = consumeGuaranteedEffect("guaranteedHit");
-  const hit = hasGuaranteedHit || rollSuccess(accuracyTier, enemyTier);
+  const hasPerfectStep = characterHasLegendary(playerCharacter, "Kurogane's Perfect Step") && !currentCombat.firstAttackUsed;
+  currentCombat.firstAttackUsed = true;
+  const hit = hasGuaranteedHit || hasPerfectStep || rollSuccess(accuracyTier, enemyTier);
   let damage = 0;
 
   if (hit) {
@@ -1596,6 +1604,20 @@ function performPlayerAction(skillId) {
       const bonusDmg = Math.max(1, Math.round(damage * 0.25));
       damage += bonusDmg;
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+  }
+
+  if (characterHasLegendary(playerCharacter, "Ivarr's Grudge")) {
+    if (hit) {
+      currentCombat.ivarrStreak = (currentCombat.ivarrStreak || 0) + 1;
+      const streakStacks = Math.min(5, currentCombat.ivarrStreak - 1);
+      if (streakStacks > 0) {
+        const bonusDmg = Math.max(1, Math.round(damage * streakStacks * 0.05));
+        damage += bonusDmg;
+        currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+      }
+    } else {
+      currentCombat.ivarrStreak = 0;
     }
   }
 
@@ -1818,21 +1840,27 @@ function performPlayerCast(skillId, spell, target) {
     const accuracyTier = shiftTierByRank(attackTier, keenSensesBonus + getNightsightBonus());
     const enemyTier = getEffectiveEnemyTier();
     const hasGuaranteedSpellHit = consumeGuaranteedEffect("guaranteedSpellHit");
-    const hit = hasGuaranteedSpellHit || rollSuccess(accuracyTier, enemyTier);
+    const hasUnbrokenSky = skillId === "pathStorm" && characterHasLegendary(playerCharacter, "Neasa's Unbroken Sky");
+    const hit = hasGuaranteedSpellHit || hasUnbrokenSky || rollSuccess(accuracyTier, enemyTier);
     let damage = 0;
     if (hit) {
       damage = applyDamageToEnemy(rollDamage(attackTier));
     }
     logEntry.hit = hit;
     logEntry.damage = damage;
-  } else if (spell.type === "damageAmpDebuff") {
-    currentCombat.activeEffects.push({ kind: "vulnerability", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION });
-  } else if (spell.type === "accuracyDebuff") {
-    currentCombat.activeEffects.push({ kind: "accuracyDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
-  } else if (spell.type === "damageDebuff") {
-    currentCombat.activeEffects.push({ kind: "damageDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
-  } else if (spell.type === "defenseDebuff") {
-    currentCombat.activeEffects.push({ kind: "defenseDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
+  } else if (spell.type === "damageAmpDebuff" || spell.type === "accuracyDebuff" || spell.type === "damageDebuff" || spell.type === "defenseDebuff") {
+    const hasKwabenasUndoing = skillId === "riteUnmaking" && characterHasLegendary(playerCharacter, "Kwabena's Undoing");
+    const debuffKindByType = {
+      damageAmpDebuff: "vulnerability",
+      accuracyDebuff: "accuracyDebuff",
+      damageDebuff: "damageDebuff",
+      defenseDebuff: "defenseDebuff"
+    };
+    currentCombat.activeEffects.push({
+      kind: debuffKindByType[spell.type],
+      rankBonus: spell.type === "damageAmpDebuff" ? 0 : (hasKwabenasUndoing ? -2 : -1),
+      roundsRemaining: SPELL_EFFECT_DURATION
+    });
   } else if (spell.type === "spellLock") {
     currentCombat.activeEffects.push({ kind: "silence", rankBonus: 0, roundsRemaining: null });
   } else if (spell.type === "autoRevive") {
@@ -1962,7 +1990,8 @@ function performPlayerCast(skillId, spell, target) {
   } else if (spell.type === "burst") {
     const attackTier = shiftTierByRank(getEffectivePlayerSpellDamageTier(tierBefore), 2);
     const enemyTier = getEffectiveEnemyTier();
-    const hit = rollSuccess(attackTier, enemyTier);
+    const hasUnbrokenSky = skillId === "pathStorm" && characterHasLegendary(playerCharacter, "Neasa's Unbroken Sky");
+    const hit = hasUnbrokenSky || rollSuccess(attackTier, enemyTier);
     let damage = 0;
     if (hit) {
       damage = applyDamageToEnemy(rollDamage(attackTier));
@@ -2068,6 +2097,12 @@ function performPlayerCast(skillId, spell, target) {
       justAddedEffect.roundsRemaining = YOKAI_FORM_DURATION;
       justAddedEffect._justCast = true;
     }
+  }
+
+  if (skillId === "runeCurse" && spell.type !== "groupHeal" && characterHasLegendary(playerCharacter, "Kolgrim's Brand")) {
+    currentCombat.activeEffects.forEach((e) => {
+      if (e.spellName === spell.name) e.roundsRemaining = null;
+    });
   }
 
   currentCombat.log.push(logEntry);
