@@ -1547,6 +1547,77 @@ function goToSkillsScreen() {
   renderSkillsScreen();
 }
 
+function goToGrowthSummaryScreen() {
+  const hasMasteryAlerts = playerCharacter.pendingMasteryAlerts && playerCharacter.pendingMasteryAlerts.length > 0;
+  const hasSpellChoices = playerCharacter.pendingSpellChoices && playerCharacter.pendingSpellChoices.length > 0;
+  if (!hasMasteryAlerts && !hasSpellChoices) {
+    goToHomebaseScreen();
+    return;
+  }
+  showScreen("screen-growth-summary");
+  renderGrowthSummaryScreen();
+}
+
+function renderGrowthSummaryScreen() {
+  const list = document.getElementById("growth-summary-list");
+  list.innerHTML = "";
+
+  if (playerCharacter.pendingMasteryAlerts && playerCharacter.pendingMasteryAlerts.length > 0) {
+    const heading = document.createElement("div");
+    heading.className = "cc-category-heading";
+    heading.textContent = "Mastery Points Earned";
+    list.appendChild(heading);
+
+    playerCharacter.pendingMasteryAlerts.forEach((alert) => {
+      const skillName = SKILLS[alert.skillId] ? SKILLS[alert.skillId].name : alert.skillId;
+      const line = document.createElement("div");
+      line.className = "cc-skill-count";
+      line.textContent = `${skillName}: ${alert.points} point${alert.points === 1 ? "" : "s"}`;
+      list.appendChild(line);
+    });
+
+    playerCharacter.pendingMasteryAlerts = [];
+  }
+
+  if (playerCharacter.pendingSpellChoices && playerCharacter.pendingSpellChoices.length > 0) {
+    playerCharacter.pendingSpellChoices.slice().forEach((skillId) => {
+      const skill = SKILLS[skillId];
+      const knownIds = (playerCharacter.knownSpells && playerCharacter.knownSpells[skillId]) || [];
+      const allSpells = SPELLS[skillId] || [];
+      const unlearned = allSpells.filter((s) => !knownIds.includes(s.id));
+
+      if (unlearned.length === 0) {
+        playerCharacter.pendingSpellChoices = playerCharacter.pendingSpellChoices.filter((id) => id !== skillId);
+        return;
+      }
+
+      const heading = document.createElement("div");
+      heading.className = "cc-category-heading";
+      heading.textContent = `${skill ? skill.name : skillId} — choose a new spell`;
+      list.appendChild(heading);
+
+      const grid = document.createElement("div");
+      grid.className = "cc-grid";
+      unlearned.forEach((spell) => {
+        const card = document.createElement("div");
+        card.className = "cc-card";
+        card.innerHTML = `
+          <div class="cc-card-name">${spell.name}</div>
+          <div class="cc-card-desc">${spell.description}</div>
+        `;
+        card.addEventListener("click", () => {
+          discoverSpell(playerCharacter, skillId, spell.id);
+          playerCharacter.pendingSpellChoices = playerCharacter.pendingSpellChoices.filter((id) => id !== skillId);
+          saveGameState();
+          renderGrowthSummaryScreen();
+        });
+        grid.appendChild(card);
+      });
+      list.appendChild(grid);
+    });
+  }
+}
+
 function goToMasteryScreen() {
   showScreen("screen-mastery");
   renderMasteryScreen();
@@ -2292,7 +2363,7 @@ function continueTrainingGauntlet() {
 function leaveTrainingGrounds() {
   inTrainingGrounds = false;
   currentCombat = null;
-  goToHomebaseScreen();
+  goToGrowthSummaryScreen();
 }
 
 function renderTrainingDifficultyScreen() {
@@ -2520,7 +2591,7 @@ function buildRoomChoices(room) {
       addChoiceButton(choicesEl, getAttemptLabel(choice), () => attemptDiscoverOrLearn(room, choice));
     } else if (choice.type === "end") {
       addChoiceButton(choicesEl, choice.label, () => {
-        goToHomebaseScreen();
+        goToGrowthSummaryScreen();
       });
     }
   });
@@ -2531,7 +2602,7 @@ function buildRoomChoices(room) {
       const confirmChoicesEl = document.getElementById("game-choices");
       storyEl.innerHTML = "Leave the dungeon and return to Homebase? Your progress in this room is saved, but you'll need to make your way back in to continue.";
       confirmChoicesEl.innerHTML = "";
-      addChoiceButton(confirmChoicesEl, "Yes, return to Homebase", () => goToHomebaseScreen());
+      addChoiceButton(confirmChoicesEl, "Yes, return to Homebase", () => goToGrowthSummaryScreen());
       addChoiceButton(confirmChoicesEl, "No, stay here", () => renderDungeonRoom(currentDungeonRoomId));
     });
   }
@@ -3777,6 +3848,7 @@ document.getElementById("btn-manage-party").addEventListener("click", goToPartyS
 
 document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
 document.getElementById("btn-mastery").addEventListener("click", goToMasteryScreen);
+document.getElementById("btn-growth-summary-continue").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-mastery-back").addEventListener("click", goToHomebaseScreen);
 
 document.getElementById("btn-skills-back").addEventListener("click", goToHomebaseScreen);

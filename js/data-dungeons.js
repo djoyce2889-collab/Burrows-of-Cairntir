@@ -269,6 +269,33 @@ const DUNGEONS = {
       "Deep beneath the hold, the barrow grows thin enough to touch the edge of something far greater. " +
       "A Valkyrie keeps her ancient watch here, and the legendary dead she's gathered over centuries " +
       "test anyone bold enough to reach her — mortal, fae, living, or something else entirely."
+  },
+  oldSpiritGrove: {
+    id: "oldSpiritGrove",
+    name: "The Old Spirit-Grove",
+    difficulty: "Master",
+    musicSrc: "assets/audio/old-spirit-grove-theme.mp3",
+    hotspotColor: "#d4a017",
+    mapHotspot: { top: "65%", left: "45%" },
+    culture: "vandiri",
+    image: "assets/images/old-spirit-grove.png",
+    description:
+      "Deep in the bush where no path leads, the first spirit-society still keeps its old grove — " +
+      "the very source the Leopard-kin themselves claim descent from. Nothing here is hostile by nature. " +
+      "Everything here is testing whether you're worthy to know what's left of the old ways."
+  },
+  orochisValley: {
+    id: "orochisValley",
+    name: "Yamata-no-Orochi's Valley",
+    difficulty: "Master",
+    musicSrc: "assets/audio/orochis-valley-theme.mp3",
+    hotspotColor: "#c0392b",
+    mapHotspot: { top: "30%", left: "88%" },
+    culture: "yorenshi",
+    image: "assets/images/orochis-valley.png",
+    description:
+      "Along the Hii River, in the valley of ancient Izumo, an eight-headed serpent has demanded a sacrifice " +
+      "every season for as long as anyone can remember. The valley remembers everyone it's ever taken."
   }
 };
 
@@ -2327,6 +2354,164 @@ const DUNGEON_CONTENT = {
       },
       epilogue: {
         text: "Sigrun lowers her spear at last, something like respect in her ancient eyes. The seam between worlds settles quiet behind you as you make your way back — and somewhere far beyond it, the endless battle plays on without you.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  oldSpiritGrove: {
+    startRoomId: "groveEntrance",
+    rooms: {
+      groveEntrance: {
+        text: "The bush thickens until no path remains at all, only a feeling that something ahead is watching, and has been for some time.",
+        choices: [{ type: "goto", label: "Press onward", target: "grovePath" }]
+      },
+      grovePath: {
+        text: "The undergrowth parts into a winding trail. Something moves alongside you, unseen, matching your pace exactly.",
+        choices: [{ type: "goto", label: "Continue", target: "groveBoundFight" }]
+      },
+      groveBoundFight: {
+        text: "A shape steps into view — neither fully leopard nor fully person, caught somewhere between the two, watching to see what you'll do.",
+        choices: [{ type: "combat", label: "Fight the Grove-Bound", enemyId: "theGroveBound", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A cluster of old, carefully-placed stones marks a small cache — left here deliberately, long ago, for someone worthy of finding it.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The trail splits ahead — one way winds through a dense thicket, the other along a quiet, sunlit clearing.",
+        choices: [
+          { type: "goto", label: "Through the thicket", target: "denseThicket" },
+          { type: "goto", label: "Along the clearing", target: "sunlitClearing" }
+        ]
+      },
+      denseThicket: {
+        text: "Something young and restless crashes through the undergrowth ahead, still learning the shape it's been given.",
+        choices: [{ type: "combat", label: "Fight the Unshaped Cub", enemyId: "theUnshapedCub", target: "convergeGrove" }]
+      },
+      sunlitClearing: {
+        text: "A quiet clearing opens ahead, sunlight breaking through the canopy. A solitary figure watches you approach without moving.",
+        choices: [{ type: "combat", label: "Fight the Silent Stalker", enemyId: "theSilentStalker", target: "convergeGrove" }]
+      },
+      convergeGrove: {
+        text: "Both paths lead into a wide clearing at the grove's heart, old carved totems standing watch in a loose circle.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "One totem bears a symbol you recognize — an old protective rite, still humming faintly with old power.",
+        choices: [
+          { type: "discover", label: "Study the totem (Rite of Protection)", skillId: "riteProtection", spellId: "furysAnswer", target: "deeperGrove" },
+          { type: "goto", label: "Move on", target: "deeperGrove" }
+        ]
+      },
+      deeperGrove: {
+        text: "The grove narrows into older, denser growth, the light dimming as you press further in.",
+        choices: [{ type: "goto", label: "Press onward", target: "elderTrackerFight" }]
+      },
+      elderTrackerFight: {
+        text: "An ancient figure steps from the shadow of the trees, weighing you with a long, unhurried gaze.",
+        choices: [{ type: "combat", label: "Fight the Elder Tracker", enemyId: "theElderTracker", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow game-trail skirts a watchful presence up ahead — a way past, if you move with real care.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A warden steps into view, bound by old rites to guard what lies ahead from anyone who hasn't proven themselves.",
+        choices: [{ type: "combat", label: "Fight the Rite-Warden", enemyId: "theRiteWarden", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Ahead, the trees open onto the oldest part of the grove, a stillness settling over everything, as though the whole bush is holding its breath.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The First Leopard waits at the grove's very heart, ancient beyond reckoning, watching you with neither hostility nor welcome — only the old, patient question of whether you belong here at all.",
+        choices: [{ type: "combat", label: "Face the First Leopard", enemyId: "theFirstLeopard", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The First Leopard settles at last, something like acceptance in its ancient gaze. The grove grows quiet behind you as you make your way back — the old ways still resting undisturbed, just a little less alone than before.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  orochisValley: {
+    startRoomId: "valleyEntrance",
+    rooms: {
+      valleyEntrance: {
+        text: "The Hii River winds through a quiet valley that doesn't feel quiet at all. Something ancient has claimed this place, season after season, for longer than anyone living can say.",
+        choices: [{ type: "goto", label: "Follow the river", target: "riverPath" }]
+      },
+      riverPath: {
+        text: "The path hugs the riverbank, the water strangely still. A figure stumbles into view ahead, no longer quite themselves.",
+        choices: [{ type: "goto", label: "Continue", target: "riverCursedFight" }]
+      },
+      riverCursedFight: {
+        text: "A villager, hollowed out by years of living beside the valley's terror, lunges before you can even speak.",
+        choices: [{ type: "combat", label: "Fight the River-Cursed", enemyId: "theRiverCursed", target: "riverLoot" }]
+      },
+      riverLoot: {
+        text: "An old offering shrine sits half-collapsed by the water, most of its tributes long since rotted — but something remains worth taking.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The valley splits ahead — one path climbs toward an old shrine, the other cuts through dense forest along the water's edge.",
+        choices: [
+          { type: "goto", label: "Toward the old shrine", target: "oldShrine" },
+          { type: "goto", label: "Along the forested bank", target: "forestedBank" }
+        ]
+      },
+      oldShrine: {
+        text: "A crumbling shrine stands overgrown with moss. A gaunt figure kneels before it, still tending an offering no one has asked for in years.",
+        choices: [{ type: "combat", label: "Fight the Bone-Littered Servant", enemyId: "theBoneLitteredServant", target: "convergeValley" }]
+      },
+      forestedBank: {
+        text: "Something moves through the trees along the water — an animal shape, but wrong in ways that are hard to place until it's too late.",
+        choices: [{ type: "combat", label: "Fight the Twisted Stag", enemyId: "theTwistedStag", target: "convergeValley" }]
+      },
+      convergeValley: {
+        text: "Both paths lead to a wide bend in the river, the water darker here, and colder than it has any right to be.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "Something glints beneath the shallows — an old technique, carried down through generations who lived beside this water and learned to respect it.",
+        choices: [
+          { type: "discover", label: "Study the technique (Way of Suijin)", skillId: "waySuijin", spellId: "shakuhachiOfTheHollowWind", target: "deeperValley" },
+          { type: "goto", label: "Move on", target: "deeperValley" }
+        ]
+      },
+      deeperValley: {
+        text: "The river narrows toward a gorge, the water growing louder, the air thick with something that isn't quite mist.",
+        choices: [{ type: "goto", label: "Press onward", target: "drownedWatcherFight" }]
+      },
+      drownedWatcherFight: {
+        text: "Something rises from the shallows, half-submerged, watching you with eyes that never quite blink.",
+        choices: [{ type: "combat", label: "Fight the Drowned Watcher", enemyId: "theDrownedWatcher", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow ledge skirts the gorge above a lone figure standing sentry below — a way past, if you move quietly.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A warrior turns at your approach, armor rusted, stance still disciplined despite everything the years have done to him.",
+        choices: [{ type: "combat", label: "Fight the Broken Guard", enemyId: "theBrokenGuard", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The gorge opens onto a wide basin, the river pooling deep and black at its center. The air itself feels like it's holding its breath.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The water breaks apart as eight heads rise at once, ancient and monstrous, Yamata-no-Orochi finally showing itself in full. Your followers brace alongside you.",
+        choices: [{ type: "combat", label: "Face Yamata-no-Orochi", enemyId: "yamataNoOrochi", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The serpent finally falls still, the basin's water running clear for the first time in longer than anyone can remember. The valley is quiet now — genuinely quiet, not just waiting.",
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }

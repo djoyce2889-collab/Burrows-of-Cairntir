@@ -1043,6 +1043,142 @@ theUnyieldingFlame: {
     lootTable: ["Sigrun's Chosen Feather", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
 
+  theGroveBound: {
+    id: "theGroveBound",
+    name: "The Grove-Bound",
+    description: "A guardian caught mid-change for longer than anyone can remember, neither fully leopard nor fully person.",
+    image: "assets/images/enemies/the-grove-bound.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Hide"]
+  },
+  theElderTracker: {
+    id: "theElderTracker",
+    name: "The Elder Tracker",
+    description: "The oldest living link to the first spirit-society, testing whether you move through the grove with respect or arrogance.",
+    image: "assets/images/enemies/the-elder-tracker.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theUnshapedCub: {
+    id: "theUnshapedCub",
+    name: "The Unshaped Cub",
+    description: "Young, restless, still learning to control the change — dangerous precisely because it hasn't learned restraint yet.",
+    image: "assets/images/enemies/the-unshaped-cub.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theRiteWarden: {
+    id: "theRiteWarden",
+    name: "The Rite-Warden",
+    description: "Bound to guard the grove's oldest protective rites, unwilling to let anyone pass who hasn't proven they'd protect it too.",
+    image: "assets/images/enemies/the-rite-warden.png",
+    hitPoints: 44,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  theSilentStalker: {
+    id: "theSilentStalker",
+    name: "The Silent Stalker",
+    description: "Says nothing, tests nothing but pure skill — simply hunts anyone who enters uninvited.",
+    image: "assets/images/enemies/the-silent-stalker.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theFirstLeopard: {
+    id: "theFirstLeopard",
+    name: "The First Leopard",
+    description: "The ancestral guardian spirit the entire bloodline traces back to. Not evil, not even truly hostile — just ancient, watchful, and unwilling to let the old grove's location fall into unworthy hands.",
+    image: "assets/images/enemies/the-first-leopard.png",
+    deathImage: "assets/images/deaths/the-first-leopard-death.png",
+    hitPoints: 85,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["First Leopard's Claw", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
+  theRiverCursed: {
+    id: "theRiverCursed",
+    name: "The River-Cursed",
+    description: "A villager driven mad by years of living beside the serpent's terror, no longer entirely themselves.",
+    image: "assets/images/enemies/the-river-cursed.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theBoneLitteredServant: {
+    id: "theBoneLitteredServant",
+    name: "The Bone-Littered Servant",
+    description: "Once forced to help prepare each year's sacrifice for the serpent, hollowed out by the role long ago.",
+    image: "assets/images/enemies/the-bone-littered-servant.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Hide", "Grave Essence"]
+  },
+  theTwistedStag: {
+    id: "theTwistedStag",
+    name: "The Twisted Stag",
+    description: "Wildlife along the valley warped by the serpent's corrupting presence, feral and wrong.",
+    image: "assets/images/enemies/the-twisted-stag.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Hide"]
+  },
+  theDrownedWatcher: {
+    id: "theDrownedWatcher",
+    name: "The Drowned Watcher",
+    description: "Something that went into the river years ago and never quite came back out right.",
+    image: "assets/images/enemies/the-drowned-watcher.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theBrokenGuard: {
+    id: "theBrokenGuard",
+    name: "The Broken Guard",
+    description: "Once one of Izumo's own warriors, sent to stand against the serpent years ago. Never came back the way he left.",
+    image: "assets/images/enemies/the-broken-guard.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Old Ore"]
+  },
+  yamataNoOrochi: {
+    id: "yamataNoOrochi",
+    name: "Yamata-no-Orochi",
+    description: "The eight-headed, eight-tailed serpent that has terrorized this valley for years, demanding a sacrifice each season. Something ancient, monstrous, and utterly without mercy.",
+    image: "assets/images/enemies/yamata-no-orochi.png",
+    deathImage: "assets/images/deaths/yamata-no-orochi-death.png",
+    hitPoints: 85,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Kusanagi's Fang", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
   patientSteward: {
     id: "patientSteward",
     name: "The Patient Steward",

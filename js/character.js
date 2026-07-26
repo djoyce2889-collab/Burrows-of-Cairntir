@@ -211,6 +211,18 @@ function useSkill(character, skillId) {
 
   if (tierJustIncreased && character === playerCharacter) {
     awardMasteryPoint(character, skillId);
+
+    if (SKILLS[skillId] && SKILLS[skillId].category === "Magic") {
+      const knownIds = (character.knownSpells && character.knownSpells[skillId]) || [];
+      const allSpells = SPELLS[skillId] || [];
+      const hasUnlearnedSpell = allSpells.some((s) => !knownIds.includes(s.id));
+      if (hasUnlearnedSpell) {
+        if (!character.pendingSpellChoices) character.pendingSpellChoices = [];
+        if (!character.pendingSpellChoices.includes(skillId)) {
+          character.pendingSpellChoices.push(skillId);
+        }
+      }
+    }
   }
 
   return {
