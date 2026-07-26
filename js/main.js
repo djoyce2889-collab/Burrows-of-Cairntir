@@ -145,6 +145,11 @@ function getHitFlashClass(entry) {
   if (/storm|thunder|lightning|spark|bolt|shock/.test(name)) return "hit-flash-lightning";
   if (/poison|venom|toxin|blight|rot/.test(name)) return "hit-flash-poison";
 
+  if (entry.hit && !entry.spellName && entry.actor === "player") {
+    const enchantFlash = getWeaponEnchantHitFlashClass();
+    if (enchantFlash) return enchantFlash;
+  }
+
   if (entry.hit && !entry.spellName) return "hit-flash-physical";
 
   return null;
@@ -672,6 +677,35 @@ function showScreen(screenId) {
   });
   document.getElementById(screenId).classList.add("active");
   window.scrollTo(0, 0);
+}
+
+function getElementFlashClass(spellName, spellType) {
+  if (["heal", "hot", "groupHeal"].includes(spellType)) return "element-flash-heal";
+  const name = (spellName || "").toLowerCase();
+  if (/fire|flame|ember|burn|blaze/.test(name)) return "element-flash-fire";
+  if (/frost|ice|chill|freeze|winter/.test(name)) return "element-flash-ice";
+  if (/storm|thunder|lightning|spark|bolt|shock/.test(name)) return "element-flash-lightning";
+  if (/poison|venom|toxin|blight|rot/.test(name)) return "element-flash-poison";
+  return null;
+}
+
+const WEAPON_ENCHANT_TYPE_KEY = {
+  flame: "fire",
+  frost: "ice",
+  storm: "lightning",
+  curse: "poison"
+};
+
+function getWeaponEnchantFlashClass() {
+  if (!playerCharacter.weaponEnchantment) return null;
+  const key = WEAPON_ENCHANT_TYPE_KEY[playerCharacter.weaponEnchantment.type];
+  return key ? `element-flash-${key}` : null;
+}
+
+function getWeaponEnchantHitFlashClass() {
+  if (!playerCharacter.weaponEnchantment) return null;
+  const key = WEAPON_ENCHANT_TYPE_KEY[playerCharacter.weaponEnchantment.type];
+  return key ? `hit-flash-enchant-${key}` : null;
 }
 
 function addChoiceButton(container, label, onClick, disabled, backgroundImage) {
@@ -2757,7 +2791,9 @@ function playRoundSequenceThenRender(entries) {
 
     document.getElementById("game-viewport").classList.remove(
       "hit-flash-fire", "hit-flash-physical", "hit-flash-lightning",
-      "hit-flash-ice", "hit-flash-poison", "heal-flash"
+      "hit-flash-ice", "hit-flash-poison", "heal-flash",
+      "hit-flash-enchant-fire", "hit-flash-enchant-ice",
+      "hit-flash-enchant-lightning", "hit-flash-enchant-poison"
     );
     const hitFlashClass = getHitFlashClass(entry);
     if (hitFlashClass) {
@@ -2970,7 +3006,11 @@ const FETCH_ATTACK_LABELS = {
   const attackLabel = (activeYokaiForm && YOKAI_ATTACK_LABELS[activeYokaiForm.spellName])
     || (activeFetchForm && FETCH_ATTACK_LABELS[activeFetchForm.spellName])
     || SKILLS[equippedWeaponId].name;
-  addChoiceButton(choicesEl, `Attack - ${attackLabel}`, () => {
+  addChoiceButton(choicesEl, `Attack - ${attackLabel}`, (event) => {
+    const weaponFlashClass = getWeaponEnchantFlashClass();
+    if (weaponFlashClass && event && event.currentTarget) {
+      event.currentTarget.classList.add(weaponFlashClass);
+    }
     const startIndex = currentCombat.log.length;
     performPlayerAction(equippedWeaponId);
     saveGameState();
@@ -3032,10 +3072,14 @@ const FETCH_ATTACK_LABELS = {
       const spellImagePath = cultureForSpell ? `assets/images/spells/${cultureForSpell.id}/${spell.id}.png` : null;
 
       if (hasEnoughMana) {
-        addChoiceButton(choicesEl, `${verb} - ${spell.name} (${MANA_CONFIG.costPerCast} mana): ${spell.description}`, () => {
+        addChoiceButton(choicesEl, `${verb} - ${spell.name} (${MANA_CONFIG.costPerCast} mana): ${spell.description}`, (event) => {
           if (spell.type === "heal") {
             promptHealTarget(skillId, spell);
             return;
+          }
+          const elementClass = getElementFlashClass(spell.name, spell.type);
+          if (elementClass && event && event.currentTarget) {
+            event.currentTarget.classList.add(elementClass);
           }
           const startIndex = currentCombat.log.length;
           performPlayerCast(skillId, spell);
@@ -3079,7 +3123,9 @@ function renderCombatOutcome() {
   if (gameViewportEl) {
     gameViewportEl.classList.remove(
       "hit-flash-fire", "hit-flash-physical", "hit-flash-lightning",
-      "hit-flash-ice", "hit-flash-poison", "heal-flash", "low-hp-pulse"
+      "hit-flash-ice", "hit-flash-poison", "heal-flash", "low-hp-pulse",
+      "hit-flash-enchant-fire", "hit-flash-enchant-ice",
+      "hit-flash-enchant-lightning", "hit-flash-enchant-poison"
     );
   }
 

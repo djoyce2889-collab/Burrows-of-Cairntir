@@ -639,10 +639,9 @@ function getDefendingTierName(attackType, character) {
 function startCombat(enemyId) {
   const enemyTemplate = ENEMIES[enemyId];
   const diff = getCurrentDifficultySettings();
-  const adaptive = getAdaptiveScaling();
   const scaledMaxHP = Math.max(
     1,
-    Math.round(enemyTemplate.hitPoints * diff.enemyHpMultiplier * adaptive.hpMultiplier)
+    Math.round(enemyTemplate.hitPoints * diff.enemyHpMultiplier)
   );
 
   const maxHP = getHitPoints(playerCharacter);
@@ -700,7 +699,9 @@ function startCombat(enemyId) {
   if (gameViewportEl) {
     gameViewportEl.classList.remove(
       "hit-flash-fire", "hit-flash-physical", "hit-flash-lightning",
-      "hit-flash-ice", "hit-flash-poison", "heal-flash", "low-hp-pulse"
+      "hit-flash-ice", "hit-flash-poison", "heal-flash", "low-hp-pulse",
+      "hit-flash-enchant-fire", "hit-flash-enchant-ice",
+      "hit-flash-enchant-lightning", "hit-flash-enchant-poison"
     );
   }
 
@@ -1110,7 +1111,8 @@ function getFollowerWardOption(follower) {
   const alreadyWarded = currentCombat.activeEffects.some(
     (e) => (e.kind === "onHitWard" || e.kind === "autoRevive") && e.owner === follower
   );
-  if (alreadyWarded) return null;
+  const alreadyCastThisFight = currentCombat.followersWhoWarded && currentCombat.followersWhoWarded.includes(follower);
+  if (alreadyWarded || alreadyCastThisFight) return null;
 
   const wardTypes = ["autoRevive", "onHitBuff", "onHitHeal", "onHitManaRegen", "onHitGroupHeal", "onHitDebuff"];
   const knownIds = (follower.knownSpells && follower.knownSpells.riteProtection) || [];
@@ -1124,6 +1126,9 @@ function getFollowerWardOption(follower) {
 function performFollowerWardCast(follower, skillId, spell) {
   follower.currentMana -= MANA_CONFIG.costPerCast;
   useSkill(follower, skillId);
+
+  if (!currentCombat.followersWhoWarded) currentCombat.followersWhoWarded = [];
+  currentCombat.followersWhoWarded.push(follower);
 
   if (spell.type === "autoRevive") {
     currentCombat.activeEffects.push({
@@ -1545,7 +1550,7 @@ function resolveEnemyAttack() {
     const damageDebuffTier = shiftTierByRank(enemyEffectiveTier, getEffectRankSum("damageDebuff"));
     damage = Math.max(
       1,
-      Math.round(rollDamage(damageDebuffTier) * diff.enemyDamageMultiplier * adaptive.damageMultiplier)
+      Math.round(rollDamage(damageDebuffTier) * diff.enemyDamageMultiplier)
     );
 
     if (enemyCastInfo && hasCultureTraining) {

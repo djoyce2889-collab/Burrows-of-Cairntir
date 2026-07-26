@@ -68,17 +68,18 @@ body {
   position: absolute;
   width: 28px;
   height: 28px;
-  background-image: url("../assets/images/ui/panel-texture.png");
-  background-size: 120px 120px;
+  background-image: url("../assets/images/ui/card-frame-texture.png");
+  background-size: 190px 190px;
+  background-repeat: no-repeat;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6), 0 0 4px rgba(0, 0, 0, 0.5);
   z-index: 11;
   pointer-events: none;
 }
 
-.corner-tl { top: 0; left: 0; }
-.corner-tr { top: 0; right: 0; }
-.corner-bl { bottom: 0; left: 0; }
-.corner-br { bottom: 0; right: 0; }
+.corner-tl { top: 0; left: 0; background-position: 0 0; }
+.corner-tr { top: 0; right: 0; background-position: 100% 0; }
+.corner-bl { bottom: 0; left: 0; background-position: 0 100%; }
+.corner-br { bottom: 0; right: 0; background-position: 100% 100%; }
 
 .cabinet-edge {
   position: absolute;
@@ -257,6 +258,13 @@ body {
   100% { opacity: 0; }
 }
 
+@keyframes imageFlash {
+  0% { opacity: 0; }
+  15% { opacity: 1.00; }
+  45% { opacity: 1.00; }
+  100% { opacity: 0; }
+}
+
 @keyframes hitShake {
   0% { filter: brightness(1); transform: translateX(0) scale(1); }
   15% { filter: brightness(1.15) saturate(0.3); transform: translateX(-6px) scale(1.08); }
@@ -339,6 +347,7 @@ body {
 }
 
 .choice-button {
+  position: relative;
   font-family: var(--font-display);
   font-size: 17px;
   text-align: left;
@@ -357,6 +366,16 @@ body {
   transition: filter 0.15s ease, transform 0.1s ease;
 }
 
+.choice-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background-size: cover;
+  background-position: center;
+}
+
 .choice-button.has-banner-icon {
   position: relative;
   overflow: hidden;
@@ -365,15 +384,82 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-image-source: none;
-  border-color: var(--moss-border);
-  border-width: 2px;
+  border-style: solid;
+  border-width: 16px;
+  border-image-source: url("../assets/images/ui/card-frame-texture.png");
+  border-image-slice: 130;
+  border-image-width: 16px;
+  border-image-repeat: stretch;
 }
 
 .choice-button.has-bg-image {
-  border-image-source: none;
-  border-width: 2px;
+  border-style: solid;
+  border-width: 16px;
+  border-image-source: url("../assets/images/ui/card-frame-texture.png");
+  border-image-slice: 130;
+  border-image-width: 16px;
+  border-image-repeat: stretch;
   background-color: var(--ink);
+}
+
+.choice-button.has-bg-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.choice-button.has-bg-image.element-flash-fire::after {
+  background-image: url("../assets/images/effects/flash-fire.png");
+  animation: imageFlash 2.5s ease-out;
+}
+
+.choice-button.has-bg-image.element-flash-ice::after {
+  background-image: url("../assets/images/effects/flash-ice.png");
+  animation: imageFlash 2.5s ease-out;
+}
+
+.choice-button.has-bg-image.element-flash-lightning::after {
+  background-image: url("../assets/images/effects/flash-lightning.png");
+  animation: imageFlash 2.5s ease-out;
+}
+
+.choice-button.has-bg-image.element-flash-poison::after {
+  background-image: url("../assets/images/effects/flash-poison.png");
+  animation: imageFlash 2.5s ease-out;
+}
+
+.choice-button.has-bg-image.element-flash-heal::after {
+  background-image: url("../assets/images/effects/flash-heal.png");
+  animation: imageFlash 2.5s ease-out;
+}
+
+#game-viewport.hit-flash-enchant-fire::after {
+  background-image: url("../assets/images/effects/flash-fire.png");
+  background-size: cover;
+  background-position: center;
+  animation: imageFlash 2.5s ease-out;
+}
+#game-viewport.hit-flash-enchant-ice::after {
+  background-image: url("../assets/images/effects/flash-ice.png");
+  background-size: cover;
+  background-position: center;
+  animation: imageFlash 2.5s ease-out;
+}
+#game-viewport.hit-flash-enchant-lightning::after {
+  background-image: url("../assets/images/effects/flash-lightning.png");
+  background-size: cover;
+  background-position: center;
+  animation: imageFlash 2.5s ease-out;
+}
+#game-viewport.hit-flash-enchant-poison::after {
+  background-image: url("../assets/images/effects/flash-poison.png");
+  background-size: cover;
+  background-position: center;
+  animation: imageFlash 2.5s ease-out;
 }
 
 .choice-button-label {

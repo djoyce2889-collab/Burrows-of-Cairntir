@@ -905,6 +905,210 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Sōjōbō's Feather", "Grave Essence", "Grave Essence"]
+  },
+
+  theOfficiant: {
+    id: "theOfficiant",
+    name: "The Officiant",
+    description: "Bound to the hollow by the same old rite he once performed, unable to leave the vows he sealed with his own hand.",
+    image: "assets/images/enemies/the-officiant.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Hide", "Grave Essence"]
+  },
+  theLostSuitor: {
+    id: "theLostSuitor",
+    name: "The Lost Suitor",
+    description: "Forever caught reaching for someone he lost long before the hollow ever claimed her.",
+    image: "assets/images/enemies/the-lost-suitor.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Hide"]
+  },
+  theLatestBloom: {
+    id: "theLatestBloom",
+    name: "The Latest Bloom",
+    description: "Drawn in by the Widow's thrall, beautiful and hollow-eyed, luring without ever knowing what she's become.",
+    image: "assets/images/enemies/the-latest-bloom.png",
+    hitPoints: 34,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theGraveWarden: {
+    id: "theGraveWarden",
+    name: "The Grave-Warden",
+    description: "Bound by an old bargain to tend a grave-mound he never once chose to guard.",
+    image: "assets/images/enemies/the-grave-warden.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Hide", "Hide"]
+  },
+  theSilentWatcher: {
+    id: "theSilentWatcher",
+    name: "The Silent Watcher",
+    description: "Haunted by what they once saw and never spoke of — unable to leave the hollow either, all these years later.",
+    image: "assets/images/enemies/the-silent-watcher.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theWidow: {
+    id: "theWidow",
+    name: "The Widow",
+    description: "A bride forced into a marriage that killed her, beautiful and terrible in equal measure — forever mourning what was done to her, and forever making others pay the price of it.",
+    image: "assets/images/enemies/the-widow.png",
+    deathImage: "assets/images/deaths/the-widow-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Widow's Red Thorn", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
+  theShieldSplitter: {
+    id: "theShieldSplitter",
+    name: "The Shield-Splitter",
+    description: "Broke a hundred shields in his final battle before his own finally failed him. Eager to see if yours holds.",
+    image: "assets/images/enemies/the-shield-splitter.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  theUnyielding: {
+    id: "theUnyielding",
+    name: "The Unyielding",
+    description: "Stood alone against a war-band that should have ended him ten times over, and refused every one of them.",
+    image: "assets/images/enemies/the-unyielding.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theOathKeeper: {
+    id: "theOathKeeper",
+    name: "The Oath-Keeper",
+    description: "Died holding a vow no living soul remembered but him. Still proud it was kept.",
+    image: "assets/images/enemies/the-oath-keeper.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  theTwinBlade: {
+    id: "theTwinBlade",
+    name: "The Twin-Blade",
+    description: "Fought with a blade in each hand until both arms finally gave out beneath him.",
+    image: "assets/images/enemies/the-twin-blade.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theFrostWalker: {
+    id: "theFrostWalker",
+    name: "The Frost-Walker",
+    description: "Crossed an impossible frozen strait to reach the battle in time. Won't be late again.",
+    image: "assets/images/enemies/the-frost-walker.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  sigrun: {
+    id: "sigrun",
+    name: "Sigrun",
+    description: "The Valkyrie who still watches this thin, ancient seam between worlds. She doesn't care what you are — mortal, fae, living, or something else entirely. She only cares whether you're worthy.",
+    image: "assets/images/enemies/sigrun.png",
+    deathImage: "assets/images/deaths/sigrun-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Sigrun's Chosen Feather", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
+  patientSteward: {
+    id: "patientSteward",
+    name: "The Patient Steward",
+    description: "Kept the hall for a family that stopped needing it kept generations ago. His hands still work. Everything else about him stopped a long time back.",
+    image: "assets/images/enemies/patient-steward.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
+  answeringCorpse: {
+    id: "answeringCorpse",
+    name: "The Answering Corpse",
+    description: "It only rises when it hears an ancestor's name spoken aloud. It's heard Averick's a thousand times. It's still waiting to hear its own.",
+    image: "assets/images/enemies/answering-corpse.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence", "Grave Essence"]
+  },
+  unclaimedBlood: {
+    id: "unclaimedBlood",
+    name: "The Unclaimed Blood",
+    description: "Wears a clan-mark carved raw into rotted flesh, over and over, like it's trying to remember whose it actually was.",
+    image: "assets/images/enemies/unclaimed-blood.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Old Ore"]
+  },
+  waitingWife: {
+    id: "waitingWife",
+    name: "The Waiting Wife",
+    description: "Still sets a place at the table with hands that have long since stopped being hands. Won't stop until someone sits down.",
+    image: "assets/images/enemies/waiting-wife.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  theLongWatch: {
+    id: "theLongWatch",
+    name: "The Long Watch",
+    description: "Was told to guard the throne until his brother returned to claim it. His body gave out on that promise a long time ago. He didn't.",
+    image: "assets/images/enemies/the-long-watch.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  doranJoss: {
+    id: "doranJoss",
+    name: "Doran Joss",
+    description: "Averick's own blood-brother, born the same night, same blood, same gift — but it was Averick's name the old songs kept. His body has been dead for centuries. He simply never agreed to lie down.",
+    image: "assets/images/enemies/doran-joss.png",
+    deathImage: "assets/images/deaths/doran-joss-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Doran's Unspoken Crown", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 
 };

@@ -227,6 +227,48 @@ const DUNGEONS = {
     musicSrc: "assets/audio/crow-wind-dojo.mp3",
     mapHotspot: { top: "40%", left: "80%" },
     hotspotColor: "#8a6fb0"
+  },
+  sunderedThrone: {
+    id: "sunderedThrone",
+    name: "The Sundered Throne",
+    difficulty: "Master",
+    musicSrc: "assets/audio/sundered-throne-theme.mp3",
+    hotspotColor: "#3498db",
+    mapHotspot: { top: "8%", left: "58%" },
+    culture: "deveran",
+    image: "assets/images/sundered-throne.png",
+    description:
+      "Deeper than Cailleach's Reach ever led lies the first hall the clans ever raised — " +
+      "and the throne of the ancestor every Deveran still claims blood from. Only Averick's " +
+      "name got carved into the old songs. Someone else was standing right beside him when they carved it."
+  },
+  widowsHollow: {
+    id: "widowsHollow",
+    name: "The Widow's Hollow",
+    difficulty: "Master",
+    musicSrc: "assets/audio/widows-hollow-theme.mp3",
+    hotspotColor: "#8e44ad",
+    mapHotspot: { top: "52%", left: "22%" },
+    culture: "gaeldrim",
+    image: "assets/images/widows-hollow.png",
+    description:
+      "Past the last marked grave, an overgrown hollow waits — mist-choked, far older than any headstone above ever admitted. " +
+      "A bride forced into a marriage that killed her has been mourning down here ever since, and everyone who was ever " +
+      "complicit in it seems to be mourning right alongside her."
+  },
+  sigrunsThreshold: {
+    id: "sigrunsThreshold",
+    name: "Sigrun's Threshold",
+    difficulty: "Master",
+    musicSrc: "assets/audio/sigruns-threshold-theme.mp3",
+    hotspotColor: "#5dade2",
+    mapHotspot: { top: "18%", left: "70%" },
+    culture: "drakvarr",
+    image: "assets/images/sigruns-threshold.png",
+    description:
+      "Deep beneath the hold, the barrow grows thin enough to touch the edge of something far greater. " +
+      "A Valkyrie keeps her ancient watch here, and the legendary dead she's gathered over centuries " +
+      "test anyone bold enough to reach her — mortal, fae, living, or something else entirely."
   }
 };
 
@@ -2051,6 +2093,243 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  sunderedThrone: {
+    startRoomId: "throneHallEntrance",
+    rooms: {
+      throneHallEntrance: {
+        text: "The stair ends in a hall older than any Deveran clan still standing — the very first hall, raised before the clans had names to give themselves. The air is still. Nothing here has moved in a very long time.",
+        choices: [{ type: "goto", label: "Enter", target: "longCorridor" }]
+      },
+      longCorridor: {
+        text: "A long corridor stretches ahead, old banners rotted to threads along the walls. Somewhere further in, something shuffles — patient, unhurried, in no rush at all.",
+        choices: [{ type: "goto", label: "Continue", target: "stewardFight" }]
+      },
+      stewardFight: {
+        text: "A figure straightens from where it was tending an empty hearth — the hall's old steward, hands still moving through duties no one has needed in centuries.",
+        choices: [{ type: "combat", label: "Fight the Patient Steward", enemyId: "patientSteward", target: "corridorLoot" }]
+      },
+      corridorLoot: {
+        text: "A side alcove holds what's left of the hall's old stores, mostly rot and rust — but something is still worth taking.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The corridor splits ahead: one way leads through a collapsed nave, the other through what were once the hall's kitchens.",
+        choices: [
+          { type: "goto", label: "Through the collapsed nave", target: "collapsedNave" },
+          { type: "goto", label: "Through the old kitchens", target: "oldKitchens" }
+        ]
+      },
+      collapsedNave: {
+        text: "Fallen stone chokes the old nave. Something moves beneath the rubble, scratching at its own chest, over and over.",
+        choices: [{ type: "combat", label: "Fight the Unclaimed Blood", enemyId: "unclaimedBlood", target: "convergeHall" }]
+      },
+      oldKitchens: {
+        text: "Cracked plates are still stacked here, laid for a meal that was never served. A figure stands at the head of the table, waiting.",
+        choices: [{ type: "combat", label: "Fight the Waiting Wife", enemyId: "waitingWife", target: "convergeHall" }]
+      },
+      convergeHall: {
+        text: "Both paths open into a wider hall, its walls lined with faded clan-marks — dozens of them, going back further than any living clan can trace.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "One mark near the floor is worn nearly smooth, touched by countless hands before yours. Something of the old vitality still lingers in the stone.",
+        choices: [
+          { type: "discover", label: "Rest your hand on the mark (Line of Averick)", skillId: "ancestralAverick", spellId: "ancestorsVigor", target: "deeperHall" },
+          { type: "goto", label: "Move on", target: "deeperHall" }
+        ]
+      },
+      deeperHall: {
+        text: "The hall narrows and descends further still. The air grows colder, and the old banners give way to bare stone.",
+        choices: [{ type: "goto", label: "Press onward", target: "corpseFight" }]
+      },
+      corpseFight: {
+        text: "A voice answers from the dark ahead before you've said a word — it heard a name spoken somewhere far above, and it's still listening for its own.",
+        choices: [{ type: "combat", label: "Fight the Answering Corpse", enemyId: "answeringCorpse", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow passage runs alongside a guardpost up ahead — a way to slip past unseen, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A figure snaps to attention at your approach, still holding a post he was told to hold until relieved — a very long time ago.",
+        choices: [{ type: "combat", label: "Fight the Long Watch", enemyId: "theLongWatch", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Ahead, the corridor opens onto a final set of doors, carved with a crest half-worn away — a name that isn't quite Averick's, though it's clearly kin to it.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The throne room opens before you. Seated upon it, patient beyond all reckoning, is the hall's true keeper — kin to Averick in blood, if not in memory.",
+        choices: [{ type: "combat", label: "Face Doran Joss", enemyId: "doranJoss", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The throne finally sits empty. Whatever kept Doran Joss standing all these centuries has gone quiet at last — and somewhere, unheard by anyone still living, the old songs finally have a second name to carry.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  widowsHollow: {
+    startRoomId: "hollowEntrance",
+    rooms: {
+      hollowEntrance: {
+        text: "Past the last marked grave, the hollow opens before you — overgrown, mist-choked, and far older than any headstone above ever admitted. Something has been mourning down here for a very long time.",
+        choices: [{ type: "goto", label: "Enter", target: "mistPath" }]
+      },
+      mistPath: {
+        text: "A path winds through drifting mist and broken headstones. Something moves ahead, patient and unhurried.",
+        choices: [{ type: "goto", label: "Continue", target: "officiantFight" }]
+      },
+      officiantFight: {
+        text: "A robed figure stands rigid amid the stones, still murmuring the words of a rite that was never meant to be finished.",
+        choices: [{ type: "combat", label: "Fight the Officiant", enemyId: "theOfficiant", target: "mistLoot" }]
+      },
+      mistLoot: {
+        text: "A cluster of pale grave-flowers grows undisturbed here — and something else worth taking, half-buried beneath them.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The mist thins into two paths ahead — one toward a ruined chapel, the other into a quiet, overgrown glen.",
+        choices: [
+          { type: "goto", label: "Toward the ruined chapel", target: "oldChapel" },
+          { type: "goto", label: "Into the quiet glen", target: "suitorsGlen" }
+        ]
+      },
+      oldChapel: {
+        text: "Fallen stone and creeping ivy choke what's left of a small chapel. A pale, hollow-eyed figure waits inside, beautiful and terribly still.",
+        choices: [{ type: "combat", label: "Fight the Latest Bloom", enemyId: "theLatestBloom", target: "convergeHollow" }]
+      },
+      suitorsGlen: {
+        text: "A quiet glen, strangely untouched by the decay around it. A gaunt figure stands here, forever reaching toward someone who isn't there.",
+        choices: [{ type: "combat", label: "Fight the Lost Suitor", enemyId: "theLostSuitor", target: "convergeHollow" }]
+      },
+      convergeHollow: {
+        text: "Both paths lead back to a wide clearing at the hollow's heart, ringed with old standing stones bent under centuries of moss.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "One of the stones bears carvings gone soft with age — old Gaeldrim wardcraft, still faintly humming beneath the moss.",
+        choices: [
+          { type: "discover", label: "Study the carving (Path of the Grove)", skillId: "pathGrove", spellId: "witheringGrasp", target: "deeperHollow" },
+          { type: "goto", label: "Move on", target: "deeperHollow" }
+        ]
+      },
+      deeperHollow: {
+        text: "The clearing narrows into a sunken path, headstones giving way to bare earth and root.",
+        choices: [{ type: "goto", label: "Press onward", target: "gravWardenFight" }]
+      },
+      gravWardenFight: {
+        text: "A weathered figure kneels at an unmarked grave-mound, tending it with slow, resigned care.",
+        choices: [{ type: "combat", label: "Fight the Grave-Warden", enemyId: "theGraveWarden", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow deer-track skirts the edge of a watchpost up ahead — a way past, if you tread carefully.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A pale figure startles at your approach, guilt written plainly across a face that never found peace.",
+        choices: [{ type: "combat", label: "Fight the Silent Watcher", enemyId: "theSilentWatcher", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Ahead, the mist thickens around a ring of old, leaning stones — and beyond them, something achingly beautiful waits in white.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Widow stands at the hollow's very heart, mourning-gown trailing into the mist, more sorrow than menace in her eyes — until she looks up.",
+        choices: [{ type: "combat", label: "Face the Widow", enemyId: "theWidow", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The mist finally lifts from the hollow, and for the first time in longer than anyone can say, the old stones stand in ordinary silence.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  sigrunsThreshold: {
+    startRoomId: "thresholdEntrance",
+    rooms: {
+      thresholdEntrance: {
+        text: "The barrow walls thin to almost nothing here, the stone giving way to something that isn't quite stone at all. A cold wind moves through the seam, carrying the sound of distant, endless battle.",
+        choices: [{ type: "goto", label: "Step through", target: "hallApproach" }]
+      },
+      hallApproach: {
+        text: "The approach widens into a hall lit by a light with no visible source. A figure blocks the way, shield raised, eager rather than hostile.",
+        choices: [{ type: "goto", label: "Continue", target: "shieldSplitterFight" }]
+      },
+      shieldSplitterFight: {
+        text: "\"Let's see if yours holds better than mine did,\" the warrior says, and doesn't wait for an answer.",
+        choices: [{ type: "combat", label: "Fight the Shield-Splitter", enemyId: "theShieldSplitter", target: "approachLoot" }]
+      },
+      approachLoot: {
+        text: "A weapon-rack stands along the wall, old but well-tended — the einherjar clearly still take pride in their gear.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The hall splits ahead — one path crosses a frozen strait that shouldn't exist this deep underground, the other circles a ring of oath-stones.",
+        choices: [
+          { type: "goto", label: "Cross the frozen strait", target: "frozenStrait" },
+          { type: "goto", label: "Enter the oath-stone circle", target: "oathStoneCircle" }
+        ]
+      },
+      frozenStrait: {
+        text: "An impossible frozen strait stretches out ahead, wind howling across the ice. A lone figure stands at its center, watching you approach without a trace of surprise.",
+        choices: [{ type: "combat", label: "Fight the Frost-Walker", enemyId: "theFrostWalker", target: "convergeHall" }]
+      },
+      oathStoneCircle: {
+        text: "Ancient stones ring a quiet space, each carved with a vow long since fulfilled. A warrior kneels at the center, rising slowly as you enter.",
+        choices: [{ type: "combat", label: "Fight the Oath-Keeper", enemyId: "theOathKeeper", target: "convergeHall" }]
+      },
+      convergeHall: {
+        text: "Both paths lead back into a single grand hall, its walls carved with names in a script older than any living tongue.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "One rune near the base of the wall catches your eye — still faintly glowing, as though it's been waiting for someone to actually look.",
+        choices: [
+          { type: "discover", label: "Study the rune (Rune-Vision)", skillId: "runeVision", spellId: "seersWarning", target: "deeperHall" },
+          { type: "goto", label: "Move on", target: "deeperHall" }
+        ]
+      },
+      deeperHall: {
+        text: "The hall narrows toward its heart, the sound of distant battle growing steadily louder.",
+        choices: [{ type: "goto", label: "Press onward", target: "unyieldingFight" }]
+      },
+      unyieldingFight: {
+        text: "A lone warrior stands in the passage, unarmored, unbothered, having clearly done this many times before.",
+        choices: [{ type: "combat", label: "Fight the Unyielding", enemyId: "theUnyielding", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow side-passage skirts a warrior standing watch ahead — a way past, if you're quick and quiet about it.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A warrior with a blade in each hand turns to face you, grinning like this is the first real challenge he's had in a very long time.",
+        choices: [{ type: "combat", label: "Fight the Twin-Blade", enemyId: "theTwinBlade", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Ahead, the hall opens onto a vast threshold, wings of light and shadow visible just beyond it, a single figure waiting at its center.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Sigrun stands at the threshold itself, spear in hand, regarding you with neither malice nor mercy — only the ancient, patient question of whether you're actually worthy.",
+        choices: [{ type: "combat", label: "Face Sigrun", enemyId: "sigrun", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "Sigrun lowers her spear at last, something like respect in her ancient eyes. The seam between worlds settles quiet behind you as you make your way back — and somewhere far beyond it, the endless battle plays on without you.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -2371,6 +2650,24 @@ const ROOM_IMAGES = {
     bossRoom: "assets/images/crow-wind-dojo/boss-room.png",
     preEpilogue: "assets/images/crow-wind-dojo/boss-room.png",
     epilogue: "assets/images/crow-wind-dojo/epilogue.png"
+  },
+  sunderedThrone: {
+    throneHallEntrance: "assets/images/sundered-throne/throne-hall-entrance.png",
+    longCorridor: "assets/images/sundered-throne/long-corridor.png",
+    stewardFight: "assets/images/sundered-throne/long-corridor.png",
+    corridorLoot: "assets/images/sundered-throne/corridor-loot.png",
+    fork: "assets/images/sundered-throne/fork.png",
+    collapsedNave: "assets/images/sundered-throne/collapsed-nave.png",
+    oldKitchens: "assets/images/sundered-throne/old-kitchens.png",
+    convergeHall: "assets/images/sundered-throne/converge-hall.png",
+    discoverRoom: "assets/images/sundered-throne/discover-room.png",
+    deeperHall: "assets/images/sundered-throne/deeper-hall.png",
+    corpseFight: "assets/images/sundered-throne/deeper-hall.png",
+    vigilCheck: "assets/images/sundered-throne/vigil-check.png",
+    extraFight: "assets/images/sundered-throne/vigil-check.png",
+    preBoss: "assets/images/sundered-throne/pre-boss.png",
+    bossRoom: "assets/images/sundered-throne/boss-room.png",
+    epilogue: "assets/images/sundered-throne/epilogue.png"
   }
 };
 
