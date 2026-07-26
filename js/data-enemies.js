@@ -1179,6 +1179,142 @@ theUnyieldingFlame: {
     lootTable: ["Kusanagi's Fang", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
 
+  vanguardScout: {
+    id: "vanguardScout",
+    name: "The Vanguard Scout",
+    description: "Young and fast, first of Clan Gordon to reach the old vault's outer paths, testing whoever else has come looking.",
+    image: "assets/images/enemies/vanguard-scout.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theOldBlade: {
+    id: "theOldBlade",
+    name: "The Old Blade",
+    description: "A veteran of Clan Gordon who still remembers the exile firsthand, fighting for a grievance most of the clan only knows secondhand.",
+    image: "assets/images/enemies/the-old-blade.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theRecklessHeir: {
+    id: "theRecklessHeir",
+    name: "The Reckless Heir",
+    description: "Impatient to reclaim what he's been told his whole life should already be his.",
+    image: "assets/images/enemies/the-reckless-heir.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theClanTactician: {
+    id: "theClanTactician",
+    name: "The Clan Tactician",
+    description: "Sharp and calculating, using position and timing rather than raw strength to press Clan Gordon's claim.",
+    image: "assets/images/enemies/the-clan-tactician.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  theOathBoundGuard: {
+    id: "theOathBoundGuard",
+    name: "The Oath-Bound Guard",
+    description: "Sworn to see Clan Gordon's claim through no matter the cost — the most dangerous of them by far.",
+    image: "assets/images/enemies/the-oath-bound-guard.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  malcolmGordon: {
+    id: "malcolmGordon",
+    name: "Malcolm Gordon",
+    description: "Chief of Clan Gordon, leading the reclamation himself. Not cruel, not evil — utterly convinced his people are owed this, and unwilling to let a stranger walk away with it instead.",
+    image: "assets/images/enemies/malcolm-gordon.png",
+    deathImage: "assets/images/deaths/malcolm-gordon-death.png",
+    hitPoints: 85,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Gordon's Due Coin", "Old Ore", "Old Ore", "Old Ore"]
+  },
+
+  theFirstTurned: {
+    id: "theFirstTurned",
+    name: "The First-Turned",
+    description: "The most recently lost of the warband, fully wolf in body, but something behind its eyes still flickers with a man's memory before it's gone again.",
+    image: "assets/images/enemies/the-first-turned.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theHowlingThane: {
+    id: "theHowlingThane",
+    name: "The Howling Thane",
+    description: "Once a proud warrior, now an enormous scarred wolf-beast given entirely to rage — any trace of the man long since burned out of it.",
+    image: "assets/images/enemies/the-howling-thane.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  thePackBound: {
+    id: "thePackBound",
+    name: "The Pack-Bound",
+    description: "Moves and hunts like it's always known nothing else — a true wolf now in every way that matters.",
+    image: "assets/images/enemies/the-pack-bound.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theBloodmuzzle: {
+    id: "theBloodmuzzle",
+    name: "The Bloodmuzzle",
+    description: "The furthest gone of the warband — doesn't fight so much as feed, driven by hunger rather than any memory of battle at all.",
+    image: "assets/images/enemies/the-bloodmuzzle.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Grave Essence"]
+  },
+  theLastWatcher: {
+    id: "theLastWatcher",
+    name: "The Last Watcher",
+    description: "A massive, aging wolf-beast, still positioned at its post out of some instinct that was once loyalty, guarding its chieftain the only way it still knows how.",
+    image: "assets/images/enemies/the-last-watcher.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  ulfrikTheFirstSkinned: {
+    id: "ulfrikTheFirstSkinned",
+    name: "Ulfrik the First-Skinned",
+    description: "The very first to don the pelt, centuries ago, now the largest and most terrible wolf-beast of them all. Nothing human left in him at all — just the first domino that dragged his whole warband down with him.",
+    image: "assets/images/enemies/ulfrik-the-first-skinned.png",
+    deathImage: "assets/images/deaths/ulfrik-the-first-skinned-death.png",
+    hitPoints: 85,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Ulfrik's Broken Fang", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
   patientSteward: {
     id: "patientSteward",
     name: "The Patient Steward",

@@ -296,6 +296,34 @@ const DUNGEONS = {
     description:
       "Along the Hii River, in the valley of ancient Izumo, an eight-headed serpent has demanded a sacrifice " +
       "every season for as long as anyone can remember. The valley remembers everyone it's ever taken."
+  },
+  gordonsDue: {
+    id: "gordonsDue",
+    name: "Gordon's Due",
+    difficulty: "Master",
+    musicSrc: "assets/audio/gordons-due-theme.mp3",
+    hotspotColor: "#e67e22",
+    mapHotspot: { top: "45%", left: "35%" },
+    culture: "deveran",
+    image: "assets/images/gordons-due.png",
+    description:
+      "Generations ago, Clan Gordon was exiled for backing the wrong claim to Duncairn's throne — and with it, " +
+      "cut off from their promised share of the founding hoard. Their patience has finally run out, and they've " +
+      "come to take back what they've always believed was theirs."
+  },
+  wolfCoatsCurse: {
+    id: "wolfCoatsCurse",
+    name: "The Wolf-Coat's Curse",
+    difficulty: "Master",
+    musicSrc: "assets/audio/wolf-coats-curse-theme.mp3",
+    hotspotColor: "#7f8c8d",
+    mapHotspot: { top: "35%", left: "60%" },
+    culture: "drakvarr",
+    image: "assets/images/wolf-coats-curse.png",
+    description:
+      "Generations ago, a warband of wolf-coat warriors pushed the old ritual too far, too many times, chasing " +
+      "the battle-madness until the wolf never let go again. They never stopped fighting. They just stopped " +
+      "being entirely themselves."
   }
 };
 
@@ -2512,6 +2540,164 @@ const DUNGEON_CONTENT = {
       },
       epilogue: {
         text: "The serpent finally falls still, the basin's water running clear for the first time in longer than anyone can remember. The valley is quiet now — genuinely quiet, not just waiting.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  gordonsDue: {
+    startRoomId: "vaultApproach",
+    rooms: {
+      vaultApproach: {
+        text: "An old, half-forgotten path leads toward the founding vault — and you're not the only one who's found it. Fresh tracks mark the ground ahead, moving fast.",
+        choices: [{ type: "goto", label: "Follow the tracks", target: "outerPath" }]
+      },
+      outerPath: {
+        text: "A figure crouches at a bend in the path, scouting ahead of the rest — young, quick, and clearly not expecting company.",
+        choices: [{ type: "goto", label: "Continue", target: "scoutFight" }]
+      },
+      scoutFight: {
+        text: "The scout spots you and doesn't hesitate. \"Another one after Gordon's Due? You'll have to get past me first.\"",
+        choices: [{ type: "combat", label: "Fight the Vanguard Scout", enemyId: "vanguardScout", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A supply cache left behind by the advancing party — clearly they came prepared for a real push.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way climbs a steep ridge, the other cuts through an old collapsed passage.",
+        choices: [
+          { type: "goto", label: "Climb the ridge", target: "steepRidge" },
+          { type: "goto", label: "Through the collapsed passage", target: "collapsedPassage" }
+        ]
+      },
+      steepRidge: {
+        text: "A weathered warrior holds the high ground, watching your approach with the calm of someone who's fought for far longer than you've been alive.",
+        choices: [{ type: "combat", label: "Fight the Old Blade", enemyId: "theOldBlade", target: "convergeVault" }]
+      },
+      collapsedPassage: {
+        text: "A young man paces impatiently in the narrow passage, clearly eager to prove himself worthy of what he insists is already his birthright.",
+        choices: [{ type: "combat", label: "Fight the Reckless Heir", enemyId: "theRecklessHeir", target: "convergeVault" }]
+      },
+      convergeVault: {
+        text: "Both paths converge at the mouth of the old vault itself, sealed doors carved with a crest half-familiar and half-strange to you.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A worn inscription beside the doors catches your eye — an old technique, preserved here since the founding era.",
+        choices: [
+          { type: "discover", label: "Study the inscription (Line of Emyrs)", skillId: "ancestralEmyrs", spellId: "manaflow", target: "deeperVault" },
+          { type: "goto", label: "Move on", target: "deeperVault" }
+        ]
+      },
+      deeperVault: {
+        text: "Beyond the doors, the vault's outer chamber stretches ahead, torches already lit — someone's clearly made themselves at home.",
+        choices: [{ type: "goto", label: "Press onward", target: "tacticianFight" }]
+      },
+      tacticianFight: {
+        text: "A sharp-eyed figure studies a hand-drawn map of the vault, glancing up with obvious irritation at your arrival. \"You're early. That's inconvenient.\"",
+        choices: [{ type: "combat", label: "Fight the Clan Tactician", enemyId: "theClanTactician", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow side-corridor skirts a lone sentry guarding the way ahead — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A guard steps into the corridor, sword already drawn. \"Sworn to see this through. Nothing personal.\"",
+        choices: [{ type: "combat", label: "Fight the Oath-Bound Guard", enemyId: "theOathBoundGuard", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Ahead, the vault's innermost chamber waits, firelight flickering across old gold — and a single figure standing before it, waiting for you.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Malcolm Gordon turns to face you, unhurried. \"My clan paid for this with generations of exile. I won't watch a stranger walk out with it instead.\"",
+        choices: [{ type: "combat", label: "Face Malcolm Gordon", enemyId: "malcolmGordon", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "Malcolm Gordon finally yields, more weary than defeated. \"Take it, then. Just... know what it cost us to want it this badly.\" The vault falls silent behind you as you leave.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  wolfCoatsCurse: {
+    startRoomId: "curseEntrance",
+    rooms: {
+      curseEntrance: {
+        text: "The old warband's camp lies abandoned and overgrown, long-cold fire pits scattered among the trees. Overhead, the moon hangs full and heavy — and somewhere close, something moves that shouldn't still be moving after all these years.",
+        choices: [{ type: "goto", label: "Press onward", target: "campPath" }]
+      },
+      campPath: {
+        text: "Claw marks score deep into the bark of every tree along the path, pale in the full moon's light. Something large shifts in the undergrowth ahead, watching before it decides to attack.",
+        choices: [{ type: "goto", label: "Continue", target: "firstTurnedFight" }]
+      },
+      firstTurnedFight: {
+        text: "A wolf-beast steps into view, and for one unsettling moment, something almost aware flickers behind its eyes before vanishing entirely.",
+        choices: [{ type: "combat", label: "Fight the First-Turned", enemyId: "theFirstTurned", target: "campLoot" }]
+      },
+      campLoot: {
+        text: "An old weapon rack, mostly rotted, still holds a few things worth salvaging among the ruin.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way leads toward a ruined longhouse, the other into a dense, unnervingly quiet thicket.",
+        choices: [
+          { type: "goto", label: "Toward the longhouse", target: "ruinedLonghouse" },
+          { type: "goto", label: "Into the thicket", target: "quietThicket" }
+        ]
+      },
+      ruinedLonghouse: {
+        text: "The longhouse has collapsed in on itself, timbers rotted through, moonlight pouring through the broken roof. A massive wolf-beast paces within, scarred and enormous, any trace of the man long gone.",
+        choices: [{ type: "combat", label: "Fight the Howling Thane", enemyId: "theHowlingThane", target: "convergeCurse" }]
+      },
+      quietThicket: {
+        text: "The thicket is dead silent, unnaturally so. Something moves through it low and fast, hunting the way it always has now.",
+        choices: [{ type: "combat", label: "Fight the Pack-Bound", enemyId: "thePackBound", target: "convergeCurse" }]
+      },
+      convergeCurse: {
+        text: "Both paths lead to a wide clearing, bones scattered across the ground under the full moon's light — some old, some far too recent.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A rune is carved deep into a nearby standing stone, half-covered in claw marks, as though something tried to destroy it and failed.",
+        choices: [
+          { type: "discover", label: "Study the rune (Rune-Blade)", skillId: "runeBlade", spellId: "bloodfuryMark", target: "deeperCurse" },
+          { type: "goto", label: "Move on", target: "deeperCurse" }
+        ]
+      },
+      deeperCurse: {
+        text: "The clearing narrows into a den, the smell of old blood thick in the air, the ground littered with the remains of things that came before you.",
+        choices: [{ type: "goto", label: "Press onward", target: "bloodmuzzleFight" }]
+      },
+      bloodmuzzleFight: {
+        text: "Something lean and starved lunges from the shadows, driven by hunger alone, no memory of battle left in it at all.",
+        choices: [{ type: "combat", label: "Fight the Bloodmuzzle", enemyId: "theBloodmuzzle", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow game-trail skirts a massive shape lying in wait ahead — a chance to slip past, if you're quiet.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "An enormous, aging wolf-beast rises to meet you, still holding its post out of some instinct that was once loyalty, long after anyone remembers what it was guarding.",
+        choices: [{ type: "combat", label: "Fight the Last Watcher", enemyId: "theLastWatcher", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The den opens into a wide cavern, old and deep, moonlight spilling through a fissure in the rock above. The air is thick with the weight of something that has been here far longer than anything else in this warband's ruin.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Full moonlight cuts through the cavern's opening as Ulfrik rises to meet you — the largest, oldest, most far-gone of them all. The very first to don the pelt, centuries ago, and the one who dragged every one of his loyal warriors down with him.",
+        choices: [{ type: "combat", label: "Face Ulfrik the First-Skinned", enemyId: "ulfrikTheFirstSkinned", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "Ulfrik falls still at last, the curse finally spent. For a moment, just before the end, something almost human passes through his eyes — recognition, maybe, or relief. Then it's gone, and so is he.",
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
