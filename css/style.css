@@ -849,3 +849,8 @@ body {
     filter: drop-shadow(0 0 48px rgba(200, 170, 255, 1)) brightness(1.22);
   }
 }
+
+#mastery-list .cc-category-heading,
+#mastery-list .cc-skill-count {
+  color: #ffffff;
+}

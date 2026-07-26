@@ -172,6 +172,11 @@ function discoverSpell(character, skillId, spellId) {
 
   if (character.knownSpells[skillId].includes(spellId)) return null;
   character.knownSpells[skillId].push(spellId);
+
+  if (character === playerCharacter) {
+    awardMasteryPoint(character, skillId);
+  }
+
   return spell;
 }
 
@@ -202,13 +207,56 @@ function useSkill(character, skillId) {
   const tierBefore = getSkillTier(skill.timesUsed);
   skill.timesUsed += getSkillUseGain(character, skillId);
   const tierAfter = getSkillTier(skill.timesUsed);
+  const tierJustIncreased = tierAfter.name !== tierBefore.name;
+
+  if (tierJustIncreased && character === playerCharacter) {
+    awardMasteryPoint(character, skillId);
+  }
 
   return {
     skillId: skillId,
     timesUsed: skill.timesUsed,
     tier: tierAfter,
-    tierJustIncreased: tierAfter.name !== tierBefore.name
+    tierJustIncreased: tierJustIncreased
   };
+}
+
+/**
+ * Mastery Points — player-only (never followers). Each skill
+ * keeps its own separate point balance, spent only on that
+ * skill's own perks. Points come from tier-ups (here) and, for
+ * magic skills, from learning each new spell (see discoverSpell).
+ */
+function awardMasteryPoint(character, skillId) {
+  if (!character.masteryPoints) character.masteryPoints = {};
+  character.masteryPoints[skillId] = (character.masteryPoints[skillId] || 0) + 1;
+
+  if (!character.pendingMasteryAlerts) character.pendingMasteryAlerts = [];
+  character.pendingMasteryAlerts.push({
+    skillId: skillId,
+    points: character.masteryPoints[skillId]
+  });
+}
+
+function getMasteryPoints(character, skillId) {
+  return (character.masteryPoints && character.masteryPoints[skillId]) || 0;
+}
+
+/**
+ * Which perk (if any) the player has picked for a given
+ * skill+tier. Tiers are 1-4; picks are freely swappable, so this
+ * is just the current selection, not a permanent purchase log.
+ */
+function getMasteryPick(character, skillId, tier) {
+  if (!character.masteryPicks) return null;
+  const skillPicks = character.masteryPicks[skillId];
+  return skillPicks ? (skillPicks[tier] || null) : null;
+}
+
+function setMasteryPick(character, skillId, tier, optionId) {
+  if (!character.masteryPicks) character.masteryPicks = {};
+  if (!character.masteryPicks[skillId]) character.masteryPicks[skillId] = {};
+  character.masteryPicks[skillId][tier] = optionId;
 }
 
 function getAvailableStartingSkills(cultureId) {
