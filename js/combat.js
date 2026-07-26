@@ -533,6 +533,8 @@ const ENEMY_CASTABLE_TYPES = ["damage", "burst"];
  * damage. Returns null if the dungeon has no culture tag, or
  * that culture has no usable spells (shouldn't normally happen).
  */
+const ENEMY_EXCLUDED_SKILL_IDS = ["ancestralFetch", "wayYokai"];
+
 function getEnemyCultureSpell() {
   const dungeon = DUNGEONS[selectedDungeonId];
   if (!dungeon || !dungeon.culture) return null;
@@ -543,6 +545,7 @@ function getEnemyCultureSpell() {
 
   const pool = [];
   culture.magicSkillIds.forEach((skillId) => {
+    if (ENEMY_EXCLUDED_SKILL_IDS.includes(skillId)) return;
     const spells = SPELLS[skillId] || [];
     spells.forEach((spell) => {
       if (castableTypes.includes(spell.type)) {
@@ -691,6 +694,14 @@ function startCombat(enemyId) {
   }
   if (hasChosenPerk(playerCharacter, "pathStorm", "eyeOfTheStorm")) {
     initialEffects.push({ kind: "eyeOfTheStorm", rankBonus: 0, roundsRemaining: null });
+  }
+
+  const gameViewportEl = document.getElementById("game-viewport");
+  if (gameViewportEl) {
+    gameViewportEl.classList.remove(
+      "hit-flash-fire", "hit-flash-physical", "hit-flash-lightning",
+      "hit-flash-ice", "hit-flash-poison", "heal-flash", "low-hp-pulse"
+    );
   }
 
   currentCombat = {
@@ -922,6 +933,10 @@ function getFollowerSongOption(follower) {
  * correctly apply it to HER stats, not the player's.
  */
 function performFollowerSongCast(follower, skillId, spell) {
+  currentCombat.activeEffects = currentCombat.activeEffects.filter(
+    (e) => !(e.source === "song" && e.owner === follower)
+  );
+
   const tierBefore = getCharacterSkillTier(follower, skillId).name;
   useSkill(follower, skillId);
   follower.currentMana -= MANA_CONFIG.costPerCast;

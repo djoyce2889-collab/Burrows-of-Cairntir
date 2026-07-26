@@ -959,10 +959,13 @@ function renderRaceGrid() {
       <div class="cc-card-desc">${race.description}</div>
     `;
     card.addEventListener("click", () => {
+      if (creationState.race === race.id) return;
       creationState.race = race.id;
       creationState.culture = RACE_TO_CULTURE[race.id] || null;
       creationState.portraitImage = null;
-      renderRaceGrid();
+      document.querySelectorAll("#cc-race-grid .cc-card").forEach((c) => {
+        c.classList.toggle("selected", c === card);
+      });
       renderPortraitGrid();
     });
     grid.appendChild(card);
@@ -1122,12 +1125,22 @@ function renderSkillGrid() {
       <div class="cc-card-image" style="background-image: url('${getSkillImagePath(skill.id)}')"></div>
     `;
     card.addEventListener("click", () => {
-      if (isSelected) {
+      const currentlySelected = creationState.skills.includes(skill.id);
+      const currentlyAtLimit = creationState.skills.filter((id) => SKILLS[id].category !== "Magic").length >= MAX_STARTING_SKILLS;
+      if (currentlySelected) {
         creationState.skills = creationState.skills.filter((id) => id !== skill.id);
-      } else if (!atLimit) {
+      } else if (!currentlyAtLimit) {
         creationState.skills.push(skill.id);
+      } else {
+        return;
       }
-      renderSkillGrid();
+      const newCount = creationState.skills.filter((id) => SKILLS[id].category !== "Magic").length;
+      const newAtLimit = newCount >= MAX_STARTING_SKILLS;
+      countLabel.textContent = `Chosen ${newCount} / ${MAX_STARTING_SKILLS}`;
+      countLabel.classList.toggle("limit-reached", newAtLimit);
+      document.querySelectorAll("#cc-skill-grid .cc-card").forEach((c) => {
+        c.classList.toggle("selected", c === card ? !currentlySelected : c.classList.contains("selected"));
+      });
     });
     return card;
   }
@@ -1304,12 +1317,19 @@ function renderTraitGrid() {
     `;
 
     card.addEventListener("click", () => {
-      if (isSelected) {
+      const currentlySelected = creationState.traits.includes(trait.id);
+      const currentlyAtLimit = creationState.traits.length >= TRAIT_SELECTION_MAX;
+      if (currentlySelected) {
         creationState.traits = creationState.traits.filter((id) => id !== trait.id);
-      } else if (!atLimit) {
+      } else if (!currentlyAtLimit) {
         creationState.traits.push(trait.id);
+      } else {
+        return;
       }
-      renderTraitGrid();
+      const newAtLimit = creationState.traits.length >= TRAIT_SELECTION_MAX;
+      countLabel.textContent = `Chosen ${creationState.traits.length} / ${TRAIT_SELECTION_MAX} (minimum ${TRAIT_SELECTION_MIN})`;
+      countLabel.classList.toggle("limit-reached", newAtLimit);
+      card.classList.toggle("selected", !currentlySelected);
     });
 
     grid.appendChild(card);
@@ -2174,6 +2194,7 @@ function confirmEnterDungeon() {
 
 function goToTrainingDifficultyScreen() {
   showScreen("screen-training-difficulty");
+  playMusic(TRAINING_GROUNDS_MUSIC_SRC);
   renderTrainingDifficultyScreen();
 }
 
@@ -3054,6 +3075,14 @@ const FETCH_ATTACK_LABELS = {
 }
 
 function renderCombatOutcome() {
+  const gameViewportEl = document.getElementById("game-viewport");
+  if (gameViewportEl) {
+    gameViewportEl.classList.remove(
+      "hit-flash-fire", "hit-flash-physical", "hit-flash-lightning",
+      "hit-flash-ice", "hit-flash-poison", "heal-flash", "low-hp-pulse"
+    );
+  }
+
   const storyEl = document.getElementById("game-story-text");
   const choicesEl = document.getElementById("game-choices");
   choicesEl.innerHTML = "";
