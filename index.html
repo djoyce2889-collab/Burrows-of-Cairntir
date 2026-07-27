@@ -365,13 +365,50 @@
     </section>
 
     <section id="screen-crafting" class="screen">
+      <div id="viewport">
+        <img src="assets/images/forge-craft.png" alt="A cozy stone forge and crafting workshop, hearth fire glowing, an anvil and weapon rack on one side, armor and cloth on a workbench on the other." />
+      </div>
       <div id="panel">
         <span class="cc-label">Forge &amp; Craft</span>
-        <div id="crafting-tabs" class="cc-grid"></div>
-        <div id="crafting-list" class="cc-grid"></div>
-        <div id="crafting-result" class="cc-skill-count"></div>
+        <div class="cc-skill-count">Choose what you'd like to work on.</div>
         <div id="choices">
+          <button class="choice-button" id="btn-craft-weapons">Smith a Weapon</button>
+          <button class="choice-button" id="btn-craft-armor">Tailor Armor</button>
+          <button class="choice-button" id="btn-craft-enchant">Enchant Gear</button>
           <button class="choice-button" id="btn-crafting-back">Return to Homebase</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-craft-weapons" class="screen">
+      <div id="panel">
+        <span class="cc-label">Smith a Weapon</span>
+        <div id="craft-weapons-result" class="cc-skill-count"></div>
+        <div id="craft-weapons-list" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-craft-weapons-back">Return to Forge &amp; Craft</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-craft-armor" class="screen">
+      <div id="panel">
+        <span class="cc-label">Tailor Armor</span>
+        <div id="craft-armor-result" class="cc-skill-count"></div>
+        <div id="craft-armor-list" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-craft-armor-back">Return to Forge &amp; Craft</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-craft-enchant" class="screen">
+      <div id="panel">
+        <span class="cc-label">Enchant Gear</span>
+        <div id="craft-enchant-result" class="cc-skill-count"></div>
+        <div id="craft-enchant-list" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-craft-enchant-back">Return to Forge &amp; Craft</button>
         </div>
       </div>
     </section>

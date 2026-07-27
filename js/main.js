@@ -3350,8 +3350,25 @@ function applyDefeatFade() {
 
 function goToCraftingScreen() {
   showScreen("screen-crafting");
+}
+
+function goToCraftWeaponsScreen() {
+  showScreen("screen-craft-weapons");
+  renderCraftCategoryScreen("weapon", "craft-weapons-list", "craft-weapons-result");
+}
+
+function goToCraftArmorScreen() {
+  showScreen("screen-craft-armor");
+  renderCraftCategoryScreen("armor", "craft-armor-list", "craft-armor-result");
+}
+
+function goToCraftEnchantScreen() {
+  showScreen("screen-craft-enchant");
   craftingEnchantSlotPending = null;
-  renderCraftingScreen();
+  renderEnchantSection(
+    document.getElementById("craft-enchant-list"),
+    document.getElementById("craft-enchant-result")
+  );
 }
 
 function countMaterial(materialName) {
@@ -3380,19 +3397,13 @@ function renderCraftingTabs() {
   });
 }
 
-function renderCraftingScreen() {
-  renderCraftingTabs();
-  const list = document.getElementById("crafting-list");
-  const resultEl = document.getElementById("crafting-result");
+function renderCraftCategoryScreen(category, listId, resultId) {
+  const list = document.getElementById(listId);
+  const resultEl = document.getElementById(resultId);
   list.innerHTML = "";
   resultEl.innerHTML = "";
 
-  if (craftingCategory === "enchant") {
-    renderEnchantSection(list, resultEl);
-    return;
-  }
-
-  const recipes = Object.values(CRAFTING_RECIPES).filter((r) => r.category === craftingCategory);
+  const recipes = Object.values(CRAFTING_RECIPES).filter((r) => r.category === category);
   const usableRecipes = recipes.filter((recipe) => !!playerCharacter.skills[recipe.craftingSkill]);
 
   if (usableRecipes.length === 0) {
@@ -3412,7 +3423,7 @@ function renderCraftingScreen() {
       <div class="cc-card-image" style="background-image: url('assets/images/items/${getRecipeImageSlug(recipe.id)}.png')"></div>
     `;
     card.addEventListener("click", () => {
-      attemptCraft(recipe.id);
+      attemptCraft(recipe.id, resultId, () => renderCraftCategoryScreen(category, listId, resultId));
     });
     list.appendChild(card);
   });
@@ -3437,7 +3448,10 @@ function renderEnchantSection(list, resultEl) {
     `;
     weaponCard.addEventListener("click", () => {
       craftingEnchantSlotPending = "weapon";
-      renderCraftingScreen();
+      renderEnchantSection(
+        document.getElementById("craft-enchant-list"),
+        document.getElementById("craft-enchant-result")
+      );
     });
     list.appendChild(weaponCard);
 
@@ -3465,7 +3479,10 @@ function renderEnchantSection(list, resultEl) {
       `;
       slotCard.addEventListener("click", () => {
         craftingEnchantSlotPending = slotName;
-        renderCraftingScreen();
+        renderEnchantSection(
+          document.getElementById("craft-enchant-list"),
+          document.getElementById("craft-enchant-result")
+        );
       });
       list.appendChild(slotCard);
     });
@@ -3505,12 +3522,12 @@ function renderEnchantSection(list, resultEl) {
   });
 }
 
-function attemptCraft(recipeId) {
+function attemptCraft(recipeId, resultId, rerender) {
   const recipe = CRAFTING_RECIPES[recipeId];
   const have = countMaterial(recipe.material);
 
   if (have < recipe.materialCost) {
-    document.getElementById("crafting-result").innerHTML =
+    document.getElementById(resultId).innerHTML =
       `<span class="craft-result-fail">You need ${recipe.materialCost} &times; ${recipe.material} to attempt this — you only have ${have}.</span>`;
     return;
   }
@@ -3533,8 +3550,8 @@ function attemptCraft(recipeId) {
     resultMessage = `<span class="craft-result-fail">The attempt fails. No materials lost — but you've learned something from the mistake.</span>`;
   }
 
-  renderCraftingScreen();
-  document.getElementById("crafting-result").innerHTML = resultMessage;
+  rerender();
+  document.getElementById(resultId).innerHTML = resultMessage;
   saveGameState();
 }
 
@@ -3547,7 +3564,7 @@ function attemptEnchant(slot, typeId) {
   const enchantField = slot === "weapon" ? "weaponEnchantment" : ARMOR_ENCHANT_FIELD_BY_SLOT[slot];
   const currentEnchantment = playerCharacter[enchantField];
   if (currentEnchantment && currentEnchantment.type === typeId) {
-    document.getElementById("crafting-result").innerHTML =
+    document.getElementById("craft-enchant-result").innerHTML =
       `<span class="craft-result-fail">This item is already ${ENCHANTMENT_TYPES[typeId].name}-Enchanted — choose a different type to change it.</span>`;
     return;
   }
@@ -3555,7 +3572,7 @@ function attemptEnchant(slot, typeId) {
   const have = countMaterial(ENCHANT_MATERIAL);
 
   if (have < ENCHANT_MATERIAL_COST) {
-    document.getElementById("crafting-result").innerHTML =
+    document.getElementById("craft-enchant-result").innerHTML =
       `<span class="craft-result-fail">You need ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL} to attempt this — you only have ${have}.</span>`;
     return;
   }
@@ -3580,8 +3597,11 @@ function attemptEnchant(slot, typeId) {
   }
 
   craftingEnchantSlotPending = null;
-  renderCraftingScreen();
-  document.getElementById("crafting-result").innerHTML = resultMessage;
+  renderEnchantSection(
+    document.getElementById("craft-enchant-list"),
+    document.getElementById("craft-enchant-result")
+  );
+  document.getElementById("craft-enchant-result").innerHTML = resultMessage;
   saveGameState();
 }
 
@@ -3848,6 +3868,12 @@ document.getElementById("btn-manage-party").addEventListener("click", goToPartyS
 
 document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
 document.getElementById("btn-mastery").addEventListener("click", goToMasteryScreen);
+document.getElementById("btn-craft-weapons").addEventListener("click", goToCraftWeaponsScreen);
+document.getElementById("btn-craft-armor").addEventListener("click", goToCraftArmorScreen);
+document.getElementById("btn-craft-enchant").addEventListener("click", goToCraftEnchantScreen);
+document.getElementById("btn-craft-weapons-back").addEventListener("click", goToCraftingScreen);
+document.getElementById("btn-craft-armor-back").addEventListener("click", goToCraftingScreen);
+document.getElementById("btn-craft-enchant-back").addEventListener("click", goToCraftingScreen);
 document.getElementById("btn-growth-summary-continue").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-mastery-back").addEventListener("click", goToHomebaseScreen);
 

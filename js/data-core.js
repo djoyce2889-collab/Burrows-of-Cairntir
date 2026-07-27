@@ -281,7 +281,8 @@ const SKILL_TIERS = [
   { min: 10, name: "Novice" },
   { min: 30, name: "Adept" },
   { min: 60, name: "Expert" },
-  { min: 100, name: "Master" }
+  { min: 100, name: "Master" },
+  { min: 150, name: "Grandmaster" }
 ];
 
 const ADVANTAGES = {
@@ -313,7 +314,7 @@ const ADVANTAGES = {
     drivenBy: ["survival"],
     displayAsNumber: true,
     base: 60,
-    tierBonus: { Untrained: 0, Novice: 10, Adept: 20, Expert: 35, Master: 55 }
+    tierBonus: { Untrained: 0, Novice: 10, Adept: 20, Expert: 35, Master: 55, Grandmaster: 85 }
   }
 };
 
@@ -390,7 +391,8 @@ const SUCCESS_CHANCE_BY_TIER = {
   Novice: 0.55,
   Adept: 0.65,
   Expert: 0.75,
-  Master: 0.85
+  Master: 0.85,
+  Grandmaster: 0.95
 };
 
 const TIER_SHIFT_PER_RANK = 0.08;
@@ -402,7 +404,8 @@ const DAMAGE_RANGE_BY_TIER = {
   Novice: [3, 6],
   Adept: [5, 9],
   Expert: [8, 13],
-  Master: [12, 20]
+  Master: [12, 20],
+  Grandmaster: [18, 30]
 };
 
 const DEFEND_SUCCESS_PENALTY = 0.20;
