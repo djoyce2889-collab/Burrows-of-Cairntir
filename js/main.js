@@ -1258,7 +1258,7 @@ function renderStartingSpellsGrid() {
     tabCard.innerHTML = `
       <div class="cc-card-name">${culture.name}</div>
       <div class="cc-card-desc"><em>Click to explore</em></div>
-      <div class="cc-card-image" style="background-image: url('assets/images/cultures/${culture.id}-icon.png')"></div>
+      <div class="cc-card-image" style="background-image: url('assets/images/cultures/${culture.id}-icon.png?v=2')"></div>
     `;
     tabCard.addEventListener("click", () => {
       spellsViewCultureId = culture.id;
@@ -4130,7 +4130,7 @@ resultEl.style.color = "#ffffff";
     tabCard.innerHTML = `
       <div class="cc-card-name">${culture.name}</div>
       <div class="cc-card-desc"><em>Click to explore</em></div>
-      <div class="cc-card-image" style="background-image: url('assets/images/cultures/${culture.id}-icon.png')"></div>
+      <div class="cc-card-image" style="background-image: url('assets/images/cultures/${culture.id}-icon.png?v=2')"></div>
     `;
     tabCard.addEventListener("click", () => {
       teachSpellViewCultureId = culture.id;
