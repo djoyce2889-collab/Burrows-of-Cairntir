@@ -643,12 +643,12 @@ body {
 }
 
 .cc-card-image {
-  width: calc(100% + 30px);
-  padding-bottom: 75%;
+  width: 100%;
+  padding-bottom: 65%;
   background-size: cover;
   background-position: center;
-  border-radius: 0 0 4px 4px;
-  margin: 8px -15px -14px -15px;
+  border-radius: 4px;
+  margin: 8px 0 0 0;
 }
 
 .cc-card-desc em {
