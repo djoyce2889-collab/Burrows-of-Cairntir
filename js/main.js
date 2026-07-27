@@ -3124,6 +3124,15 @@ const FETCH_ATTACK_LABELS = {
       if (spell.type === "companion" && dungeonCompanionUsed) {
         return;
       }
+      if (spell.type === "enchant" || spell.type === "buff") {
+        const activeBuff = currentCombat.activeEffects.find(
+          (e) => e.kind === "playerAttackBonus" && e.spellName === spell.name && !e.partyWide
+        );
+        if (activeBuff && activeBuff.roundsRemaining !== null) {
+          addChoiceButton(choicesEl, `${activeBuff.roundsRemaining <= 1 ? "Cast" : "Active"} - ${spell.name} (${activeBuff.roundsRemaining} ${activeBuff.roundsRemaining === 1 ? "round" : "rounds"} left)`, null, true);
+          return;
+        }
+      }
       if (spell.type === "cooldownBuff") {
         const cooldownLeft = getSpellCooldownRemaining(playerCharacter, spell.id);
         if (cooldownLeft > 0) {
@@ -3177,16 +3186,23 @@ const FETCH_ATTACK_LABELS = {
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
 
-  if (inTrainingGrounds) {
-    addChoiceButton(choicesEl, "Return to Homebase", () => {
-      const confirmStoryEl = document.getElementById("game-story-text");
-      const confirmChoicesEl = document.getElementById("game-choices");
-      confirmStoryEl.innerHTML = "Leave the Training Grounds and return to Homebase? This ends your current session.";
-      confirmChoicesEl.innerHTML = "";
-      addChoiceButton(confirmChoicesEl, "Yes, return to Homebase", leaveTrainingGrounds);
-      addChoiceButton(confirmChoicesEl, "No, keep fighting", () => renderCombatScreen());
+  addChoiceButton(choicesEl, "Retreat to Homebase", () => {
+    const confirmStoryEl = document.getElementById("game-story-text");
+    const confirmChoicesEl = document.getElementById("game-choices");
+    confirmStoryEl.innerHTML = inTrainingGrounds
+      ? "Leave the Training Grounds and return to Homebase? This ends your current session."
+      : "Retreat from this fight and return to Homebase? You'll need to re-enter the dungeon and start this room's fight again if you come back.";
+    confirmChoicesEl.innerHTML = "";
+    addChoiceButton(confirmChoicesEl, "Yes, return to Homebase", () => {
+      currentCombat = null;
+      if (inTrainingGrounds) {
+        leaveTrainingGrounds();
+      } else {
+        goToGrowthSummaryScreen();
+      }
     });
-  }
+    addChoiceButton(confirmChoicesEl, "No, keep fighting", () => renderCombatScreen());
+  });
 }
 
 function renderCombatOutcome() {
