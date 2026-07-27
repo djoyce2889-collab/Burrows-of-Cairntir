@@ -366,22 +366,22 @@ const DIFFICULTY_SETTINGS = {
     id: "easy",
     name: "Easy",
     description: "A gentler road below Cairntír — foes hit softer and fall faster.",
-    enemyHpMultiplier: 7,
-    enemyDamageMultiplier: 2.5
+    enemyHpMultiplier: 5,
+    enemyDamageMultiplier: 1.25
   },
   normal: {
     id: "normal",
     name: "Normal",
     description: "The road as it's always been walked.",
-    enemyHpMultiplier: 11,
-    enemyDamageMultiplier: 4
+    enemyHpMultiplier: 8,
+    enemyDamageMultiplier: 2
   },
   hard: {
     id: "hard",
     name: "Hard",
     description: "A harder road — foes hit harder and take more killing.",
-    enemyHpMultiplier: 16,
-    enemyDamageMultiplier: 5.5
+    enemyHpMultiplier: 12,
+    enemyDamageMultiplier: 3
   }
 };
 

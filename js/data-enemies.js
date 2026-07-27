@@ -1315,6 +1315,210 @@ theUnyieldingFlame: {
     lootTable: ["Ulfrik's Broken Fang", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
 
+  theAshCrowned: {
+    id: "theAshCrowned",
+    name: "The Ash-Crowned",
+    description: "Once nobility of the Seelie court, corrupted first and hardest, now leading by cruelty rather than grace.",
+    image: "assets/images/enemies/the-ash-crowned.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theBargainBreaker: {
+    id: "theBargainBreaker",
+    name: "The Bargain-Breaker",
+    description: "Keeps bargains only as long as it suits her, and delights in the exact moment she doesn't have to anymore.",
+    image: "assets/images/enemies/the-bargain-breaker.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theThornedHerald: {
+    id: "theThornedHerald",
+    name: "The Thorned Herald",
+    description: "Announces the court's will with a twisted, ceremonial cruelty, relishing every word of it.",
+    image: "assets/images/enemies/the-thorned-herald.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theHollowKnight: {
+    id: "theHollowKnight",
+    name: "The Hollow Knight",
+    description: "Armored and disciplined as any noble guard once was, utterly without mercy now.",
+    image: "assets/images/enemies/the-hollow-knight.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theWitheredMuse: {
+    id: "theWitheredMuse",
+    name: "The Withered Muse",
+    description: "Once bound to inspire and charm, now corrupts anyone who listens too long.",
+    image: "assets/images/enemies/the-withered-muse.png",
+    hitPoints: 34,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theUnseelieQueen: {
+    id: "theUnseelieQueen",
+    name: "The Unseelie Queen",
+    description: "More terrible and more beautiful than any of her subjects, embodying everything the old stories warn about the Sídhe — taken to its darkest possible extreme.",
+    image: "assets/images/enemies/the-unseelie-queen.png",
+    deathImage: "assets/images/deaths/the-unseelie-queen-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Unseelie Crown Shard", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
+  theSmilingElder: {
+    id: "theSmilingElder",
+    name: "The Smiling Elder",
+    description: "The village's most trusted figure, enthralled by the Witch of the Hollow longer than anyone realizes.",
+    image: "assets/images/enemies/the-smiling-elder.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theWatchfulMidwife: {
+    id: "theWatchfulMidwife",
+    name: "The Watchful Midwife",
+    description: "Present at every birth in the village, enthralled in a way that's let her go unnoticed for years.",
+    image: "assets/images/enemies/the-watchful-midwife.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theQuietNeighbor: {
+    id: "theQuietNeighbor",
+    name: "The Quiet Neighbor",
+    description: "Utterly unremarkable, which is exactly why her enthrallment was never caught.",
+    image: "assets/images/enemies/the-quiet-neighbor.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theFireflyTouched: {
+    id: "theFireflyTouched",
+    name: "The Firefly-Touched",
+    description: "Caught mid-transformation, the one moment the Witch's hold actually shows itself.",
+    image: "assets/images/enemies/the-firefly-touched.png",
+    hitPoints: 34,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theGrievingMother: {
+    id: "theGrievingMother",
+    name: "The Grieving Mother",
+    description: "Enthralled in the cruelest way of all — her grief no longer entirely her own.",
+    image: "assets/images/enemies/the-grieving-mother.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theWitchOfTheHollow: {
+    id: "theWitchOfTheHollow",
+    name: "The Witch of the Hollow",
+    description: "Not enthralled — the one doing the enthralling. She has moved through this village unnoticed for years, slowly claiming more of it for her own purposes.",
+    image: "assets/images/enemies/the-witch-of-the-hollow.png",
+    deathImage: "assets/images/deaths/the-witch-of-the-hollow-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Witch's Hollow Charm", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
+  niutouTheOxGuardian: {
+    id: "niutouTheOxGuardian",
+    name: "Niutou, the Ox Guardian",
+    description: "A genuine ox-formed guardian of the underworld, one of the two traditional escorts who lead the dead into Diyu.",
+    image: "assets/images/enemies/niutou-the-ox-guardian.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  mamianTheHorseGuardian: {
+    id: "mamianTheHorseGuardian",
+    name: "Mamian, the Horse Guardian",
+    description: "A genuine horse-formed guardian of the underworld, paired with Niutou since time immemorial in escorting the dead into Diyu.",
+    image: "assets/images/enemies/mamian-the-horse-guardian.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theHoppingCorpse: {
+    id: "theHoppingCorpse",
+    name: "The Hopping Corpse",
+    description: "A jiangshi — rigid, reanimated, arms outstretched, hunting the living by scent and sound alone.",
+    image: "assets/images/enemies/the-hopping-corpse.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  theHungryGhost: {
+    id: "theHungryGhost",
+    name: "The Hungry Ghost",
+    description: "An è guǐ — a soul condemned to eternal starvation, tragic and dangerous in equal measure.",
+    image: "assets/images/enemies/the-hungry-ghost.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theChainBoundSoul: {
+    id: "theChainBoundSoul",
+    name: "The Chain-Bound Soul",
+    description: "A spirit condemned for a specific transgression, still bearing the weight of its underworld punishment.",
+    image: "assets/images/enemies/the-chain-bound-soul.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  yanluoWang: {
+    id: "yanluoWang",
+    name: "Yanluo Wang, King of Diyu",
+    description: "The judge of the dead himself, absolute and unmoved, utterly convinced you do not belong among the souls he presides over.",
+    image: "assets/images/enemies/yanluo-wang.png",
+    deathImage: "assets/images/deaths/yanluo-wang-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Yanluo's Seal of Judgment", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+
   patientSteward: {
     id: "patientSteward",
     name: "The Patient Steward",

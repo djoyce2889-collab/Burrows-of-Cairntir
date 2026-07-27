@@ -324,6 +324,46 @@ const DUNGEONS = {
       "Generations ago, a warband of wolf-coat warriors pushed the old ritual too far, too many times, chasing " +
       "the battle-madness until the wolf never let go again. They never stopped fighting. They just stopped " +
       "being entirely themselves."
+  },
+  unseelieCourt: {
+    id: "unseelieCourt",
+    name: "The Unseelie Court",
+    difficulty: "Master",
+    musicSrc: "assets/audio/unseelie-court-theme.mp3",
+    hotspotColor: "#6c3483",
+    mapHotspot: { top: "55%", left: "70%" },
+    culture: "gaeldrim",
+    image: "assets/images/unseelie-court.png",
+    description:
+      "The Sídhe strike bargains as easily as they break them — but even among their own kind, one court has " +
+      "abandoned fairness entirely, keeping only the cruelty. What was once merely uncanny has become something " +
+      "genuinely dangerous."
+  },
+  hollowFaced: {
+    id: "hollowFaced",
+    name: "The Hollow-Faced",
+    difficulty: "Master",
+    musicSrc: "assets/audio/hollow-faced-theme.mp3",
+    hotspotColor: "#8e6b3a",
+    mapHotspot: { top: "60%", left: "30%" },
+    culture: "vandiri",
+    image: "assets/images/hollow-faced.png",
+    description:
+      "The village looks ordinary enough from the road — familiar faces, familiar routines. But something has " +
+      "been moving through it for years, unnoticed, claiming a few more of its people every season."
+  },
+  diyusJudgment: {
+    id: "diyusJudgment",
+    name: "Diyu's Judgment",
+    difficulty: "Master",
+    musicSrc: "assets/audio/diyus-judgment-theme.mp3",
+    hotspotColor: "#a93226",
+    mapHotspot: { top: "75%", left: "85%" },
+    culture: "yorenshi",
+    image: "assets/images/diyus-judgment.png",
+    description:
+      "Somewhere the ground gives way entirely, and the path down leads somewhere no living soul is meant to " +
+      "walk. Diyu keeps its own ledger, and Yanluo Wang has never once made an exception for the living."
   }
 };
 
@@ -2698,6 +2738,243 @@ const DUNGEON_CONTENT = {
       },
       epilogue: {
         text: "Ulfrik falls still at last, the curse finally spent. For a moment, just before the end, something almost human passes through his eyes — recognition, maybe, or relief. Then it's gone, and so is he.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  unseelieCourt: {
+    startRoomId: "courtEntrance",
+    rooms: {
+      courtEntrance: {
+        text: "The old fae paths here have gone wrong, twisted somewhere along the way. The air itself feels watched, appraised, found wanting.",
+        choices: [{ type: "goto", label: "Enter", target: "courtPath" }]
+      },
+      courtPath: {
+        text: "Thorned vines coil along every branch overhead, and something moves between them, unhurried, clearly enjoying making you wait.",
+        choices: [{ type: "goto", label: "Continue", target: "heraldFight" }]
+      },
+      heraldFight: {
+        text: "A figure descends with theatrical grace, announcing your arrival to no one at all, delighting in the ceremony of it regardless.",
+        choices: [{ type: "combat", label: "Fight the Thorned Herald", enemyId: "theThornedHerald", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A cache of old, glittering trinkets sits abandoned beneath a hollow root — something worth taking, if you don't mind wondering what it once cost someone else.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way winds toward a ring of blackened standing stones, the other through a grove gone entirely silent.",
+        choices: [
+          { type: "goto", label: "Toward the standing stones", target: "blackenedStones" },
+          { type: "goto", label: "Through the silent grove", target: "silentGrove" }
+        ]
+      },
+      blackenedStones: {
+        text: "The stones here are scorched black, arranged with cruel precision. A figure in disciplined, dark armor stands watch, utterly without mercy.",
+        choices: [{ type: "combat", label: "Fight the Hollow Knight", enemyId: "theHollowKnight", target: "convergeCourt" }]
+      },
+      silentGrove: {
+        text: "Something sings, faint and beautiful, from somewhere in the trees — and every instinct tells you not to listen too closely.",
+        choices: [{ type: "combat", label: "Fight the Withered Muse", enemyId: "theWitheredMuse", target: "convergeCourt" }]
+      },
+      convergeCourt: {
+        text: "Both paths open onto a wide clearing, old fae banners hanging in tatters, once beautiful, now simply wrong.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A carving here shows what this court once was, before whatever happened to it — a fragment of the old grace still lingers, if you know where to look.",
+        choices: [
+          { type: "discover", label: "Study the carving (Path of the Storm)", skillId: "pathStorm", spellId: "lightningLash", target: "deeperCourt" },
+          { type: "goto", label: "Move on", target: "deeperCourt" }
+        ]
+      },
+      deeperCourt: {
+        text: "The path narrows toward the court's true heart, the air growing colder and stranger with every step.",
+        choices: [{ type: "goto", label: "Press onward", target: "bargainBreakerFight" }]
+      },
+      bargainBreakerFight: {
+        text: "A figure smiles, all teeth and delight, already savoring the bargain she has no intention of keeping.",
+        choices: [{ type: "combat", label: "Fight the Bargain-Breaker", enemyId: "theBargainBreaker", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow path skirts something watching from the shadows ahead — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A figure in an ash-grey crown steps forward, once nobility, now something far crueler than that title ever implied.",
+        choices: [{ type: "combat", label: "Fight the Ash-Crowned", enemyId: "theAshCrowned", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Ahead, the court's true heart opens before you — a throne of thorn and shadow, and upon it, something more beautiful and more terrible than anything you've faced yet.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Unseelie Queen rises from her throne, cold and radiant, everything the old stories ever warned about the Sídhe taken to its darkest possible extreme.",
+        choices: [{ type: "combat", label: "Face the Unseelie Queen", enemyId: "theUnseelieQueen", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The Queen falls still at last, her court's cruel light finally fading. Whatever this place once was before it went wrong, it feels, for the first time in a very long while, like it might remember.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  hollowFaced: {
+    startRoomId: "villageEntrance",
+    rooms: {
+      villageEntrance: {
+        text: "The village looks perfectly ordinary from the road — smoke rising from chimneys, voices carrying faintly on the wind. Nothing here should feel wrong. It does anyway.",
+        choices: [{ type: "goto", label: "Enter the village", target: "villagePath" }]
+      },
+      villagePath: {
+        text: "A familiar face turns toward you a moment too slowly, smiles a moment too widely, and doesn't stop smiling once you've noticed.",
+        choices: [{ type: "goto", label: "Continue", target: "elderFight" }]
+      },
+      elderFight: {
+        text: "The village's most trusted elder greets you warmly, hollow behind the eyes in a way no one else here has ever thought to question.",
+        choices: [{ type: "combat", label: "Fight the Smiling Elder", enemyId: "theSmilingElder", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "An unattended stall holds a few small goods, untouched despite sitting out in plain view all day.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way toward the village's quiet row of homes, the other toward the birthing-house at its edge.",
+        choices: [
+          { type: "goto", label: "Toward the quiet homes", target: "quietRow" },
+          { type: "goto", label: "Toward the birthing-house", target: "birthingHouse" }
+        ]
+      },
+      quietRow: {
+        text: "A neighbor stands in a doorway, utterly unremarkable, watching you pass with an attention that doesn't match how forgettable she's always seemed.",
+        choices: [{ type: "combat", label: "Fight the Quiet Neighbor", enemyId: "theQuietNeighbor", target: "convergeVillage" }]
+      },
+      birthingHouse: {
+        text: "The midwife looks up from her work, present as always, knowing far more than anyone's ever thought to ask how.",
+        choices: [{ type: "combat", label: "Fight the Watchful Midwife", enemyId: "theWatchfulMidwife", target: "convergeVillage" }]
+      },
+      convergeVillage: {
+        text: "Both paths lead to the village square, quiet at this hour, every face you pass a little too still.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A mark is scratched faintly into a well's stone rim — a ward, old and half-forgotten, meant to catch exactly this kind of thing.",
+        choices: [
+          { type: "discover", label: "Study the ward (Rite of Unmaking)", skillId: "riteUnmaking", spellId: "vulnerabilityCurse", target: "deeperVillage" },
+          { type: "goto", label: "Move on", target: "deeperVillage" }
+        ]
+      },
+      deeperVillage: {
+        text: "The square gives way to a narrower lane, the ordinary sounds of the village fading the further you go.",
+        choices: [{ type: "goto", label: "Press onward", target: "fireflyFight" }]
+      },
+      fireflyFight: {
+        text: "Something small and glowing darts past your face, then lands, then isn't small at all anymore.",
+        choices: [{ type: "combat", label: "Fight the Firefly-Touched", enemyId: "theFireflyTouched", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow alley skirts a house where someone stands motionless at the window — a chance to slip past unseen, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A grieving mother turns from an empty doorway, tears that have never once looked real to anyone who dared look closely.",
+        choices: [{ type: "combat", label: "Fight the Grieving Mother", enemyId: "theGrievingMother", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The lane ends at a modest house, unremarkable in every way — except that every path through this village, somehow, has always led here.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Witch of the Hollow looks up from her work, entirely unbothered. She has had a very long time to get used to being underestimated.",
+        choices: [{ type: "combat", label: "Face the Witch of the Hollow", enemyId: "theWitchOfTheHollow", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The Witch falls still, and across the village, faces that were a moment too still finally look like themselves again. No one will ever quite know how to explain what just happened here — only that something, finally, has stopped.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  diyusJudgment: {
+    startRoomId: "diyuEntrance",
+    rooms: {
+      diyuEntrance: {
+        text: "The ground gives way entirely, the path down sloping into a place no living soul is meant to walk. The air itself feels judged, weighed, and found wanting before you've taken a single step.",
+        choices: [{ type: "goto", label: "Descend", target: "diyuPath" }]
+      },
+      diyuPath: {
+        text: "A massive shape blocks the passage ahead, entirely bovine in form, standing at rigid attention like it's done this a thousand times before.",
+        choices: [{ type: "goto", label: "Continue", target: "niutouFight" }]
+      },
+      niutouFight: {
+        text: "Niutou lowers his head, unhurried and utterly without malice — this is simply his duty, and you are simply in the way of it.",
+        choices: [{ type: "combat", label: "Fight Niutou, the Ox Guardian", enemyId: "niutouTheOxGuardian", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A small offering-shrine sits along the path, coins and trinkets left by souls long since processed and moved on.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way winds past a field of chained, wailing spirits, the other through a hall of endless empty banquet tables.",
+        choices: [
+          { type: "goto", label: "Past the chained spirits", target: "chainedField" },
+          { type: "goto", label: "Through the banquet hall", target: "banquetHall" }
+        ]
+      },
+      chainedField: {
+        text: "A spirit strains against old chains, condemned for a transgression long since forgotten by everyone but Diyu's own ledgers.",
+        choices: [{ type: "combat", label: "Fight the Chain-Bound Soul", enemyId: "theChainBoundSoul", target: "convergeDiyu" }]
+      },
+      banquetHall: {
+        text: "Endless tables stretch out, laden with food that turns to ash the instant it's touched. Something gaunt and desperate lunges from beneath one of them.",
+        choices: [{ type: "combat", label: "Fight the Hungry Ghost", enemyId: "theHungryGhost", target: "convergeDiyu" }]
+      },
+      convergeDiyu: {
+        text: "Both paths lead to a wide judgment hall, its walls lined with ledgers stretching further than any eye could read.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "One page of an open ledger catches your eye, an old technique recorded in its margins, left by someone who passed this way long before you.",
+        choices: [
+          { type: "discover", label: "Study the ledger (Way of Onmyōji)", skillId: "wayOnmyoji", spellId: "ubumesGift", target: "deeperDiyu" },
+          { type: "goto", label: "Move on", target: "deeperDiyu" }
+        ]
+      },
+      deeperDiyu: {
+        text: "The hall narrows into a colder passage, the ledgers giving way to bare stone, the weight of judgment growing heavier with every step.",
+        choices: [{ type: "goto", label: "Press onward", target: "corpseFight" }]
+      },
+      corpseFight: {
+        text: "Something rigid and upright hops stiffly into the passage ahead, arms outstretched, hunting by scent alone.",
+        choices: [{ type: "combat", label: "Fight the Hopping Corpse", enemyId: "theHoppingCorpse", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow side-passage skirts a massive horse-formed guardian standing watch ahead — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "Mamian steps forward to block the way, unhurried and dutiful as ever, entirely unmoved by your intrusion.",
+        choices: [{ type: "combat", label: "Fight Mamian, the Horse Guardian", enemyId: "mamianTheHorseGuardian", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "Ahead, the passage opens onto a vast judgment throne room, ledgers stacked to the ceiling, and upon the throne, something absolute and unmoved by anything the living have ever pleaded.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Yanluo Wang looks up from his ledger, entirely unsurprised. He has judged every soul that has ever crossed into Diyu, and he sees no reason to make an exception for you.",
+        choices: [{ type: "combat", label: "Face Yanluo Wang, King of Diyu", enemyId: "yanluoWang", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "Yanluo Wang finally sets down his ledger, something almost like respect in his ancient, unmoved gaze. The path back to the living world opens before you — a rare mercy, and one he makes very clear will not be extended twice.",
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
