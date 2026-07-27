@@ -860,10 +860,34 @@ function advanceChronicle() {
   renderChronicleStep();
 }
 
+const CHRONICLE_BONUS_LABELS = {
+  attackBonus: "Attack",
+  spellDamageBonus: "Spell Damage",
+  healBonus: "Healing",
+  supportBonus: "Support",
+  maxHpBonus: "Bonus Hit Points"
+};
+
 function renderChronicleSummary() {
   const storyEl = document.getElementById("chronicle-story-text");
   const choicesEl = document.getElementById("chronicle-choices");
   storyEl.textContent = getChronicleSummaryText(creationState.chronicleBonuses);
+
+  const bonuses = creationState.chronicleBonuses || {};
+  const earnedLines = Object.keys(CHRONICLE_BONUS_LABELS)
+    .filter((key) => bonuses[key])
+    .map((key) => `${CHRONICLE_BONUS_LABELS[key]}: +${bonuses[key]}`);
+
+  const bonusEl = document.createElement("div");
+  bonusEl.className = "cc-skill-count";
+  bonusEl.style.marginTop = "12px";
+  if (earnedLines.length > 0) {
+    bonusEl.innerHTML = `<strong>Permanent bonuses earned:</strong><br>${earnedLines.join("<br>")}`;
+  } else {
+    bonusEl.textContent = "No permanent bonuses earned from this Chronicle.";
+  }
+  storyEl.after(bonusEl);
+
   choicesEl.innerHTML = "";
   addChoiceButton(choicesEl, "Set out", () => {
     goToCreationStep(CREATION_STEP_SCREENS.indexOf("screen-creation-review"));
