@@ -2403,6 +2403,11 @@ function performPlayerCast(skillId, spell, target) {
     if (spell.name === "Griot's War-Praise" && hasChosenPerk(playerCharacter, "riteGriot", "warPraisesWeight")) {
       buffRank += 1;
     }
+    if (!isSong) {
+      currentCombat.activeEffects = currentCombat.activeEffects.filter(
+        (e) => !(e.kind === "playerAttackBonus" && e.spellName === spell.name)
+      );
+    }
     currentCombat.activeEffects.push({
       kind: "playerAttackBonus",
       rankBonus: buffRank,
