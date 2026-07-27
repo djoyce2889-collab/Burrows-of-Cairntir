@@ -513,7 +513,13 @@ const DUNGEON_CONTENT = {
       chiefsDoor: {
         text: "Both paths end here, at a door carved with the same crest that flew over every banner in this keep — whole, unmarked, and very cold to the touch.",
         choices: [
-          { label: "Open the door", type: "goto", target: "bossRoom" }
+          { label: "Open the door", type: "goto", target: "wraithFight" }
+        ]
+      },
+      wraithFight: {
+        text: "Something rises from the cold air just past the threshold — a grief-shaped thing, wailing low, as though it's been waiting behind this door for longer than the chief himself has been dead.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "wailingWraith", target: "bossRoom" }
         ]
       },
       bossRoom: {
@@ -646,7 +652,13 @@ const DUNGEON_CONTENT = {
       bossDoor: {
         text: "A final door, carved with a ship's prow, stands at the end of the flooded hall — cold, and strangely dry to the touch.",
         choices: [
-          { label: "Open the door", type: "goto", target: "bossRoom" }
+          { label: "Open the door", type: "goto", target: "carverFight" }
+        ]
+      },
+      carverFight: {
+        text: "A faint glow drifts before the door — the very shaman who carved the runes overhead, still tending his own old work, unwilling to let anyone pass before the chieftain he served.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theRuneCarversGhost", target: "bossRoom" }
         ]
       },
       bossRoom: {
@@ -907,7 +919,13 @@ const DUNGEON_CONTENT = {
       bossDoor: {
         text: "The final chamber's entrance is a ring of stones, light pulsing between them like something breathing.",
         choices: [
-          { label: "Step through the ring", type: "goto", target: "bossRoom" }
+          { label: "Step through the ring", type: "goto", target: "kinFight" }
+        ]
+      },
+      kinFight: {
+        text: "Something stands directly in the ring itself, wreathed in the same wrongly-colored fire as the thing beyond — kin to the Ancestor once, and the only one who ever tried to stop what it became.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "barrowBoundKin", target: "bossRoom" }
         ]
       },
       bossRoom: {
@@ -1041,7 +1059,13 @@ const DUNGEON_CONTENT = {
       bossDoor: {
         text: "The ice-sealed door gives way easily, colder air pouring out from whatever lies beyond.",
         choices: [
-          { label: "Enter", type: "goto", target: "bossRoom" }
+          { label: "Enter", type: "goto", target: "apprenticeFight" }
+        ]
+      },
+      apprenticeFight: {
+        text: "A younger smith blocks the way to the anvil, hammer already raised. \"Not finished. Not yet. You'll ruin it if you go in there now.\"",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theUnfinishedApprentice", target: "bossRoom" }
         ]
       },
       bossRoom: {
@@ -1516,7 +1540,11 @@ const DUNGEON_CONTENT = {
       },
       bossDoor: {
         text: "The summit opens before you — a ring of ancient standing stones half-swallowed by ice and low cloud, the air crackling with unnatural cold.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "championFight" }]
+      },
+      championFight: {
+        text: "A lone warrior stands within the ring, storm crowned about his brow, blocking the way to the stones beyond. Whatever mortal pride once drove him here, only the storm remembers now.",
+        choices: [{ type: "combat", label: "Fight the Storm-Crowned Champion", enemyId: "stormCrownedChampion", target: "bossRoom" }]
       },
       bossRoom: {
         text: "This is the storm's true heart. Amid the ring of stones stands something ancient beyond reckoning — the Cailleach herself, weathered and primordial, wrapped in winter and cloud.",
@@ -2256,7 +2284,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "Ahead, the corridor opens onto a final set of doors, carved with a crest half-worn away — a name that isn't quite Averick's, though it's clearly kin to it.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "kinFight" }]
+      },
+      kinFight: {
+        text: "Someone stands before the doors themselves — the last of Doran's own followers, still holding a post no one has relieved him of in centuries, utterly bewildered that anyone would ever try to pass.",
+        choices: [{ type: "combat", label: "Fight the Last Loyal Kin", enemyId: "theLastLoyalKin", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The throne room opens before you. Seated upon it, patient beyond all reckoning, is the hall's true keeper — kin to Averick in blood, if not in memory.",
@@ -2651,7 +2683,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "Ahead, the vault's innermost chamber waits, firelight flickering across old gold — and a single figure standing before it, waiting for you.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "shieldFight" }]
+      },
+      shieldFight: {
+        text: "A warrior steps forward, blade already drawn. \"Sworn to Malcolm. Not to the cause. To him. Nothing you say is going to change my mind about that.\"",
+        choices: [{ type: "combat", label: "Fight the Chief's Shield", enemyId: "theChiefsShield", target: "bossRoom" }]
       },
       bossRoom: {
         text: "Malcolm Gordon turns to face you, unhurried. \"My clan paid for this with generations of exile. I won't watch a stranger walk out with it instead.\"",

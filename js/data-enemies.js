@@ -117,6 +117,17 @@ const ENEMIES = {
     soundCategory: "zombie",
     lootTable: ["Draugr Rune-Ring", "Grave Essence", "Grave Essence"]
   },
+  theRuneCarversGhost: {
+    id: "theRuneCarversGhost",
+    name: "The Rune-Carver's Ghost",
+    description: "The very shaman who carved the runes still glowing overhead — bound here by his own working, the reason no one has ever needed to carve new ones.",
+    image: "assets/images/enemies/the-rune-carvers-ghost.png",
+    hitPoints: 24,
+    attackType: "magic",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
 
   rootboundHusk: {
     id: "rootboundHusk",
@@ -209,6 +220,17 @@ const ENEMIES = {
     soundCategory: "fire",
     lootTable: ["Ancestor's Ember", "Grave Essence", "Grave Essence"]
   },
+  barrowBoundKin: {
+    id: "barrowBoundKin",
+    name: "The Barrow-Bound Kin",
+    description: "Once tried to stop the Ancestor's gift from curdling into something else. Failed, and has stood guard at this exact threshold ever since, unable to leave the mistake behind.",
+    image: "assets/images/enemies/barrow-bound-kin.png",
+    hitPoints: 34,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "fire",
+    lootTable: ["Grave Essence", "Grave Essence"]
+  },
 
   frostboundWarrior: {
     id: "frostboundWarrior",
@@ -254,6 +276,17 @@ const ENEMIES = {
     threatTier: "Expert",
     soundCategory: "ice",
     lootTable: ["Frostforged Rune", "Grave Essence", "Grave Essence"]
+  },
+  theUnfinishedApprentice: {
+    id: "theUnfinishedApprentice",
+    name: "The Unfinished Apprentice",
+    description: "Has spent centuries trying to finish the Frozen Smith's last piece of work, and won't let anyone near the anvil before he does.",
+    image: "assets/images/enemies/the-unfinished-apprentice.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "ice",
+    lootTable: ["Old Ore", "Grave Essence"]
   },
 
   thornwovenStalker: {
@@ -471,6 +504,17 @@ const ENEMIES = {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Cailleach's Frost Sigil", "Grave Essence", "Grave Essence"]
+  },
+  stormCrownedChampion: {
+    id: "stormCrownedChampion",
+    name: "The Storm-Crowned Champion",
+    description: "A mortal warrior who once challenged the Cailleach herself and lost — but was found too worthy for simple death, and crowned in storm instead.",
+    image: "assets/images/enemies/storm-crowned-champion.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Grave Essence"]
   },
 
   restlessAncestor: {
@@ -1246,6 +1290,17 @@ theUnyieldingFlame: {
     soundCategory: "physical",
     lootTable: ["Gordon's Due Coin", "Old Ore", "Old Ore", "Old Ore"]
   },
+  theChiefsShield: {
+    id: "theChiefsShield",
+    name: "The Chief's Shield",
+    description: "Sworn to Malcolm Gordon personally, not the clan's cause — and standing between you and him regardless of whether the cause itself is just.",
+    image: "assets/images/enemies/the-chiefs-shield.png",
+    hitPoints: 48,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
 
   theFirstTurned: {
     id: "theFirstTurned",
@@ -1585,6 +1640,17 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "zombie",
     lootTable: ["Doran's Unspoken Crown", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theLastLoyalKin: {
+    id: "theLastLoyalKin",
+    name: "The Last Loyal Kin",
+    description: "The one follower who never left Doran's side, even after every other name that once stood with him had gone. Still doesn't understand why no one else stayed.",
+    image: "assets/images/enemies/the-last-loyal-kin.png",
+    hitPoints: 44,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence", "Grave Essence"]
   }
 
 };
