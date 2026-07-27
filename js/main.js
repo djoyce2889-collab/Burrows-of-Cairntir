@@ -1311,7 +1311,7 @@ function renderStartingSpellsGrid() {
       card.innerHTML = `
         <div class="cc-card-name">${spell.name}</div>
         <div class="cc-card-desc">${spell.description}</div>
-        <div class="cc-card-image" style="background-image: url('../assets/images/spells/${culture.id}/${spell.id}.png')"></div>
+        <div class="cc-card-image" style="background-image: url('assets/images/spells/${culture.id}/${spell.id}.png')"></div>
       `;
       card.addEventListener("click", () => {
         if (isSelected) {
@@ -3942,7 +3942,7 @@ function renderManageSpellsScreen() {
     card.className = "cc-card";
     if (isActive) card.classList.add("selected");
     const cultureForSpell = Object.values(CULTURES).find(c => c.magicSkillIds.includes(skillId));
-    const spellImagePath = `../assets/images/spells/${cultureForSpell.id}/${spell.id}.png`;
+    const spellImagePath = `assets/images/spells/${cultureForSpell.id}/${spell.id}.png`;
     card.innerHTML = `
       <div class="cc-card-name">${spell.name}</div>
       <div class="cc-card-desc">${spell.description}</div>
@@ -4195,7 +4195,7 @@ resultEl.style.color = "#ffffff";
       <div class="cc-card-name">${spell.name}</div>
       <div class="cc-card-desc">${spell.description}</div>
       <div class="cc-card-desc"><em>${statusLabel}</em></div>
-      <div class="cc-card-image" style="background-image: url('../assets/images/spells/${culture.id}/${spell.id}.png')"></div>
+      <div class="cc-card-image" style="background-image: url('assets/images/spells/${culture.id}/${spell.id}.png')"></div>
     `;
       card.addEventListener("click", () => {
         if (isKnown) {
