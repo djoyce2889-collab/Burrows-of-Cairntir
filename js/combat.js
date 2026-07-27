@@ -379,9 +379,11 @@ function getEffectivePlayerSupportTier(baseTierName) {
   return shiftTierByRank(baseTierName, supportBonus);
 }
 
+const BASELINE_ENEMY_TIER = "Adept";
+
 function getEffectiveEnemyTier() {
   return shiftTierByRank(
-    currentCombat.enemyThreatTier,
+    BASELINE_ENEMY_TIER,
     getEffectRankSum("enemyDebuff") + getEffectRankSum("defenseDebuff")
   );
 }
@@ -394,7 +396,7 @@ function getEffectiveEnemyTier() {
  */
 function getEnemyAttackTier() {
   return shiftTierByRank(
-    currentCombat.enemyThreatTier,
+    BASELINE_ENEMY_TIER,
     getEffectRankSum("enemyDebuff") + getEffectRankSum("accuracyDebuff")
   );
 }
@@ -1502,7 +1504,9 @@ function resolveEnemyAttack() {
   const attackType = currentCombat.enemyAttackType;
   const enemyEffectiveTier = getEnemyAttackTier();
   const defenderTier = getDefendingTierName(attackType, target);
-  const adjustment = isPlayerTarget && currentCombat.playerDefending ? -DEFEND_SUCCESS_PENALTY : 0;
+  const defendAdjustment = isPlayerTarget && currentCombat.playerDefending ? -DEFEND_SUCCESS_PENALTY : 0;
+  const difficultyAccuracyAdjustment = isPlayerTarget ? (diff.enemyAccuracyAdjustment || 0) : 0;
+  const adjustment = defendAdjustment + difficultyAccuracyAdjustment;
 
   const targetHasGuaranteedDodge = currentCombat.activeEffects.some((e) => e.kind === "guaranteedDodge" && e.target === target);
   let hit = targetHasGuaranteedDodge ? (consumeGuaranteedEffectFor(target) ? false : rollSuccess(enemyEffectiveTier, defenderTier, adjustment)) : rollSuccess(enemyEffectiveTier, defenderTier, adjustment);
@@ -1639,6 +1643,7 @@ function resolveEnemyAttack() {
     isPlayerTarget: isPlayerTarget,
     targetName: isPlayerTarget ? playerCharacter.name : target.name,
     spellName: enemyCastInfo ? enemyCastInfo.spell.name : null,
+    spellType: enemyCastInfo ? enemyCastInfo.spell.type : null,
     spellCultureId: enemyCastInfo ? enemyCastInfo.cultureId : null,
     culturallyResisted: enemyCastInfo ? hasCultureTraining : undefined
   });

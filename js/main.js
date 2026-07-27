@@ -2889,7 +2889,7 @@ if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
 } else if (entry.actor === "enemy" && entry.hit) {
       const enemySfx = currentCombat.enemyAttackType === "physical"
         ? "assets/audio/sfx/weapon-slash.mp3"
-        : getSpellSfxPath(currentCombat.enemyName);
+        : getSpellSfxPathWithType(entry.spellName, entry.spellType);
       playSfx(enemySfx);
     }
 
