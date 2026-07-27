@@ -174,6 +174,17 @@ const ENEMIES = {
     soundCategory: "zombie",
     lootTable: ["Barrow Sigil", "Grave Essence", "Grave Essence"]
   },
+  theGroveClaimedWard: {
+    id: "theGroveClaimedWard",
+    name: "The Grove-Claimed Ward",
+    description: "Once the Barrow Keeper's own apprentice, learning the old ways at their side — claimed by the same roots long before the lesson was finished.",
+    image: "assets/images/enemies/the-grove-claimed-ward.png",
+    hitPoints: 24,
+    attackType: "magic",
+    threatTier: "Novice",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
 
   cairnbornSentinel: {
     id: "cairnbornSentinel",
@@ -334,6 +345,17 @@ const ENEMIES = {
     soundCategory: "spectral",
     lootTable: ["Vale Sigil", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
+  theLastDissentingVoice: {
+    id: "theLastDissentingVoice",
+    name: "The Last Dissenting Voice",
+    description: "A Túath elder who refused to be absorbed into the Consensus, still fighting after all this time to remain a single, separate voice.",
+    image: "assets/images/enemies/the-last-dissenting-voice.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
 
   duergarReaver: {
     id: "duergarReaver",
@@ -391,6 +413,17 @@ const ENEMIES = {
     soundCategory: "stone",
     lootTable: ["Sovereign's Crown Shard", "Grave Essence", "Grave Essence"]
   },
+  theSovereignsHerald: {
+    id: "theSovereignsHerald",
+    name: "The Sovereign's Herald",
+    description: "Once announced the king's decrees to the whole stronghold. Now announces only doom for anyone foolish enough to approach the throne.",
+    image: "assets/images/enemies/the-sovereigns-herald.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "stone",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
 
   fomorianRaider: {
     id: "fomorianRaider",
@@ -447,6 +480,17 @@ const ENEMIES = {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Balor's Eye Shard", "Grave Essence", "Grave Essence"]
+  },
+  theLidkeeper: {
+    id: "theLidkeeper",
+    name: "The Lidkeeper",
+    description: "Bound to a single task longer than anyone can remember why it mattered — keeping Balor's eye shut, and keeping anyone from reaching it who might open it early.",
+    image: "assets/images/enemies/the-lidkeeper.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence", "Hide"]
   },
 
   stormTouchedReiver: {
@@ -1018,6 +1062,17 @@ theUnyieldingFlame: {
     soundCategory: "spectral",
     lootTable: ["Widow's Red Thorn", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
+  theGoBetween: {
+    id: "theGoBetween",
+    name: "The Go-Between",
+    description: "Brokered the match that doomed her, all those years ago. Still trying, uselessly, to broker some kind of peace between the living and the hollow now.",
+    image: "assets/images/enemies/the-go-between.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Hide", "Grave Essence"]
+  },
 
   theShieldSplitter: {
     id: "theShieldSplitter",
@@ -1085,6 +1140,17 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Sigrun's Chosen Feather", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theLastChosen: {
+    id: "theLastChosen",
+    name: "The Last-Chosen",
+    description: "The most recently gathered of Sigrun's einherjar, still hungry to prove he deserved her selection at all.",
+    image: "assets/images/enemies/the-last-chosen.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Grave Essence"]
   },
 
   theGroveBound: {
@@ -1369,6 +1435,17 @@ theUnyieldingFlame: {
     soundCategory: "physical",
     lootTable: ["Ulfrik's Broken Fang", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
+  theSecondSkinned: {
+    id: "theSecondSkinned",
+    name: "The Second-Skinned",
+    description: "The very next warrior to don the pelt after Ulfrik himself, closest to him in both time and madness of anyone left in the warband.",
+    image: "assets/images/enemies/the-second-skinned.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
 
   theAshCrowned: {
     id: "theAshCrowned",
@@ -1436,6 +1513,17 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Unseelie Crown Shard", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theQueensOwnShadow: {
+    id: "theQueensOwnShadow",
+    name: "The Queen's Own Shadow",
+    description: "Bound to her will completely, devoted to what this court has become rather than merely serving it. The last true believer left in the whole ruined place.",
+    image: "assets/images/enemies/the-queens-own-shadow.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
   },
 
   theSmilingElder: {

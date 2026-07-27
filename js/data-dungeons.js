@@ -785,7 +785,13 @@ const DUNGEON_CONTENT = {
       bossDoor: {
         text: "A gap opens in the roots at the mound's base, dark and close, leading down into the earth itself.",
         choices: [
-          { label: "Descend into the mound", type: "goto", target: "bossRoom" }
+          { label: "Descend into the mound", type: "goto", target: "wardFight" }
+        ]
+      },
+      wardFight: {
+        text: "Something small and root-bound blocks the descent — once an apprentice, learning the old ways at the Keeper's side, claimed by the same grove before the lesson was ever finished.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theGroveClaimedWard", target: "bossRoom" }
         ]
       },
       bossRoom: {
@@ -1179,7 +1185,13 @@ const DUNGEON_CONTENT = {
       bossDoor: {
         text: "The crack in the earth widens just enough to step through, green-white light washing over everything.",
         choices: [
-          { label: "Step down into the light", type: "goto", target: "bossRoom" }
+          { label: "Step down into the light", type: "goto", target: "dissentFight" }
+        ]
+      },
+      dissentFight: {
+        text: "One figure stands apart from the light, still speaking in a voice of its own. \"They stopped arguing centuries ago,\" it says. \"I never did. I don't intend to start.\"",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theLastDissentingVoice", target: "bossRoom" }
         ]
       },
       bossRoom: {
@@ -1303,7 +1315,11 @@ const DUNGEON_CONTENT = {
       },
       bossDoor: {
         text: "The great door stands ajar, corrupted craftsmanship twisted and wrong. Intense sickly green light spills out from whatever lies beyond.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "heraldFight" }]
+      },
+      heraldFight: {
+        text: "A gaunt figure stands just inside, voice rising in a corrupted echo of old ceremony. \"None approach the throne unannounced. None ever will again.\"",
+        choices: [{ type: "combat", label: "Fight the Sovereign's Herald", enemyId: "theSovereignsHerald", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The throne room is vast and lightless but for that sickly glow. On a throne of fused stone and dark iron sits the Ashen Sovereign, crown fused into ashen flesh, eyes blazing with corrupted light.",
@@ -1419,7 +1435,11 @@ const DUNGEON_CONTENT = {
       },
       bossDoor: {
         text: "A colossal sea-cave opens before you, black water lapping at a throne of coral and bleached bone, an intense sickly light glowing from within.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "lidkeeperFight" }]
+      },
+      lidkeeperFight: {
+        text: "Something stands directly between you and the throne, one single task etched into every line of it. \"The lid stays shut,\" it says, voice like grinding stone. \"That is the only thing I have ever known.\"",
+        choices: [{ type: "combat", label: "Fight the Lidkeeper", enemyId: "theLidkeeper", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The chamber is vast, lightless but for that sickly glow. Upon the throne sits Balor, a single vast eye beneath a heavy lid slowly beginning to rise.",
@@ -2367,7 +2387,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "Ahead, the mist thickens around a ring of old, leaning stones — and beyond them, something achingly beautiful waits in white.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "goBetweenFight" }]
+      },
+      goBetweenFight: {
+        text: "A gaunt figure steps out of the mist, hands raised as if still trying to soothe two sides that were never going to agree. \"I only arranged the match,\" it says. \"I never meant for any of this.\"",
+        choices: [{ type: "combat", label: "Fight the Go-Between", enemyId: "theGoBetween", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The Widow stands at the hollow's very heart, mourning-gown trailing into the mist, more sorrow than menace in her eyes — until she looks up.",
@@ -2446,7 +2470,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "Ahead, the hall opens onto a vast threshold, wings of light and shadow visible just beyond it, a single figure waiting at its center.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "chosenFight" }]
+      },
+      chosenFight: {
+        text: "The youngest of the gathered dead steps forward, eager rather than weary. \"I've waited longest of anyone here to prove I belong. You'll have to get past that first.\"",
+        choices: [{ type: "combat", label: "Fight the Last-Chosen", enemyId: "theLastChosen", target: "bossRoom" }]
       },
       bossRoom: {
         text: "Sigrun stands at the threshold itself, spear in hand, regarding you with neither malice nor mercy — only the ancient, patient question of whether you're actually worthy.",
@@ -2766,7 +2794,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "The den opens into a wide cavern, old and deep, moonlight spilling through a fissure in the rock above. The air is thick with the weight of something that has been here far longer than anything else in this warband's ruin.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "secondFight" }]
+      },
+      secondFight: {
+        text: "Another shape rises from the shadow near the cavern's mouth, older and further gone than any before it — the second ever to fall, closer to Ulfrik than any of the rest ever were.",
+        choices: [{ type: "combat", label: "Fight the Second-Skinned", enemyId: "theSecondSkinned", target: "bossRoom" }]
       },
       bossRoom: {
         text: "Full moonlight cuts through the cavern's opening as Ulfrik rises to meet you — the largest, oldest, most far-gone of them all. The very first to don the pelt, centuries ago, and the one who dragged every one of his loyal warriors down with him.",
@@ -2845,7 +2877,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "Ahead, the court's true heart opens before you — a throne of thorn and shadow, and upon it, something more beautiful and more terrible than anything you've faced yet.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "shadowFight" }]
+      },
+      shadowFight: {
+        text: "Something detaches itself from the shadow at the throne's edge, devoted and utterly without doubt. \"She is everything the court was always meant to become,\" it says. \"You will not reach her.\"",
+        choices: [{ type: "combat", label: "Fight the Queen's Own Shadow", enemyId: "theQueensOwnShadow", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The Unseelie Queen rises from her throne, cold and radiant, everything the old stories ever warned about the Sídhe taken to its darkest possible extreme.",
@@ -3051,6 +3087,7 @@ const ROOM_IMAGES = {
     cryptFight: "assets/images/duncairn-keep/crypt.png",
     cryptPast: "assets/images/duncairn-keep/crypt.png",
     chiefsDoor: "assets/images/duncairn-keep/chiefs-door.png",
+    wraithFight: "assets/images/duncairn-keep/wraith-fight.png",
     bossRoom: "assets/images/duncairn-keep/boss-room.png",
     epilogue: "assets/images/duncairn-keep/boss-room.png"
   },
@@ -3071,6 +3108,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/sunken-longhall/flooded-stairwell.png",
     extraFight: "assets/images/sunken-longhall/flooded-stairwell.png",
     bossDoor: "assets/images/sunken-longhall/boss-door.png",
+    carverFight: "assets/images/sunken-longhall/carver-fight.png",
     bossRoom: "assets/images/sunken-longhall/boss-room.png",
     epilogue: "assets/images/sunken-longhall/boss-room.png"
   },
@@ -3090,6 +3128,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/wychroot-grove/converge.png",
     extraFight: "assets/images/wychroot-grove/converge.png",
     bossDoor: "assets/images/wychroot-grove/boss-door.png",
+    wardFight: "assets/images/wychroot-grove/ward-fight.png",
     bossRoom: "assets/images/wychroot-grove/boss-room.png",
     epilogue: "assets/images/wychroot-grove/boss-room.png"
   },
@@ -3110,6 +3149,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/hollowmere-cairn/pre-boss.png",
     extraFight: "assets/images/hollowmere-cairn/pre-boss.png",
     bossDoor: "assets/images/hollowmere-cairn/boss-door.png",
+    kinFight: "assets/images/hollowmere-cairn/kin-fight.png",
     bossRoom: "assets/images/hollowmere-cairn/boss-room.png",
     epilogue: "assets/images/hollowmere-cairn/boss-room.png"
   },
@@ -3130,6 +3170,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/frosthollow-vault/pre-boss.png",
     extraFight: "assets/images/frosthollow-vault/pre-boss.png",
     bossDoor: "assets/images/frosthollow-vault/pre-boss.png",
+    apprenticeFight: "assets/images/frosthollow-vault/apprentice-fight.png",
     bossRoom: "assets/images/frosthollow-vault/boss-room.png",
     epilogue: "assets/images/frosthollow-vault/boss-room.png"
   },
@@ -3147,6 +3188,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/hollow-vale/pre-boss.png",
     extraFight: "assets/images/hollow-vale/pre-boss.png",
     bossDoor: "assets/images/hollow-vale/boss-door.png",
+    dissentFight: "assets/images/hollow-vale/dissent-fight.png",
     bossRoom: "assets/images/hollow-vale/boss-room.png",
     epilogue: "assets/images/hollow-vale/boss-room.png"
   },
@@ -3164,6 +3206,7 @@ const ROOM_IMAGES = {
     converge: "assets/images/blackforge-deep/converge.png",
     preBoss: "assets/images/blackforge-deep/pre-boss.png",
     bossDoor: "assets/images/blackforge-deep/boss-door.png",
+    heraldFight: "assets/images/blackforge-deep/herald-fight.png",
     bossRoom: "assets/images/blackforge-deep/boss-room.png",
     epilogue: "assets/images/blackforge-deep/epilogue.png"
   },
@@ -3186,6 +3229,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/fomorian-depths/pre-boss.png",
     extraFight: "assets/images/fomorian-depths/pre-boss.png",
     bossDoor: "assets/images/fomorian-depths/boss-door.png",
+    lidkeeperFight: "assets/images/fomorian-depths/lidkeeper-fight.png",
     bossRoom: "assets/images/fomorian-depths/boss-room.png",
     epilogue: "assets/images/fomorian-depths/epilogue.png"
   },
@@ -3209,6 +3253,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/cailleachs-reach/pre-boss.png",
     extraFight: "assets/images/cailleachs-reach/pre-boss.png",
     bossDoor: "assets/images/cailleachs-reach/boss-door.png",
+    championFight: "assets/images/cailleachs-reach/champion-fight.png",
     bossRoom: "assets/images/cailleachs-reach/boss-room.png",
     epilogue: "assets/images/cailleachs-reach/epilogue.png"
   },
@@ -3350,6 +3395,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/sundered-throne/vigil-check.png",
     extraFight: "assets/images/sundered-throne/vigil-check.png",
     preBoss: "assets/images/sundered-throne/pre-boss.png",
+    kinFight: "assets/images/sundered-throne/kin-fight.png",
     bossRoom: "assets/images/sundered-throne/boss-room.png",
     epilogue: "assets/images/sundered-throne/epilogue.png"
   },
@@ -3368,6 +3414,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/widows-hollow/vigil-check.png",
     extraFight: "assets/images/widows-hollow/vigil-check.png",
     preBoss: "assets/images/widows-hollow/pre-boss.png",
+    goBetweenFight: "assets/images/widows-hollow/go-between-fight.png",
     bossRoom: "assets/images/widows-hollow/boss-room.png",
     epilogue: "assets/images/widows-hollow/epilogue.png"
   },
@@ -3386,6 +3433,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/sigruns-threshold/vigil-check.png",
     extraFight: "assets/images/sigruns-threshold/vigil-check.png",
     preBoss: "assets/images/sigruns-threshold/pre-boss.png",
+    chosenFight: "assets/images/sigruns-threshold/chosen-fight.png",
     bossRoom: "assets/images/sigruns-threshold/boss-room.png",
     epilogue: "assets/images/sigruns-threshold/epilogue.png"
   },
@@ -3440,6 +3488,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/gordons-due/vigil-check.png",
     extraFight: "assets/images/gordons-due/vigil-check.png",
     preBoss: "assets/images/gordons-due/pre-boss.png",
+    shieldFight: "assets/images/gordons-due/shield-fight.png",
     bossRoom: "assets/images/gordons-due/boss-room.png",
     epilogue: "assets/images/gordons-due/epilogue.png"
   },
@@ -3458,6 +3507,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/wolf-coats-curse/vigil-check.png",
     extraFight: "assets/images/wolf-coats-curse/vigil-check.png",
     preBoss: "assets/images/wolf-coats-curse/pre-boss.png",
+    secondFight: "assets/images/wolf-coats-curse/second-fight.png",
     bossRoom: "assets/images/wolf-coats-curse/boss-room.png",
     epilogue: "assets/images/wolf-coats-curse/epilogue.png"
   },
@@ -3476,6 +3526,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/unseelie-court/vigil-check.png",
     extraFight: "assets/images/unseelie-court/vigil-check.png",
     preBoss: "assets/images/unseelie-court/pre-boss.png",
+    shadowFight: "assets/images/unseelie-court/shadow-fight.png",
     bossRoom: "assets/images/unseelie-court/boss-room.png",
     epilogue: "assets/images/unseelie-court/epilogue.png"
   },
