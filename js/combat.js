@@ -87,7 +87,9 @@ function rollSuccess(attackerTierName, defenderTierName, adjustment) {
 
 function rollDamage(attackerTierName) {
   const range = DAMAGE_RANGE_BY_TIER[attackerTierName];
-  return Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+  const rollOne = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+  const rollTwo = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+  return Math.max(rollOne, rollTwo);
 }
 
 function getCurrentDifficultySettings() {
@@ -2918,6 +2920,11 @@ function describeLogEntry(entry) {
       if (entry.hit === undefined) {
         return `${entry.followerName} calls on ${entry.spellName}, a curse taking hold.`;
       }
+      if (entry.spellType === "lifetap") {
+        return entry.hit
+          ? `${entry.followerName} calls on ${entry.spellName}, draining ${entry.damage} Hit Points from their foe and taking it as her own.`
+          : `${entry.followerName} calls on ${entry.spellName}, but it fails to find its mark.`;
+      }
       return entry.hit
         ? `${entry.followerName} calls on ${entry.spellName} and lands a solid hit for ${entry.damage}.`
         : `${entry.followerName} calls on ${entry.spellName}, but it goes wide.`;
@@ -3034,6 +3041,11 @@ function describeLogEntry(entry) {
         ? `You call on ${actionName} and drain your foe for ${entry.damage}, restoring the same in Hit Points and ${entry.manaGained} mana.`
         : `You call on ${actionName}, but it fails to find its mark.`;
     }
+    if (entry.spellType === "lifetap") {
+      return entry.hit
+        ? `You call on ${actionName}, draining ${entry.damage} Hit Points from your foe and taking it as your own.`
+        : `You call on ${actionName}, but it fails to find its mark.`;
+    }
     if (entry.spellType === "cooldownBuff") {
       return entry.onCooldown
         ? `You reach for ${actionName}, but the fire hasn't rekindled yet.`
@@ -3105,6 +3117,9 @@ function describeLogEntry(entry) {
     }
     if (entry.backfired) {
       return `${currentCombat.enemyName} calls on ${entry.spellName} at you — but ill fortune turns it back on them for ${entry.damage}!`;
+    }
+    if (entry.spellType === "lifetap") {
+      return `${currentCombat.enemyName} calls on ${entry.spellName}, draining ${entry.damage} Hit Points from ${targetLabel} to heal itself.`;
     }
     return `${currentCombat.enemyName} calls on ${entry.spellName}, striking ${targetLabel} for ${entry.damage}.`;
   }
