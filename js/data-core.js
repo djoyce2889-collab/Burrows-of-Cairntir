@@ -223,7 +223,7 @@ const TRAITS = {
 
 const TRAIT_SELECTION_MIN = 2;
 const TRAIT_SELECTION_MAX = 3;
-const MAX_FOLLOWERS = 3;
+const MAX_FOLLOWERS = 2;
 const MAX_STARTING_SKILLS = 6;
 
 const SKILLS = {
