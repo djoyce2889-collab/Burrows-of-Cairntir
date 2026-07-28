@@ -617,6 +617,17 @@ const ENEMIES = {
     soundCategory: "spectral",
     lootTable: ["Root of Remembrance", "Grave Essence", "Grave Essence"]
   },
+  theEldersKin: {
+    id: "theEldersKin",
+    name: "The Elder's Kin",
+    description: "A descendant of the Forgotten Elder's own bloodline, just as forgotten by the living, just as resentful for it.",
+    image: "assets/images/enemies/the-elders-kin.png",
+    hitPoints: 34,
+    attackType: "magic",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
 
   drownedGuardian: {
     id: "drownedGuardian",
@@ -787,6 +798,17 @@ theUnyieldingFlame: {
     soundCategory: "spectral",
     lootTable: ["Unyielding Ember", "Grave Essence", "Grave Essence"]
   },
+  theWronglyJudged: {
+    id: "theWronglyJudged",
+    name: "The Wrongly Judged",
+    description: "Was cleared of wrongdoing here once, long ago — burned anyway, once the shrine's fire stopped being able to tell the difference.",
+    image: "assets/images/enemies/the-wrongly-judged.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Novice",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
 
   youngDragon: {
     id: "youngDragon",
@@ -847,6 +869,17 @@ theUnyieldingFlame: {
     threatTier: "Adept",
     soundCategory: "fire",
     lootTable: ["Dragon-Keeper's Sigil", "Grave Essence", "Grave Essence"]
+  },
+  theFirstDevotee: {
+    id: "theFirstDevotee",
+    name: "The First Devotee",
+    description: "The very first worshipper to give themselves to the dragon, generations ago — no longer entirely human, not yet entirely dragon-kin either.",
+    image: "assets/images/enemies/the-first-devotee.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "fire",
+    lootTable: ["Grave Essence", "Old Ore"]
   },
 
   enthralledMaid: {
@@ -921,6 +954,17 @@ theUnyieldingFlame: {
     soundCategory: "spectral",
     lootTable: ["Daimyo's Seal", "Grave Essence", "Grave Essence"]
   },
+  theDaimyosSteward: {
+    id: "theDaimyosSteward",
+    name: "The Daimyo's Steward",
+    description: "His most trusted advisor in life, his most devoted servant now — the last true believer left in a lord no one else remembers with any fondness.",
+    image: "assets/images/enemies/the-daimyos-steward.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
 
   karasuTenguScout: {
     id: "karasuTenguScout",
@@ -993,6 +1037,17 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Sōjōbō's Feather", "Grave Essence", "Grave Essence"]
+  },
+  theWindBrokenDisciple: {
+    id: "theWindBrokenDisciple",
+    name: "The Wind-Broken Disciple",
+    description: "Was once the Daitengu's finest pupil, closest to mastering his own discipline. Broke the same way his master did, and just as fast.",
+    image: "assets/images/enemies/the-wind-broken-disciple.png",
+    hitPoints: 44,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Grave Essence"]
   },
 
   theOfficiant: {
@@ -1220,6 +1275,17 @@ theUnyieldingFlame: {
     soundCategory: "physical",
     lootTable: ["First Leopard's Claw", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
+  theBondedSecond: {
+    id: "theBondedSecond",
+    name: "The Bonded Second",
+    description: "Bonded to the First Leopard longer than any other spirit in the grove — closer to it than kin, and just as unwilling to let anyone unworthy pass.",
+    image: "assets/images/enemies/the-bonded-second.png",
+    hitPoints: 48,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Grave Essence"]
+  },
 
   theRiverCursed: {
     id: "theRiverCursed",
@@ -1287,6 +1353,17 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Kusanagi's Fang", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theLastSacrifice: {
+    id: "theLastSacrifice",
+    name: "The Last Sacrifice",
+    description: "The most recent offering given to the serpent, not yet fully consumed by whatever it's becoming — caught somewhere between the person she was and the thing the valley demanded of her.",
+    image: "assets/images/enemies/the-last-sacrifice.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence"]
   },
 
   vanguardScout: {
@@ -1593,6 +1670,17 @@ theUnyieldingFlame: {
     soundCategory: "spectral",
     lootTable: ["Witch's Hollow Charm", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
+  theTrustedHealer: {
+    id: "theTrustedHealer",
+    name: "The Trusted Healer",
+    description: "Enthralled to keep the village healthy and complacent — content enough that no one ever thinks too hard about leaving.",
+    image: "assets/images/enemies/the-trusted-healer.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence", "Hide"]
+  },
 
   niutouTheOxGuardian: {
     id: "niutouTheOxGuardian",
@@ -1660,6 +1748,17 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Yanluo's Seal of Judgment", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theCourtScribe: {
+    id: "theCourtScribe",
+    name: "The Court Scribe",
+    description: "Records every judgment Yanluo Wang has ever passed, down to the last detail. Will not let anyone reach the throne before their own entry has been properly written.",
+    image: "assets/images/enemies/the-court-scribe.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
   },
 
   patientSteward: {

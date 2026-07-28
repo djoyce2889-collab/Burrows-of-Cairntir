@@ -1656,7 +1656,11 @@ const DUNGEON_CONTENT = {
       },
       bossDoor: {
         text: "A hollow opening leads into the heart of the great ancient tree, green light glowing steadily from somewhere deep inside.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "kinFight" }]
+      },
+      kinFight: {
+        text: "A gaunt spirit blocks the hollow entrance, features faintly echoing the Elder's own. \"Blood of blood,\" it hisses. \"Forgotten same as him. You'll join us both if you go further.\"",
+        choices: [{ type: "combat", label: "Fight the Elder's Kin", enemyId: "theEldersKin", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The hollow core of the great tree opens around you. Old carvings line the walls, and at the center, something vast and ancient stirs — the Forgotten Elder, resentment given form.",
@@ -1748,7 +1752,11 @@ const DUNGEON_CONTENT = {
       },
       bossDoor: {
         text: "The flooded threshold of the inner sanctum opens before you, pale-blue light glowing steadily from the water beyond.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "stagnantFight" }]
+      },
+      stagnantFight: {
+        text: "The water goes still just past the threshold — too still. Something rises from beneath it, wreathed in pale mist, hands already glowing with unsettling light.",
+        choices: [{ type: "combat", label: "Fight the Stagnant Horror", enemyId: "stagnantHorror", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The heart of the sanctum opens around you — a vast flooded chamber, and at its center, something ancient and vast stirs. The Tide-Mother has been waiting.",
@@ -1880,10 +1888,15 @@ const DUNGEON_CONTENT = {
       },
 
       preBoss: {
-        text: "At the throne's summit, the air itself seems to resist. The Daimyo's form takes shape — translucent, terrible, watching with eyes that haven't blinked in centuries.",
+        text: "At the throne's summit, the air itself seems to resist. Someone still stands guard at its very edge, faithful long after there was anything left worth defending.",
         choices: [
-          { label: "Approach carefully (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "bossRoom", failureTarget: "bossRoom" }
+          { label: "Approach carefully (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "stewardFight", failureTarget: "stewardFight" }
         ]
+      },
+
+      stewardFight: {
+        text: "The Steward turns, still composed, still formal. \"My lord is not to be disturbed,\" he says, as though centuries haven't already disturbed everything about this place.",
+        choices: [{ label: "Fight", type: "combat", enemyId: "theDaimyosSteward", target: "bossRoom" }]
       },
 
       bossRoom: {
@@ -2029,10 +2042,15 @@ const DUNGEON_CONTENT = {
       },
 
       preBoss: {
-        text: "The innermost chamber waits beyond. You can hear it breathing --- long, slow, patient breaths like wind through a canyon. The dragon-shrine keeper stands motionless at the threshold, wreathed in sacred flame.",
+        text: "The innermost chamber waits beyond. You can hear it breathing --- long, slow, patient breaths like wind through a canyon. Something else stirs closer to the threshold first.",
         choices: [
-          { label: "Approach carefully (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "bossRoom", failureTarget: "bossRoom" }
+          { label: "Approach carefully (Stealth)", type: "check", skillId: "stealth", difficulty: "Adept", successTarget: "devoteeFight", failureTarget: "devoteeFight" }
         ]
+      },
+
+      devoteeFight: {
+        text: "The First Devotee blocks the threshold, scales just beginning to show beneath old, worn robes. \"Generations of us have given ourselves to this,\" they say. \"You will not be the one to end it.\"",
+        choices: [{ label: "Fight", type: "combat", enemyId: "theFirstDevotee", target: "bossRoom" }]
       },
 
       bossRoom: {
@@ -2122,7 +2140,11 @@ const DUNGEON_CONTENT = {
       },
       bossDoor: {
         text: "The entrance to the summit shrine stands before you, blackened stone glowing at the edges with trapped ember-light.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "judgedFight" }]
+      },
+      judgedFight: {
+        text: "A scorched figure blocks the entrance, voice bitter and worn thin. \"They cleared me,\" it says. \"The fire didn't care. It never learned to.\"",
+        choices: [{ type: "combat", label: "Fight the Wrongly Judged", enemyId: "theWronglyJudged", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The heart of the summit shrine opens around you, cracked walls glowing with deep ember-light — and within it, the Unyielding Flame still burns.",
@@ -2219,7 +2241,11 @@ const DUNGEON_CONTENT = {
       },
       bossDoor: {
         text: "Massive weathered doors mark the summit shrine's entrance, feather and wind motifs carved deep into the frame. Golden light leaks from the seams, and beyond it, the wind isn't gusting anymore — it's breathing.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "discipleFight" }]
+      },
+      discipleFight: {
+        text: "A lone figure stands just inside, once graceful, now shaking with the same unnatural wind that's consumed everything else here. \"He taught me everything,\" it says. \"I won't let it end like this for him.\"",
+        choices: [{ type: "combat", label: "Fight the Wind-Broken Disciple", enemyId: "theWindBrokenDisciple", target: "bossRoom" }]
       },
       bossRoom: {
         text: "A grand summit chamber, open to the sky, torn paper screens snapping in a wind that no longer feels like weather at all. At the far end, wreathed in amber light, something ancient — and now, unmistakably, dangerous — waits for you.",
@@ -2553,7 +2579,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "Ahead, the trees open onto the oldest part of the grove, a stillness settling over everything, as though the whole bush is holding its breath.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "bondedFight" }]
+      },
+      bondedFight: {
+        text: "Something moves alongside you before you even see it, bonded to the First Leopard closer than any of the rest — the last true test before the grove's own heart.",
+        choices: [{ type: "combat", label: "Fight the Bonded Second", enemyId: "theBondedSecond", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The First Leopard waits at the grove's very heart, ancient beyond reckoning, watching you with neither hostility nor welcome — only the old, patient question of whether you belong here at all.",
@@ -2632,7 +2662,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "The gorge opens onto a wide basin, the river pooling deep and black at its center. The air itself feels like it's holding its breath.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "sacrificeFight" }]
+      },
+      sacrificeFight: {
+        text: "Something rises from the black water's edge, not yet fully lost, still fighting whatever the valley has been trying to make of her. Whatever's left of her mind no longer seems to know the difference between you and the thing she was given to.",
+        choices: [{ type: "combat", label: "Fight the Last Sacrifice", enemyId: "theLastSacrifice", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The water breaks apart as eight heads rise at once, ancient and monstrous, Yamata-no-Orochi finally showing itself in full. Your followers brace alongside you.",
@@ -2960,7 +2994,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "The lane ends at a modest house, unremarkable in every way — except that every path through this village, somehow, has always led here.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "healerFight" }]
+      },
+      healerFight: {
+        text: "A familiar face steps into the doorway, kind eyes and a practiced, gentle smile. \"You don't look well,\" she says. \"Let me help you feel better before you go any further.\"",
+        choices: [{ type: "combat", label: "Fight the Trusted Healer", enemyId: "theTrustedHealer", target: "bossRoom" }]
       },
       bossRoom: {
         text: "The Witch of the Hollow looks up from her work, entirely unbothered. She has had a very long time to get used to being underestimated.",
@@ -3039,7 +3077,11 @@ const DUNGEON_CONTENT = {
       },
       preBoss: {
         text: "Ahead, the passage opens onto a vast judgment throne room, ledgers stacked to the ceiling, and upon the throne, something absolute and unmoved by anything the living have ever pleaded.",
-        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+        choices: [{ type: "goto", label: "Enter", target: "scribeFight" }]
+      },
+      scribeFight: {
+        text: "A figure sits at a small desk just before the throne, brush never pausing. \"Your entry isn't finished,\" it says, without looking up. \"You may not approach the king with unfinished business.\"",
+        choices: [{ type: "combat", label: "Fight the Court Scribe", enemyId: "theCourtScribe", target: "bossRoom" }]
       },
       bossRoom: {
         text: "Yanluo Wang looks up from his ledger, entirely unsurprised. He has judged every soul that has ever crossed into Diyu, and he sees no reason to make an exception for you.",
@@ -3274,6 +3316,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/restless-baobab/pre-boss.png",
     extraFight: "assets/images/restless-baobab/pre-boss.png",
     bossDoor: "assets/images/restless-baobab/boss-door.png",
+    kinFight: "assets/images/restless-baobab/kin-fight.png",
     bossRoom: "assets/images/restless-baobab/boss-room.png",
     epilogue: "assets/images/restless-baobab/epilogue.png"
   },
@@ -3294,6 +3337,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/drowned-shrine/pre-boss.png",
     extraFight: "assets/images/drowned-shrine/pre-boss.png",
     bossDoor: "assets/images/drowned-shrine/boss-door.png",
+    stagnantFight: "assets/images/drowned-shrine/stagnant-fight.png",
     bossRoom: "assets/images/drowned-shrine/boss-room.png",
     epilogue: "assets/images/drowned-shrine/epilogue.png"
   },
@@ -3314,6 +3358,7 @@ const ROOM_IMAGES = {
     innerSanctum: "assets/images/forsaken-manor/inner-sanctum.png",
     throneApproach: "assets/images/forsaken-manor/throne-approach.png",
     preBoss: "assets/images/forsaken-manor/pre-boss.png",
+    stewardFight: "assets/images/forsaken-manor/steward-fight.png",
     bossRoom: "assets/images/forsaken-manor/boss-room.png",
     epilogue: "assets/images/forsaken-manor/epilogue.png"
   },
@@ -3336,6 +3381,7 @@ const ROOM_IMAGES = {
     ancientOfferings: "assets/images/dragon-shrine/ancient-offerings.png",
     innerSanctumDoor: "assets/images/dragon-shrine/inner-sanctum-door.png",
     preBoss: "assets/images/dragon-shrine/pre-boss.png",
+    devoteeFight: "assets/images/dragon-shrine/devotee-fight.png",
     bossRoom: "assets/images/dragon-shrine/boss-room.png",
     epilogue: "assets/images/dragon-shrine/epilogue.png"
   },
@@ -3355,6 +3401,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/ember-scarred-outcrop/pre-boss.png",
     extraFight: "assets/images/ember-scarred-outcrop/pre-boss.png",
     bossDoor: "assets/images/ember-scarred-outcrop/boss-door.png",
+    judgedFight: "assets/images/ember-scarred-outcrop/judged-fight.png",
     bossRoom: "assets/images/ember-scarred-outcrop/boss-room.png",
     epilogue: "assets/images/ember-scarred-outcrop/epilogue.png"
   },
@@ -3376,6 +3423,7 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/crow-wind-dojo/pre-boss.png",
     extraFight: "assets/images/crow-wind-dojo/extra-fight.png",
     bossDoor: "assets/images/crow-wind-dojo/boss-door.png",
+    discipleFight: "assets/images/crow-wind-dojo/disciple-fight.png",
     bossRoom: "assets/images/crow-wind-dojo/boss-room.png",
     preEpilogue: "assets/images/crow-wind-dojo/boss-room.png",
     epilogue: "assets/images/crow-wind-dojo/epilogue.png"
@@ -3452,6 +3500,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/old-spirit-grove/vigil-check.png",
     extraFight: "assets/images/old-spirit-grove/vigil-check.png",
     preBoss: "assets/images/old-spirit-grove/pre-boss.png",
+    bondedFight: "assets/images/old-spirit-grove/bonded-fight.png",
     bossRoom: "assets/images/old-spirit-grove/boss-room.png",
     epilogue: "assets/images/old-spirit-grove/epilogue.png"
   },
@@ -3470,6 +3519,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/orochis-valley/vigil-check.png",
     extraFight: "assets/images/orochis-valley/vigil-check.png",
     preBoss: "assets/images/orochis-valley/pre-boss.png",
+    sacrificeFight: "assets/images/orochis-valley/sacrifice-fight.png",
     bossRoom: "assets/images/orochis-valley/boss-room.png",
     epilogue: "assets/images/orochis-valley/epilogue.png"
   },
@@ -3545,6 +3595,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/hollow-faced/vigil-check.png",
     extraFight: "assets/images/hollow-faced/vigil-check.png",
     preBoss: "assets/images/hollow-faced/pre-boss.png",
+    healerFight: "assets/images/hollow-faced/healer-fight.png",
     bossRoom: "assets/images/hollow-faced/boss-room.png",
     epilogue: "assets/images/hollow-faced/epilogue.png"
   },
@@ -3563,6 +3614,7 @@ const ROOM_IMAGES = {
     vigilCheck: "assets/images/diyus-judgment/vigil-check.png",
     extraFight: "assets/images/diyus-judgment/vigil-check.png",
     preBoss: "assets/images/diyus-judgment/pre-boss.png",
+    scribeFight: "assets/images/diyus-judgment/scribe-fight.png",
     bossRoom: "assets/images/diyus-judgment/boss-room.png",
     epilogue: "assets/images/diyus-judgment/epilogue.png"
   }
