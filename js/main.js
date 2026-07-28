@@ -161,6 +161,7 @@ function getSpellSfxPath(spellName) {
   if (/fire|flame|ember|burn|blaze/.test(text)) return "assets/audio/sfx/fire-cast.mp3";
   if (/frost|ice|chill|freeze|winter/.test(text)) return "assets/audio/sfx/frost-cast.mp3";
   if (/storm|thunder|lightning|spark|bolt|shock/.test(text)) return "assets/audio/sfx/lightning-cast.mp3";
+  if (/poison|venom|toxin|blight|rot/.test(text)) return "assets/audio/sfx/poison-cast.mp3";
   return null;
 }
 
@@ -706,6 +707,19 @@ function getWeaponEnchantHitFlashClass() {
   if (!playerCharacter.weaponEnchantment) return null;
   const key = WEAPON_ENCHANT_TYPE_KEY[playerCharacter.weaponEnchantment.type];
   return key ? `hit-flash-enchant-${key}` : null;
+}
+
+const WEAPON_ENCHANT_HIT_SFX = {
+  fire: "assets/audio/sfx/fire-cast.mp3",
+  ice: "assets/audio/sfx/frost-cast.mp3",
+  lightning: "assets/audio/sfx/lightning-cast.mp3",
+  poison: "assets/audio/sfx/poison-cast.mp3"
+};
+
+function getWeaponEnchantHitSfxPath() {
+  if (!playerCharacter.weaponEnchantment) return null;
+  const key = WEAPON_ENCHANT_TYPE_KEY[playerCharacter.weaponEnchantment.type];
+  return key ? WEAPON_ENCHANT_HIT_SFX[key] : null;
 }
 
 function addChoiceButton(container, label, onClick, disabled, backgroundImage) {
@@ -2905,8 +2919,11 @@ if (isMeleeHit && (entry.actor === "player" || entry.actor === "follower")) {
     activeForm = currentCombat.activeEffects.find((e) => (e.kind === "yokaiForm" || e.kind === "fetchForm") && e.owner === attackingFollower);
   }
   const elementalAttackSfx = activeForm ? getElementalAttackSfxPath(activeForm.spellName) : null;
+  const enchantHitSfx = entry.actor === "player" ? getWeaponEnchantHitSfxPath() : null;
   if (elementalAttackSfx) {
     playSfx(elementalAttackSfx);
+  } else if (enchantHitSfx) {
+    playSfx(enchantHitSfx);
   } else {
     playWeaponSfx(entry.skillId);
   }
