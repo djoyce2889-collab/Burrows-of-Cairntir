@@ -3127,7 +3127,7 @@ const FETCH_ATTACK_LABELS = {
     performPlayerAction(equippedWeaponId);
     saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-  });
+  }, false, "assets/images/actions/attack.png");
 
   if (playerCharacter.equippedShield) {
     const bashCooldown = getSpellCooldownRemaining(playerCharacter, SHIELD_BASH_ID);
@@ -3139,7 +3139,7 @@ const FETCH_ATTACK_LABELS = {
         performShieldBash();
         saveGameState();
         playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-      });
+      }, false, "assets/images/actions/bash.png");
     }
   }
 
@@ -3218,19 +3218,22 @@ const FETCH_ATTACK_LABELS = {
     performPlayerDefend();
     saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-  });
+  }, false, "assets/images/actions/defend.png");
 
   if (getActiveFollowers().some((f) => f.currentHP > 0)) {
     const tauntCooldown = currentCombat.activeEffects.find((e) => e.kind === "tauntCooldown");
+    const tauntActive = currentCombat.activeEffects.find((e) => e.kind === "taunt");
     if (tauntCooldown) {
-      addChoiceButton(choicesEl, `Taunt (recovering, ${tauntCooldown.roundsRemaining} ${tauntCooldown.roundsRemaining === 1 ? "round" : "rounds"} left)`, null, true);
+      addChoiceButton(choicesEl, `Taunt (recovering, ${tauntCooldown.roundsRemaining} ${tauntCooldown.roundsRemaining === 1 ? "round" : "rounds"} left)`, null, true, "assets/images/actions/taunt.png");
+    } else if (tauntActive) {
+      addChoiceButton(choicesEl, `Taunt (active, ${tauntActive.roundsRemaining} ${tauntActive.roundsRemaining === 1 ? "round" : "rounds"} left)`, null, true, "assets/images/actions/taunt.png");
     } else {
       addChoiceButton(choicesEl, "Taunt", () => {
         const startIndex = currentCombat.log.length;
         performPlayerTaunt();
         saveGameState();
         playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-      });
+      }, false, "assets/images/actions/taunt.png");
     }
   }
 
@@ -3239,7 +3242,7 @@ const FETCH_ATTACK_LABELS = {
     performPlayerFlee();
     saveGameState();
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-  });
+  }, false, "assets/images/actions/flee.png");
 
   addChoiceButton(choicesEl, "Retreat to Homebase", () => {
     const confirmStoryEl = document.getElementById("game-story-text");
@@ -3255,9 +3258,9 @@ const FETCH_ATTACK_LABELS = {
       } else {
         goToGrowthSummaryScreen();
       }
-    });
+    }, false, "assets/images/actions/return-homebase.png");
     addChoiceButton(confirmChoicesEl, "No, keep fighting", () => renderCombatScreen());
-  });
+  }, false, "assets/images/actions/return-homebase.png");
 }
 
 function renderCombatOutcome() {

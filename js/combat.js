@@ -886,8 +886,8 @@ function pickEnemyTarget() {
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
-const TAUNT_DURATION = 3;
-const TAUNT_COOLDOWN = 3;
+const TAUNT_DURATION = 5;
+const TAUNT_COOLDOWN = 5;
 
 function performPlayerTaunt() {
   currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "taunt");
