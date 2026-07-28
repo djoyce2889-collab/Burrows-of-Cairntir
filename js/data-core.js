@@ -377,7 +377,7 @@ const DIFFICULTY_SETTINGS = {
     description: "The road as it's always been walked.",
     enemyHpMultiplier: 8,
     enemyDamageMultiplier: 1.5,
-    enemyAccuracyAdjustment: -0.05
+    enemyAccuracyAdjustment: 0
   },
   hard: {
     id: "hard",
