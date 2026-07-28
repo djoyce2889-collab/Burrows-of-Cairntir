@@ -3220,6 +3220,20 @@ const FETCH_ATTACK_LABELS = {
     playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
   });
 
+  if (getActiveFollowers().some((f) => f.currentHP > 0)) {
+    const tauntCooldown = currentCombat.activeEffects.find((e) => e.kind === "tauntCooldown");
+    if (tauntCooldown) {
+      addChoiceButton(choicesEl, `Taunt (recovering, ${tauntCooldown.roundsRemaining} ${tauntCooldown.roundsRemaining === 1 ? "round" : "rounds"} left)`, null, true);
+    } else {
+      addChoiceButton(choicesEl, "Taunt", () => {
+        const startIndex = currentCombat.log.length;
+        performPlayerTaunt();
+        saveGameState();
+        playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
+      });
+    }
+  }
+
   addChoiceButton(choicesEl, "Flee", () => {
     const startIndex = currentCombat.log.length;
     performPlayerFlee();

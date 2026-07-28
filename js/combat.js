@@ -862,6 +862,9 @@ function tickCombatEffects() {
       if (effect.kind === "fortify" && effect.bonusHP) {
         fortifyTargets.forEach((t) => { t.currentHP = Math.max(0, t.currentHP - effect.bonusHP); });
       }
+      if (effect.kind === "taunt") {
+        currentCombat.activeEffects.push({ kind: "tauntCooldown", roundsRemaining: TAUNT_COOLDOWN });
+      }
       return false;
     }
     return true;
@@ -869,11 +872,35 @@ function tickCombatEffects() {
 }
 
 function pickEnemyTarget() {
+  const tauntEffect = currentCombat.activeEffects.find(
+    (e) => e.kind === "taunt" && e.roundsRemaining > 0
+  );
+  if (tauntEffect && tauntEffect.owner.currentHP > 0) {
+    return tauntEffect.owner;
+  }
+
   const candidates = [playerCharacter];
   getActiveFollowers().forEach((f) => {
     if (f.currentHP > 0) candidates.push(f);
   });
   return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+const TAUNT_DURATION = 3;
+const TAUNT_COOLDOWN = 3;
+
+function performPlayerTaunt() {
+  currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "taunt");
+  currentCombat.activeEffects.push({
+    kind: "taunt",
+    owner: playerCharacter,
+    roundsRemaining: TAUNT_DURATION
+  });
+  currentCombat.log.push({
+    actor: "player",
+    action: "taunt"
+  });
+  resolveEnemyAttack();
 }
 
 function getFollowerAttackPick(follower) {
@@ -2947,6 +2974,9 @@ function describeLogEntry(entry) {
     }
     if (entry.action === "defend") {
       return "You brace yourself, ready to turn aside the next blow.";
+    }
+    if (entry.action === "taunt") {
+      return "You draw yourself up, loud and unmistakable — every eye in the room is on you now.";
     }
     if (entry.action === "shieldBash") {
       if (!entry.hit) return "You slam your shield forward, but your foe twists away.";
