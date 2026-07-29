@@ -1636,12 +1636,14 @@ function renderGrowthSummaryScreen() {
 
       const grid = document.createElement("div");
       grid.className = "cc-grid";
+      const cultureForSkill = Object.values(CULTURES).find((c) => c.magicSkillIds && c.magicSkillIds.includes(skillId));
       unlearned.forEach((spell) => {
         const card = document.createElement("div");
         card.className = "cc-card";
         card.innerHTML = `
           <div class="cc-card-name">${spell.name}</div>
           <div class="cc-card-desc">${spell.description}</div>
+          ${cultureForSkill ? `<div class="cc-card-image" style="background-image: url('assets/images/spells/${cultureForSkill.id}/${spell.id}.png')"></div>` : ""}
         `;
         card.addEventListener("click", () => {
           discoverSpell(playerCharacter, skillId, spell.id);

@@ -1760,6 +1760,207 @@ theUnyieldingFlame: {
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Old Ore"]
   },
+  theFirecrackerKeeper: {
+    id: "theFirecrackerKeeper",
+    name: "The Firecracker Keeper",
+    description: "Guards the village's ritual explosives obsessively — the one thing standing between everyone here and the beast, and won't let anyone near it, friend or stranger. Each cycle the Nian returns, it takes a little more color from him than the last.",
+    image: "assets/images/enemies/the-firecracker-keeper.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theRedMarkedElder: {
+    id: "theRedMarkedElder",
+    name: "The Red-Marked Elder",
+    description: "Painted head to toe in protective red dye, driven half-mad by decades of dreading the same night every year. Her skin has gone grey beneath the paint — the beast doesn't have to eat you to take something from you.",
+    image: "assets/images/enemies/the-red-marked-elder.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theDevouredWatchman: {
+    id: "theDevouredWatchman",
+    name: "The Devoured Watchman",
+    description: "Has watched too many neighbors taken over the years. What's left of him now is more grief than fear — and less of him, physically, than there used to be.",
+    image: "assets/images/enemies/the-devoured-watchman.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theLostLanternBearer: {
+    id: "theLostLanternBearer",
+    name: "The Lost Lantern Bearer",
+    description: "Carries the ritual lantern meant to lead the beast away from the village, but has lost his own way somewhere in the dark. The light doesn't reach his own face anymore — it's gone too hollow to catch it.",
+    image: "assets/images/enemies/the-lost-lantern-bearer.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theScarredSurvivor: {
+    id: "theScarredSurvivor",
+    name: "The Scarred Survivor",
+    description: "Lived through a direct encounter with the beast once, years ago. Has never fully come back from it — not just in spirit. Something of him is still missing.",
+    image: "assets/images/enemies/the-scarred-survivor.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theNianBeast: {
+    id: "theNianBeast",
+    name: "The Nian Beast",
+    description: "The real terror the whole village has feared for generations, returning right on schedule — worse this cycle than anyone remembers.",
+    image: "assets/images/enemies/the-nian-beast.png",
+    deathImage: "assets/images/deaths/the-nian-beast-death.png",
+    hitPoints: 85,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Nian's Red Mane", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theLochDrawnFisherman: {
+    id: "theLochDrawnFisherman",
+    name: "The Loch-Drawn Fisherman",
+    description: "Lured to the water's edge by something beautiful years ago. Never left, and never quite noticed he never left.",
+    image: "assets/images/enemies/the-loch-drawn-fisherman.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theDrownedPiper: {
+    id: "theDrownedPiper",
+    name: "The Drowned Piper",
+    description: "Tried to warn the village with a warning tune. The loch silenced him before the song finished.",
+    image: "assets/images/enemies/the-drowned-piper.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theHorseShapedLure: {
+    id: "theHorseShapedLure",
+    name: "The Horse-Shaped Lure",
+    description: "A partial kelpie-spawn, not yet fully formed — beautiful enough to still work, even half-finished.",
+    image: "assets/images/enemies/the-horse-shaped-lure.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theWaterloggedShepherd: {
+    id: "theWaterloggedShepherd",
+    name: "The Waterlogged Shepherd",
+    description: "Lost his flock to the loch, years ago. Still searching the water's edge for them.",
+    image: "assets/images/enemies/the-waterlogged-shepherd.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Hide", "Grave Essence"]
+  },
+  theBoundBride: {
+    id: "theBoundBride",
+    name: "The Bound Bride",
+    description: "Promised, once, to be \"carried away\" by something beautiful. The loch took the promise entirely too literally.",
+    image: "assets/images/enemies/the-bound-bride.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theKelpie: {
+    id: "theKelpie",
+    name: "The Kelpie",
+    description: "A shapeshifting water-spirit, beautiful as a horse and merciless as the loch itself — it has never once let anyone it's lured go home again.",
+    image: "assets/images/enemies/the-kelpie.png",
+    deathImage: "assets/images/deaths/the-kelpie-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Kelpie's Bridle", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theCoilTouchedSailor: {
+    id: "theCoilTouchedSailor",
+    name: "The Coil-Touched Sailor",
+    description: "Saw the World Serpent's coils rise from the deep once, and was never quite the same sailor again.",
+    image: "assets/images/enemies/the-coil-touched-sailor.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theVenomKissedBerserker: {
+    id: "theVenomKissedBerserker",
+    name: "The Venom-Kissed Berserker",
+    description: "Poisoned by a single breath of the serpent's venom, and never fully stopped raging since.",
+    image: "assets/images/enemies/the-venom-kissed-berserker.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theTideBoundWatcher: {
+    id: "theTideBoundWatcher",
+    name: "The Tide-Bound Watcher",
+    description: "Bound to watch the serpent's coils for as long as the sea itself endures — a duty with no end in sight.",
+    image: "assets/images/enemies/the-tide-bound-watcher.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theStormWrackedSailor: {
+    id: "theStormWrackedSailor",
+    name: "The Storm-Wracked Sailor",
+    description: "Was aboard the last ship to sail too close to the coils. Nothing else of that crew ever made it home.",
+    image: "assets/images/enemies/the-storm-wracked-sailor.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theScaleMarkedPriest: {
+    id: "theScaleMarkedPriest",
+    name: "The Scale-Marked Priest",
+    description: "Worships the World Serpent as devoutly as any god, scale-patterns scarred permanently into his own skin.",
+    image: "assets/images/enemies/the-scale-marked-priest.png",
+    hitPoints: 44,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  jormungandr: {
+    id: "jormungandr",
+    name: "Jörmungandr",
+    description: "The World Serpent, coiled so vast its own length has become part of the sea itself. Thor's oldest enemy, and utterly without mercy for anyone smaller.",
+    image: "assets/images/enemies/jormungandr.png",
+    deathImage: "assets/images/deaths/jormungandr-death.png",
+    hitPoints: 85,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Scale of the World Serpent", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
 
   patientSteward: {
     id: "patientSteward",
@@ -1838,6 +2039,139 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "zombie",
     lootTable: ["Grave Essence", "Grave Essence"]
+  },
+  theRavenMarkedScout: {
+    id: "theRavenMarkedScout",
+    name: "The Raven-Marked Scout",
+    description: "Marked by a raven's cry before he ever saw his own death coming — some warnings you get, some you don't.",
+    image: "assets/images/enemies/the-raven-marked-scout.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theWasherAtTheFord: {
+    id: "theWasherAtTheFord",
+    name: "The Washer at the Ford",
+    description: "Kneels at the water's edge, washing blood from armor that hasn't been worn into battle yet. Nobody who sees her likes what it means.",
+    image: "assets/images/enemies/the-washer-at-the-ford.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theCrowCloakedSentinel: {
+    id: "theCrowCloakedSentinel",
+    name: "The Crow-Cloaked Sentinel",
+    description: "Wears a cloak of black feathers and says nothing, ever, only watches for the moment a battle turns.",
+    image: "assets/images/enemies/the-crow-cloaked-sentinel.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  theOathBrokenChampion: {
+    id: "theOathBrokenChampion",
+    name: "The Oath-Broken Champion",
+    description: "Swore himself to the Morrígan and broke it the moment the battle turned hard. He's been paying for it every day since.",
+    image: "assets/images/enemies/the-oath-broken-champion.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theBattleBoundWraith: {
+    id: "theBattleBoundWraith",
+    name: "The Battle-Bound Wraith",
+    description: "Died mid battle-cry, and the cry never actually finished.",
+    image: "assets/images/enemies/the-battle-bound-wraith.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theMorrigan: {
+    id: "theMorrigan",
+    name: "The Morrígan",
+    description: "The Phantom Queen herself, shifting from crow to woman to something with no name at all. She only ever arrives when a battle is about to be lost. That's always been the point.",
+    image: "assets/images/enemies/the-morrigan.png",
+    deathImage: "assets/images/deaths/the-morrigan-death.png",
+    hitPoints: 88,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Feather of the Morrígan", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theThreadBoundDebtor: {
+    id: "theThreadBoundDebtor",
+    name: "The Thread-Bound Debtor",
+    description: "Agreed to a bargain without reading the terms, and has been paying interest on it that was never once explained to him.",
+    image: "assets/images/enemies/the-thread-bound-debtor.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theSnaredMerchant: {
+    id: "theSnaredMerchant",
+    name: "The Snared Merchant",
+    description: "Traded away his own name for a bargain that sounded far better than it turned out to be.",
+    image: "assets/images/enemies/the-snared-merchant.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theWebCaughtWanderer: {
+    id: "theWebCaughtWanderer",
+    name: "The Web-Caught Wanderer",
+    description: "Wandered in following a story that was never actually finished being told.",
+    image: "assets/images/enemies/the-web-caught-wanderer.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theLoadedDiceGambler: {
+    id: "theLoadedDiceGambler",
+    name: "The Loaded-Dice Gambler",
+    description: "Always wins. Never once by luck.",
+    image: "assets/images/enemies/the-loaded-dice-gambler.png",
+    hitPoints: 44,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theSilkThreadedWatcher: {
+    id: "theSilkThreadedWatcher",
+    name: "The Silk-Threaded Watcher",
+    description: "Watches every path in and out, thread in hand, always aware of exactly who's moved and who hasn't.",
+    image: "assets/images/enemies/the-silk-threaded-watcher.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  anansi: {
+    id: "anansi",
+    name: "Anansi",
+    description: "The trickster himself, more amused than threatened by anyone who's made it this far. He's beaten better than you with worse odds, and never once by force.",
+    image: "assets/images/enemies/anansi.png",
+    deathImage: "assets/images/deaths/anansi-death.png",
+    hitPoints: 85,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Anansi's Silk Thread", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
-
 };

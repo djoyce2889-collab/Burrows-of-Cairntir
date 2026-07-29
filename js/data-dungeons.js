@@ -364,6 +364,71 @@ const DUNGEONS = {
     description:
       "Somewhere the ground gives way entirely, and the path down leads somewhere no living soul is meant to " +
       "walk. Diyu keeps its own ledger, and Yanluo Wang has never once made an exception for the living."
+  },
+  niansVillage: {
+    id: "niansVillage",
+    name: "The Nian Beast's Village",
+    difficulty: "Master",
+    musicSrc: "assets/audio/nians-village-theme.mp3",
+    hotspotColor: "#b8342a",
+    mapHotspot: { top: "45%", left: "78%" },
+    culture: "yorenshi",
+    image: "assets/images/nians-village.png",
+    description:
+      "Every year, the village survives the same night through ritual, red dye, and firecrackers older than " +
+      "anyone can remember making. This year, the beast has come early — and the old defenses aren't holding."
+  },
+  kelpiesLoch: {
+    id: "kelpiesLoch",
+    name: "Kelpie's Loch",
+    difficulty: "Master",
+    musicSrc: "assets/audio/kelpies-loch-theme.mp3",
+    hotspotColor: "#2874a6",
+    mapHotspot: { top: "20%", left: "15%" },
+    culture: "deveran",
+    image: "assets/images/kelpies-loch.png",
+    description:
+      "The loch has always been beautiful, and beautiful things have always drawn travelers to its edge. " +
+      "Not all of them have ever been seen to leave."
+  },
+  jormungandrsCoil: {
+    id: "jormungandrsCoil",
+    name: "Jörmungandr's Coil",
+    difficulty: "Master",
+    musicSrc: "assets/audio/jormungandrs-coil-theme.mp3",
+    hotspotColor: "#0e6655",
+    mapHotspot: { top: "70%", left: "35%" },
+    culture: "drakvarr",
+    image: "assets/images/jormungandrs-coil.png",
+    description:
+      "The World Serpent's coils have wrapped this stretch of coastline since before anyone living can remember, " +
+      "patient enough to wait out empires. Thor never finished the fight. Someone else will have to."
+  },
+  morrigansReckoning: {
+    id: "morrigansReckoning",
+    name: "The Morrígan's Reckoning",
+    difficulty: "Master",
+    musicSrc: "assets/audio/morrigans-reckoning-theme.mp3",
+    hotspotColor: "#5b2c6f",
+    mapHotspot: { top: "40%", left: "45%" },
+    culture: "gaeldrim",
+    image: "assets/images/morrigans-reckoning.png",
+    description:
+      "The battle here ended centuries ago, but the crows never left, and neither did she. " +
+      "She doesn't cause the losing. She just never misses a chance to watch one happen."
+  },
+  anansisGambit: {
+    id: "anansisGambit",
+    name: "Anansi's Gambit",
+    difficulty: "Master",
+    musicSrc: "assets/audio/anansis-gambit-theme.mp3",
+    hotspotColor: "#b7950b",
+    mapHotspot: { top: "65%", left: "55%" },
+    culture: "vandiri",
+    image: "assets/images/anansis-gambit.png",
+    description:
+      "Everyone who enters believes they're the one clever enough to outwit him. " +
+      "Anansi has never once minded being underestimated. It's usually the whole game."
   }
 };
 
@@ -3092,6 +3157,401 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  niansVillage: {
+    startRoomId: "villageOutskirts",
+    rooms: {
+      villageOutskirts: {
+        text: "Red paper lanterns hang dark and unlit along the village road, doors barred, the air thick with a dread that's clearly older than tonight.",
+        choices: [{ type: "goto", label: "Enter the village", target: "mainRoad" }]
+      },
+      mainRoad: {
+        text: "Someone stands guard over a locked storehouse, eyes wild with a paranoia that's clearly been building for years.",
+        choices: [{ type: "goto", label: "Continue", target: "keeperFight" }]
+      },
+      keeperFight: {
+        text: "\"Stay back from the firecrackers,\" the Keeper snaps, blocking the storehouse door with his whole body. \"They're the only thing that's ever worked. I won't let you ruin it.\"",
+        choices: [{ type: "combat", label: "Fight the Firecracker Keeper", enemyId: "theFirecrackerKeeper", target: "roadLoot" }]
+      },
+      roadLoot: {
+        text: "A small shrine along the road holds old, half-burned offerings — something worth taking, if the village won't miss it tonight.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The road splits ahead — one way toward the village square, painted red top to bottom, the other toward a row of shuttered homes.",
+        choices: [
+          { type: "goto", label: "Toward the village square", target: "villageSquare" },
+          { type: "goto", label: "Toward the shuttered homes", target: "shutteredHomes" }
+        ]
+      },
+      villageSquare: {
+        text: "An elder stands in the square, painted red from head to foot, muttering the same protective words over and over, decades of dread behind her eyes.",
+        choices: [{ type: "combat", label: "Fight the Red-Marked Elder", enemyId: "theRedMarkedElder", target: "convergeVillage" }]
+      },
+      shutteredHomes: {
+        text: "Someone paces before a row of barred doors, feral with a grief that's clearly outlasted whatever fear came before it.",
+        choices: [{ type: "combat", label: "Fight the Devoured Watchman", enemyId: "theDevouredWatchman", target: "convergeVillage" }]
+      },
+      convergeVillage: {
+        text: "Both paths lead to the village well, red string and old talismans tied around its rim, everything here built to keep one specific thing away.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A faded scroll is tucked into the well's stonework, an old technique recorded by someone who once tried something other than fire and red dye.",
+        choices: [
+          { type: "discover", label: "Study the scroll (Way of Tengu)", skillId: "wayTengu", spellId: "windingGale", target: "deeperVillage" },
+          { type: "goto", label: "Move on", target: "deeperVillage" }
+        ]
+      },
+      deeperVillage: {
+        text: "The village narrows toward its edge, the lanterns here darker still, the ritual's usual order clearly broken this year.",
+        choices: [{ type: "goto", label: "Press onward", target: "lanternFight" }]
+      },
+      lanternFight: {
+        text: "A lone figure wanders in circles, ritual lantern still lit but leading nowhere at all — lost somewhere between duty and the dark.",
+        choices: [{ type: "combat", label: "Fight the Lost Lantern Bearer", enemyId: "theLostLanternBearer", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow path skirts someone standing frozen at the village's very edge — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A figure turns, scarred and haunted, having faced this exact terror once before and never truly recovered. \"You don't know what's coming,\" they say. \"I do.\"",
+        choices: [{ type: "combat", label: "Fight the Scarred Survivor", enemyId: "theScarredSurvivor", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The village ends at a wide clearing, every lantern here dark, every red talisman torn down — whatever's coming tonight, the old defenses already failed to stop it from getting this close.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Nian Beast emerges fully into the clearing, lion-maned and monstrous, right on schedule — and worse this cycle than anyone still living has ever seen it.",
+        choices: [{ type: "combat", label: "Face the Nian Beast", enemyId: "theNianBeast", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The beast falls still at last. Somewhere behind you, a single lantern flickers back to life on its own — the village's oldest ritual, finally answered honestly, for the first time in longer than anyone can say.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  kelpiesLoch: {
+    startRoomId: "lochShore",
+    rooms: {
+      lochShore: {
+        text: "The loch's water is unnaturally still, beautiful in a way that feels deliberate rather than accidental. Something out here has clearly never needed to try very hard.",
+        choices: [{ type: "goto", label: "Follow the shore", target: "shorePath" }]
+      },
+      shorePath: {
+        text: "A fisherman stands at the water's edge, utterly still, gaze fixed on the loch as though he's forgotten there's anywhere else to look.",
+        choices: [{ type: "goto", label: "Continue", target: "fishermanFight" }]
+      },
+      fishermanFight: {
+        text: "He turns only when you're close, eyes glassy and distant. \"Beautiful, isn't it,\" he says, and it isn't really a question.",
+        choices: [{ type: "combat", label: "Fight the Loch-Drawn Fisherman", enemyId: "theLochDrawnFisherman", target: "shoreLoot" }]
+      },
+      shoreLoot: {
+        text: "An old set of pipes lies abandoned in the reeds, mid-tune, as though set down mid-note and never picked back up.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The shore splits ahead — one way toward a rocky outcrop, the other along a stretch of waterlogged grazing fields.",
+        choices: [
+          { type: "goto", label: "Toward the rocky outcrop", target: "rockyOutcrop" },
+          { type: "goto", label: "Along the grazing fields", target: "grazingFields" }
+        ]
+      },
+      rockyOutcrop: {
+        text: "Something horse-shaped watches from the rocks, beautiful and not quite finished, as though the loch ran out of patience partway through making it.",
+        choices: [{ type: "combat", label: "Fight the Horse-Shaped Lure", enemyId: "theHorseShapedLure", target: "convergeLoch" }]
+      },
+      grazingFields: {
+        text: "A shepherd wanders the empty fields, calling names that clearly haven't answered in a very long time.",
+        choices: [{ type: "combat", label: "Fight the Waterlogged Shepherd", enemyId: "theWaterloggedShepherd", target: "convergeLoch" }]
+      },
+      convergeLoch: {
+        text: "Both paths lead to a quiet inlet, old wedding flowers scattered along the waterline, long since gone to rot.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered stone marker stands half-submerged, an old technique carved into its face, still legible after all this time.",
+        choices: [
+          { type: "discover", label: "Study the marker (Line of Emyrs)", skillId: "ancestralEmyrs", spellId: "elementalSurge", target: "deeperLoch" },
+          { type: "goto", label: "Move on", target: "deeperLoch" }
+        ]
+      },
+      deeperLoch: {
+        text: "The shore narrows toward a hidden cove, the water here darker, colder, and far too still.",
+        choices: [{ type: "goto", label: "Press onward", target: "brideFight" }]
+      },
+      brideFight: {
+        text: "A figure in a faded wedding gown stands at the water's edge, waiting the way she's clearly been waiting for longer than anyone should have to.",
+        choices: [{ type: "combat", label: "Fight the Bound Bride", enemyId: "theBoundBride", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow path skirts the cove's edge, something pale and still watching from just beneath the surface — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A gaunt figure rises from the shallows, still holding a pipe he never got to finish playing.",
+        choices: [{ type: "combat", label: "Fight the Drowned Piper", enemyId: "theDrownedPiper", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The cove opens onto a hidden pool, unnaturally clear, unnaturally calm — and something beautiful stands at its center, watching you approach.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Kelpie turns fully toward you, shifting from horse to something far less easily named, utterly unhurried. It has never once needed to be.",
+        choices: [{ type: "combat", label: "Face the Kelpie", enemyId: "theKelpie", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The Kelpie falls still at last, the loch's water finally settling into something ordinary. For the first time in longer than anyone can say, it just looks like water.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  jormungandrsCoil: {
+    startRoomId: "coilTideline",
+    rooms: {
+      coilTideline: {
+        text: "The tideline here never fully recedes, the sand dark and waterlogged no matter how far the sea pulls back. Something enormous moved through this stretch of coast once, and never quite finished leaving.",
+        choices: [{ type: "goto", label: "Follow the coast", target: "driftwoodPath" }]
+      },
+      driftwoodPath: {
+        text: "Driftwood lies stacked in strange, deliberate patterns along the sand, as though something out here has been keeping count of the ships it's taken.",
+        choices: [{ type: "goto", label: "Continue", target: "sailorFight" }]
+      },
+      sailorFight: {
+        text: "A sailor stands ankle-deep in the surf, salt-crusted and unmoving, muttering the same warning over and over to a ship that already sank.",
+        choices: [{ type: "combat", label: "Fight the Coil-Touched Sailor", enemyId: "theCoilTouchedSailor", target: "tidewrackLoot" }]
+      },
+      tidewrackLoot: {
+        text: "Tangled in a mat of kelp and rope, a scrap of old ore glints where the tide left it behind.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The coastline splits ahead — a half-collapsed pier stretching out over dark water, or a scatter of rocks half-swallowed by the tide.",
+        choices: [
+          { type: "goto", label: "Toward the broken pier", target: "brokenPier" },
+          { type: "goto", label: "Toward the sunken rocks", target: "sunkenRocks" }
+        ]
+      },
+      brokenPier: {
+        text: "A berserker paces the length of the pier, raging at something only he can still see, foam-flecked and unwilling to stop.",
+        choices: [{ type: "combat", label: "Fight the Venom-Kissed Berserker", enemyId: "theVenomKissedBerserker", target: "coilConverge" }]
+      },
+      sunkenRocks: {
+        text: "A sailor clings to the rocks, storm-battered and long past caring whether the tide ever lets him go.",
+        choices: [{ type: "combat", label: "Fight the Storm-Wracked Sailor", enemyId: "theStormWrackedSailor", target: "coilConverge" }]
+      },
+      coilConverge: {
+        text: "Both paths end at a wide tidal flat, the sand here scored with a groove far too large and far too deliberate to be natural.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered rune-stone stands half-buried at the flat's edge, its carving still sharp despite the salt and years.",
+        choices: [
+          { type: "discover", label: "Study the rune-stone (Rune Vision)", skillId: "runeVision", spellId: "serpentsSightRune", target: "deeperCoil" },
+          { type: "goto", label: "Move on", target: "deeperCoil" }
+        ]
+      },
+      deeperCoil: {
+        text: "The flat narrows toward a cliffside shrine, the air here thick with salt and something colder underneath it.",
+        choices: [{ type: "goto", label: "Press onward", target: "priestFight" }]
+      },
+      priestFight: {
+        text: "A priest kneels before the shrine, scale-patterns scarred into his own skin, chanting to something that's clearly still listening.",
+        choices: [{ type: "combat", label: "Fight the Scale-Marked Priest", enemyId: "theScaleMarkedPriest", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow ledge skirts the cliff's edge, something vast and watchful stirring in the water just below — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A figure rises from the shallows, bound to its post since long before you arrived, eyes fixed on the coils below and nothing else.",
+        choices: [{ type: "combat", label: "Fight the Tide-Bound Watcher", enemyId: "theTideBoundWatcher", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The ledge opens onto a wide sea-cave, the water inside far too still for how close it sits to open ocean. Something vast is coiled beneath the surface, waiting.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The water breaks as Jörmungandr rises, coil after coil after coil, patient in the way only something that has outlasted gods can be.",
+        choices: [{ type: "combat", label: "Face Jörmungandr", enemyId: "jormungandr", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The coils sink back beneath the waves at last, the water going still. It hasn't been beaten — only postponed. Some things simply don't finish.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  morrigansReckoning: {
+    startRoomId: "battleMoor",
+    rooms: {
+      battleMoor: {
+        text: "The moor is quiet in the wrong way, grass grown up through old, faintly stained ground. Crows circle overhead, unhurried, like they already know how this ends.",
+        choices: [{ type: "goto", label: "Cross the moor", target: "moorPath" }]
+      },
+      moorPath: {
+        text: "The path is lined with old spear-shafts, rotted to nothing but their iron heads, planted upright like grave markers nobody bothered to carve.",
+        choices: [{ type: "goto", label: "Continue", target: "scoutFight" }]
+      },
+      scoutFight: {
+        text: "A scout kneels at the treeline, utterly still, a raven perched on his shoulder that hasn't blinked once since you arrived.",
+        choices: [{ type: "combat", label: "Fight the Raven-Marked Scout", enemyId: "theRavenMarkedScout", target: "moorLoot" }]
+      },
+      moorLoot: {
+        text: "Half-buried beneath a fallen banner, a scrap of old ore catches what little light makes it through the crow-thick sky.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The moor splits ahead — a shallow ford crossing a slow, dark stream, or a low cairn rising out of the grass.",
+        choices: [
+          { type: "goto", label: "Toward the ford", target: "theFord" },
+          { type: "goto", label: "Toward the cairn", target: "cairnRise" }
+        ]
+      },
+      theFord: {
+        text: "A woman kneels at the water's edge, washing something dark from a set of armor that fits no one you can see.",
+        choices: [{ type: "combat", label: "Fight the Washer at the Ford", enemyId: "theWasherAtTheFord", target: "reckoningConverge" }]
+      },
+      cairnRise: {
+        text: "A cloaked figure stands atop the cairn, feathers instead of cloth, watching your approach without ever quite turning to face it.",
+        choices: [{ type: "combat", label: "Fight the Crow-Cloaked Sentinel", enemyId: "theCrowCloakedSentinel", target: "reckoningConverge" }]
+      },
+      reckoningConverge: {
+        text: "Both paths lead to a wide hollow in the moor, the grass here flattened in a rough circle, as if something enormous once stood exactly here and waited.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered standing stone rises from the hollow, old storm-and-battle wardings carved deep into its face.",
+        choices: [
+          { type: "discover", label: "Study the stone (Path of Storm)", skillId: "pathStorm", spellId: "ravensWarningPath", target: "deeperMoor" },
+          { type: "goto", label: "Move on", target: "deeperMoor" }
+        ]
+      },
+      deeperMoor: {
+        text: "The moor narrows toward a ring of blackened trees, the air here colder than it has any right to be.",
+        choices: [{ type: "goto", label: "Press onward", target: "championFight" }]
+      },
+      championFight: {
+        text: "A champion stands among the trees, oath-marks scarred down both arms, waiting for a fight he already knows he's going to lose again.",
+        choices: [{ type: "combat", label: "Fight the Oath-Broken Champion", enemyId: "theOathBrokenChampion", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow path skirts the tree-ring's edge, something pale moving between the trunks — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A wraith rises between the trees, mouth open on a battle-cry that never finished and never will.",
+        choices: [{ type: "combat", label: "Fight the Battle-Bound Wraith", enemyId: "theBattleBoundWraith", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The tree-ring opens onto a final clearing, crows filling every branch, utterly silent, utterly watching.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The crows scatter as one, and the Morrígan stands where they were, already smiling, like she's known you'd get this far since before you started.",
+        choices: [{ type: "combat", label: "Face the Morrígan", enemyId: "theMorrigan", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The moor goes still. The crows don't come back — not yet. She'll be back for the next battle. She always is.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  anansisGambit: {
+    startRoomId: "webboundClearing",
+    rooms: {
+      webboundClearing: {
+        text: "Silk threads hang between every tree in the clearing, thick enough to catch the light, too deliberate to be a spider's ordinary work.",
+        choices: [{ type: "goto", label: "Follow the threads", target: "threadPath" }]
+      },
+      threadPath: {
+        text: "The threads lead deeper into the grove, humming faintly whenever the wind shifts, like something is listening through them.",
+        choices: [{ type: "goto", label: "Continue", target: "servantFight" }]
+      },
+      servantFight: {
+        text: "A debtor blocks the path, bound in thread from wrist to shoulder, still arguing terms with a bargain that was never going to be fair.",
+        choices: [{ type: "combat", label: "Fight the Thread-Bound Debtor", enemyId: "theThreadBoundDebtor", target: "clearingLoot" }]
+      },
+      clearingLoot: {
+        text: "Wrapped neatly in silk and left in plain sight, as if placed there on purpose, a bundle of hide waits to be found.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The threads split ahead — one line leading to an abandoned trader's stall, the other into a hollow tree strung thick with web.",
+        choices: [
+          { type: "goto", label: "Toward the trader's stall", target: "traderStall" },
+          { type: "goto", label: "Toward the hollow tree", target: "hollowTree" }
+        ]
+      },
+      traderStall: {
+        text: "A merchant sits behind his stall, still smiling, still waiting on a bargain he agreed to long after he should have walked away.",
+        choices: [{ type: "combat", label: "Fight the Snared Merchant", enemyId: "theSnaredMerchant", target: "gambitConverge" }]
+      },
+      hollowTree: {
+        text: "A wanderer is curled inside the hollow trunk, mid-sentence, as though the story he was following simply stopped without warning.",
+        choices: [{ type: "combat", label: "Fight the Web-Caught Wanderer", enemyId: "theWebCaughtWanderer", target: "gambitConverge" }]
+      },
+      gambitConverge: {
+        text: "Both paths open onto a wide web-strung glade, threads crossing overhead in a pattern too deliberate to be accidental.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A carved wooden totem stands at the glade's center, old unmaking-rites etched along its length.",
+        choices: [
+          { type: "discover", label: "Study the totem (Rite of Unmaking)", skillId: "riteUnmaking", spellId: "unravelingRite", target: "deeperWeb" },
+          { type: "goto", label: "Move on", target: "deeperWeb" }
+        ]
+      },
+      deeperWeb: {
+        text: "The threads thicken into a near-solid canopy overhead, the light below dimming to a dull amber gold.",
+        choices: [{ type: "goto", label: "Press onward", target: "judgeFight" }]
+      },
+      judgeFight: {
+        text: "A gambler sits cross-legged on a knotted-root throne, rolling dice that never once land against him.",
+        choices: [{ type: "combat", label: "Fight the Loaded-Dice Gambler", enemyId: "theLoadedDiceGambler", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "A narrow gap threads between two walls of web, something moving just behind the silk — a chance to slip through, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A watcher drops from the canopy without a sound, thread already looping loose around one hand.",
+        choices: [{ type: "combat", label: "Fight the Silk-Threaded Watcher", enemyId: "theSilkThreadedWatcher", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The web parts onto a final chamber, threads spiraling upward into darkness, every one of them perfectly, patiently still.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Anansi drops from the canopy, unhurried, already grinning, like the fight was decided the moment you walked into the grove.",
+        choices: [{ type: "combat", label: "Face Anansi", enemyId: "anansi", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The threads go slack and drift to the ground. Somewhere, faintly, you could swear you still hear him laughing.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -3617,6 +4077,96 @@ const ROOM_IMAGES = {
     scribeFight: "assets/images/diyus-judgment/scribe-fight.png",
     bossRoom: "assets/images/diyus-judgment/boss-room.png",
     epilogue: "assets/images/diyus-judgment/epilogue.png"
+  },
+  niansVillage: {
+    villageOutskirts: "assets/images/nians-village/village-outskirts.png",
+    mainRoad: "assets/images/nians-village/main-road.png",
+    keeperFight: "assets/images/nians-village/main-road.png",
+    roadLoot: "assets/images/nians-village/road-loot.png",
+    fork: "assets/images/nians-village/fork.png",
+    villageSquare: "assets/images/nians-village/village-square.png",
+    shutteredHomes: "assets/images/nians-village/shuttered-homes.png",
+    convergeVillage: "assets/images/nians-village/converge-village.png",
+    discoverRoom: "assets/images/nians-village/discover-room.png",
+    deeperVillage: "assets/images/nians-village/deeper-village.png",
+    lanternFight: "assets/images/nians-village/deeper-village.png",
+    vigilCheck: "assets/images/nians-village/vigil-check.png",
+    extraFight: "assets/images/nians-village/vigil-check.png",
+    preBoss: "assets/images/nians-village/pre-boss.png",
+    bossRoom: "assets/images/nians-village/boss-room.png",
+    epilogue: "assets/images/nians-village/epilogue.png"
+  },
+  kelpiesLoch: {
+    lochShore: "assets/images/kelpies-loch/loch-shore.png",
+    shorePath: "assets/images/kelpies-loch/shore-path.png",
+    fishermanFight: "assets/images/kelpies-loch/shore-path.png",
+    shoreLoot: "assets/images/kelpies-loch/shore-loot.png",
+    fork: "assets/images/kelpies-loch/fork.png",
+    rockyOutcrop: "assets/images/kelpies-loch/rocky-outcrop.png",
+    grazingFields: "assets/images/kelpies-loch/grazing-fields.png",
+    convergeLoch: "assets/images/kelpies-loch/converge-loch.png",
+    discoverRoom: "assets/images/kelpies-loch/discover-room.png",
+    deeperLoch: "assets/images/kelpies-loch/deeper-loch.png",
+    brideFight: "assets/images/kelpies-loch/deeper-loch.png",
+    vigilCheck: "assets/images/kelpies-loch/vigil-check.png",
+    extraFight: "assets/images/kelpies-loch/vigil-check.png",
+    preBoss: "assets/images/kelpies-loch/pre-boss.png",
+    bossRoom: "assets/images/kelpies-loch/boss-room.png",
+    epilogue: "assets/images/kelpies-loch/epilogue.png"
+  },
+  jormungandrsCoil: {
+    coilTideline: "assets/images/jormungandrs-coil/coil-tideline.png",
+    driftwoodPath: "assets/images/jormungandrs-coil/driftwood-path.png",
+    sailorFight: "assets/images/jormungandrs-coil/driftwood-path.png",
+    tidewrackLoot: "assets/images/jormungandrs-coil/tidewrack-loot.png",
+    fork: "assets/images/jormungandrs-coil/fork.png",
+    brokenPier: "assets/images/jormungandrs-coil/broken-pier.png",
+    sunkenRocks: "assets/images/jormungandrs-coil/sunken-rocks.png",
+    coilConverge: "assets/images/jormungandrs-coil/coil-converge.png",
+    discoverRoom: "assets/images/jormungandrs-coil/discover-room.png",
+    deeperCoil: "assets/images/jormungandrs-coil/deeper-coil.png",
+    priestFight: "assets/images/jormungandrs-coil/deeper-coil.png",
+    vigilCheck: "assets/images/jormungandrs-coil/vigil-check.png",
+    extraFight: "assets/images/jormungandrs-coil/vigil-check.png",
+    preBoss: "assets/images/jormungandrs-coil/pre-boss.png",
+    bossRoom: "assets/images/jormungandrs-coil/boss-room.png",
+    epilogue: "assets/images/jormungandrs-coil/epilogue.png"
+  },
+  morrigansReckoning: {
+    battleMoor: "assets/images/morrigans-reckoning/battle-moor.png",
+    moorPath: "assets/images/morrigans-reckoning/moor-path.png",
+    scoutFight: "assets/images/morrigans-reckoning/moor-path.png",
+    moorLoot: "assets/images/morrigans-reckoning/moor-loot.png",
+    fork: "assets/images/morrigans-reckoning/fork.png",
+    theFord: "assets/images/morrigans-reckoning/the-ford.png",
+    cairnRise: "assets/images/morrigans-reckoning/cairn-rise.png",
+    reckoningConverge: "assets/images/morrigans-reckoning/reckoning-converge.png",
+    discoverRoom: "assets/images/morrigans-reckoning/discover-room.png",
+    deeperMoor: "assets/images/morrigans-reckoning/deeper-moor.png",
+    championFight: "assets/images/morrigans-reckoning/deeper-moor.png",
+    vigilCheck: "assets/images/morrigans-reckoning/vigil-check.png",
+    extraFight: "assets/images/morrigans-reckoning/vigil-check.png",
+    preBoss: "assets/images/morrigans-reckoning/pre-boss.png",
+    bossRoom: "assets/images/morrigans-reckoning/boss-room.png",
+    epilogue: "assets/images/morrigans-reckoning/epilogue.png"
+  },
+  anansisGambit: {
+    webboundClearing: "assets/images/anansis-gambit/webbound-clearing.png",
+    threadPath: "assets/images/anansis-gambit/thread-path.png",
+    servantFight: "assets/images/anansis-gambit/thread-path.png",
+    clearingLoot: "assets/images/anansis-gambit/clearing-loot.png",
+    fork: "assets/images/anansis-gambit/fork.png",
+    traderStall: "assets/images/anansis-gambit/trader-stall.png",
+    hollowTree: "assets/images/anansis-gambit/hollow-tree.png",
+    gambitConverge: "assets/images/anansis-gambit/gambit-converge.png",
+    discoverRoom: "assets/images/anansis-gambit/discover-room.png",
+    deeperWeb: "assets/images/anansis-gambit/deeper-web.png",
+    judgeFight: "assets/images/anansis-gambit/deeper-web.png",
+    vigilCheck: "assets/images/anansis-gambit/vigil-check.png",
+    extraFight: "assets/images/anansis-gambit/vigil-check.png",
+    preBoss: "assets/images/anansis-gambit/pre-boss.png",
+    bossRoom: "assets/images/anansis-gambit/boss-room.png",
+    epilogue: "assets/images/anansis-gambit/epilogue.png"
   }
 };
 
