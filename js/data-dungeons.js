@@ -4081,7 +4081,7 @@ const ROOM_IMAGES = {
   niansVillage: {
     villageOutskirts: "assets/images/nians-village/village-outskirts.png",
     mainRoad: "assets/images/nians-village/main-road.png",
-    keeperFight: "assets/images/nians-village/main-road.png",
+    keeperFight: "assets/images/nians-village/keeper-fight.png",
     roadLoot: "assets/images/nians-village/road-loot.png",
     fork: "assets/images/nians-village/fork.png",
     villageSquare: "assets/images/nians-village/village-square.png",
@@ -4099,7 +4099,7 @@ const ROOM_IMAGES = {
   kelpiesLoch: {
     lochShore: "assets/images/kelpies-loch/loch-shore.png",
     shorePath: "assets/images/kelpies-loch/shore-path.png",
-    fishermanFight: "assets/images/kelpies-loch/shore-path.png",
+    fishermanFight: "assets/images/kelpies-loch/fisherman-fight.png",
     shoreLoot: "assets/images/kelpies-loch/shore-loot.png",
     fork: "assets/images/kelpies-loch/fork.png",
     rockyOutcrop: "assets/images/kelpies-loch/rocky-outcrop.png",
@@ -4117,7 +4117,7 @@ const ROOM_IMAGES = {
   jormungandrsCoil: {
     coilTideline: "assets/images/jormungandrs-coil/coil-tideline.png",
     driftwoodPath: "assets/images/jormungandrs-coil/driftwood-path.png",
-    sailorFight: "assets/images/jormungandrs-coil/driftwood-path.png",
+    sailorFight: "assets/images/jormungandrs-coil/sailor-fight.png",
     tidewrackLoot: "assets/images/jormungandrs-coil/tidewrack-loot.png",
     fork: "assets/images/jormungandrs-coil/fork.png",
     brokenPier: "assets/images/jormungandrs-coil/broken-pier.png",
@@ -4135,7 +4135,7 @@ const ROOM_IMAGES = {
   morrigansReckoning: {
     battleMoor: "assets/images/morrigans-reckoning/battle-moor.png",
     moorPath: "assets/images/morrigans-reckoning/moor-path.png",
-    scoutFight: "assets/images/morrigans-reckoning/moor-path.png",
+    scoutFight: "assets/images/morrigans-reckoning/scout-fight.png",
     moorLoot: "assets/images/morrigans-reckoning/moor-loot.png",
     fork: "assets/images/morrigans-reckoning/fork.png",
     theFord: "assets/images/morrigans-reckoning/the-ford.png",
@@ -4153,7 +4153,7 @@ const ROOM_IMAGES = {
   anansisGambit: {
     webboundClearing: "assets/images/anansis-gambit/webbound-clearing.png",
     threadPath: "assets/images/anansis-gambit/thread-path.png",
-    servantFight: "assets/images/anansis-gambit/thread-path.png",
+    servantFight: "assets/images/anansis-gambit/servant-fight.png",
     clearingLoot: "assets/images/anansis-gambit/clearing-loot.png",
     fork: "assets/images/anansis-gambit/fork.png",
     traderStall: "assets/images/anansis-gambit/trader-stall.png",
