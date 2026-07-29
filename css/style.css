@@ -139,6 +139,12 @@ body {
   }
 }
 
+@media (max-width: 480px) {
+  #game-viewport {
+    margin-top: -12px;
+  }
+}
+
 .voice-toggle {
   position: absolute;
   top: 8px;
