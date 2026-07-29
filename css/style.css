@@ -167,7 +167,7 @@ body {
 #viewport, #game-viewport {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   background: var(--ink) center / cover no-repeat;
   border-bottom: 3px solid var(--wood-dark);
   display: flex;
