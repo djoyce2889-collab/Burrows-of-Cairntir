@@ -386,6 +386,14 @@ const DIFFICULTY_SETTINGS = {
     enemyHpMultiplier: 12,
     enemyDamageMultiplier: 2,
     enemyAccuracyAdjustment: 0.15
+  },
+  master: {
+    id: "master",
+    name: "Master",
+    description: "The road as the old stories tell it — unforgiving, and not meant to be walked twice.",
+    enemyHpMultiplier: 16,
+    enemyDamageMultiplier: 2.5,
+    enemyAccuracyAdjustment: 0.20
   }
 };
 

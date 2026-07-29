@@ -3183,6 +3183,13 @@ const FETCH_ATTACK_LABELS = {
           return;
         }
       }
+      if (spell.type === "fortify" && skillId !== "ancestralSiuloir") {
+        const fortifyCooldownLeft = getSpellCooldownRemaining(playerCharacter, spell.id);
+        if (fortifyCooldownLeft > 0) {
+          addChoiceButton(choicesEl, `Cast - ${spell.name} (recovering, ${fortifyCooldownLeft} ${fortifyCooldownLeft === 1 ? "round" : "rounds"} left)`, null, true);
+          return;
+        }
+      }
       const isSong = skillId === "ancestralSiuloir";
       const songCapped = isSong && getActiveSongCount() >= 2;
       const verb = isSong ? "Sing" : "Cast";
@@ -3499,10 +3506,58 @@ function renderCraftCategoryScreen(category, listId, resultId) {
       <div class="cc-card-image" style="background-image: url('assets/images/items/${getRecipeImageSlug(recipe.id)}.png')"></div>
     `;
     card.addEventListener("click", () => {
-      attemptCraft(recipe.id, resultId, () => renderCraftCategoryScreen(category, listId, resultId));
+      goToCraftDetailScreen(category, recipe.id);
     });
     list.appendChild(card);
   });
+}
+
+let craftingSelectedRecipeId = null;
+
+const CRAFT_DETAIL_CONFIG = {
+  weapon: {
+    screenId: "screen-craft-weapon-detail",
+    resultId: "craft-weapon-detail-result",
+    cardId: "craft-weapon-detail-card"
+  },
+  armor: {
+    screenId: "screen-craft-armor-detail",
+    resultId: "craft-armor-detail-result",
+    cardId: "craft-armor-detail-card"
+  }
+};
+
+function goToCraftDetailScreen(category, recipeId) {
+  craftingSelectedRecipeId = recipeId;
+  showScreen(CRAFT_DETAIL_CONFIG[category].screenId);
+  renderCraftDetailScreen(category);
+}
+
+function renderCraftDetailScreen(category) {
+  const cfg = CRAFT_DETAIL_CONFIG[category];
+  const recipe = CRAFTING_RECIPES[craftingSelectedRecipeId];
+  const resultEl = document.getElementById(cfg.resultId);
+  const cardEl = document.getElementById(cfg.cardId);
+  resultEl.innerHTML = "";
+  cardEl.innerHTML = "";
+
+  const have = countMaterial(recipe.material);
+  const craftingTier = getCharacterSkillTier(playerCharacter, recipe.craftingSkill).name;
+
+  const card = document.createElement("div");
+  card.className = "cc-card selected";
+  card.innerHTML = `
+    <div class="cc-card-name">${recipe.name}</div>
+    <div class="cc-card-desc">Requires: ${recipe.materialCost} &times; ${recipe.material} (you have ${have})</div>
+    <div class="cc-card-desc">Your ${SKILLS[recipe.craftingSkill].name}: ${craftingTier}</div>
+    <div class="cc-card-image" style="background-image: url('assets/images/items/${getRecipeImageSlug(recipe.id)}.png')"></div>
+  `;
+
+  card.addEventListener("click", () => {
+    attemptCraft(recipe.id, cfg.resultId, () => renderCraftDetailScreen(category));
+  });
+
+  cardEl.appendChild(card);
 }
 
 function renderEnchantSection(list, resultEl) {
@@ -3950,6 +4005,8 @@ document.getElementById("btn-craft-enchant").addEventListener("click", goToCraft
 document.getElementById("btn-craft-weapons-back").addEventListener("click", goToCraftingScreen);
 document.getElementById("btn-craft-armor-back").addEventListener("click", goToCraftingScreen);
 document.getElementById("btn-craft-enchant-back").addEventListener("click", goToCraftingScreen);
+document.getElementById("btn-craft-weapon-detail-back").addEventListener("click", goToCraftWeaponsScreen);
+document.getElementById("btn-craft-armor-detail-back").addEventListener("click", goToCraftArmorScreen);
 document.getElementById("btn-growth-summary-continue").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-mastery-back").addEventListener("click", goToHomebaseScreen);
 

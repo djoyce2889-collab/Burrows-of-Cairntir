@@ -152,6 +152,7 @@ body {
 }
 
 #cabinet-title {
+  display: none;
   font-family: var(--font-display);
   font-size: 22px;
   letter-spacing: 1px;

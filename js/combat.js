@@ -889,6 +889,9 @@ function pickEnemyTarget() {
 const TAUNT_DURATION = 5;
 const TAUNT_COOLDOWN = 5;
 
+const FORTIFY_DURATION = 4;
+const FORTIFY_COOLDOWN = 4;
+
 function performPlayerTaunt() {
   currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "taunt");
   currentCombat.activeEffects.push({
@@ -2606,12 +2609,15 @@ function performPlayerCast(skillId, spell, target) {
     if (spell.name === "Griot's Song of Endurance" && hasChosenPerk(playerCharacter, "riteGriot", "endurancesDepth")) {
       bonusAmount = Math.round(bonusAmount * 1.4);
     }
-    let fortifyDuration = isSong ? null : SPELL_EFFECT_DURATION;
+    let fortifyDuration = isSong ? null : FORTIFY_DURATION;
     if (isAncestorsVigor && !isSong && hasChosenPerk(playerCharacter, "ancestralAverick", "steadyHand")) {
       fortifyDuration += 1;
     }
     const fortifyTargets = isSong ? [playerCharacter, ...getActiveFollowers()] : [playerCharacter];
     fortifyTargets.forEach((t) => { t.currentHP += bonusAmount; });
+    if (!isSong) {
+      setSpellCooldown(playerCharacter, spell.id, FORTIFY_COOLDOWN);
+    }
     currentCombat.activeEffects.push({
       kind: "fortify",
       rankBonus: 0,
