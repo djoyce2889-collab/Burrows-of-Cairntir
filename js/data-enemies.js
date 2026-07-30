@@ -2709,5 +2709,72 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["The Drowned Commander's Fan", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theBogRisenWanderer: {
+    id: "theBogRisenWanderer",
+    name: "The Bog-Risen Wanderer",
+    description: "Freshly wronged, still shaped like whoever they were, mud-caked and confused more than malicious. Doesn't understand yet why it can't stay buried.",
+    image: "assets/images/enemies/the-bog-risen-wanderer.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  theRiteStarvedHusk: {
+    id: "theRiteStarvedHusk",
+    name: "The Rite-Starved Husk",
+    description: "Decayed far past recognition, driven by a hunger for a ceremony that was never performed and never will be now.",
+    image: "assets/images/enemies/the-rite-starved-husk.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theShellBoundDrowned: {
+    id: "theShellBoundDrowned",
+    name: "The Shell-Bound Drowned",
+    description: "Buried with cowrie shells meant to guide the spirit onward, and they've done nothing but keep it here, strung tight around a form that no longer needs them.",
+    image: "assets/images/enemies/the-shell-bound-drowned.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theMaskRottedElder: {
+    id: "theMaskRottedElder",
+    name: "The Mask-Rotted Elder",
+    description: "Was someone of real standing once. What's left of the mask is the only part of that still holding together.",
+    image: "assets/images/enemies/the-mask-rotted-elder.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theSiltChokedLurcher: {
+    id: "theSiltChokedLurcher",
+    name: "The Silt-Choked Lurcher",
+    description: "Barely holds a shape anymore, more bog than body, but it still rises to its full height when it means to hit something. Still wants something it can't name.",
+    image: "assets/images/enemies/the-silt-choked-lurcher.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  theUnburiedKing: {
+    id: "theUnburiedKing",
+    name: "The Unburied King",
+    description: "Ruled well, by every account, and was denied the rites owed to him regardless. He's still ruling. It's just this swamp now, and everything wrong that lives in it.",
+    image: "assets/images/enemies/the-unburied-king.png",
+    deathImage: "assets/images/deaths/the-unburied-king-death.png",
+    hitPoints: 90,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["The Unburied King's Crown", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };

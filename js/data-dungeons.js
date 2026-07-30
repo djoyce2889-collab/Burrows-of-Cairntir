@@ -518,6 +518,18 @@ const DUNGEONS = {
     description:
       "Everything under this canopy hunts the same way — quiet, patient, and from somewhere well above where you thought to look."
   },
+  unburiedSwamp: {
+    id: "unburiedSwamp",
+    name: "The Unburied Swamp",
+    difficulty: "Master",
+    musicSrc: "assets/audio/unburied-swamp-theme.mp3",
+    hotspotColor: "#3a4a2a",
+    mapHotspot: { top: "50%", left: "30%" },
+    culture: "vandiri",
+    image: "assets/images/unburied-swamp.png",
+    description:
+      "Every one of them was owed proper rites and never got them. The swamp's been holding that debt for longer than anyone still living can account for."
+  },
   theHowlingFrost: {
     id: "theHowlingFrost",
     name: "The Howling Frost",
@@ -4207,6 +4219,85 @@ const DUNGEON_CONTENT = {
       }
     }
   },
+  unburiedSwamp: {
+    startRoomId: "swampEdge",
+    rooms: {
+      swampEdge: {
+        text: "The ground gives way to standing water almost immediately, dark and still, old grave-markers leaning half-swallowed at its edge.",
+        choices: [{ type: "goto", label: "Enter the swamp", target: "mirePath" }]
+      },
+      mirePath: {
+        text: "The path ahead is barely a path at all, mud sucking at every step, something moving low and slow just beneath the surface.",
+        choices: [{ type: "goto", label: "Continue", target: "wandererFight" }]
+      },
+      wandererFight: {
+        text: "A mud-caked shape rises from the shallows, still roughly the outline of a person, confused more than hostile.",
+        choices: [{ type: "combat", label: "Fight the Bog-Risen Wanderer", enemyId: "theBogRisenWanderer", target: "mireLoot" }]
+      },
+      mireLoot: {
+        text: "Half-buried in the mud, a scrap of old ore has sat undisturbed since long before the water claimed this ground.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The swamp splits ahead — one way toward a cluster of sunken grave-markers, the other into a dense stand of reeds.",
+        choices: [
+          { type: "goto", label: "Toward the sunken graves", target: "sunkenGraves" },
+          { type: "goto", label: "Into the reed thicket", target: "reedThicket" }
+        ]
+      },
+      sunkenGraves: {
+        text: "Something claws its way up between two collapsed headstones, hollowed out by a hunger that was never going to be satisfied.",
+        choices: [{ type: "combat", label: "Fight the Rite-Starved Husk", enemyId: "theRiteStarvedHusk", target: "swampConverge" }]
+      },
+      reedThicket: {
+        text: "Old shells rattle somewhere in the reeds before you see what's wearing them.",
+        choices: [{ type: "combat", label: "Fight the Shell-Bound Drowned", enemyId: "theShellBoundDrowned", target: "swampConverge" }]
+      },
+      swampConverge: {
+        text: "Both paths open onto a wider stretch of mire, dozens of old grave-markers scattered across it, none of them facing the same direction.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered ancestral totem stands half-sunk at the mire's edge, old protective carvings barely visible beneath the moss.",
+        choices: [
+          { type: "discover", label: "Study the totem (Rite of Protection)", skillId: "riteProtection", spellId: "swampboundVigil", target: "deeperSwamp" },
+          { type: "goto", label: "Move on", target: "deeperSwamp" }
+        ]
+      },
+      deeperSwamp: {
+        text: "The water deepens here, old carved masks half-submerged along the banks, watching without eyes.",
+        choices: [{ type: "goto", label: "Press onward", target: "elderFight" }]
+      },
+      elderFight: {
+        text: "A robed shape rises from the shallows, mask rotted nearly through, carrying itself with an authority nothing about its current state should allow.",
+        choices: [{ type: "combat", label: "Fight the Mask-Rotted Elder", enemyId: "theMaskRottedElder", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The water narrows into a thin channel here, something low and half-shapeless shifting along the far bank — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "It's more silt than shape at this point, but it rises to its full height fast, and it's still coming.",
+        choices: [{ type: "combat", label: "Fight the Silt-Choked Lurcher", enemyId: "theSiltChokedLurcher", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The channel opens onto a wide flooded clearing, a half-sunken throne of bone and driftwood rising from the center of it.",
+        choices: [{ type: "goto", label: "Enter the clearing", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Unburied King rises from the throne without hurry, crown still intact, ruling the only kingdom he has left.",
+        choices: [{ type: "combat", label: "Face the Unburied King", enemyId: "theUnburiedKing", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The clearing goes still, the water settling flat and quiet. Somewhere beneath it, the debt's finally been paid.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
   theHowlingFrost: {
     startRoomId: "frozenThreshold",
     rooms: {
@@ -5026,6 +5117,24 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/sasabonsams-reach/pre-boss.png",
     bossRoom: "assets/images/sasabonsams-reach/boss-room.png",
     epilogue: "assets/images/sasabonsams-reach/epilogue.png"
+  },
+  unburiedSwamp: {
+    swampEdge: "assets/images/unburied-swamp/swamp-edge.png",
+    mirePath: "assets/images/unburied-swamp/mire-path.png",
+    wandererFight: "assets/images/unburied-swamp/wanderer-fight.png",
+    mireLoot: "assets/images/unburied-swamp/mire-loot.png",
+    fork: "assets/images/unburied-swamp/fork.png",
+    sunkenGraves: "assets/images/unburied-swamp/sunken-graves.png",
+    reedThicket: "assets/images/unburied-swamp/reed-thicket.png",
+    swampConverge: "assets/images/unburied-swamp/swamp-converge.png",
+    discoverRoom: "assets/images/unburied-swamp/discover-room.png",
+    deeperSwamp: "assets/images/unburied-swamp/deeper-swamp.png",
+    elderFight: "assets/images/unburied-swamp/elder-fight.png",
+    vigilCheck: "assets/images/unburied-swamp/vigil-check.png",
+    extraFight: "assets/images/unburied-swamp/vigil-check.png",
+    preBoss: "assets/images/unburied-swamp/pre-boss.png",
+    bossRoom: "assets/images/unburied-swamp/boss-room.png",
+    epilogue: "assets/images/unburied-swamp/epilogue.png"
   },
   theHowlingFrost: {
     frozenThreshold: "assets/images/the-howling-frost/frozen-threshold.png",
