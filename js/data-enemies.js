@@ -2307,5 +2307,72 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Thrym's Stolen Hammer", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theForemostRider: {
+    id: "theForemostRider",
+    name: "The Foremost Rider",
+    description: "First of the host to reach anything in its path. Always has been. Doesn't know how to be anything else.",
+    image: "assets/images/enemies/the-foremost-rider.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theWailingRider: {
+    id: "theWailingRider",
+    name: "The Wailing Rider",
+    description: "Carries the host's grief so the rest of them don't have to. The sound alone has stopped hearts before a hand ever needed to.",
+    image: "assets/images/enemies/the-wailing-rider.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theHollowEyedRider: {
+    id: "theHollowEyedRider",
+    name: "The Hollow-Eyed Rider",
+    description: "Been part of the host so long it barely remembers riding for any other reason.",
+    image: "assets/images/enemies/the-hollow-eyed-rider.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theFlankingRider: {
+    id: "theFlankingRider",
+    name: "The Flanking Rider",
+    description: "Doesn't charge. Circles. By the time you've noticed, the way back is already gone.",
+    image: "assets/images/enemies/the-flanking-rider.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theLastRider: {
+    id: "theLastRider",
+    name: "The Last Rider",
+    description: "Trails the host, always a length behind whatever they're chasing. Has never once caught up. Keeps trying anyway.",
+    image: "assets/images/enemies/the-last-rider.png",
+    hitPoints: 44,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theDullahan: {
+    id: "theDullahan",
+    name: "The Dullahan",
+    description: "Rides at the head of them all, his own head carried under one arm, a whip plaited from something that used to be a spine. He's never once needed to hurry.",
+    image: "assets/images/enemies/the-dullahan.png",
+    deathImage: "assets/images/deaths/the-dullahan-death.png",
+    hitPoints: 88,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["The Dullahan's Spine-Whip", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };

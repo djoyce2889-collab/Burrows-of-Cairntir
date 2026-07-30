@@ -454,6 +454,19 @@ const DUNGEONS = {
     image: "assets/images/thryms-hold.png",
     description:
       "Thrym took what wasn't his once and got away clean. He's been waiting for someone to come try their luck getting it back."
+  },
+  dullahansRide: {
+    id: "dullahansRide",
+    name: "The Dullahan's Ride",
+    difficulty: "Master",
+    musicSrc: "assets/audio/dullahans-ride-theme.mp3",
+    hotspotColor: "#1c1c24",
+    mapHotspot: { top: "45%", left: "25%" },
+    culture: "gaeldrim",
+    image: "assets/images/dullahans-ride.png",
+    description:
+      "The road's always been bad luck after dark, and everyone local knows to be indoors well before the moon's fully up. " +
+      "Nobody's ever agreed on why. They've just always known to listen."
   }
 };
 
@@ -3735,6 +3748,85 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  dullahansRide: {
+    startRoomId: "roadUnderMoonlight",
+    rooms: {
+      roadUnderMoonlight: {
+        text: "The road stretches pale under a moon that keeps vanishing behind clouds moving faster than the actual wind.",
+        choices: [{ type: "goto", label: "Follow the road", target: "crossroadsPath" }]
+      },
+      crossroadsPath: {
+        text: "Old crossroads stones lean at odd angles here, worn smooth by centuries of travelers who all, without exception, chose to hurry past.",
+        choices: [{ type: "goto", label: "Continue", target: "foremostFight" }]
+      },
+      foremostFight: {
+        text: "A rider breaks from the treeline first, always first, closing the distance before you've finished deciding what you just saw.",
+        choices: [{ type: "combat", label: "Fight the Foremost Rider", enemyId: "theForemostRider", target: "roadLoot" }]
+      },
+      roadLoot: {
+        text: "Half-sunk in the verge grass, a scrap of old ore has clearly been here since well before tonight.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The road splits around an old hedgerow — one way threading through the hedge itself, the other toward a weathered druid temple.",
+        choices: [
+          { type: "goto", label: "Through the hedgerow", target: "hedgerowPath" },
+          { type: "goto", label: "Toward the druid temple", target: "druidTemple" }
+        ]
+      },
+      hedgerowPath: {
+        text: "A rider waits in the hedge's gap, and the sound that comes with her arrives before she does, low and grieving and impossible to place.",
+        choices: [{ type: "combat", label: "Fight the Wailing Rider", enemyId: "theWailingRider", target: "rideConverge" }]
+      },
+      druidTemple: {
+        text: "A rider sits motionless atop the temple's crumbling outer stone, eyes fixed on nothing, like it stopped needing to actually look where it was going a long time ago.",
+        choices: [{ type: "combat", label: "Fight the Hollow-Eyed Rider", enemyId: "theHollowEyedRider", target: "rideConverge" }]
+      },
+      rideConverge: {
+        text: "Both paths meet where the road widens into an old market green, hoofprints scarring the grass in a pattern that doesn't match anything with four legs.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered barrow-stone stands at the green's edge, old ward-carvings cut deep enough to have outlasted whatever they were meant to keep out.",
+        choices: [
+          { type: "discover", label: "Study the barrow-stone (Path of the Barrow)", skillId: "pathBarrow", spellId: "hostboundWard", target: "deeperRoad" },
+          { type: "goto", label: "Move on", target: "deeperRoad" }
+        ]
+      },
+      deeperRoad: {
+        text: "The road narrows past the green, hedgerows pressing close on either side, the moon fully gone now behind cloud that isn't moving anymore at all.",
+        choices: [{ type: "goto", label: "Press onward", target: "flankFight" }]
+      },
+      flankFight: {
+        text: "Something's been pacing you for a while, and only now does it bother closing the distance from the side.",
+        choices: [{ type: "combat", label: "Fight the Flanking Rider", enemyId: "theFlankingRider", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The road bends sharply ahead, hedgerow thinning enough to see movement beyond it — a chance to slip past unnoticed, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A rider trails in from behind, always a length behind whatever it's chasing, and tonight that happens to be you.",
+        choices: [{ type: "combat", label: "Fight the Last Rider", enemyId: "theLastRider", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The road opens onto a final stretch, straight and empty, every house along it dark and every door shut tight regardless of the hour.",
+        choices: [{ type: "goto", label: "Continue", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Dullahan reins in ahead of you, head tucked under one arm, and for one very long moment says nothing at all — which is somehow worse than if he had.",
+        choices: [{ type: "combat", label: "Face the Dullahan", enemyId: "theDullahan", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The road goes still, hoofbeats fading somewhere beyond hearing. Every door along the road stays shut a while longer, just in case.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -4386,6 +4478,24 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/thryms-hold/pre-boss.png",
     bossRoom: "assets/images/thryms-hold/boss-room.png",
     epilogue: "assets/images/thryms-hold/epilogue.png"
+  },
+  dullahansRide: {
+    roadUnderMoonlight: "assets/images/dullahans-ride/road-under-moonlight.png",
+    crossroadsPath: "assets/images/dullahans-ride/crossroads-path.png",
+    foremostFight: "assets/images/dullahans-ride/foremost-fight.png",
+    roadLoot: "assets/images/dullahans-ride/road-loot.png",
+    fork: "assets/images/dullahans-ride/fork.png",
+    hedgerowPath: "assets/images/dullahans-ride/hedgerow-path.png",
+    druidTemple: "assets/images/dullahans-ride/druid-temple.png",
+    rideConverge: "assets/images/dullahans-ride/ride-converge.png",
+    discoverRoom: "assets/images/dullahans-ride/discover-room.png",
+    deeperRoad: "assets/images/dullahans-ride/deeper-road.png",
+    flankFight: "assets/images/dullahans-ride/flank-fight.png",
+    vigilCheck: "assets/images/dullahans-ride/vigil-check.png",
+    extraFight: "assets/images/dullahans-ride/vigil-check.png",
+    preBoss: "assets/images/dullahans-ride/pre-boss.png",
+    bossRoom: "assets/images/dullahans-ride/boss-room.png",
+    epilogue: "assets/images/dullahans-ride/epilogue.png"
   }
 };
 
