@@ -2374,5 +2374,139 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["The Dullahan's Spine-Whip", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theRedEyedWolf: {
+    id: "theRedEyedWolf",
+    name: "The Red-Eyed Wolf",
+    description: "Bigger than any wolf has a right to be, eyes glowing a red that has nothing to do with reflected light. Runs with a pack that answers to something further up the mountain.",
+    image: "assets/images/enemies/the-red-eyed-wolf.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theBrambleFangedSpider: {
+    id: "theBrambleFangedSpider",
+    name: "The Bramble-Fanged Spider",
+    description: "Web strung thick between trees far enough apart that no ordinary spider could ever have spun it. This one isn't ordinary.",
+    image: "assets/images/enemies/the-bramble-fanged-spider.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theWatcherOwl: {
+    id: "theWatcherOwl",
+    name: "The Watcher Owl",
+    description: "Sees everyone coming long before they see the forest. Reports back to something that's always very interested in the answer.",
+    image: "assets/images/enemies/the-watcher-owl.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theBlackTuskBoar: {
+    id: "theBlackTuskBoar",
+    name: "The Black Tusk Boar",
+    description: "Doesn't scout, doesn't warn, doesn't wait. Just charges, and keeps charging until one of you stops being able to.",
+    image: "assets/images/enemies/the-black-tusk-boar.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theWitchsCrow: {
+    id: "theWitchsCrow",
+    name: "The Witch's Crow",
+    description: "Never fights fair, never fights long — just enough to slow you down before the forest decides what happens next.",
+    image: "assets/images/enemies/the-witchs-crow.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  yamauba: {
+    id: "yamauba",
+    name: "Yamauba",
+    description: "The mountain's been hers for longer than anyone's kept count, and everything in it — every wolf, every web, every watching eye — answers to her before it answers to instinct.",
+    image: "assets/images/enemies/yamauba.png",
+    deathImage: "assets/images/deaths/yamauba-death.png",
+    hitPoints: 88,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Yamauba's Bone Charm", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theClawLeggedStalker: {
+    id: "theClawLeggedStalker",
+    name: "The Claw-Legged Stalker",
+    description: "Ape-shaped and wrong about it, massive black claws where feet should be, eyes glowing brighter red the closer it gets.",
+    image: "assets/images/enemies/the-hook-legged-stalker.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theIronTalonedBat: {
+    id: "theIronTalonedBat",
+    name: "The Iron-Taloned Bat",
+    description: "Big enough that the wingbeat alone knocks branches loose. Doesn't screech until it's already committed to the dive.",
+    image: "assets/images/enemies/the-iron-taloned-bat.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theCoilBackedSerpent: {
+    id: "theCoilBackedSerpent",
+    name: "The Coil-Backed Serpent",
+    description: "Thick as a felled tree and just as hard to see coming until it's already moving.",
+    image: "assets/images/enemies/the-coil-backed-serpent.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theRotManedHyena: {
+    id: "theRotManedHyena",
+    name: "The Rot-Maned Hyena",
+    description: "Runs with a pack that thinned out a long time ago. Doesn't seem to have noticed, or doesn't care.",
+    image: "assets/images/enemies/the-rot-maned-hyena.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theManyEyedCrawler: {
+    id: "theManyEyedCrawler",
+    name: "The Many-Eyed Crawler",
+    description: "Low, fast, and covered in eyes that don't blink in any kind of unison. Never quite looks like it's looking at you until it's too late to matter.",
+    image: "assets/images/enemies/the-many-eyed-crawler.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  sasabonsam: {
+    id: "sasabonsam",
+    name: "Sasabonsam",
+    description: "Hangs from the canopy on massive black claws, patient as a spider, eyes burning brighter the longer it watches you not notice it.",
+    image: "assets/images/enemies/sasabonsam.png",
+    deathImage: "assets/images/deaths/sasabonsam-death.png",
+    hitPoints: 90,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Sasabonsam's Claw", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };

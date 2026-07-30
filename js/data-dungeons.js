@@ -467,6 +467,30 @@ const DUNGEONS = {
     description:
       "The road's always been bad luck after dark, and everyone local knows to be indoors well before the moon's fully up. " +
       "Nobody's ever agreed on why. They've just always known to listen."
+  },
+  yamaubasWood: {
+    id: "yamaubasWood",
+    name: "Yamauba's Wood",
+    difficulty: "Master",
+    musicSrc: "assets/audio/yamaubas-wood-theme.mp3",
+    hotspotColor: "#2d4a2d",
+    mapHotspot: { top: "35%", left: "45%" },
+    culture: "yorenshi",
+    image: "assets/images/yamaubas-wood.png",
+    description:
+      "Every animal in this wood is exactly as dangerous as it needs to be, and not one degree more. That's not luck. That's management."
+  },
+  sasabonsamsReach: {
+    id: "sasabonsamsReach",
+    name: "Sasabonsam's Reach",
+    difficulty: "Master",
+    musicSrc: "assets/audio/sasabonsams-reach-theme.mp3",
+    hotspotColor: "#4a1f1f",
+    mapHotspot: { top: "40%", left: "40%" },
+    culture: "vandiri",
+    image: "assets/images/sasabonsams-reach.png",
+    description:
+      "Everything under this canopy hunts the same way — quiet, patient, and from somewhere well above where you thought to look."
   }
 };
 
@@ -3827,6 +3851,164 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  yamaubasWood: {
+    startRoomId: "forestEdge",
+    rooms: {
+      forestEdge: {
+        text: "The trees grow close enough together here that daylight barely makes it through, and something is already watching from just past where you can still see.",
+        choices: [{ type: "goto", label: "Enter the wood", target: "duskPath" }]
+      },
+      duskPath: {
+        text: "Paw prints cross and recross the same stretch of ground, too large and too many to belong to anything ordinary.",
+        choices: [{ type: "goto", label: "Continue", target: "wolfFight" }]
+      },
+      wolfFight: {
+        text: "A shape breaks from the underbrush, eyes glowing a red that has nothing to do with the light.",
+        choices: [{ type: "combat", label: "Fight the Red-Eyed Wolf", enemyId: "theRedEyedWolf", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "Caught in a low bramble, a scrap of hide has been snagged there long enough to stop being fresh.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way threading beneath web strung far too high between the trees, the other cutting through a stretch of torn, root-churned ground.",
+        choices: [
+          { type: "goto", label: "Beneath the web", target: "webThicket" },
+          { type: "goto", label: "Through the churned ground", target: "hollowRoots" }
+        ]
+      },
+      webThicket: {
+        text: "Something shifts in the canopy overhead, web trembling with a weight no ordinary spider could account for.",
+        choices: [{ type: "combat", label: "Fight the Bramble-Fanged Spider", enemyId: "theBrambleFangedSpider", target: "forestConverge" }]
+      },
+      hollowRoots: {
+        text: "The ground here is torn to mud, and whatever did it hasn't finished.",
+        choices: [{ type: "combat", label: "Fight the Black Tusk Boar", enemyId: "theBlackTuskBoar", target: "forestConverge" }]
+      },
+      forestConverge: {
+        text: "Both paths open onto a wide hollow, moss-thick stones arranged in a rough circle at its center, clearly placed rather than fallen.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered charm hangs from a low branch here, old and yokai-warded, swaying though there's no wind to move it.",
+        choices: [
+          { type: "discover", label: "Study the charm (Way of the Yokai)", skillId: "wayYokai", spellId: "wardensEye", target: "deeperWood" },
+          { type: "goto", label: "Move on", target: "deeperWood" }
+        ]
+      },
+      deeperWood: {
+        text: "The trees thin just enough to see the canopy properly, and something up there is looking directly back down at you.",
+        choices: [{ type: "goto", label: "Press onward", target: "owlFight" }]
+      },
+      owlFight: {
+        text: "The owl doesn't flee. It's already decided you're worth reporting, and it isn't leaving until it's sure.",
+        choices: [{ type: "combat", label: "Fight the Watcher Owl", enemyId: "theWatcherOwl", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The wood narrows toward a low ridge here, something dark circling patiently overhead — a chance to slip past unnoticed, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The crow drops fast and mean, just enough to slow you down before whatever's waiting ahead gets its turn.",
+        choices: [{ type: "combat", label: "Fight the Witch's Crow", enemyId: "theWitchsCrow", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The ridge opens onto a small clearing built around a single crooked hut, smoke curling from a chimney that shouldn't still be lit this deep in the wood.",
+        choices: [{ type: "goto", label: "Approach the hut", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Yamauba steps out before you've finished crossing the clearing, entirely unsurprised, like the whole wood already told her you were coming.",
+        choices: [{ type: "combat", label: "Face Yamauba", enemyId: "yamauba", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The clearing goes quiet, smoke from the hut thinning to nothing. For the first time since the wood's edge, nothing at all seems to be watching.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  sasabonsamsReach: {
+    startRoomId: "canopyEdge",
+    rooms: {
+      canopyEdge: {
+        text: "The canopy closes overhead almost immediately, thick enough that the ground below stays in permanent half-light.",
+        choices: [{ type: "goto", label: "Enter the canopy", target: "hangingVines" }]
+      },
+      hangingVines: {
+        text: "Vines hang low and heavy here, several of them ending in something that isn't a vine at all.",
+        choices: [{ type: "goto", label: "Continue", target: "stalkerFight" }]
+      },
+      stalkerFight: {
+        text: "Something ape-shaped drops from above, wrong in the joints, eyes glowing brighter red the closer it lands.",
+        choices: [{ type: "combat", label: "Fight the Claw-Legged Stalker", enemyId: "theClawLeggedStalker", target: "canopyLoot" }]
+      },
+      canopyLoot: {
+        text: "Tangled in a low root, a scrap of hide has been there long enough to stop smelling like anything at all.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way beneath a thick overhang alive with wingbeats, the other along a wide, half-swallowed game trail.",
+        choices: [
+          { type: "goto", label: "Beneath the overhang", target: "batOverhang" },
+          { type: "goto", label: "Along the trail", target: "serpentTrail" }
+        ]
+      },
+      batOverhang: {
+        text: "The wingbeat hits before the sound does, branches shaking loose all around you.",
+        choices: [{ type: "combat", label: "Fight the Iron-Taloned Bat", enemyId: "theIronTalonedBat", target: "reachConverge" }]
+      },
+      serpentTrail: {
+        text: "What looked like a felled tree across the trail shifts, and it was never a tree.",
+        choices: [{ type: "combat", label: "Fight the Coil-Backed Serpent", enemyId: "theCoilBackedSerpent", target: "reachConverge" }]
+      },
+      reachConverge: {
+        text: "Both paths open onto a wide clearing floored in old bone and bramble, the canopy overhead thinning just enough to see how far up it actually goes.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A carved wooden totem stands here, old protective rites cut deep into weathered wood.",
+        choices: [
+          { type: "discover", label: "Study the totem (Rite of Protection)", skillId: "riteProtection", spellId: "canopysWard", target: "deeperCanopy" },
+          { type: "goto", label: "Move on", target: "deeperCanopy" }
+        ]
+      },
+      deeperCanopy: {
+        text: "The ground drops into a shallow gully thick with underbrush, low growling threading through it from somewhere close.",
+        choices: [{ type: "goto", label: "Press onward", target: "hyenaFight" }]
+      },
+      hyenaFight: {
+        text: "Something lean and mangy breaks from the brush, running with a pack that thinned out a long time ago and never noticed.",
+        choices: [{ type: "combat", label: "Fight the Rot-Maned Hyena", enemyId: "theRotManedHyena", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The gully narrows here, something low and many-eyed skittering just out of clear sight — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "It's fast and low and covered in eyes that never quite seem to be looking at you until it's already too late.",
+        choices: [{ type: "combat", label: "Fight the Many-Eyed Crawler", enemyId: "theManyEyedCrawler", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The gully opens onto a wide hollow beneath the canopy's thickest point, old claw-marks scored deep into every trunk in sight.",
+        choices: [{ type: "goto", label: "Enter the hollow", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Sasabonsam drops from directly overhead, claws catching bark on the way down, entirely unhurried about the whole thing.",
+        choices: [{ type: "combat", label: "Face Sasabonsam", enemyId: "sasabonsam", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The canopy goes quiet, the half-light settling back to ordinary shade. Whatever else lives up there, it's staying up there for now.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -4496,6 +4678,42 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/dullahans-ride/pre-boss.png",
     bossRoom: "assets/images/dullahans-ride/boss-room.png",
     epilogue: "assets/images/dullahans-ride/epilogue.png"
+  },
+  yamaubasWood: {
+    forestEdge: "assets/images/yamaubas-wood/forest-edge.png",
+    duskPath: "assets/images/yamaubas-wood/dusk-path.png",
+    wolfFight: "assets/images/yamaubas-wood/wolf-fight.png",
+    pathLoot: "assets/images/yamaubas-wood/path-loot.png",
+    fork: "assets/images/yamaubas-wood/fork.png",
+    webThicket: "assets/images/yamaubas-wood/web-thicket.png",
+    hollowRoots: "assets/images/yamaubas-wood/hollow-roots.png",
+    forestConverge: "assets/images/yamaubas-wood/forest-converge.png",
+    discoverRoom: "assets/images/yamaubas-wood/discover-room.png",
+    deeperWood: "assets/images/yamaubas-wood/deeper-wood.png",
+    owlFight: "assets/images/yamaubas-wood/owl-fight.png",
+    vigilCheck: "assets/images/yamaubas-wood/vigil-check.png",
+    extraFight: "assets/images/yamaubas-wood/vigil-check.png",
+    preBoss: "assets/images/yamaubas-wood/pre-boss.png",
+    bossRoom: "assets/images/yamaubas-wood/boss-room.png",
+    epilogue: "assets/images/yamaubas-wood/epilogue.png"
+  },
+  sasabonsamsReach: {
+    canopyEdge: "assets/images/sasabonsams-reach/canopy-edge.png",
+    hangingVines: "assets/images/sasabonsams-reach/hanging-vines.png",
+    stalkerFight: "assets/images/sasabonsams-reach/stalker-fight.png",
+    canopyLoot: "assets/images/sasabonsams-reach/canopy-loot.png",
+    fork: "assets/images/sasabonsams-reach/fork.png",
+    batOverhang: "assets/images/sasabonsams-reach/bat-overhang.png",
+    serpentTrail: "assets/images/sasabonsams-reach/serpent-trail.png",
+    reachConverge: "assets/images/sasabonsams-reach/reach-converge.png",
+    discoverRoom: "assets/images/sasabonsams-reach/discover-room.png",
+    deeperCanopy: "assets/images/sasabonsams-reach/deeper-canopy.png",
+    hyenaFight: "assets/images/sasabonsams-reach/hyena-fight.png",
+    vigilCheck: "assets/images/sasabonsams-reach/vigil-check.png",
+    extraFight: "assets/images/sasabonsams-reach/vigil-check.png",
+    preBoss: "assets/images/sasabonsams-reach/pre-boss.png",
+    bossRoom: "assets/images/sasabonsams-reach/boss-room.png",
+    epilogue: "assets/images/sasabonsams-reach/epilogue.png"
   }
 };
 
