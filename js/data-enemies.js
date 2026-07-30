@@ -2173,5 +2173,139 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Anansi's Silk Thread", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theThornStruckWarden: {
+    id: "theThornStruckWarden",
+    name: "The Thorn-Struck Warden",
+    description: "The old stories say they only ever act as a last resort. This one doesn't wait to find out if there was another option.",
+    image: "assets/images/enemies/the-thorn-struck-warden.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theWitheredBough: {
+    id: "theWitheredBough",
+    name: "The Withered Bough",
+    description: "Still guarding a tree that's been dead for longer than it's willing to admit. Doesn't seem to have noticed. Won't be told.",
+    image: "assets/images/enemies/the-withered-bough.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theBindingWarden: {
+    id: "theBindingWarden",
+    name: "The Binding Warden",
+    description: "Still trying to protect what it's always protected. The instinct's intact. Everything about how it's carrying it out isn't.",
+    image: "assets/images/enemies/the-binding-warden.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theBoundlessWarden: {
+    id: "theBoundlessWarden",
+    name: "The Boundless Warden",
+    description: "Used to guard a single grove. Now it's decided the whole wood is its tree, and it isn't interested in being corrected.",
+    image: "assets/images/enemies/the-boundless-warden.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theFrayingWarden: {
+    id: "theFrayingWarden",
+    name: "The Fraying Warden",
+    description: "Knows something's gotten into the wood. Is fighting it, visibly, which somehow makes it more dangerous, not less.",
+    image: "assets/images/enemies/the-fraying-warden.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theEldestWarden: {
+    id: "theEldestWarden",
+    name: "The Eldest Warden",
+    description: "Held out longer than any of the others. Whatever finally got in, it got in all the way.",
+    image: "assets/images/enemies/the-eldest-warden.png",
+    deathImage: "assets/images/deaths/the-eldest-warden-death.png",
+    hitPoints: 88,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["The Warden's Heartwood", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theThrallGiant: {
+    id: "theThrallGiant",
+    name: "The Thrall-Giant",
+    description: "Lowest-ranked of Thrym's kin and still built like a landslide. Doesn't need cleverness when it has reach.",
+    image: "assets/images/enemies/the-thrall-giant.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  theFrostbittenSentinel: {
+    id: "theFrostbittenSentinel",
+    name: "The Frostbitten Sentinel",
+    description: "Stands the outer approach in weather that would kill anything smaller. Doesn't seem to have noticed the cold in years.",
+    image: "assets/images/enemies/the-frostbitten-sentinel.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theStormVoicedHerald: {
+    id: "theStormVoicedHerald",
+    name: "The Storm-Voiced Herald",
+    description: "Announces every intruder to the whole mountain before it's laid a hand on anyone --- the roar alone has dropped men.",
+    image: "assets/images/enemies/the-storm-voiced-herald.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theIronJawedBrute: {
+    id: "theIronJawedBrute",
+    name: "The Iron-Jawed Brute",
+    description: "Doesn't guard anything in particular. Just enjoys the work.",
+    image: "assets/images/enemies/the-iron-jawed-brute.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theMountainBackedWarden: {
+    id: "theMountainBackedWarden",
+    name: "The Mountain-Backed Warden",
+    description: "Stone-fused at the shoulders and spine, wide enough to block a hall by simply standing in it. Doesn't move unless it has to.",
+    image: "assets/images/enemies/the-mountain-backed-warden.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  thrym: {
+    id: "thrym",
+    name: "Thrym",
+    description: "King of this hold, and in no hurry at all. He got what he came for once already --- he's confident he can do it again.",
+    image: "assets/images/enemies/thrym.png",
+    deathImage: "assets/images/deaths/thrym-death.png",
+    hitPoints: 90,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Thrym's Stolen Hammer", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };

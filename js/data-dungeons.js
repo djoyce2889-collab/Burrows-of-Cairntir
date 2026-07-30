@@ -429,6 +429,31 @@ const DUNGEONS = {
     description:
       "Everyone who enters believes they're the one clever enough to outwit him. " +
       "Anansi has never once minded being underestimated. It's usually the whole game."
+  },
+  ghillieDhusHollow: {
+    id: "ghillieDhusHollow",
+    name: "The Ghillie Dhu's Hollow",
+    difficulty: "Master",
+    musicSrc: "assets/audio/ghillie-dhus-hollow-theme.mp3",
+    hotspotColor: "#3d5c3a",
+    mapHotspot: { top: "30%", left: "70%" },
+    culture: "deveran",
+    image: "assets/images/ghillie-dhus-hollow.png",
+    description:
+      "The wood's always been sacred, and travelers have always known to tread carefully in it, the old stories say why. " +
+      "Something's gotten in anyway. Nobody's figured out how."
+  },
+  thrymsHold: {
+    id: "thrymsHold",
+    name: "Thrym's Hold",
+    difficulty: "Master",
+    musicSrc: "assets/audio/thryms-hold-theme.mp3",
+    hotspotColor: "#4a5568",
+    mapHotspot: { top: "20%", left: "50%" },
+    culture: "drakvarr",
+    image: "assets/images/thryms-hold.png",
+    description:
+      "Thrym took what wasn't his once and got away clean. He's been waiting for someone to come try their luck getting it back."
   }
 };
 
@@ -3552,6 +3577,164 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  ghillieDhusHollow: {
+    startRoomId: "hollowThreshold",
+    rooms: {
+      hollowThreshold: {
+        text: "The wood's edge is quiet in the way old, respected places are usually quiet — until you notice the birdsong stopped three trees back and never picked up again.",
+        choices: [{ type: "goto", label: "Enter the wood", target: "wovenPath" }]
+      },
+      wovenPath: {
+        text: "The path ahead is woven shut with bramble that wasn't there in anyone's memory, thorns facing outward like the wood built its own gate.",
+        choices: [{ type: "goto", label: "Push through", target: "thornFight" }]
+      },
+      thornFight: {
+        text: "Something steps out from between two trees before you've finished deciding whether to go around — no warning, no chance to explain yourself.",
+        choices: [{ type: "combat", label: "Fight the Thorn-Struck Warden", enemyId: "theThornStruckWarden", target: "hollowLoot" }]
+      },
+      hollowLoot: {
+        text: "Half-buried in root and moss, a scrap of old ore sits undisturbed, like even the ground didn't want to hold onto it.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits around a fallen elder tree — one way toward a pale, leafless glade, the other into a thicket gone strangely dense.",
+        choices: [
+          { type: "goto", label: "Toward the glade", target: "witheredGlade" },
+          { type: "goto", label: "Toward the thicket", target: "boundThicket" }
+        ]
+      },
+      witheredGlade: {
+        text: "A figure kneels at the base of a long-dead tree, still tending roots that stopped needing tending a very long time ago.",
+        choices: [{ type: "combat", label: "Fight the Withered Bough", enemyId: "theWitheredBough", target: "groveConverge" }]
+      },
+      boundThicket: {
+        text: "Vines shift and tighten as something moves through the thicket toward you, reaching out in a way that might once have meant something closer to kindness.",
+        choices: [{ type: "combat", label: "Fight the Binding Warden", enemyId: "theBindingWarden", target: "groveConverge" }]
+      },
+      groveConverge: {
+        text: "Both paths open onto a wide, mossy hollow, the canopy overhead knit so tightly together that the daylight comes through wrong — greener than it should be, and dimmer.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A ring of standing roots surrounds an old carved waystone here, the markings on it worn soft but still legible if you look closely.",
+        choices: [
+          { type: "discover", label: "Study the waystone (Ancestral Rite)", skillId: "ancestralEmyrs", spellId: "rootwardensGift", target: "deeperHollow" },
+          { type: "goto", label: "Move on", target: "deeperHollow" }
+        ]
+      },
+      deeperHollow: {
+        text: "The trees press closer together the deeper you go, until the path itself barely counts as one anymore.",
+        choices: [{ type: "goto", label: "Press onward", target: "boundlessFight" }]
+      },
+      boundlessFight: {
+        text: "Something enormous shifts among the trunks ahead, territorial in a way that no longer seems to have any edges to it at all.",
+        choices: [{ type: "combat", label: "Fight the Boundless Warden", enemyId: "theBoundlessWarden", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The wood narrows to a single crooked trail here, something visibly straining against itself just off to the side — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "It's fighting itself as much as you, movements jerking between two intentions that clearly don't agree anymore.",
+        choices: [{ type: "combat", label: "Fight the Fraying Warden", enemyId: "theFrayingWarden", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The trees finally open onto a wide clearing built around one truly ancient trunk, roots thick as walls, the air here colder than the rest of the wood by a wide margin.",
+        choices: [{ type: "goto", label: "Enter the clearing", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Eldest Warden turns to face you slowly, and for just a moment, something in its expression looks like it's still trying to apologize.",
+        choices: [{ type: "combat", label: "Face the Eldest Warden", enemyId: "theEldestWarden", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The clearing goes quiet, and then — for the first time since the wood's edge — the birdsong starts again, tentative and far off.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  thrymsHold: {
+    startRoomId: "holdApproach",
+    rooms: {
+      holdApproach: {
+        text: "The mountain path narrows fast, wind-scoured stone giving way to footprints too large to belong to anything you'd want to meet.",
+        choices: [{ type: "goto", label: "Follow the path", target: "outerSlope" }]
+      },
+      outerSlope: {
+        text: "The slope opens onto a wide shelf of rock, wind screaming across it hard enough to make standing upright a decision, not a given.",
+        choices: [{ type: "goto", label: "Continue", target: "thrallFight" }]
+      },
+      thrallFight: {
+        text: "A hulking shape rises from behind a boulder that turns out not to be a boulder at all.",
+        choices: [{ type: "combat", label: "Fight the Thrall-Giant", enemyId: "theThrallGiant", target: "slopeLoot" }]
+      },
+      slopeLoot: {
+        text: "Wedged into a crack in the rock, a scrap of old ore has weathered better than most things up here.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits around a frozen outcrop — one way along an ice-slicked ledge, the other through a narrow, wind-battered gap.",
+        choices: [
+          { type: "goto", label: "Along the ledge", target: "icyLedge" },
+          { type: "goto", label: "Through the gap", target: "windGap" }
+        ]
+      },
+      icyLedge: {
+        text: "A massive figure stands motionless at the ledge's edge, frost thick across its shoulders, utterly unbothered by the wind trying to take everything else off the mountain.",
+        choices: [{ type: "combat", label: "Fight the Frostbitten Sentinel", enemyId: "theFrostbittenSentinel", target: "holdConverge" }]
+      },
+      windGap: {
+        text: "Something enormous draws breath ahead, the sound alone rattling loose stone free from the walls.",
+        choices: [{ type: "combat", label: "Fight the Storm-Voiced Herald", enemyId: "theStormVoicedHerald", target: "holdConverge" }]
+      },
+      holdConverge: {
+        text: "Both paths meet at the mouth of the hold proper, a carved stone archway easily five times your height, old and deliberately built to intimidate.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered rune-stone stands just inside the archway, carved deep enough to have survived weather that's worn everything else smooth.",
+        choices: [
+          { type: "discover", label: "Study the rune-stone (Rune Vision)", skillId: "runeVision", spellId: "giantskinRune", target: "deeperHold" },
+          { type: "goto", label: "Move on", target: "deeperHold" }
+        ]
+      },
+      deeperHold: {
+        text: "The passage widens into a hall built at a scale that makes you feel distinctly like an afterthought.",
+        choices: [{ type: "goto", label: "Press onward", target: "bruteFight" }]
+      },
+      bruteFight: {
+        text: "A broad-shouldered figure cracks its knuckles at the sight of you, grinning with too many teeth for the expression to be friendly.",
+        choices: [{ type: "combat", label: "Fight the Iron-Jawed Brute", enemyId: "theIronJawedBrute", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The hall narrows near its far end, something massive shifting just out of sight around the bend — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The Warden doesn't so much attack as simply stop being an obstacle and start being a threat.",
+        choices: [{ type: "combat", label: "Fight the Mountain-Backed Warden", enemyId: "theMountainBackedWarden", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The hall opens onto a throne room carved straight from the mountain's own rock, a stolen weapon resting across the arm of a throne built for someone considerably larger than you.",
+        choices: [{ type: "goto", label: "Enter", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Thrym rises from his throne unhurried, entirely unconcerned, like he's been expecting this exact conversation for a while now.",
+        choices: [{ type: "combat", label: "Face Thrym", enemyId: "thrym", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The throne room goes quiet, wind still howling somewhere far above. Whatever Thrym took, it's yours again — for now, at least.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -4167,6 +4350,42 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/anansis-gambit/pre-boss.png",
     bossRoom: "assets/images/anansis-gambit/boss-room.png",
     epilogue: "assets/images/anansis-gambit/epilogue.png"
+  },
+  ghillieDhusHollow: {
+    hollowThreshold: "assets/images/ghillie-dhus-hollow/hollow-threshold.png",
+    wovenPath: "assets/images/ghillie-dhus-hollow/woven-path.png",
+    thornFight: "assets/images/ghillie-dhus-hollow/thorn-fight.png",
+    hollowLoot: "assets/images/ghillie-dhus-hollow/hollow-loot.png",
+    fork: "assets/images/ghillie-dhus-hollow/fork.png",
+    witheredGlade: "assets/images/ghillie-dhus-hollow/withered-glade.png",
+    boundThicket: "assets/images/ghillie-dhus-hollow/bound-thicket.png",
+    groveConverge: "assets/images/ghillie-dhus-hollow/grove-converge.png",
+    discoverRoom: "assets/images/ghillie-dhus-hollow/discover-room.png",
+    deeperHollow: "assets/images/ghillie-dhus-hollow/deeper-hollow.png",
+    boundlessFight: "assets/images/ghillie-dhus-hollow/deeper-hollow.png",
+    vigilCheck: "assets/images/ghillie-dhus-hollow/vigil-check.png",
+    extraFight: "assets/images/ghillie-dhus-hollow/vigil-check.png",
+    preBoss: "assets/images/ghillie-dhus-hollow/pre-boss.png",
+    bossRoom: "assets/images/ghillie-dhus-hollow/boss-room.png",
+    epilogue: "assets/images/ghillie-dhus-hollow/epilogue.png"
+  },
+  thrymsHold: {
+    holdApproach: "assets/images/thryms-hold/hold-approach.png",
+    outerSlope: "assets/images/thryms-hold/outer-slope.png",
+    thrallFight: "assets/images/thryms-hold/thrall-fight.png",
+    slopeLoot: "assets/images/thryms-hold/slope-loot.png",
+    fork: "assets/images/thryms-hold/fork.png",
+    icyLedge: "assets/images/thryms-hold/icy-ledge.png",
+    windGap: "assets/images/thryms-hold/wind-gap.png",
+    holdConverge: "assets/images/thryms-hold/hold-converge.png",
+    discoverRoom: "assets/images/thryms-hold/discover-room.png",
+    deeperHold: "assets/images/thryms-hold/deeper-hold.png",
+    bruteFight: "assets/images/thryms-hold/brute-fight.png",
+    vigilCheck: "assets/images/thryms-hold/vigil-check.png",
+    extraFight: "assets/images/thryms-hold/vigil-check.png",
+    preBoss: "assets/images/thryms-hold/pre-boss.png",
+    bossRoom: "assets/images/thryms-hold/boss-room.png",
+    epilogue: "assets/images/thryms-hold/epilogue.png"
   }
 };
 
