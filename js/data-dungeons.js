@@ -481,6 +481,19 @@ const DUNGEONS = {
       "Every Samhain, something comes up out of Oweynagat that shouldn't. Most years, it goes back down on its own. " +
       "This year, somebody has to make sure of it."
   },
+  hoichisRequiem: {
+    id: "hoichisRequiem",
+    name: "Hoichi's Requiem",
+    difficulty: "Master",
+    musicSrc: "assets/audio/hoichis-requiem-theme.mp3",
+    hotspotColor: "#2a3a52",
+    mapHotspot: { top: "55%", left: "65%" },
+    culture: "yorenshi",
+    image: "assets/images/hoichis-requiem.png",
+    description:
+      "The fleet sank centuries ago, and the court still hasn't accepted the story's over. " +
+      "Every night, somebody's made to sing it again. Tonight, that somebody is you."
+  },
   yamaubasWood: {
     id: "yamaubasWood",
     name: "Yamauba's Wood",
@@ -3957,6 +3970,85 @@ const DUNGEON_CONTENT = {
       }
     }
   },
+  hoichisRequiem: {
+    startRoomId: "courtGate",
+    rooms: {
+      courtGate: {
+        text: "A weathered gate marks the edge of the grounds, faint music already drifting from somewhere beyond it — too clear for how old this place is supposed to be.",
+        choices: [{ type: "goto", label: "Pass through the gate", target: "approachPath" }]
+      },
+      approachPath: {
+        text: "The path winds through overgrown stone lanterns, every one of them somehow still lit.",
+        choices: [{ type: "goto", label: "Continue", target: "drummerFight" }]
+      },
+      drummerFight: {
+        text: "A phantom drummer keeps rigid time at the path's edge, still counting a rhythm for a performance that ended a very long time ago.",
+        choices: [{ type: "combat", label: "Fight the Drum-Bound Phantom", enemyId: "theDrumBoundPhantom", target: "courtLoot" }]
+      },
+      courtLoot: {
+        text: "Tucked beneath a fallen lantern, a scrap of old ore has sat undisturbed by the endless procession passing it by.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits toward the theater proper — one way through the seated audience hall, the other around the backstage passage.",
+        choices: [
+          { type: "goto", label: "Through the audience hall", target: "audienceHall" },
+          { type: "goto", label: "Around the backstage passage", target: "backstageHall" }
+        ]
+      },
+      audienceHall: {
+        text: "A masked noble sits rigid among empty seats, applauding steadily at nothing you can see.",
+        choices: [{ type: "combat", label: "Fight the Clapping Noble", enemyId: "theClappingNoble", target: "theaterConverge" }]
+      },
+      backstageHall: {
+        text: "Something plays the same phrase over and over behind a torn curtain, never once finishing it.",
+        choices: [{ type: "combat", label: "Fight the Wailing Strings", enemyId: "theWailingStrings", target: "theaterConverge" }]
+      },
+      theaterConverge: {
+        text: "Both paths meet at the theater's central stage, the boards worn smooth by feet that stopped needing to breathe a long time ago.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered exorcism scroll hangs at the stage's edge, old warding script inked deep enough to have outlasted everything around it.",
+        choices: [
+          { type: "discover", label: "Study the scroll (Way of the Onmyoji)", skillId: "wayOnmyoji", spellId: "heikesLament", target: "deeperTheater" },
+          { type: "goto", label: "Move on", target: "deeperTheater" }
+        ]
+      },
+      deeperTheater: {
+        text: "Behind the stage, a corridor of dressing rooms stretches deeper into the theater, every mirror in them fogged over from the inside.",
+        choices: [{ type: "goto", label: "Press onward", target: "sentinelFight" }]
+      },
+      sentinelFight: {
+        text: "A robed figure blocks the corridor, enforcing a rule it's clearly stated many times before: nobody leaves before the tale is finished.",
+        choices: [{ type: "combat", label: "Fight the Court Sentinel", enemyId: "theCourtSentinel", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The corridor narrows toward a final door, faint music leaking from beneath it — a chance to slip past unnoticed, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A bound performer turns toward you mid-note, strings still cutting into fingers that stopped bleeding a long time ago.",
+        choices: [{ type: "combat", label: "Fight the Bound Performer", enemyId: "theBoundPerformer", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The final door opens onto a grand hall built to look like the deck of a ship, water somehow audible beneath the floorboards.",
+        choices: [{ type: "goto", label: "Enter the hall", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Drowned Commander rises from a seat at the hall's head, fan already open, entirely certain the battle isn't finished yet.",
+        choices: [{ type: "combat", label: "Face the Drowned Commander", enemyId: "theDrownedCommander", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The hall goes silent, the sound of water fading beneath the floor. For the first time in longer than anyone can say, the story finally stops.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
   yamaubasWood: {
     startRoomId: "forestEdge",
     rooms: {
@@ -4880,6 +4972,24 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/cave-of-cruachan/pre-boss.png",
     bossRoom: "assets/images/cave-of-cruachan/boss-room.png",
     epilogue: "assets/images/cave-of-cruachan/epilogue.png"
+  },
+  hoichisRequiem: {
+    courtGate: "assets/images/hoichis-requiem/court-gate.png",
+    approachPath: "assets/images/hoichis-requiem/approach-path.png",
+    drummerFight: "assets/images/hoichis-requiem/drummer-fight.png",
+    courtLoot: "assets/images/hoichis-requiem/court-loot.png",
+    fork: "assets/images/hoichis-requiem/fork.png",
+    audienceHall: "assets/images/hoichis-requiem/audience-hall.png",
+    backstageHall: "assets/images/hoichis-requiem/backstage-hall.png",
+    theaterConverge: "assets/images/hoichis-requiem/theater-converge.png",
+    discoverRoom: "assets/images/hoichis-requiem/discover-room.png",
+    deeperTheater: "assets/images/hoichis-requiem/deeper-theater.png",
+    sentinelFight: "assets/images/hoichis-requiem/sentinel-fight.png",
+    vigilCheck: "assets/images/hoichis-requiem/vigil-check.png",
+    extraFight: "assets/images/hoichis-requiem/vigil-check.png",
+    preBoss: "assets/images/hoichis-requiem/pre-boss.png",
+    bossRoom: "assets/images/hoichis-requiem/boss-room.png",
+    epilogue: "assets/images/hoichis-requiem/epilogue.png"
   },
   yamaubasWood: {
     forestEdge: "assets/images/yamaubas-wood/forest-edge.png",

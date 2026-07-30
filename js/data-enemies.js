@@ -2642,5 +2642,72 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["A Scale of Ellén Trechend", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theDrumBoundPhantom: {
+    id: "theDrumBoundPhantom",
+    name: "The Drum-Bound Phantom",
+    description: "Still keeping time for a performance that ended in the sea centuries ago. Doesn't know how to stop, and hasn't been given permission to try.",
+    image: "assets/images/enemies/the-drum-bound-phantom.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theClappingNoble: {
+    id: "theClappingNoble",
+    name: "The Clapping Noble",
+    description: "Masked, seated, and applauding at a performance only it can still hear. Doesn't stop when you enter. Doesn't stop for anything.",
+    image: "assets/images/enemies/the-clapping-noble.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theWailingStrings: {
+    id: "theWailingStrings",
+    name: "The Wailing Strings",
+    description: "Plays the same phrase over and over, never quite finishing it, strings visibly cutting into fingers that stopped bleeding a long time ago.",
+    image: "assets/images/enemies/the-wailing-strings.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theCourtSentinel: {
+    id: "theCourtSentinel",
+    name: "The Court Sentinel",
+    description: "Enforces one rule, and only one: nobody leaves before the tale is finished. It's never once been finished.",
+    image: "assets/images/enemies/the-court-sentinel.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theBoundPerformer: {
+    id: "theBoundPerformer",
+    name: "The Bound Performer",
+    description: "Was made to play until the audience allowed him to stop. The audience is still here. He's still playing.",
+    image: "assets/images/enemies/the-bound-performer.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theDrownedCommander: {
+    id: "theDrownedCommander",
+    name: "The Drowned Commander",
+    description: "Led a fleet into the sea and never once accepted that the battle ended. As far as he's concerned, the story still isn't over.",
+    image: "assets/images/enemies/the-drowned-commander.png",
+    deathImage: "assets/images/deaths/the-drowned-commander-death.png",
+    hitPoints: 90,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["The Drowned Commander's Fan", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };
