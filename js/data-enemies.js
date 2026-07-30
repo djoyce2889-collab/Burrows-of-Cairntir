@@ -2508,5 +2508,139 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Sasabonsam's Claw", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theHerald: {
+    id: "theHerald",
+    name: "The Herald",
+    description: "A jagged, half-formed wolf-shape tearing itself into existence one snarl at a time, jaw stretched wider than any real skull should allow.",
+    image: "assets/images/enemies/the-herald.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theSecondVoice: {
+    id: "theSecondVoice",
+    name: "The Second Voice",
+    description: "Throat torn open in a permanent, unnatural howl, ribs showing through hide stretched far too tight over a frame far too large.",
+    image: "assets/images/enemies/the-second-voice.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theMarkedOne: {
+    id: "theMarkedOne",
+    name: "The Marked One",
+    description: "Hide crawling with shifting death-markings that never quite resolve into anything readable, claws long enough to drag stone.",
+    image: "assets/images/enemies/the-marked-one.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theTrailingShape: {
+    id: "theTrailingShape",
+    name: "The Trailing Shape",
+    description: "Low, hunched, impossibly patient, limbs bent at angles nothing living should bend to. Never fully solid until it's already closing.",
+    image: "assets/images/enemies/the-trailing-shape.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theThirdCry: {
+    id: "theThirdCry",
+    name: "The Third Cry",
+    description: "More open wound than wolf, mouth stretched into something closer to a scream than a bite. By the old telling, this is the one you don't want to hear.",
+    image: "assets/images/enemies/the-third-cry.png",
+    hitPoints: 44,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theWinterBornMatriarch: {
+    id: "theWinterBornMatriarch",
+    name: "The Winter-Born Matriarch",
+    description: "Towering, skeletal, ice-cracked hide split open in places to reveal something colder still underneath. The other five are only fragments of her.",
+    image: "assets/images/enemies/the-winter-born-matriarch.png",
+    deathImage: "assets/images/deaths/the-winter-born-matriarch-death.png",
+    hitPoints: 90,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["The Matriarch's Frost-Shard", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theBlightWing: {
+    id: "theBlightWing",
+    name: "The Blight-Wing",
+    description: "Copper-red feathers, and every plant beneath its flight path withers within the hour. It hasn't landed anywhere green in a very long time.",
+    image: "assets/images/enemies/the-blight-wing.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theCaveBornWolf: {
+    id: "theCaveBornWolf",
+    name: "The Cave-Born Wolf",
+    description: "Came up out of Oweynagat with the rest of the flood and never went back down. Bigger than it should be, and hungrier.",
+    image: "assets/images/enemies/the-cave-born-wolf.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theRootTuskedBoar: {
+    id: "theRootTuskedBoar",
+    name: "The Root-Tusked Boar",
+    description: "Tusks grown long enough to tear stone, let alone flesh. One of the first things out of the cave, and in no hurry to go back.",
+    image: "assets/images/enemies/the-root-tusked-boar.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theAshMarkedStalker: {
+    id: "theAshMarkedStalker",
+    name: "The Ash-Marked Stalker",
+    description: "Scorched black along one whole side, marked by proximity to something with far worse breath than fire.",
+    image: "assets/images/enemies/the-ash-marked-stalker.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theTripleShadow: {
+    id: "theTripleShadow",
+    name: "The Triple-Shadow",
+    description: "Three heads on a frame too small to properly carry them, unstable and half-formed, like the cave hasn't finished deciding what it wants to be.",
+    image: "assets/images/enemies/the-triple-shadow.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  ellenTrechend: {
+    id: "ellenTrechend",
+    name: "Ellén Trechend",
+    description: "Three heads, three throats, three different kinds of fire. Came out of Oweynagat on Samhain and hasn't found a reason worth going back for yet.",
+    image: "assets/images/enemies/ellen-trechend.png",
+    deathImage: "assets/images/deaths/ellen-trechend-death.png",
+    hitPoints: 92,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["A Scale of Ellén Trechend", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };

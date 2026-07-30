@@ -468,6 +468,19 @@ const DUNGEONS = {
       "The road's always been bad luck after dark, and everyone local knows to be indoors well before the moon's fully up. " +
       "Nobody's ever agreed on why. They've just always known to listen."
   },
+  caveOfCruachan: {
+    id: "caveOfCruachan",
+    name: "The Cave of Cruachan",
+    difficulty: "Master",
+    musicSrc: "assets/audio/cave-of-cruachan-theme.mp3",
+    hotspotColor: "#7a2e1a",
+    mapHotspot: { top: "50%", left: "55%" },
+    culture: "gaeldrim",
+    image: "assets/images/cave-of-cruachan.png",
+    description:
+      "Every Samhain, something comes up out of Oweynagat that shouldn't. Most years, it goes back down on its own. " +
+      "This year, somebody has to make sure of it."
+  },
   yamaubasWood: {
     id: "yamaubasWood",
     name: "Yamauba's Wood",
@@ -491,6 +504,19 @@ const DUNGEONS = {
     image: "assets/images/sasabonsams-reach.png",
     description:
       "Everything under this canopy hunts the same way — quiet, patient, and from somewhere well above where you thought to look."
+  },
+  theHowlingFrost: {
+    id: "theHowlingFrost",
+    name: "The Howling Frost",
+    difficulty: "Master",
+    musicSrc: "assets/audio/the-howling-frost-theme.mp3",
+    hotspotColor: "#3a5a7a",
+    mapHotspot: { top: "60%", left: "20%" },
+    culture: "deveran",
+    image: "assets/images/the-howling-frost.png",
+    description:
+      "Three barks mean a death is close, the old telling goes, and the pass has never once gone quiet after the first. " +
+      "The frost here never fully thaws, not even in high summer. Nobody local asks why anymore."
   }
 };
 
@@ -3852,6 +3878,85 @@ const DUNGEON_CONTENT = {
       }
     }
   },
+  caveOfCruachan: {
+    startRoomId: "caveMouth",
+    rooms: {
+      caveMouth: {
+        text: "The cave mouth opens into the hillside like something torn rather than dug, warm, foul air pushing out past you in slow, steady waves.",
+        choices: [{ type: "goto", label: "Enter the cave", target: "scorchedTunnel" }]
+      },
+      scorchedTunnel: {
+        text: "The tunnel walls are streaked black in long scorch-marks, old but never quite faded, like the burning happens more than once.",
+        choices: [{ type: "goto", label: "Continue", target: "wingFight" }]
+      },
+      wingFight: {
+        text: "Something copper-red drops from a crack in the ceiling, wings beating hard enough to wither the moss along the wall on contact.",
+        choices: [{ type: "combat", label: "Fight the Blight-Wing", enemyId: "theBlightWing", target: "tunnelLoot" }]
+      },
+      tunnelLoot: {
+        text: "Wedged into a crack in the scorched rock, a scrap of hide has been there long enough to stop smelling like anything burned at all.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The tunnel splits ahead — one way descending toward a low, wet passage, the other opening into a wider chamber scattered with old bone.",
+        choices: [
+          { type: "goto", label: "Down the wet passage", target: "lowPassage" },
+          { type: "goto", label: "Into the bone chamber", target: "boneChamber" }
+        ]
+      },
+      lowPassage: {
+        text: "Something large moves low and fast through the dark ahead, jaws already open before you've seen the rest of it.",
+        choices: [{ type: "combat", label: "Fight the Cave-Born Wolf", enemyId: "theCaveBornWolf", target: "cruachanConverge" }]
+      },
+      boneChamber: {
+        text: "A shape roots through the old bone piled across the chamber floor, tusks long enough to have done at least some of that damage itself.",
+        choices: [{ type: "combat", label: "Fight the Root-Tusked Boar", enemyId: "theRootTuskedBoar", target: "cruachanConverge" }]
+      },
+      cruachanConverge: {
+        text: "Both routes open onto a wide cavern, the air noticeably warmer here, firelight flickering from somewhere still deeper in.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "An old carved stone stands at the cavern's edge, warding symbols cut deep and re-cut more than once by hands that clearly kept coming back.",
+        choices: [
+          { type: "discover", label: "Study the warding stone (Path of the Barrow)", skillId: "pathBarrow", spellId: "otherworldsThreshold", target: "deeperCavern" },
+          { type: "goto", label: "Move on", target: "deeperCavern" }
+        ]
+      },
+      deeperCavern: {
+        text: "The cavern narrows toward a glowing seam in the rock, heat radiating off it in slow, uneven pulses.",
+        choices: [{ type: "goto", label: "Press onward", target: "stalkerFight" }]
+      },
+      stalkerFight: {
+        text: "Something scorched black down one whole side steps out of the heat-shimmer, moving like it's used to worse than you.",
+        choices: [{ type: "combat", label: "Fight the Ash-Marked Stalker", enemyId: "theAshMarkedStalker", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The passage narrows sharply here, something with too many heads shifting restlessly just past the light — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "Three half-formed heads turn toward you at once, none of them quite finished, all of them very interested.",
+        choices: [{ type: "combat", label: "Fight the Triple-Shadow", enemyId: "theTripleShadow", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The passage opens onto a vast, glowing chamber, the walls black with generations of scorch, the heat here almost too much to stand in.",
+        choices: [{ type: "goto", label: "Enter the chamber", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Ellén Trechend uncoils from the chamber's far end, three heads rising in three different directions, each one already drawing breath.",
+        choices: [{ type: "combat", label: "Face Ellén Trechend", enemyId: "ellenTrechend", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The chamber goes dark and quiet, the heat finally starting to fade. Whatever comes up out of Oweynagat next Samhain, it won't be this.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
   yamaubasWood: {
     startRoomId: "forestEdge",
     rooms: {
@@ -4006,6 +4111,85 @@ const DUNGEON_CONTENT = {
       },
       epilogue: {
         text: "The canopy goes quiet, the half-light settling back to ordinary shade. Whatever else lives up there, it's staying up there for now.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  theHowlingFrost: {
+    startRoomId: "frozenThreshold",
+    rooms: {
+      frozenThreshold: {
+        text: "The pass ahead is locked in frost thick enough to crack underfoot, breath fogging in air that's colder than the season has any right to be.",
+        choices: [{ type: "goto", label: "Enter the pass", target: "howlingPath" }]
+      },
+      howlingPath: {
+        text: "A single howl carries down the pass, long and distant. It won't be the last one tonight.",
+        choices: [{ type: "goto", label: "Continue", target: "heraldFight" }]
+      },
+      heraldFight: {
+        text: "Something tears itself into shape from the drifting snow ahead, jaw stretched wide, form still half-arriving.",
+        choices: [{ type: "combat", label: "Fight the Herald", enemyId: "theHerald", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "Frozen into the ice at the pass's edge, a scrap of old ore has sat undisturbed since long before tonight's frost.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The pass splits around a jagged ice-cleft — one way through the narrow crack in the rock, the other around a frozen hollow.",
+        choices: [
+          { type: "goto", label: "Through the ice-cleft", target: "iceCleft" },
+          { type: "goto", label: "Around the frozen hollow", target: "frozenHollow" }
+        ]
+      },
+      iceCleft: {
+        text: "A second howl answers the first from somewhere very close, and this one has teeth behind it.",
+        choices: [{ type: "combat", label: "Fight the Second Voice", enemyId: "theSecondVoice", target: "howlConverge" }]
+      },
+      frozenHollow: {
+        text: "Something crouches in the hollow, hide crawling with markings that shift every time you try to read them.",
+        choices: [{ type: "combat", label: "Fight the Marked One", enemyId: "theMarkedOne", target: "howlConverge" }]
+      },
+      howlConverge: {
+        text: "Both paths meet at a wide frost-glazed shelf, the snow scored with claw-marks far too large and far too many.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered standing stone rises from the shelf, old warding carvings still sharp despite the ice crusted thick across its face.",
+        choices: [
+          { type: "discover", label: "Study the standing stone (Ancestral Rite)", skillId: "ancestralEmyrs", spellId: "winterwardVigil", target: "deeperFrost" },
+          { type: "goto", label: "Move on", target: "deeperFrost" }
+        ]
+      },
+      deeperFrost: {
+        text: "The pass narrows further, frost thickening on every surface, something patient pacing just at the edge of sight.",
+        choices: [{ type: "goto", label: "Press onward", target: "trailingFight" }]
+      },
+      trailingFight: {
+        text: "It's been following for a while now, low and hunched, limbs bending at angles nothing living should manage.",
+        choices: [{ type: "combat", label: "Fight the Trailing Shape", enemyId: "theTrailingShape", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The pass bends sharply here, something huge shifting just beyond the frost-fogged air — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A third howl breaks close and raw, more scream than sound. By the old telling, this is the one you don't want to hear.",
+        choices: [{ type: "combat", label: "Fight the Third Cry", enemyId: "theThirdCry", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The pass opens onto a wide frozen basin, ice cracked in a pattern radiating outward from something enormous still standing at its center.",
+        choices: [{ type: "goto", label: "Enter the basin", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Winter-Born Matriarch turns to face you slowly, ice-cracked hide splitting further with the motion, cold rolling off her in a wave that reaches you before she does.",
+        choices: [{ type: "combat", label: "Face the Winter-Born Matriarch", enemyId: "theWinterBornMatriarch", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The basin goes still, the cold finally beginning to loosen its grip. Somewhere far down the pass, the frost is already starting to thaw.",
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
@@ -4679,6 +4863,24 @@ const ROOM_IMAGES = {
     bossRoom: "assets/images/dullahans-ride/boss-room.png",
     epilogue: "assets/images/dullahans-ride/epilogue.png"
   },
+  caveOfCruachan: {
+    caveMouth: "assets/images/cave-of-cruachan/cave-mouth.png",
+    scorchedTunnel: "assets/images/cave-of-cruachan/scorched-tunnel.png",
+    wingFight: "assets/images/cave-of-cruachan/wing-fight.png",
+    tunnelLoot: "assets/images/cave-of-cruachan/tunnel-loot.png",
+    fork: "assets/images/cave-of-cruachan/fork.png",
+    lowPassage: "assets/images/cave-of-cruachan/low-passage.png",
+    boneChamber: "assets/images/cave-of-cruachan/bone-chamber.png",
+    cruachanConverge: "assets/images/cave-of-cruachan/cruachan-converge.png",
+    discoverRoom: "assets/images/cave-of-cruachan/discover-room.png",
+    deeperCavern: "assets/images/cave-of-cruachan/deeper-cavern.png",
+    stalkerFight: "assets/images/cave-of-cruachan/stalker-fight.png",
+    vigilCheck: "assets/images/cave-of-cruachan/vigil-check.png",
+    extraFight: "assets/images/cave-of-cruachan/vigil-check.png",
+    preBoss: "assets/images/cave-of-cruachan/pre-boss.png",
+    bossRoom: "assets/images/cave-of-cruachan/boss-room.png",
+    epilogue: "assets/images/cave-of-cruachan/epilogue.png"
+  },
   yamaubasWood: {
     forestEdge: "assets/images/yamaubas-wood/forest-edge.png",
     duskPath: "assets/images/yamaubas-wood/dusk-path.png",
@@ -4714,6 +4916,24 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/sasabonsams-reach/pre-boss.png",
     bossRoom: "assets/images/sasabonsams-reach/boss-room.png",
     epilogue: "assets/images/sasabonsams-reach/epilogue.png"
+  },
+  theHowlingFrost: {
+    frozenThreshold: "assets/images/the-howling-frost/frozen-threshold.png",
+    howlingPath: "assets/images/the-howling-frost/howling-path.png",
+    heraldFight: "assets/images/the-howling-frost/herald-fight.png",
+    pathLoot: "assets/images/the-howling-frost/path-loot.png",
+    fork: "assets/images/the-howling-frost/fork.png",
+    iceCleft: "assets/images/the-howling-frost/ice-cleft.png",
+    frozenHollow: "assets/images/the-howling-frost/frozen-hollow.png",
+    howlConverge: "assets/images/the-howling-frost/howl-converge.png",
+    discoverRoom: "assets/images/the-howling-frost/discover-room.png",
+    deeperFrost: "assets/images/the-howling-frost/deeper-frost.png",
+    trailingFight: "assets/images/the-howling-frost/trailing-fight.png",
+    vigilCheck: "assets/images/the-howling-frost/vigil-check.png",
+    extraFight: "assets/images/the-howling-frost/vigil-check.png",
+    preBoss: "assets/images/the-howling-frost/pre-boss.png",
+    bossRoom: "assets/images/the-howling-frost/boss-room.png",
+    epilogue: "assets/images/the-howling-frost/epilogue.png"
   }
 };
 
