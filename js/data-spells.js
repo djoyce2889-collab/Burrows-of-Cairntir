@@ -10,7 +10,9 @@ const SPELLS = {
     { id: "mercysTouch", name: "Mercy's Touch", type: "onHitHeal", description: "Every blow that lands against you calls forth a measure of healing in turn." },
     { id: "deepCurrent", name: "Deep Current", type: "onHitManaRegen", description: "Every blow that lands against you stirs the deep waters, returning mana." },
     { id: "mothersCircle", name: "Mother's Circle", type: "onHitGroupHeal", description: "When harm touches any of your own, the whole circle is mended a little." },
-    { id: "undertow", name: "Undertow", type: "onHitDebuff", description: "Whatever strikes you and yours is dragged down in turn, weakened for its trouble." }
+    { id: "undertow", name: "Undertow", type: "onHitDebuff", description: "Whatever strikes you and yours is dragged down in turn, weakened for its trouble." },
+    { id: "canopysWard", name: "Canopy's Ward", type: "absorb", description: "Calls on the cover of the high canopy to soften every blow that lands against you for a time." },
+    { id: "swampboundVigil", name: "Swampbound Vigil", type: "groupAbsorb", description: "Extends the swamp's own protection over your whole party for a time, reducing every blow that lands against any of you." }
   ],
 
   riteUnmaking: [
@@ -19,7 +21,8 @@ const SPELLS = {
     { id: "blindingCurse", name: "Blinding Curse", type: "accuracyDebuff", description: "Weakens only the enemy's own aim, making them more likely to miss you, without changing how easy they are to strike." },
     { id: "cripplingCurse", name: "Crippling Curse", type: "damageDebuff", description: "Weakens the raw force behind the enemy's blows, without affecting their aim." },
     { id: "exposingCurse", name: "Exposing Curse", type: "defenseDebuff", description: "Leaves the enemy's guard down, making them easier for you specifically to strike." },
-    { id: "silencingCurse", name: "Silencing Curse", type: "spellLock", description: "Prevents the enemy from calling on their own magic next turn, forcing a plain attack instead." }
+    { id: "silencingCurse", name: "Silencing Curse", type: "spellLock", description: "Prevents the enemy from calling on their own magic next turn, forcing a plain attack instead." },
+    { id: "unravelingRite", name: "Unraveling Rite", type: "debuff", description: "Loosens the threads holding your foe's strength together, weakening them for a time." }
   ],
 
   riteThunderWrath: [
@@ -54,7 +57,10 @@ const SPELLS = {
     { id: "somnusbind", name: "Somnusbind", type: "stun", description: "A binding of pure will that drops your foe into a sudden, total sleep, costing them their next action." },
     { id: "circleOfAegis", name: "Circle of Aegis", type: "groupAbsorb", description: "Extends a ward of raw elemental force over your whole party for a time, reducing every blow that lands against any of you." },
     { id: "mindshatter", name: "Mindshatter", type: "damage", description: "A direct assault on your foe's mind, striking with raw psychic force." },
-    { id: "arcaneCataclysm", name: "Arcane Cataclysm", type: "burst", description: "The raw elements unleashed all at once, in a single devastating strike." }
+    { id: "arcaneCataclysm", name: "Arcane Cataclysm", type: "burst", description: "The raw elements unleashed all at once, in a single devastating strike." },
+    { id: "elementalSurge", name: "Elemental Surge", type: "buff", description: "Calls up a surge of raw current that sharpens every strike you land for a time." },
+    { id: "rootwardensGift", name: "Rootwarden's Gift", type: "hot", description: "A slow, steady restoration drawn from the old growth itself, mending you over several rounds." },
+    { id: "winterwardVigil", name: "Winterward Vigil", type: "acBuff", description: "Wraps you in a cold, unyielding ward, hardening you against incoming blows for a time." }
   ],
 
   runeBlade: [
@@ -72,7 +78,9 @@ const SPELLS = {
     { id: "fateglimpse", name: "Fateglimpse", type: "guaranteedFollowerAction", description: "A brief look at how this fight ends, lent to a companion — their next action cannot fail." },
     { id: "seersWarning", name: "Seer's Warning", type: "guaranteedDodge", description: "An omen-rune shows you the blow before it falls — your foe's next attack cannot land." },
     { id: "threadcutVision", name: "Threadcut Vision", type: "guaranteedStun", description: "A vision of a thread best cut now — your foe loses their next turn, without fail." },
-    { id: "omensEnd", name: "Omen's End", type: "execute", description: "A vision of the fight's final blow, made real — deals far greater harm the closer your foe already stands to defeat." }
+    { id: "omensEnd", name: "Omen's End", type: "execute", description: "A vision of the fight's final blow, made real — deals far greater harm the closer your foe already stands to defeat." },
+    { id: "serpentsSightRune", name: "Serpent's Sight Rune", type: "guaranteedHit", description: "A carved vision of the strike before it lands — your next attack cannot miss." },
+    { id: "giantskinRune", name: "Giantskin Rune", type: "fortify", description: "Etches a rune of borrowed hide across your own, granting a temporary reserve of extra Hit Points." }
   ],
   runeCurse: [
     { id: "witheringHex", name: "Withering Hex", type: "dot", description: "A rune that saps your foe's strength, festering over a few rounds." },
@@ -105,7 +113,8 @@ const SPELLS = {
     { id: "stormcall", name: "Stormcall", type: "dot", description: "A small piece of a much larger storm, called down to batter your foe over several rounds." },
     { id: "windshear", name: "Windshear", type: "stun", description: "A gust sharp enough to knock your foe clean off their feet, costing them their next turn." },
     { id: "wildfireBolt", name: "Wildfire Bolt", type: "burst", description: "A lightning-sparked bolt of raw wildfire, striking with devastating force." },
-    { id: "ashgale", name: "Ashgale", type: "dot", description: "A choking wind of embers and ash that clings to your foe, burning over several rounds." }
+    { id: "ashgale", name: "Ashgale", type: "dot", description: "A choking wind of embers and ash that clings to your foe, burning over several rounds." },
+    { id: "ravensWarningPath", name: "Raven's Warning", type: "guaranteedDodge", description: "A flicker of foresight, the same kind that's warned warriors for centuries — you see the blow coming and step clean out of its path." }
   ],
   pathBarrow: [
     {
@@ -123,7 +132,9 @@ const SPELLS = {
     { id: "graspOfTheDead", name: "Grasp of the Dead", type: "dot", description: "Unseen hands from below drag at your foe, over and over." },
     { id: "bonewhisper", name: "Bonewhisper", type: "fear", description: "A whisper from old bones that unravels your foe's nerve, leaving them too shaken to act some rounds." },
     { id: "shroudtouch", name: "Shroudtouch", type: "resurrect", description: "A burial-cloth touch that calls a fallen companion back from the edge, restoring them to the fight." },
-    { id: "wraithcall", name: "Wraithcall", type: "burst", description: "A restless spirit hurled at your foe in a single devastating strike." }
+    { id: "wraithcall", name: "Wraithcall", type: "burst", description: "A restless spirit hurled at your foe in a single devastating strike." },
+    { id: "hostboundWard", name: "Hostbound Ward", type: "guard", description: "Calls on the old road-wardings, punishing anything that strikes at you or yours while it holds." },
+    { id: "otherworldsThreshold", name: "Otherworld's Threshold", type: "damage", description: "Tears open a narrow seam to the Otherworld just long enough to strike through it." }
   ],
 
   wayTengu: [
@@ -132,7 +143,8 @@ const SPELLS = {
     { id: "rootStanceDiscipline", name: "Root-Stance Discipline", type: "guard", description: "A grounding stance that braces against incoming harm." },
     { id: "featherStep", name: "Feather-Step", type: "dodgeBuff", description: "Inhuman lightness of foot, slipping past incoming blows." },
     { id: "tengusEye", name: "Tengu's Eye", type: "guaranteedHit", description: "Perfect martial clarity — your next strike cannot miss." },
-    { id: "mountainBreaker", name: "Mountain-Breaker", type: "execute", description: "A finishing blow that lands far harder against a badly wounded foe." }
+    { id: "mountainBreaker", name: "Mountain-Breaker", type: "execute", description: "A finishing blow that lands far harder against a badly wounded foe." },
+    { id: "windingGale", name: "Winding Gale", type: "guaranteedDodge", description: "A sudden gust turns you aside from harm entirely, guaranteeing you dodge the next blow." }
   ],
 
   waySuijin: [
@@ -150,7 +162,8 @@ const SPELLS = {
     { id: "earthForm", name: "Earth Form", type: "acBuff", description: "Your skin hardens to living stone, turning aside blows." },
     { id: "windForm", name: "Wind Form", type: "damageDebuff", description: "A scattering gale saps the force from your foe's every strike." },
     { id: "mistForm", name: "Mist Form", type: "guaranteedDodge", description: "Your body dissolves into drifting mist, letting the next blow pass through you entirely." },
-    { id: "lightningForm", name: "Lightning Form", type: "burst", description: "Lightning wreathes your limbs for a swift, vicious extra strike." }
+    { id: "lightningForm", name: "Lightning Form", type: "burst", description: "Lightning wreathes your limbs for a swift, vicious extra strike." },
+    { id: "wardensEye", name: "Warden's Eye", type: "guaranteedHit", description: "Borrows the watcher's own patient focus — your next strike cannot miss." }
   ],
 
   runeSong: [
@@ -186,6 +199,7 @@ const SPELLS = {
     { id: "nukekubisGrip", name: "Shikigami: Nukekubi's Grip", type: "stun", description: "A detached, flying spirit-head locks your foe in place with sheer dread, unable to act." },
     { id: "gashadokurosEye", name: "Shikigami: Gashadokuro's Eye", type: "guaranteedHit", description: "A vast skeletal spirit's unerring sight shows exactly where your next strike will land." },
     { id: "ubumesGift", name: "Shikigami: Ubume's Gift", type: "manaRefund", description: "A sorrowful spirit's burden, passed briefly into your hands, returns a measure of power to you." },
-    { id: "onryosVigil", name: "Shikigami: Onryō's Vigil", type: "autoRevive", description: "The vengeful spirit keeps watch over the party, ready to pull a fallen ally back from the edge." }
+    { id: "onryosVigil", name: "Shikigami: Onryō's Vigil", type: "autoRevive", description: "The vengeful spirit keeps watch over the party, ready to pull a fallen ally back from the edge." },
+    { id: "heikesLament", name: "Heike's Lament", type: "fear", description: "A fragment of the old unfinished song, sung back at your foe — unraveling their nerve entirely." }
   ]
 };
