@@ -24,7 +24,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--wood-dark);
+  background: var(--wood-dark) url("../assets/images/app-background.png") center / cover no-repeat fixed;
   color: var(--parchment);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -786,6 +786,12 @@ body {
   }
   .cc-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 900px) {
+  .cc-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 /* ------------------------------------------------------------

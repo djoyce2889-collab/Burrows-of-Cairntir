@@ -503,6 +503,7 @@ function syncToggleIcons() {
 
 function goToChooseHeroScreen() {
   showScreen("screen-choose-hero");
+  setPageBackground("assets/images/backgrounds/homebase-bg.png");
   renderChooseHeroScreen();
 }
 
@@ -1551,8 +1552,13 @@ function renderPartyScreen() {
   addBtn.style.display = atLimit ? "none" : "block";
 }
 
+function setPageBackground(imagePath) {
+  document.body.style.backgroundImage = imagePath ? `url("${imagePath}")` : "";
+}
+
 function goToHomebaseScreen() {
   showScreen("screen-homebase");
+  setPageBackground("assets/images/backgrounds/homebase-bg.png");
   playMusic(MAIN_THEME_SRC);
 
   resetDungeonCompanionState();
@@ -2452,6 +2458,8 @@ function renderDungeonList() {
     tabsContainer.appendChild(tabCard);
   });
 
+  setPageBackground(CULTURES[dungeonSelectRegionId].backgroundImage);
+
   const regionDungeons = Object.values(DUNGEONS).filter((d) => d.culture === dungeonSelectRegionId);
 
   regionDungeons.forEach((dungeon) => {
@@ -2483,6 +2491,7 @@ function enterPlaceholderDungeon(dungeon) {
 
 function enterDungeon(dungeonId) {
   const dungeonData = DUNGEON_CONTENT[dungeonId];
+  setPageBackground(CULTURES[DUNGEONS[dungeonId].culture].backgroundImage);
   playMusic(DUNGEONS[dungeonId].musicSrc);
   renderDungeonRoom(dungeonData.startRoomId);
 }

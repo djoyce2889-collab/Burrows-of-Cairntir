@@ -22,6 +22,7 @@ const CULTURES = {
     socialStructure: "Hereditary Clan Chief",
     magicSkillIds: ["ancestralAverick", "ancestralSiuloir", "ancestralEmyrs", "ancestralFetch"],
     accentColor: "#7d5ba6",
+    backgroundImage: "assets/images/backgrounds/deveran-bg.png",
     magicOrigin: "The Deverans hold to the misted Highlands and stone circles of their ancestors — and it is that same bloodline, passed down through the clans, that gives their magic its power."
   },
   drakvarr: {
@@ -42,6 +43,7 @@ const CULTURES = {
     socialStructure: "Warrior-Caste Shamanic Society",
     magicSkillIds: ["runeBlade", "runeVision", "runeCurse", "runeSong"],
     accentColor: "#4f7ca6",
+    backgroundImage: "assets/images/backgrounds/drakvarr-bg.png",
     magicOrigin: "The Drakvarr carve out a hard life among fjord and battle-hall — and their magic is carved too, etched into rune and skin by warriors and shamans alike."
   },
   gaeldrim: {
@@ -63,6 +65,7 @@ const CULTURES = {
     socialStructure: "Túath (Clan Consensus)",
     magicSkillIds: ["pathWild", "pathGrove", "pathStorm", "pathBarrow"],
     accentColor: "#5a8f5a",
+    backgroundImage: "assets/images/backgrounds/gaeldrim-bg.png",
     magicOrigin: "The Gaeldrim dwell among ancient groves, bogs, and green hills — and it is that same living land, older than any people upon it, that gives their magic its power."
   },
   vandiri: {
@@ -84,6 +87,7 @@ const CULTURES = {
     socialStructure: "Devotional Rite-Society",
     magicSkillIds: ["riteThunderWrath", "riteUnmaking", "riteProtection", "riteGriot"],
     accentColor: "#c17a3d",
+    backgroundImage: "assets/images/backgrounds/vandiri-bg.png",
     magicOrigin: "The Vandiri dwell among sun-warmed savanna, tropical rivers, and coastal storm — and it is devotion to the old spirits of that land, given form through sacred rite, that grants their magic its power."
   },
   yorenshi: {
@@ -105,6 +109,7 @@ const CULTURES = {
     socialStructure: "Shrine-Keeper Hierarchy",
     magicSkillIds: ["wayTengu", "waySuijin", "wayYokai", "wayOnmyoji"],
     accentColor: "#d17b9e",
+    backgroundImage: "assets/images/backgrounds/yorenshi-bg.png",
     magicOrigin: "The Yorenshi dwell among mist-wrapped peaks and cherry-blossomed shorelines — and it is devotion to the kami of that land which grants their magic its power."
   }
 };
