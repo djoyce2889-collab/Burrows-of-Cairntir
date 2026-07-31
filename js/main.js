@@ -1717,6 +1717,7 @@ function renderMasteryScreen() {
         card.innerHTML = `
           <div class="cc-card-name">${perk.name}</div>
           <div class="cc-card-desc">${perk.description}</div>
+          <div class="cc-card-image" style="background-image: url('${getPerkImagePath(skillId)}')"></div>
         `;
         card.addEventListener("click", () => {
           setMasteryPick(playerCharacter, skillId, tier, perk.id);
@@ -3763,6 +3764,12 @@ function getRecipeImageSlug(recipeId) {
   return recipeId
     .replace(/^craft/, "")
     .replace(/([A-Z])/g, (match, letter, offset) => (offset > 0 ? "-" : "") + letter.toLowerCase());
+}
+
+function getPerkImagePath(skillId) {
+  const culture = Object.values(CULTURES).find((c) => c.magicSkillIds && c.magicSkillIds.includes(skillId));
+  if (culture) return `assets/images/perks/${culture.id}-magic.png`;
+  return getSkillImagePath(skillId);
 }
 
 function getSkillImagePath(skillId) {

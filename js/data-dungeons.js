@@ -4487,7 +4487,7 @@ const ROOM_IMAGES = {
     gateway: "assets/images/duncairn-keep/gateway.png",
     courtyard: "assets/images/duncairn-keep/courtyard.png",
     wellFind: "assets/images/duncairn-keep/courtyard.png",
-    houndAmbush: "assets/images/duncairn-keep/courtyard.png",
+    houndAmbush: "assets/images/duncairn-keep/hound-ambush.png",
     greatHallDoors: "assets/images/duncairn-keep/great-hall-doors.png",
     greatHallFight: "assets/images/duncairn-keep/great-hall-doors.png",
     greatHall: "assets/images/duncairn-keep/great-hall.png",
