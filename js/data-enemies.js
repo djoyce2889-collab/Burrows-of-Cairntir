@@ -2776,5 +2776,72 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "zombie",
     lootTable: ["The Unburied King's Crown", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theHollowFangTroll: {
+    id: "theHollowFangTroll",
+    name: "The Hollow-Fang Troll",
+    description: "Waits in the narrowest part of the passage, low and hunched, patient in a way nothing that hungry should be.",
+    image: "assets/images/enemies/the-hollow-fang-troll.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theStoneboundTroll: {
+    id: "theStoneboundTroll",
+    name: "The Stonebound Troll",
+    description: "Decades in the dark have turned its hide to something closer to rock than skin. Slow. Very hard to actually stop.",
+    image: "assets/images/enemies/the-stonebound-troll.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  theBloodScentTroll: {
+    id: "theBloodScentTroll",
+    name: "The Blood-Scent Troll",
+    description: "Doesn't need to see you. Hasn't needed to in a long time.",
+    image: "assets/images/enemies/the-blood-scent-troll.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theBridgewardTroll: {
+    id: "theBridgewardTroll",
+    name: "The Bridgeward Troll",
+    description: "This crossing has belonged to it longer than anyone traveling it has been alive. It intends to keep it that way.",
+    image: "assets/images/enemies/the-bridgeward-troll.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theBoneStrewnTroll: {
+    id: "theBoneStrewnTroll",
+    name: "The Bone-Strewn Troll",
+    description: "Surrounded by what's left of everyone who came through before you. It isn't hiding that. It doesn't see why it should.",
+    image: "assets/images/enemies/the-bone-strewn-troll.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theStoneFather: {
+    id: "theStoneFather",
+    name: "The Stone-Father",
+    description: "Oldest and largest of everything living in this mountain, and the only reason the rest of them still remember to be afraid of something.",
+    image: "assets/images/enemies/the-stone-father.png",
+    deathImage: "assets/images/deaths/the-stone-father-death.png",
+    hitPoints: 90,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["The Stone-Father's Tooth", "Grave Essence", "Grave Essence", "Grave Essence"]
   }
 };

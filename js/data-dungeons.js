@@ -542,6 +542,18 @@ const DUNGEONS = {
     description:
       "Three barks mean a death is close, the old telling goes, and the pass has never once gone quiet after the first. " +
       "The frost here never fully thaws, not even in high summer. Nobody local asks why anymore."
+  },
+  trollWarren: {
+    id: "trollWarren",
+    name: "The Troll-Warren",
+    difficulty: "Master",
+    musicSrc: "assets/audio/troll-warren-theme.mp3",
+    hotspotColor: "#4a3728",
+    mapHotspot: { top: "75%", left: "60%" },
+    culture: "drakvarr",
+    image: "assets/images/troll-warren.png",
+    description:
+      "Every generation loses a few travelers to this mountain and calls it bad luck. It has never once been bad luck."
   }
 };
 
@@ -4376,6 +4388,85 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  trollWarren: {
+    startRoomId: "warrenApproach",
+    rooms: {
+      warrenApproach: {
+        text: "The mountain path narrows into a low, uneven tunnel, the air thick with something old and animal.",
+        choices: [{ type: "goto", label: "Enter the warren", target: "warrenPath" }]
+      },
+      warrenPath: {
+        text: "Claw-marks score the tunnel walls at odd heights, some of them far too high to belong to anything you'd want to meet.",
+        choices: [{ type: "goto", label: "Continue", target: "ambushFight" }]
+      },
+      ambushFight: {
+        text: "Something low and hunched drops from a ledge above without a sound, closing the gap before you've finished registering it.",
+        choices: [{ type: "combat", label: "Fight the Hollow-Fang Troll", enemyId: "theHollowFangTroll", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "Wedged into a crack in the tunnel wall, a scrap of hide has been there long enough to stop smelling like anything at all.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+      },
+      fork: {
+        text: "The tunnel splits ahead — one way into a low stone hollow, the other along a narrow game trail.",
+        choices: [
+          { type: "goto", label: "Into the stone hollow", target: "stoneHollow" },
+          { type: "goto", label: "Along the trail", target: "huntersTrail" }
+        ]
+      },
+      stoneHollow: {
+        text: "Something massive shifts in the dark, hide grey and rough as the rock around it, barely distinguishable until it moves.",
+        choices: [{ type: "combat", label: "Fight the Stonebound Troll", enemyId: "theStoneboundTroll", target: "warrenConverge" }]
+      },
+      huntersTrail: {
+        text: "It's already turned toward you before you've made a sound, head low, tracking something it clearly doesn't need to see.",
+        choices: [{ type: "combat", label: "Fight the Blood-Scent Troll", enemyId: "theBloodScentTroll", target: "warrenConverge" }]
+      },
+      warrenConverge: {
+        text: "Both paths open onto a wide underground hollow, old bones scattered across the floor in numbers that stopped being random a long time ago.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered rune-stone stands half-buried at the hollow's edge, old warding carvings cut deep into the rock.",
+        choices: [
+          { type: "discover", label: "Study the rune-stone (Rune Blade)", skillId: "runeBlade", spellId: "stonecleaverRune", target: "deeperWarren" },
+          { type: "goto", label: "Move on", target: "deeperWarren" }
+        ]
+      },
+      deeperWarren: {
+        text: "The passage narrows toward a natural stone bridge spanning a black drop, the far side lost in shadow.",
+        choices: [{ type: "goto", label: "Press onward", target: "bridgeFight" }]
+      },
+      bridgeFight: {
+        text: "Something enormous plants itself at the bridge's center, utterly unwilling to be the one who moves.",
+        choices: [{ type: "combat", label: "Fight the Bridgeward Troll", enemyId: "theBridgewardTroll", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "Past the bridge, the passage narrows further, something shifting restlessly among a pile of old bones just ahead — a chance to slip past, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "It doesn't bother hiding what it's surrounded by. It doesn't need to.",
+        choices: [{ type: "combat", label: "Fight the Bone-Strewn Troll", enemyId: "theBoneStrewnTroll", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The passage opens onto a vast underground hall, a single massive shape seated at its center, utterly still, utterly aware of you.",
+        choices: [{ type: "goto", label: "Enter the hall", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The Stone-Father rises slowly, older and larger than everything else in this mountain combined, in no particular hurry about any of it.",
+        choices: [{ type: "combat", label: "Face the Stone-Father", enemyId: "theStoneFather", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The hall goes quiet, the mountain settling back into whatever it was before you arrived. It won't stay empty for long.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -4920,7 +5011,7 @@ const ROOM_IMAGES = {
     deeperVillage: "assets/images/nians-village/deeper-village.png",
     lanternFight: "assets/images/nians-village/deeper-village.png",
     vigilCheck: "assets/images/nians-village/vigil-check.png",
-    extraFight: "assets/images/nians-village/vigil-check.png",
+    extraFight: "assets/images/nians-village/extra-fight.png",
     preBoss: "assets/images/nians-village/pre-boss.png",
     bossRoom: "assets/images/nians-village/boss-room.png",
     epilogue: "assets/images/nians-village/epilogue.png"
@@ -4938,7 +5029,7 @@ const ROOM_IMAGES = {
     deeperLoch: "assets/images/kelpies-loch/deeper-loch.png",
     brideFight: "assets/images/kelpies-loch/deeper-loch.png",
     vigilCheck: "assets/images/kelpies-loch/vigil-check.png",
-    extraFight: "assets/images/kelpies-loch/vigil-check.png",
+    extraFight: "assets/images/kelpies-loch/extra-fight.png",
     preBoss: "assets/images/kelpies-loch/pre-boss.png",
     bossRoom: "assets/images/kelpies-loch/boss-room.png",
     epilogue: "assets/images/kelpies-loch/epilogue.png"
@@ -4956,7 +5047,7 @@ const ROOM_IMAGES = {
     deeperCoil: "assets/images/jormungandrs-coil/deeper-coil.png",
     priestFight: "assets/images/jormungandrs-coil/deeper-coil.png",
     vigilCheck: "assets/images/jormungandrs-coil/vigil-check.png",
-    extraFight: "assets/images/jormungandrs-coil/vigil-check.png",
+    extraFight: "assets/images/jormungandrs-coil/extra-fight.png",
     preBoss: "assets/images/jormungandrs-coil/pre-boss.png",
     bossRoom: "assets/images/jormungandrs-coil/boss-room.png",
     epilogue: "assets/images/jormungandrs-coil/epilogue.png"
@@ -4974,7 +5065,7 @@ const ROOM_IMAGES = {
     deeperMoor: "assets/images/morrigans-reckoning/deeper-moor.png",
     championFight: "assets/images/morrigans-reckoning/deeper-moor.png",
     vigilCheck: "assets/images/morrigans-reckoning/vigil-check.png",
-    extraFight: "assets/images/morrigans-reckoning/vigil-check.png",
+    extraFight: "assets/images/morrigans-reckoning/extra-fight.png",
     preBoss: "assets/images/morrigans-reckoning/pre-boss.png",
     bossRoom: "assets/images/morrigans-reckoning/boss-room.png",
     epilogue: "assets/images/morrigans-reckoning/epilogue.png"
@@ -4992,7 +5083,7 @@ const ROOM_IMAGES = {
     deeperWeb: "assets/images/anansis-gambit/deeper-web.png",
     judgeFight: "assets/images/anansis-gambit/deeper-web.png",
     vigilCheck: "assets/images/anansis-gambit/vigil-check.png",
-    extraFight: "assets/images/anansis-gambit/vigil-check.png",
+    extraFight: "assets/images/ghillie-dhus-hollow/extra-fight.png",
     preBoss: "assets/images/anansis-gambit/pre-boss.png",
     bossRoom: "assets/images/anansis-gambit/boss-room.png",
     epilogue: "assets/images/anansis-gambit/epilogue.png"
@@ -5010,7 +5101,7 @@ const ROOM_IMAGES = {
     deeperHollow: "assets/images/ghillie-dhus-hollow/deeper-hollow.png",
     boundlessFight: "assets/images/ghillie-dhus-hollow/deeper-hollow.png",
     vigilCheck: "assets/images/ghillie-dhus-hollow/vigil-check.png",
-    extraFight: "assets/images/ghillie-dhus-hollow/vigil-check.png",
+    extraFight: "assets/images/ghillie-dhus-hollow/extra-fight.png",
     preBoss: "assets/images/ghillie-dhus-hollow/pre-boss.png",
     bossRoom: "assets/images/ghillie-dhus-hollow/boss-room.png",
     epilogue: "assets/images/ghillie-dhus-hollow/epilogue.png"
@@ -5028,7 +5119,7 @@ const ROOM_IMAGES = {
     deeperHold: "assets/images/thryms-hold/deeper-hold.png",
     bruteFight: "assets/images/thryms-hold/brute-fight.png",
     vigilCheck: "assets/images/thryms-hold/vigil-check.png",
-    extraFight: "assets/images/thryms-hold/vigil-check.png",
+    extraFight: "assets/images/thryms-hold/extra-fight.png",
     preBoss: "assets/images/thryms-hold/pre-boss.png",
     bossRoom: "assets/images/thryms-hold/boss-room.png",
     epilogue: "assets/images/thryms-hold/epilogue.png"
@@ -5046,7 +5137,7 @@ const ROOM_IMAGES = {
     deeperRoad: "assets/images/dullahans-ride/deeper-road.png",
     flankFight: "assets/images/dullahans-ride/flank-fight.png",
     vigilCheck: "assets/images/dullahans-ride/vigil-check.png",
-    extraFight: "assets/images/dullahans-ride/vigil-check.png",
+    extraFight: "assets/images/dullahans-ride/extra-fight.png",
     preBoss: "assets/images/dullahans-ride/pre-boss.png",
     bossRoom: "assets/images/dullahans-ride/boss-room.png",
     epilogue: "assets/images/dullahans-ride/epilogue.png"
@@ -5064,7 +5155,7 @@ const ROOM_IMAGES = {
     deeperCavern: "assets/images/cave-of-cruachan/deeper-cavern.png",
     stalkerFight: "assets/images/cave-of-cruachan/stalker-fight.png",
     vigilCheck: "assets/images/cave-of-cruachan/vigil-check.png",
-    extraFight: "assets/images/cave-of-cruachan/vigil-check.png",
+    extraFight: "assets/images/cave-of-cruachan/extra-fight.png",
     preBoss: "assets/images/cave-of-cruachan/pre-boss.png",
     bossRoom: "assets/images/cave-of-cruachan/boss-room.png",
     epilogue: "assets/images/cave-of-cruachan/epilogue.png"
@@ -5082,7 +5173,7 @@ const ROOM_IMAGES = {
     deeperTheater: "assets/images/hoichis-requiem/deeper-theater.png",
     sentinelFight: "assets/images/hoichis-requiem/sentinel-fight.png",
     vigilCheck: "assets/images/hoichis-requiem/vigil-check.png",
-    extraFight: "assets/images/hoichis-requiem/vigil-check.png",
+    extraFight: "assets/images/hoichis-requiem/extra-fight.png",
     preBoss: "assets/images/hoichis-requiem/pre-boss.png",
     bossRoom: "assets/images/hoichis-requiem/boss-room.png",
     epilogue: "assets/images/hoichis-requiem/epilogue.png"
@@ -5100,7 +5191,7 @@ const ROOM_IMAGES = {
     deeperWood: "assets/images/yamaubas-wood/deeper-wood.png",
     owlFight: "assets/images/yamaubas-wood/owl-fight.png",
     vigilCheck: "assets/images/yamaubas-wood/vigil-check.png",
-    extraFight: "assets/images/yamaubas-wood/vigil-check.png",
+    extraFight: "assets/images/yamaubas-wood/extra-fight.png",
     preBoss: "assets/images/yamaubas-wood/pre-boss.png",
     bossRoom: "assets/images/yamaubas-wood/boss-room.png",
     epilogue: "assets/images/yamaubas-wood/epilogue.png"
@@ -5118,7 +5209,7 @@ const ROOM_IMAGES = {
     deeperCanopy: "assets/images/sasabonsams-reach/deeper-canopy.png",
     hyenaFight: "assets/images/sasabonsams-reach/hyena-fight.png",
     vigilCheck: "assets/images/sasabonsams-reach/vigil-check.png",
-    extraFight: "assets/images/sasabonsams-reach/vigil-check.png",
+    extraFight: "assets/images/sasabonsams-reach/extra-fight.png",
     preBoss: "assets/images/sasabonsams-reach/pre-boss.png",
     bossRoom: "assets/images/sasabonsams-reach/boss-room.png",
     epilogue: "assets/images/sasabonsams-reach/epilogue.png"
@@ -5136,7 +5227,7 @@ const ROOM_IMAGES = {
     deeperSwamp: "assets/images/unburied-swamp/deeper-swamp.png",
     elderFight: "assets/images/unburied-swamp/elder-fight.png",
     vigilCheck: "assets/images/unburied-swamp/vigil-check.png",
-    extraFight: "assets/images/unburied-swamp/vigil-check.png",
+    extraFight: "assets/images/unburied-swamp/extra-fight.png",
     preBoss: "assets/images/unburied-swamp/pre-boss.png",
     bossRoom: "assets/images/unburied-swamp/boss-room.png",
     epilogue: "assets/images/unburied-swamp/epilogue.png"
@@ -5154,10 +5245,28 @@ const ROOM_IMAGES = {
     deeperFrost: "assets/images/the-howling-frost/deeper-frost.png",
     trailingFight: "assets/images/the-howling-frost/trailing-fight.png",
     vigilCheck: "assets/images/the-howling-frost/vigil-check.png",
-    extraFight: "assets/images/the-howling-frost/vigil-check.png",
+    extraFight: "assets/images/the-howling-frost/extra-fight.png",
     preBoss: "assets/images/the-howling-frost/pre-boss.png",
     bossRoom: "assets/images/the-howling-frost/boss-room.png",
     epilogue: "assets/images/the-howling-frost/epilogue.png"
+  },
+  trollWarren: {
+    warrenApproach: "assets/images/troll-warren/warren-approach.png",
+    warrenPath: "assets/images/troll-warren/warren-path.png",
+    ambushFight: "assets/images/troll-warren/ambush-fight.png",
+    pathLoot: "assets/images/troll-warren/path-loot.png",
+    fork: "assets/images/troll-warren/fork.png",
+    stoneHollow: "assets/images/troll-warren/stone-hollow.png",
+    huntersTrail: "assets/images/troll-warren/hunters-trail.png",
+    warrenConverge: "assets/images/troll-warren/warren-converge.png",
+    discoverRoom: "assets/images/troll-warren/discover-room.png",
+    deeperWarren: "assets/images/troll-warren/deeper-warren.png",
+    bridgeFight: "assets/images/troll-warren/bridge-fight.png",
+    vigilCheck: "assets/images/troll-warren/vigil-check.png",
+    extraFight: "assets/images/troll-warren/extra-fight.png",
+    preBoss: "assets/images/troll-warren/pre-boss.png",
+    bossRoom: "assets/images/troll-warren/boss-room.png",
+    epilogue: "assets/images/troll-warren/epilogue.png"
   }
 };
 
