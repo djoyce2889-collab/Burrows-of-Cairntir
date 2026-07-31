@@ -4431,7 +4431,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered rune-stone stands half-buried at the hollow's edge, old warding carvings cut deep into the rock.",
         choices: [
-          { type: "discover", label: "Study the rune-stone (Rune Blade)", skillId: "runeBlade", spellId: "stonecleaverRune", target: "deeperWarren" },
+          { type: "discover", label: "Study the rune-stone (Rune Blade)", skillId: "runeBlade", spellId: "stonewallRune", target: "deeperWarren" },
           { type: "goto", label: "Move on", target: "deeperWarren" }
         ]
       },
