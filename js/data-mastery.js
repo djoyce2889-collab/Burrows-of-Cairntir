@@ -428,42 +428,6 @@ const MASTERY_PERKS = {
     ]
   },
 
-  twoHanded: {
-    1: [
-      { id: "crushingBlow", name: "Crushing Blow", description: "Slightly harder strikes." },
-      { id: "wideArc", name: "Wide Arc", description: "A chance for your swing to also clip a second nearby foe." }
-    ],
-    2: [
-      { id: "sunderingCleave", name: "Sundering Cleave", description: "A chance to also weaken the enemy's defense on hit." },
-      { id: "recklessMomentum", name: "Reckless Momentum", description: "Bigger damage, at a bigger accuracy cost." }
-    ],
-    3: [
-      { id: "brutalFollowThrough", name: "Brutal Follow-Through", description: "A chance to strike again immediately after a killing blow." },
-      { id: "unstoppableForce", name: "Unstoppable Force", description: "A chance to shrug off the next incoming hit's effects entirely." }
-    ],
-    4: [
-      { id: "executionersArc", name: "Executioner's Arc", description: "Finishing blows against badly-wounded enemies hit devastatingly hard." },
-      { id: "titansGrip", name: "Titan's Grip", description: "Your Two-Handed attacks no longer suffer the style's defense penalty." }
-    ]
-  },
-  daggers: {
-    1: [
-      { id: "swiftBlade", name: "Swift Blade", description: "Slightly more accurate strikes." },
-      { id: "openingStrike", name: "Opening Strike", description: "Bonus damage against a foe you haven't hit yet this fight." }
-    ],
-    2: [
-      { id: "vitalPrecision", name: "Vital Precision", description: "A chance to also cause a lingering wound on hit." },
-      { id: "twinStrike", name: "Twin Strike", description: "A chance to strike a second time in the same attack, each hit smaller." }
-    ],
-    3: [
-      { id: "assassinsFocus", name: "Assassin's Focus", description: "Backstab hits noticeably harder." },
-      { id: "shadowStep", name: "Shadow Step", description: "A chance to dodge the enemy's next attack after landing a hit." }
-    ],
-    4: [
-      { id: "killingStroke", name: "Killing Stroke", description: "Finishing blows against badly-wounded enemies hit much harder." },
-      { id: "oneWithShadows", name: "One With the Shadows", description: "Backstab's cooldown is 1 round shorter." }
-    ]
-  },
   axes: {
     1: [
       { id: "heavySwing", name: "Heavy Swing", description: "Slightly harder strikes." },

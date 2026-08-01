@@ -3325,7 +3325,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A faded scroll is tucked into the well's stonework, an old technique recorded by someone who once tried something other than fire and red dye.",
         choices: [
-          { type: "discover", label: "Study the scroll (Way of Tengu)", skillId: "wayTengu", spellId: "windingGale", target: "deeperVillage" },
+          { type: "discover", label: "Study the scroll (Way of Tengu)", skillId: "wayTengu", spellId: "galeFistStrike", target: "deeperVillage" },
           { type: "goto", label: "Move on", target: "deeperVillage" }
         ]
       },
@@ -3404,7 +3404,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered stone marker stands half-submerged, an old technique carved into its face, still legible after all this time.",
         choices: [
-          { type: "discover", label: "Study the marker (Line of Emyrs)", skillId: "ancestralEmyrs", spellId: "elementalSurge", target: "deeperLoch" },
+          { type: "discover", label: "Study the marker (Line of Emyrs)", skillId: "ancestralEmyrs", spellId: "arcaneCataclysm", target: "deeperLoch" },
           { type: "goto", label: "Move on", target: "deeperLoch" }
         ]
       },
@@ -3483,7 +3483,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered rune-stone stands half-buried at the flat's edge, its carving still sharp despite the salt and years.",
         choices: [
-          { type: "discover", label: "Study the rune-stone (Rune Vision)", skillId: "runeVision", spellId: "serpentsSightRune", target: "deeperCoil" },
+          { type: "discover", label: "Study the rune-stone (Rune Vision)", skillId: "runeVision", spellId: "ravensightRune", target: "deeperCoil" },
           { type: "goto", label: "Move on", target: "deeperCoil" }
         ]
       },
@@ -3562,7 +3562,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered standing stone rises from the hollow, old storm-and-battle wardings carved deep into its face.",
         choices: [
-          { type: "discover", label: "Study the stone (Path of Storm)", skillId: "pathStorm", spellId: "ravensWarningPath", target: "deeperMoor" },
+          { type: "discover", label: "Study the stone (Path of Storm)", skillId: "pathStorm", spellId: "stormcall", target: "deeperMoor" },
           { type: "goto", label: "Move on", target: "deeperMoor" }
         ]
       },
@@ -3641,7 +3641,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A carved wooden totem stands at the glade's center, old unmaking-rites etched along its length.",
         choices: [
-          { type: "discover", label: "Study the totem (Rite of Unmaking)", skillId: "riteUnmaking", spellId: "unravelingRite", target: "deeperWeb" },
+          { type: "discover", label: "Study the totem (Rite of Unmaking)", skillId: "riteUnmaking", spellId: "blindingCurse", target: "deeperWeb" },
           { type: "goto", label: "Move on", target: "deeperWeb" }
         ]
       },
@@ -3720,7 +3720,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A ring of standing roots surrounds an old carved waystone here, the markings on it worn soft but still legible if you look closely.",
         choices: [
-          { type: "discover", label: "Study the waystone (Ancestral Rite)", skillId: "ancestralEmyrs", spellId: "rootwardensGift", target: "deeperHollow" },
+          { type: "discover", label: "Study the waystone (Ancestral Rite)", skillId: "ancestralEmyrs", spellId: "circleOfAegis", target: "deeperHollow" },
           { type: "goto", label: "Move on", target: "deeperHollow" }
         ]
       },
@@ -3799,7 +3799,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered rune-stone stands just inside the archway, carved deep enough to have survived weather that's worn everything else smooth.",
         choices: [
-          { type: "discover", label: "Study the rune-stone (Rune Vision)", skillId: "runeVision", spellId: "giantskinRune", target: "deeperHold" },
+          { type: "discover", label: "Study the rune-stone (Rune Vision)", skillId: "runeVision", spellId: "omensEnd", target: "deeperHold" },
           { type: "goto", label: "Move on", target: "deeperHold" }
         ]
       },
@@ -3878,7 +3878,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered barrow-stone stands at the green's edge, old ward-carvings cut deep enough to have outlasted whatever they were meant to keep out.",
         choices: [
-          { type: "discover", label: "Study the barrow-stone (Path of the Barrow)", skillId: "pathBarrow", spellId: "hostboundWard", target: "deeperRoad" },
+          { type: "discover", label: "Study the barrow-stone (Path of the Barrow)", skillId: "pathBarrow", spellId: "bonewhisper", target: "deeperRoad" },
           { type: "goto", label: "Move on", target: "deeperRoad" }
         ]
       },
@@ -3957,8 +3957,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "An old carved stone stands at the cavern's edge, warding symbols cut deep and re-cut more than once by hands that clearly kept coming back.",
         choices: [
-          { type: "discover", label: "Study the warding stone (Path of the Barrow)", skillId: "pathBarrow", spellId: "otherworldsThreshold", target: "deeperCavern" },
-          { type: "goto", label: "Move on", target: "deeperCavern" }
+          { type: "discover", label: "Study the warding stone (Path of the Barrow)", skillId: "pathBarrow", spellId: "gravehunger", target: "deeperCavern" },          { type: "goto", label: "Move on", target: "deeperCavern" }
         ]
       },
       deeperCavern: {
@@ -4036,7 +4035,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered exorcism scroll hangs at the stage's edge, old warding script inked deep enough to have outlasted everything around it.",
         choices: [
-          { type: "discover", label: "Study the scroll (Way of the Onmyoji)", skillId: "wayOnmyoji", spellId: "heikesLament", target: "deeperTheater" },
+          { type: "discover", label: "Study the scroll (Way of the Onmyoji)", skillId: "wayOnmyoji", spellId: "onryosWrath", target: "deeperTheater" },
           { type: "goto", label: "Move on", target: "deeperTheater" }
         ]
       },
@@ -4115,7 +4114,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered charm hangs from a low branch here, old and yokai-warded, swaying though there's no wind to move it.",
         choices: [
-          { type: "discover", label: "Study the charm (Way of the Yokai)", skillId: "wayYokai", spellId: "wardensEye", target: "deeperWood" },
+          { type: "discover", label: "Study the charm (Way of the Yokai)", skillId: "wayYokai", spellId: "mistForm", target: "deeperWood" },
           { type: "goto", label: "Move on", target: "deeperWood" }
         ]
       },
@@ -4194,7 +4193,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A carved wooden totem stands here, old protective rites cut deep into weathered wood.",
         choices: [
-          { type: "discover", label: "Study the totem (Rite of Protection)", skillId: "riteProtection", spellId: "canopysWard", target: "deeperCanopy" },
+          { type: "discover", label: "Study the totem (Rite of Protection)", skillId: "riteProtection", spellId: "mothersCircle", target: "deeperCanopy" },
           { type: "goto", label: "Move on", target: "deeperCanopy" }
         ]
       },
@@ -4273,7 +4272,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered ancestral totem stands half-sunk at the mire's edge, old protective carvings barely visible beneath the moss.",
         choices: [
-          { type: "discover", label: "Study the totem (Rite of Protection)", skillId: "riteProtection", spellId: "swampboundVigil", target: "deeperSwamp" },
+          { type: "discover", label: "Study the totem (Rite of Protection)", skillId: "riteProtection", spellId: "deepCurrent", target: "deeperSwamp" },
           { type: "goto", label: "Move on", target: "deeperSwamp" }
         ]
       },
@@ -4352,7 +4351,7 @@ const DUNGEON_CONTENT = {
       discoverRoom: {
         text: "A weathered standing stone rises from the shelf, old warding carvings still sharp despite the ice crusted thick across its face.",
         choices: [
-          { type: "discover", label: "Study the standing stone (Ancestral Rite)", skillId: "ancestralEmyrs", spellId: "winterwardVigil", target: "deeperFrost" },
+          { type: "discover", label: "Study the standing stone (Ancestral Rite)", skillId: "ancestralEmyrs", spellId: "aegisWard", target: "deeperFrost" },
           { type: "goto", label: "Move on", target: "deeperFrost" }
         ]
       },
