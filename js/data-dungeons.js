@@ -3933,7 +3933,11 @@ const DUNGEON_CONTENT = {
       tunnelLoot: {
         text: "Wedged into a crack in the scorched rock, a scrap of hide has been there long enough to stop smelling like anything burned at all.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "spiderFight" }]
+      },
+      spiderFight: {
+        text: "Something enormous hangs motionless from the ceiling ahead, bloated and pale, veins pulsing faintly beneath skin stretched too thin.",
+        choices: [{ type: "combat", label: "Fight the Blood-Gorged Spider", enemyId: "theBloodGorgedSpider", target: "fork" }]
       },
       fork: {
         text: "The tunnel splits ahead — one way descending toward a low, wet passage, the other opening into a wider chamber scattered with old bone.",
@@ -3952,7 +3956,11 @@ const DUNGEON_CONTENT = {
       },
       cruachanConverge: {
         text: "Both routes open onto a wide cavern, the air noticeably warmer here, firelight flickering from somewhere still deeper in.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "burrowerFight" }]
+      },
+      burrowerFight: {
+        text: "The floor shifts before you're halfway across, something blind and toothed dragging itself up through the broken stone.",
+        choices: [{ type: "combat", label: "Fight the Hollow-Throated Burrower", enemyId: "theHollowThroatedBurrower", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "An old carved stone stands at the cavern's edge, warding symbols cut deep and re-cut more than once by hands that clearly kept coming back.",
@@ -5146,10 +5154,12 @@ const ROOM_IMAGES = {
     scorchedTunnel: "assets/images/cave-of-cruachan/scorched-tunnel.png",
     wingFight: "assets/images/cave-of-cruachan/wing-fight.png",
     tunnelLoot: "assets/images/cave-of-cruachan/tunnel-loot.png",
+    spiderFight: "assets/images/cave-of-cruachan/spider-fight.png",
     fork: "assets/images/cave-of-cruachan/fork.png",
     lowPassage: "assets/images/cave-of-cruachan/low-passage.png",
     boneChamber: "assets/images/cave-of-cruachan/bone-chamber.png",
     cruachanConverge: "assets/images/cave-of-cruachan/cruachan-converge.png",
+    burrowerFight: "assets/images/cave-of-cruachan/burrower-fight.png",
     discoverRoom: "assets/images/cave-of-cruachan/discover-room.png",
     deeperCavern: "assets/images/cave-of-cruachan/deeper-cavern.png",
     stalkerFight: "assets/images/cave-of-cruachan/stalker-fight.png",

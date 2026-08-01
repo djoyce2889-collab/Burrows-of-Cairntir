@@ -2843,5 +2843,27 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["The Stone-Father's Tooth", "Grave Essence", "Grave Essence", "Grave Essence"]
+  },
+  theBloodGorgedSpider: {
+    id: "theBloodGorgedSpider",
+    name: "The Blood-Gorged Spider",
+    description: "Hangs motionless from the tunnel ceiling, bloated and translucent, veins visibly pulsing beneath skin stretched far past where it should have stopped.",
+    image: "assets/images/enemies/the-blood-gorged-spider.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theHollowThroatedBurrower: {
+    id: "theHollowThroatedBurrower",
+    name: "The Hollow-Throated Burrower",
+    description: "Blind, and it doesn't need to see. A ring of concentric teeth waits at the end of a throat that's never once stopped hungering.",
+    image: "assets/images/enemies/the-hollow-throated-burrower.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
   }
 };

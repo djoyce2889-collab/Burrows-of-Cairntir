@@ -1023,7 +1023,7 @@ function performFollowerSongCast(follower, skillId, spell) {
   currentCombat.log.push(logEntry);
 }
 
-const FOLLOWER_ATTACK_SPELL_TYPES = ["damage", "undeadSlayer", "execute", "dot", "doubleDrain", "powerSteal"];
+const FOLLOWER_ATTACK_SPELL_TYPES = ["damage", "undeadSlayer", "execute", "dot", "doubleDrain", "powerSteal", "burst"];
 
 function getFollowerAttackSpellOption(follower) {
   const magicSkillIds = Object.keys(follower.skills).filter(
