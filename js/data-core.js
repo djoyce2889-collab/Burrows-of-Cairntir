@@ -263,6 +263,7 @@ const SKILLS = {
   archery: { id: "archery", name: "Archery", category: "Weapon", description: "Accuracy and power with a bow." },
   unarmedCombat: { id: "unarmedCombat", name: "Unarmed Combat", category: "Weapon", description: "Fighting with fists, feet, and improvised force." },
   daggers: { id: "daggers", name: "Daggers", category: "Weapon", description: "Fast, precise strikes built for finding an opening." },
+  twoHanded: { id: "twoHanded", name: "Two-Handed", category: "Weapon", description: "Heavy weapons built for devastating power over speed or defense." },
 
   shields: { id: "shields", name: "Shields", category: "Armor", description: "Wielding a shield effectively — deflecting and absorbing blows that would otherwise land." },
   plateArmor: { id: "plateArmor", name: "Plate", category: "Armor", description: "Moving and fighting effectively in heavy plate — the strongest Armor Class bonus of any armor, at the cost of any Dodge or mana benefit." },

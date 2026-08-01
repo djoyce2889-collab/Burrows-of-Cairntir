@@ -7,7 +7,8 @@ const STARTING_EQUIPMENT = {
   swords: "Old Sword",
   axes: "Worn Axe",
   archery: "Simple Bow",
-  daggers: "Worn Dagger"
+  daggers: "Worn Dagger",
+  twoHanded: "Worn Greatsword"
 };
 
 const STARTING_ARMOR_SETS = {
@@ -22,6 +23,7 @@ const CRAFTING_RECIPES = {
   craftAxe: { id: "craftAxe", name: "Axe", category: "weapon", craftingSkill: "smithing", linkedSkill: "axes", material: "Old Ore", materialCost: 2 },
   craftBow: { id: "craftBow", name: "Bow", category: "weapon", craftingSkill: "smithing", linkedSkill: "archery", material: "Old Ore", materialCost: 1 },
   craftDagger: { id: "craftDagger", name: "Dagger", category: "weapon", craftingSkill: "smithing", linkedSkill: "daggers", material: "Old Ore", materialCost: 1 },
+  craftGreatsword: { id: "craftGreatsword", name: "Greatsword", category: "weapon", craftingSkill: "smithing", linkedSkill: "twoHanded", material: "Old Ore", materialCost: 3 },
   craftPlateHelm: { id: "craftPlateHelm", name: "Plate Helm", category: "armor", slot: "head", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
   craftPlateCuirass: { id: "craftPlateCuirass", name: "Plate Cuirass", category: "armor", slot: "chest", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 3 },
   craftPlateGreaves: { id: "craftPlateGreaves", name: "Plate Greaves", category: "armor", slot: "legs", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
