@@ -262,6 +262,7 @@ const SKILLS = {
   axes: { id: "axes", name: "Axe", category: "Weapon", description: "Heavy, cleaving strikes with an axe." },
   archery: { id: "archery", name: "Archery", category: "Weapon", description: "Accuracy and power with a bow." },
   unarmedCombat: { id: "unarmedCombat", name: "Unarmed Combat", category: "Weapon", description: "Fighting with fists, feet, and improvised force." },
+  daggers: { id: "daggers", name: "Daggers", category: "Weapon", description: "Fast, precise strikes built for finding an opening." },
 
   shields: { id: "shields", name: "Shields", category: "Armor", description: "Wielding a shield effectively — deflecting and absorbing blows that would otherwise land." },
   plateArmor: { id: "plateArmor", name: "Plate", category: "Armor", description: "Moving and fighting effectively in heavy plate — the strongest Armor Class bonus of any armor, at the cost of any Dodge or mana benefit." },
@@ -340,6 +341,19 @@ const ARMOR_DODGE_RANK_BONUS = {
 const ARMOR_MANA_BONUS = {
   clothArmor: 15,
   leatherArmor: 0,
+  chainArmor: 0,
+  plateArmor: 0
+};
+
+// ----------------------------------------------------------
+// ARMOR STEALTH BONUS
+// Flat rank bonus applied to Backstab's attack tier when the
+// matching armor skill is equipped, on top of the Stealth
+// skill-tier bonus. Only Leather Armor grants one.
+// ----------------------------------------------------------
+const ARMOR_STEALTH_BONUS = {
+  clothArmor: 0,
+  leatherArmor: 1,
   chainArmor: 0,
   plateArmor: 0
 };
@@ -435,5 +449,7 @@ const ARCHETYPES = [
   { id: "archer", name: "Archer", fileSlug: "archer" },
   { id: "spellcaster", name: "Spellcaster", fileSlug: "spellcaster" },
   { id: "martialArts", name: "Martial Arts", fileSlug: "martial-arts" },
-  { id: "bard", name: "Bard", fileSlug: "bard" }
+  { id: "bard", name: "Bard", fileSlug: "bard" },
+  { id: "twoHanded", name: "Two-Handed", fileSlug: "two-handed" },
+  { id: "stealth", name: "Stealth", fileSlug: "stealth" }
 ];

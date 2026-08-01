@@ -6,7 +6,8 @@
 const STARTING_EQUIPMENT = {
   swords: "Old Sword",
   axes: "Worn Axe",
-  archery: "Simple Bow"
+  archery: "Simple Bow",
+  daggers: "Worn Dagger"
 };
 
 const STARTING_ARMOR_SETS = {
@@ -20,6 +21,7 @@ const CRAFTING_RECIPES = {
   craftSword: { id: "craftSword", name: "Sword", category: "weapon", craftingSkill: "smithing", linkedSkill: "swords", material: "Old Ore", materialCost: 2 },
   craftAxe: { id: "craftAxe", name: "Axe", category: "weapon", craftingSkill: "smithing", linkedSkill: "axes", material: "Old Ore", materialCost: 2 },
   craftBow: { id: "craftBow", name: "Bow", category: "weapon", craftingSkill: "smithing", linkedSkill: "archery", material: "Old Ore", materialCost: 1 },
+  craftDagger: { id: "craftDagger", name: "Dagger", category: "weapon", craftingSkill: "smithing", linkedSkill: "daggers", material: "Old Ore", materialCost: 1 },
   craftPlateHelm: { id: "craftPlateHelm", name: "Plate Helm", category: "armor", slot: "head", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
   craftPlateCuirass: { id: "craftPlateCuirass", name: "Plate Cuirass", category: "armor", slot: "chest", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 3 },
   craftPlateGreaves: { id: "craftPlateGreaves", name: "Plate Greaves", category: "armor", slot: "legs", craftingSkill: "smithing", linkedSkill: "plateArmor", material: "Old Ore", materialCost: 2 },
@@ -147,6 +149,24 @@ const COMBAT_STYLES = {
     description: "Focuses on precision with a bow — you'll rarely miss, though each shot lands a touch softer than a dedicated melee strike.",
     attackBonus: 0,
     defenseBonus: 0,
+    spellDamageBonus: 0,
+    healBonus: 0
+  },
+  twoHanded: {
+    id: "twoHanded",
+    name: "Two-Handed",
+    description: "A single heavy weapon gripped with both hands — hits far harder, but leaves you with less to guard yourself with.",
+    attackBonus: 2,
+    defenseBonus: -1,
+    spellDamageBonus: 0,
+    healBonus: 0
+  },
+  stealth: {
+    id: "stealth",
+    name: "Stealth",
+    description: "Quick, quiet, and built around finding an opening rather than trading blows — a dagger in hand and a moment's hesitation is all it takes.",
+    attackBonus: 0,
+    defenseBonus: 1,
     spellDamageBonus: 0,
     healBonus: 0
   }

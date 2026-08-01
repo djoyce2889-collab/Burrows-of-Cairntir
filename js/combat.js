@@ -1368,7 +1368,17 @@ function performFollowersTurn() {
       return;
     }
 
-    const attackSpellOption = getFollowerAttackSpellOption(follower);
+    if (getFollowerBackstabOption(follower)) {
+  performFollowerBackstab(follower);
+  return;
+}
+
+if (getFollowerShieldBashOption(follower)) {
+  performFollowerShieldBash(follower);
+  return;
+}
+
+const attackSpellOption = getFollowerAttackSpellOption(follower);
     if (attackSpellOption && follower.currentMana >= MANA_CONFIG.costPerCast) {
       performFollowerAttackSpell(follower, attackSpellOption.skillId, attackSpellOption.spell);
       return;
@@ -1725,6 +1735,116 @@ function resolveEnemyAttack() {
   if (playerCharacter.currentHP <= 0) {
     currentCombat.result = "defeat";
   }
+}
+
+function getFollowerShieldBashOption(follower) {
+  if (!follower.equippedShield) return false;
+  return getSpellCooldownRemaining(follower, SHIELD_BASH_ID) <= 0;
+}
+
+function performFollowerShieldBash(follower) {
+  const skillId = follower.equippedWeaponSkill || "unarmedCombat";
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  useSkill(follower, skillId);
+  const attackTier = shiftTierByRank(getEffectiveAttackTierFor(follower, tierBefore), -2);
+  const enemyTier = getEffectiveEnemyTier();
+  const hit = rollSuccess(attackTier, enemyTier);
+  let damage = 0;
+  let stunned = false;
+  if (hit) {
+    damage = applyDamageToEnemy(rollDamage(attackTier));
+    if (Math.random() < 0.6) {
+      currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
+      stunned = true;
+    }
+  }
+  setSpellCooldown(follower, SHIELD_BASH_ID, 3);
+  currentCombat.log.push({
+    actor: "follower",
+    follower: follower,
+    action: "shieldBash",
+    hit: hit,
+    damage: damage,
+    stunned: stunned
+  });
+}
+
+function getFollowerBackstabOption(follower) {
+  if (follower.equippedWeaponSkill !== "daggers") return false;
+  return getSpellCooldownRemaining(follower, BACKSTAB_ID) <= 0;
+}
+
+function performFollowerBackstab(follower) {
+  const skillId = "daggers";
+  const tierBefore = getCharacterSkillTier(follower, skillId).name;
+  useSkill(follower, skillId);
+  const stealthTierName = getCharacterSkillTier(follower, "stealth").name;
+  const stealthRankByTier = { Untrained: 0, Novice: 0, Adept: 1, Expert: 2, Master: 3, Grandmaster: 4 };
+  const stealthBonusRank = stealthRankByTier[stealthTierName] || 0;
+  const armorStealthBonus = ARMOR_STEALTH_BONUS[follower.equippedArmorSkill] || 0;
+  const attackTier = shiftTierByRank(getEffectiveAttackTierFor(follower, tierBefore), stealthBonusRank + armorStealthBonus);
+  const enemyTier = getEffectiveEnemyTier();
+  const hit = rollSuccess(attackTier, enemyTier);
+  let damage = 0;
+  if (hit) {
+    damage = applyDamageToEnemy(rollDamage(attackTier));
+  }
+  setSpellCooldown(follower, BACKSTAB_ID, 2);
+  currentCombat.log.push({
+    actor: "follower",
+    follower: follower,
+    action: "backstab",
+    hit: hit,
+    damage: damage
+  });
+}
+
+const BACKSTAB_ID = "backstab";
+
+/**
+* Backstab — only available with a dagger equipped.
+* Damage bonus scales with trained Stealth skill tier
+* (Untrained/Novice: none, Adept: +1, Expert: +2, Master: +3,
+* Grandmaster: +4). 2-round cooldown, reduced by 1 with the
+* One With the Shadows perk.
+*/
+function performBackstab() {
+  if (!currentCombat || currentCombat.result) return currentCombat;
+  if (getSpellCooldownRemaining(playerCharacter, BACKSTAB_ID) > 0) return currentCombat;
+  const skillId = "daggers";
+  const tierBefore = getCharacterSkillTier(playerCharacter, skillId).name;
+  useSkill(playerCharacter, skillId);
+  const stealthTierName = getCharacterSkillTier(playerCharacter, "stealth").name;
+  const stealthRankByTier = { Untrained: 0, Novice: 0, Adept: 1, Expert: 2, Master: 3, Grandmaster: 4 };
+  const stealthBonusRank = stealthRankByTier[stealthTierName] || 0;
+  const armorStealthBonus = ARMOR_STEALTH_BONUS[playerCharacter.equippedArmorSkill] || 0;
+  const attackTier = shiftTierByRank(getEffectivePlayerAttackTier(tierBefore), stealthBonusRank + armorStealthBonus);
+  const enemyTier = getEffectiveEnemyTier();
+  const hit = rollSuccess(attackTier, enemyTier);
+  let damage = 0;
+  if (hit) {
+    damage = applyDamageToEnemy(rollDamage(attackTier));
+    if (hasChosenPerk(playerCharacter, "daggers", "killingStroke")) {
+      const missingHpPct = 1 - currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
+      const bonusDmg = Math.round(damage * missingHpPct * 0.5);
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+  }
+  const backstabCooldown = hasChosenPerk(playerCharacter, "daggers", "oneWithShadows") ? 1 : 2;
+  setSpellCooldown(playerCharacter, BACKSTAB_ID, backstabCooldown);
+  currentCombat.log.push({
+    actor: "player",
+    action: "backstab",
+    hit: hit,
+    damage: damage
+  });
+  performFollowersTurn();
+  if (currentCombat.enemyCurrentHP <= 0) {
+    currentCombat.result = "victory";
+    return currentCombat;
+  }
+  return currentCombat;
 }
 
 const SHIELD_BASH_ID = "shieldBash";
@@ -2989,6 +3109,10 @@ function describeLogEntry(entry) {
       return entry.stunned
         ? `You slam your shield into your foe for ${entry.damage}, knocking them senseless!`
         : `You slam your shield into your foe for ${entry.damage}.`;
+    }
+    if (entry.action === "backstab") {
+      if (!entry.hit) return "You slip in for an opening, but your foe turns just in time.";
+      return `You find your opening and drive the blade home for ${entry.damage}.`;
     }
     if (entry.action === "flee") {
       return entry.success

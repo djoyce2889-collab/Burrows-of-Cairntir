@@ -428,6 +428,24 @@ const MASTERY_PERKS = {
     ]
   },
 
+  daggers: {
+    1: [
+      { id: "swiftBlade", name: "Swift Blade", description: "Slightly more accurate strikes." },
+      { id: "openingStrike", name: "Opening Strike", description: "Bonus damage against a foe you haven't hit yet this fight." }
+    ],
+    2: [
+      { id: "vitalPrecision", name: "Vital Precision", description: "A chance to also cause a lingering wound on hit." },
+      { id: "twinStrike", name: "Twin Strike", description: "A chance to strike a second time in the same attack, each hit smaller." }
+    ],
+    3: [
+      { id: "assassinsFocus", name: "Assassin's Focus", description: "Backstab hits noticeably harder." },
+      { id: "shadowStep", name: "Shadow Step", description: "A chance to dodge the enemy's next attack after landing a hit." }
+    ],
+    4: [
+      { id: "killingStroke", name: "Killing Stroke", description: "Finishing blows against badly-wounded enemies hit much harder." },
+      { id: "oneWithShadows", name: "One With the Shadows", description: "Backstab's cooldown is 1 round shorter." }
+    ]
+  },
   axes: {
     1: [
       { id: "heavySwing", name: "Heavy Swing", description: "Slightly harder strikes." },

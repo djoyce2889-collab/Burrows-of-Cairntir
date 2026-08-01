@@ -3155,6 +3155,20 @@ const FETCH_ATTACK_LABELS = {
     }
   }
 
+  if (playerCharacter.equippedWeaponSkill === "daggers") {
+    const backstabCooldown = getSpellCooldownRemaining(playerCharacter, BACKSTAB_ID);
+    if (backstabCooldown > 0) {
+      addChoiceButton(choicesEl, `Backstab (recovering, ${backstabCooldown} ${backstabCooldown === 1 ? "round" : "rounds"} left)`, null, true);
+    } else {
+      addChoiceButton(choicesEl, "Backstab", () => {
+        const startIndex = currentCombat.log.length;
+        performBackstab();
+        saveGameState();
+        playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
+      }, false, "assets/images/actions/backstab.png");
+    }
+  }
+
   const trainedSkillIds = Object.keys(playerCharacter.skills);
   const magicSkillIds = trainedSkillIds.filter((id) => SKILLS[id].category === "Magic");
   const hasEnoughMana = playerCharacter.currentMana >= MANA_CONFIG.costPerCast;
