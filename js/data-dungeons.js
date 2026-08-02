@@ -2967,7 +2967,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "A supply cache left behind by the advancing party — clearly they came prepared for a real push.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "healerFight" }]
+      },
+      healerFight: {
+        text: "The Clan Healer looks up from bandaging a wound that isn't hers, clearly not eager for a fight — but not backing down from one either.",
+        choices: [{ type: "combat", label: "Fight the Clan Healer", enemyId: "theClanHealer", target: "fork" }]
       },
       fork: {
         text: "The path splits ahead — one way climbs a steep ridge, the other cuts through an old collapsed passage.",
@@ -3050,7 +3054,11 @@ const DUNGEON_CONTENT = {
       campLoot: {
         text: "An old weapon rack, mostly rotted, still holds a few things worth salvaging among the ruin.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "scoutFight" }]
+      },
+      scoutFight: {
+        text: "The Half-Turned Scout circles in from downwind, caught somewhere between man and wolf, tracking instinct the only part of it still fully intact.",
+        choices: [{ type: "combat", label: "Fight the Half-Turned Scout", enemyId: "theHalfTurnedScout", target: "fork" }]
       },
       fork: {
         text: "The path splits ahead — one way leads toward a ruined longhouse, the other into a dense, unnervingly quiet thicket.",
@@ -5121,17 +5129,18 @@ const ROOM_IMAGES = {
   gordonsDue: {
     vaultApproach: "assets/images/gordons-due/vault-approach.png",
     outerPath: "assets/images/gordons-due/outer-path.png",
-    scoutFight: "assets/images/gordons-due/outer-path.png",
+    scoutFight: "assets/images/gordons-due/scout-fight.png",
     pathLoot: "assets/images/gordons-due/path-loot.png",
+    healerFight: "assets/images/gordons-due/healer-fight.png",
     fork: "assets/images/gordons-due/fork.png",
     steepRidge: "assets/images/gordons-due/steep-ridge.png",
     collapsedPassage: "assets/images/gordons-due/collapsed-passage.png",
     convergeVault: "assets/images/gordons-due/converge-vault.png",
     discoverRoom: "assets/images/gordons-due/discover-room.png",
     deeperVault: "assets/images/gordons-due/deeper-vault.png",
-    tacticianFight: "assets/images/gordons-due/deeper-vault.png",
+    tacticianFight: "assets/images/gordons-due/tactician-fight.png",
     vigilCheck: "assets/images/gordons-due/vigil-check.png",
-    extraFight: "assets/images/gordons-due/vigil-check.png",
+    extraFight: "assets/images/gordons-due/extra-fight.png",
     preBoss: "assets/images/gordons-due/pre-boss.png",
     shieldFight: "assets/images/gordons-due/shield-fight.png",
     bossRoom: "assets/images/gordons-due/boss-room.png",
@@ -5140,17 +5149,18 @@ const ROOM_IMAGES = {
   wolfCoatsCurse: {
     curseEntrance: "assets/images/wolf-coats-curse/curse-entrance.png",
     campPath: "assets/images/wolf-coats-curse/camp-path.png",
-    firstTurnedFight: "assets/images/wolf-coats-curse/camp-path.png",
+    firstTurnedFight: "assets/images/wolf-coats-curse/first-turned-fight.png",
     campLoot: "assets/images/wolf-coats-curse/camp-loot.png",
+    scoutFight: "assets/images/wolf-coats-curse/scout-fight.png",
     fork: "assets/images/wolf-coats-curse/fork.png",
     ruinedLonghouse: "assets/images/wolf-coats-curse/ruined-longhouse.png",
     quietThicket: "assets/images/wolf-coats-curse/quiet-thicket.png",
     convergeCurse: "assets/images/wolf-coats-curse/converge-curse.png",
     discoverRoom: "assets/images/wolf-coats-curse/discover-room.png",
     deeperCurse: "assets/images/wolf-coats-curse/deeper-curse.png",
-    bloodmuzzleFight: "assets/images/wolf-coats-curse/deeper-curse.png",
+    bloodmuzzleFight: "assets/images/wolf-coats-curse/bloodmuzzle-fight.png",
     vigilCheck: "assets/images/wolf-coats-curse/vigil-check.png",
-    extraFight: "assets/images/wolf-coats-curse/vigil-check.png",
+    extraFight: "assets/images/wolf-coats-curse/extra-fight.png",
     preBoss: "assets/images/wolf-coats-curse/pre-boss.png",
     secondFight: "assets/images/wolf-coats-curse/second-fight.png",
     bossRoom: "assets/images/wolf-coats-curse/boss-room.png",

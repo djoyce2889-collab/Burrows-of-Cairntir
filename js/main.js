@@ -25,10 +25,10 @@ const creationState = {
 
 const CREATION_STEP_SCREENS = [
   "screen-creation-step1",
-  "screen-creation-step3b",
-  "screen-creation-step3",
-  "screen-creation-step4",
   "screen-creation-step5",
+  "screen-creation-step3",
+  "screen-creation-step3b",
+  "screen-creation-step4",
   "screen-creation-chronicle",
   "screen-creation-review"
 ];
@@ -3966,8 +3966,8 @@ document.getElementById("btn-step1-next").addEventListener("click", () => {
   goToCreationStep(1);
 });
 
-document.getElementById("btn-step3b-back").addEventListener("click", () => goToCreationStep(0));
-document.getElementById("btn-step3b-next").addEventListener("click", () => {
+document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(0));
+document.getElementById("btn-step5-next").addEventListener("click", () => {
   goToCreationStep(2);
 });
 
@@ -3982,7 +3982,12 @@ document.getElementById("btn-step3-next").addEventListener("click", () => {
   goToCreationStep(3);
 });
 
-document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(2));
+document.getElementById("btn-step3b-back").addEventListener("click", () => goToCreationStep(2));
+document.getElementById("btn-step3b-next").addEventListener("click", () => {
+  goToCreationStep(4);
+});
+
+document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(3));
 document.getElementById("btn-step4-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step4");
   if (creationState.traits.length < TRAIT_SELECTION_MIN) {
@@ -3990,11 +3995,6 @@ document.getElementById("btn-step4-next").addEventListener("click", () => {
     return;
   }
   errorEl.textContent = "";
-  goToCreationStep(4);
-});
-
-document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(3));
-document.getElementById("btn-step5-next").addEventListener("click", () => {
   goToCreationStep(5);
 });
 

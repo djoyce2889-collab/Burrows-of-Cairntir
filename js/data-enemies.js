@@ -3360,5 +3360,38 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Hide"]
+  },
+  theClanHealer: {
+    id: "theClanHealer",
+    name: "The Clan Healer",
+    description: "Came prepared to patch up whoever needed it. Didn't expect to be the one fighting, but isn't about to back down now.",
+    image: "assets/images/enemies/the-clan-healer.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  theHalfTurnedScout: {
+    id: "theHalfTurnedScout",
+    name: "The Half-Turned Scout",
+    description: "Caught somewhere between man and wolf, never fully committing to either — the tracking instinct is the only part that came through whole.",
+    image: "assets/images/enemies/the-half-turned-scout.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theBrambleFangedHound: {
+    id: "theBrambleFangedHound",
+    name: "The Bramble-Fanged Hound",
+    description: "Bred for the old court's hunts, thorns grown in place of fur along its back, teeth that were never meant to be that long.",
+    image: "assets/images/enemies/the-bramble-fanged-hound.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Grave Essence"]
   }
 };
