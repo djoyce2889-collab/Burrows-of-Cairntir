@@ -2975,5 +2975,27 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence"]
+  },
+  theRotAntleredStag: {
+    id: "theRotAntleredStag",
+    name: "The Rot-Antlered Stag",
+    description: "A genuine animal of the wood, twisted by whatever's spreading through it — antlers grown wrong, hide patched with something that isn't bark and isn't skin.",
+    image: "assets/images/enemies/the-rot-antlered-stag.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theCrowSwarm: {
+    id: "theCrowSwarm",
+    name: "The Crow Swarm",
+    description: "Dozens of them, moving as one, no longer behaving like anything that flies for a living should.",
+    image: "assets/images/enemies/the-crow-swarm.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
   }
 };

@@ -3736,7 +3736,11 @@ const DUNGEON_CONTENT = {
       hollowLoot: {
         text: "Half-buried in root and moss, a scrap of old ore sits undisturbed, like even the ground didn't want to hold onto it.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "stagFight" }]
+      },
+      stagFight: {
+        text: "Something moves between the trees ahead, antlers wrong in a way that takes a second too long to place, hide patched with something that isn't bark and isn't skin.",
+        choices: [{ type: "combat", label: "Fight the Rot-Antlered Stag", enemyId: "theRotAntleredStag", target: "fork" }]
       },
       fork: {
         text: "The path splits around a fallen elder tree — one way toward a pale, leafless glade, the other into a thicket gone strangely dense.",
@@ -3766,7 +3770,11 @@ const DUNGEON_CONTENT = {
       },
       deeperHollow: {
         text: "The trees press closer together the deeper you go, until the path itself barely counts as one anymore.",
-        choices: [{ type: "goto", label: "Press onward", target: "boundlessFight" }]
+        choices: [{ type: "goto", label: "Press onward", target: "crowFight" }]
+      },
+      crowFight: {
+        text: "A murder of crows lifts from the canopy all at once, moving with a single mind that no ordinary flock has any business sharing.",
+        choices: [{ type: "combat", label: "Fight the Crow Swarm", enemyId: "theCrowSwarm", target: "boundlessFight" }]
       },
       boundlessFight: {
         text: "Something enormous shifts among the trunks ahead, territorial in a way that no longer seems to have any edges to it at all.",
@@ -5150,12 +5158,14 @@ const ROOM_IMAGES = {
     wovenPath: "assets/images/ghillie-dhus-hollow/woven-path.png",
     thornFight: "assets/images/ghillie-dhus-hollow/thorn-fight.png",
     hollowLoot: "assets/images/ghillie-dhus-hollow/hollow-loot.png",
+    stagFight: "assets/images/ghillie-dhus-hollow/stag-fight.png",
     fork: "assets/images/ghillie-dhus-hollow/fork.png",
     witheredGlade: "assets/images/ghillie-dhus-hollow/withered-glade.png",
     boundThicket: "assets/images/ghillie-dhus-hollow/bound-thicket.png",
     groveConverge: "assets/images/ghillie-dhus-hollow/grove-converge.png",
     discoverRoom: "assets/images/ghillie-dhus-hollow/discover-room.png",
     deeperHollow: "assets/images/ghillie-dhus-hollow/deeper-hollow.png",
+    crowFight: "assets/images/ghillie-dhus-hollow/crow-fight.png",
     boundlessFight: "assets/images/ghillie-dhus-hollow/boundless-fight.png",
     vigilCheck: "assets/images/ghillie-dhus-hollow/vigil-check.png",
     extraFight: "assets/images/ghillie-dhus-hollow/extra-fight.png",
