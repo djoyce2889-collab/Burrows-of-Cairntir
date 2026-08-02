@@ -4431,7 +4431,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "Frozen into the ice at the pass's edge, a scrap of old ore has sat undisturbed since long before tonight's frost.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "silentFight" }]
+      },
+      silentFight: {
+        text: "The Silent Wolf is already on you before you register it's there at all — no howl, no growl, nothing to have warned you.",
+        choices: [{ type: "combat", label: "Fight the Silent Wolf", enemyId: "theSilentWolf", target: "fork" }]
       },
       fork: {
         text: "The pass splits around a jagged ice-cleft — one way through the narrow crack in the rock, the other around a frozen hollow.",
@@ -4450,7 +4454,11 @@ const DUNGEON_CONTENT = {
       },
       howlConverge: {
         text: "Both paths meet at a wide frost-glazed shelf, the snow scored with claw-marks far too large and far too many.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "ravenFight" }]
+      },
+      ravenFight: {
+        text: "The Frost-Touched Raven watches from a dead branch overhead, entirely still, right up until it isn't.",
+        choices: [{ type: "combat", label: "Fight the Frost-Touched Raven", enemyId: "theFrostTouchedRaven", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered standing stone rises from the shelf, old warding carvings still sharp despite the ice crusted thick across its face.",
@@ -5366,10 +5374,12 @@ const ROOM_IMAGES = {
     howlingPath: "assets/images/the-howling-frost/howling-path.png",
     heraldFight: "assets/images/the-howling-frost/herald-fight.png",
     pathLoot: "assets/images/the-howling-frost/path-loot.png",
+    silentFight: "assets/images/the-howling-frost/silent-fight.png",
     fork: "assets/images/the-howling-frost/fork.png",
     iceCleft: "assets/images/the-howling-frost/ice-cleft.png",
     frozenHollow: "assets/images/the-howling-frost/frozen-hollow.png",
     howlConverge: "assets/images/the-howling-frost/howl-converge.png",
+    ravenFight: "assets/images/the-howling-frost/raven-fight.png",
     discoverRoom: "assets/images/the-howling-frost/discover-room.png",
     deeperFrost: "assets/images/the-howling-frost/deeper-frost.png",
     trailingFight: "assets/images/the-howling-frost/trailing-fight.png",

@@ -3129,5 +3129,27 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "zombie",
     lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theSilentWolf: {
+    id: "theSilentWolf",
+    name: "The Silent Wolf",
+    description: "Never once cries out, not before, not during. By the old telling, the ones you never hear coming are the ones you should have worried about most.",
+    image: "assets/images/enemies/the-silent-wolf.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Hide", "Grave Essence"]
+  },
+  theFrostTouchedRaven: {
+    id: "theFrostTouchedRaven",
+    name: "The Frost-Touched Raven",
+    description: "Sits watching from a dead branch until it doesn't anymore. An old omen bird, same as the wolves, just with wings instead of teeth.",
+    image: "assets/images/enemies/the-frost-touched-raven.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
   }
 };
