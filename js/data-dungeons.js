@@ -644,15 +644,21 @@ const DUNGEON_CONTENT = {
       bannerHall: {
         text: "Deveran clan banners hang in tatters along this corridor, each stitched with a different clan mark — none of them the chief's own.",
         choices: [
-          { label: "Search among the banners (Survival)", type: "check", skillId: "survival", difficulty: "Novice", successTarget: "bannerLoot", failureTarget: "corridor" },
-          { label: "Move on", type: "goto", target: "corridor" }
+          { label: "Search among the banners (Survival)", type: "check", skillId: "survival", difficulty: "Novice", successTarget: "bannerLoot", failureTarget: "piperFight" },
+          { label: "Move on", type: "goto", target: "piperFight" }
         ]
       },
       bannerLoot: {
         text: "Behind one banner, you find a pouch someone hid and never came back for.",
         loot: ["Grave Essence"],
         choices: [
-          { label: "Continue", type: "goto", target: "corridor" }
+          { label: "Continue", type: "goto", target: "piperFight" }
+        ]
+      },
+      piperFight: {
+        text: "A thin, reedy note carries down the corridor ahead, the same phrase repeated over and over — a warning, still being played to a keep that stopped listening a long time ago.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theAshenPiper", target: "corridor" }
         ]
       },
       corridor: {
@@ -792,8 +798,14 @@ const DUNGEON_CONTENT = {
       runeArchive: {
         text: "The shaman's alcove is dry, somehow, untouched by the flood. Carved tablets line the walls — one still legible.",
         choices: [
-          { label: "Study the tablet (Runes of the Blade)", type: "discover", skillId: "runeBlade", spellId: "bloodfuryMark", target: "corridor" },
-          { label: "Leave it and move on", type: "goto", target: "corridor" }
+          { label: "Study the tablet (Runes of the Blade)", type: "discover", skillId: "runeBlade", spellId: "bloodfuryMark", target: "oarsmanFight" },
+          { label: "Leave it and move on", type: "goto", target: "oarsmanFight" }
+        ]
+      },
+      oarsmanFight: {
+        text: "Something rows steadily toward you through the flooded corridor, an oar working the water in an even, unhurried rhythm, though there's no boat left beneath it.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theWeedBoundOarsman", target: "corridor" }
         ]
       },
       corridor: {
@@ -925,8 +937,14 @@ const DUNGEON_CONTENT = {
       markedStone: {
         text: "The marking is old druidic knotwork, half a spell captured in stone.",
         choices: [
-          { label: "Learn what remains (Path of the Wild)", type: "discover", skillId: "pathWild", spellId: "thornward", target: "deeperPath" },
-          { label: "Leave it and move on", type: "goto", target: "deeperPath" }
+          { label: "Learn what remains (Path of the Wild)", type: "discover", skillId: "pathWild", spellId: "thornward", target: "stagFight" },
+          { label: "Leave it and move on", type: "goto", target: "stagFight" }
+        ]
+      },
+      stagFight: {
+        text: "Something crashes through the undergrowth ahead — a stag, roots grown so deep into its hide that antler and branch are barely distinguishable anymore.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theRootSnaredStag", target: "deeperPath" }
         ]
       },
       deeperPath: {
@@ -1311,8 +1329,14 @@ const DUNGEON_CONTENT = {
       smallCluster: {
         text: "The smaller stones are older, their knotwork worn nearly smooth — except for one line, still sharp.",
         choices: [
-          { label: "Read the line (Path of the Barrow)", type: "discover", skillId: "pathBarrow", spellId: "bonewhisper", target: "voiceEncounter" },
-          { label: "Leave it and continue", type: "goto", target: "voiceEncounter" }
+          { label: "Read the line (Path of the Barrow)", type: "discover", skillId: "pathBarrow", spellId: "bonewhisper", target: "watcherFight" },
+          { label: "Leave it and continue", type: "goto", target: "watcherFight" }
+        ]
+      },
+      watcherFight: {
+        text: "A patch of grass ahead shifts wrong, low and flat, right up until it isn't grass at all.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theGrassBoundWatcher", target: "voiceEncounter" }
         ]
       },
       voiceEncounter: {
@@ -1339,13 +1363,19 @@ const DUNGEON_CONTENT = {
         text: "The great ring is close now, tuath remnants visible standing motionless between the stones, still arranged as if for a gathering. One side of the ring holds a lone standing stone, apart from the rest.",
         choices: [
           { label: "Approach the lone stone", type: "goto", target: "loneStoneStudy" },
-          { label: "Move straight through the gathering", type: "goto", target: "remnantFight" }
+          { label: "Move straight through the gathering", type: "goto", target: "echoFight" }
         ]
       },
       loneStoneStudy: {
         text: "The lone stone's carving is different from the rest — a storm-pattern, still humming faintly with old weather.",
         choices: [
-          { label: "Study the pattern (Path of the Storm)", type: "discover", skillId: "pathStorm", spellId: "wildfireBolt", target: "remnantFight" }
+          { label: "Study the pattern (Path of the Storm)", type: "discover", skillId: "pathStorm", spellId: "wildfireBolt", target: "echoFight" }
+        ]
+      },
+      echoFight: {
+        text: "A voice mutters the same broken fragment over and over among the stones, circling back to the start of an argument it never once finished.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theEchoBoundRemnant", target: "remnantFight" }
         ]
       },
       remnantFight: {
@@ -4518,7 +4548,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "Wedged into a crack in the tunnel wall, a scrap of hide has been there long enough to stop smelling like anything at all.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "earSplitFight" }]
+      },
+      rushFight: {
+        text: "The Rush Troll is already closing the moment it sees you, no hesitation, no circling, straight down the tunnel at full speed.",
+        choices: [{ type: "combat", label: "Fight the Rush Troll", enemyId: "theRushTroll", target: "fork" }]
       },
       fork: {
         text: "The tunnel splits ahead — one way into a low stone hollow, the other along a narrow game trail.",
@@ -4537,7 +4571,11 @@ const DUNGEON_CONTENT = {
       },
       warrenConverge: {
         text: "Both paths open onto a wide underground hollow, old bones scattered across the floor in numbers that stopped being random a long time ago.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "caveGrownFight" }]
+      },
+      caveGrownFight: {
+        text: "Part of the hollow wall shifts, moss and stone peeling free of something that was never actually rock to begin with.",
+        choices: [{ type: "combat", label: "Fight the Cave-Grown Troll", enemyId: "theCaveGrownTroll", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered rune-stone stands half-buried at the hollow's edge, old warding carvings cut deep into the rock.",
@@ -4607,6 +4645,7 @@ const ROOM_IMAGES = {
     library: "assets/images/duncairn-keep/library.png",
     bannerHall: "assets/images/duncairn-keep/banner-hall.png",
     bannerLoot: "assets/images/duncairn-keep/banner-hall.png",
+    piperFight: "assets/images/duncairn-keep/piper-fight.png",
     corridor: "assets/images/duncairn-keep/corridor.png",
     stairwell: "assets/images/duncairn-keep/stairwell.png",
     solarRoom: "assets/images/duncairn-keep/solar-room.png",
@@ -4628,13 +4667,14 @@ const ROOM_IMAGES = {
     shieldmanFight: "assets/images/sunken-longhall/great-room-doors.png",
     greatRoom: "assets/images/sunken-longhall/great-room.png",
     runeArchive: "assets/images/sunken-longhall/rune-archive.png",
+    oarsmanFight: "assets/images/sunken-longhall/oarsman-fight.png",
     corridor: "assets/images/sunken-longhall/corridor.png",
     fork: "assets/images/sunken-longhall/fork.png",
     secondArchive: "assets/images/sunken-longhall/second-archive.png",
     oldChamberFight: "assets/images/sunken-longhall/old-chamber.png",
     converge: "assets/images/sunken-longhall/flooded-stairwell.png",
     preBoss: "assets/images/sunken-longhall/flooded-stairwell.png",
-    extraFight: "assets/images/sunken-longhall/flooded-stairwell.png",
+    extraFight: "assets/images/sunken-longhall/extra-fight.png",
     bossDoor: "assets/images/sunken-longhall/boss-door.png",
     carverFight: "assets/images/sunken-longhall/carver-fight.png",
     bossRoom: "assets/images/sunken-longhall/boss-room.png",
@@ -4648,13 +4688,14 @@ const ROOM_IMAGES = {
     clearingDoors: "assets/images/wychroot-grove/clearing.png",
     clearing: "assets/images/wychroot-grove/clearing.png",
     markedStone: "assets/images/wychroot-grove/marked-stone.png",
+    stagFight: "assets/images/wychroot-grove/stag-fight.png",
     deeperPath: "assets/images/wychroot-grove/deeper-path.png",
     fork: "assets/images/wychroot-grove/fork.png",
     leftPathFight: "assets/images/wychroot-grove/left-path.png",
     rightPathStudy: "assets/images/wychroot-grove/right-path-stones.png",
     converge: "assets/images/wychroot-grove/converge.png",
     preBoss: "assets/images/wychroot-grove/converge.png",
-    extraFight: "assets/images/wychroot-grove/converge.png",
+    extraFight: "assets/images/wychroot-grove/extra-fight.png",
     bossDoor: "assets/images/wychroot-grove/boss-door.png",
     wardFight: "assets/images/wychroot-grove/ward-fight.png",
     bossRoom: "assets/images/wychroot-grove/boss-room.png",
@@ -5394,10 +5435,12 @@ const ROOM_IMAGES = {
     warrenPath: "assets/images/troll-warren/warren-path.png",
     ambushFight: "assets/images/troll-warren/ambush-fight.png",
     pathLoot: "assets/images/troll-warren/path-loot.png",
+    rushFight: "assets/images/troll-warren/rush-fight.png",
     fork: "assets/images/troll-warren/fork.png",
     stoneHollow: "assets/images/troll-warren/stone-hollow.png",
     huntersTrail: "assets/images/troll-warren/hunters-trail.png",
     warrenConverge: "assets/images/troll-warren/warren-converge.png",
+    caveGrownFight: "assets/images/troll-warren/cave-grown-fight.png",
     discoverRoom: "assets/images/troll-warren/discover-room.png",
     deeperWarren: "assets/images/troll-warren/deeper-warren.png",
     bridgeFight: "assets/images/troll-warren/bridge-fight.png",

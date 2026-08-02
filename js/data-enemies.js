@@ -3151,5 +3151,82 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence"]
+  },
+  theRushTroll: {
+    id: "theRushTroll",
+    name: "The Rush Troll",
+    description: "Doesn't wait, doesn't circle, doesn't think twice. Closes the distance the instant it sees you and doesn't slow down after that.",
+    image: "assets/images/enemies/the-rush-troll.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theCaveGrownTroll: {
+    id: "theCaveGrownTroll",
+    name: "The Cave-Grown Troll",
+    description: "Moss and stone grown so deep into its hide after decades underground that it's barely distinguishable from the rock — right up until it moves.",
+    image: "assets/images/enemies/the-cave-grown-troll.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  theAshenPiper: {
+    id: "theAshenPiper",
+    name: "The Ashen Piper",
+    description: "Still playing the same warning tune he died mid-note delivering. Nobody's been left alive to hear it in longer than he seems to realize.",
+    image: "assets/images/enemies/the-ashen-piper.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theWeedBoundOarsman: {
+    id: "theWeedBoundOarsman",
+    name: "The Weed-Bound Oarsman",
+    description: "Still rowing, hands locked around an oar for a boat that rotted away decades before he did. Doesn't seem to have noticed either.",
+    image: "assets/images/enemies/the-weed-bound-oarsman.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theRootSnaredStag: {
+    id: "theRootSnaredStag",
+    name: "The Root-Snared Stag",
+    description: "Roots have grown so far into its hide that it's hard to say anymore where the animal ends and the grove begins.",
+    image: "assets/images/enemies/the-root-snared-stag.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theGrassBoundWatcher: {
+    id: "theGrassBoundWatcher",
+    name: "The Grass-Bound Watcher",
+    description: "Lies flat against the vale's long grass until it isn't grass at all anymore, and by then it's already too close to matter.",
+    image: "assets/images/enemies/the-grass-bound-watcher.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theEchoBoundRemnant: {
+    id: "theEchoBoundRemnant",
+    name: "The Echo-Bound Remnant",
+    description: "Repeats fragments of an argument centuries dead, the same handful of words over and over, never quite finishing the thought.",
+    image: "assets/images/enemies/the-echo-bound-remnant.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
   }
 };
