@@ -318,7 +318,6 @@ function stopAllNarration() {
 
 function speak(text) {
   return;
-  if (!voiceEnabled || !text) return;
   if (!("speechSynthesis" in window)) return;
 
   const plainText = text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -379,7 +378,6 @@ function checkAudioExists(path) {
 }
 
 function playRoomNarration(dungeonId, roomId, fallbackText) {
-  return;
   if (!voiceEnabled) return;
 
   stopAllNarration();
