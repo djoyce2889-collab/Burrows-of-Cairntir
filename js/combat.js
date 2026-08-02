@@ -892,6 +892,9 @@ const TAUNT_COOLDOWN = 5;
 const FORTIFY_DURATION = 4;
 const FORTIFY_COOLDOWN = 4;
 
+const REACTIVE_WARD_DURATION = 4;
+const REACTIVE_WARD_COOLDOWN = 4;
+
 function performPlayerTaunt() {
   currentCombat.activeEffects = currentCombat.activeEffects.filter((e) => e.kind !== "taunt");
   currentCombat.activeEffects.push({
@@ -2704,7 +2707,8 @@ function performPlayerCast(skillId, spell, target) {
     logEntry.hit = hit;
     logEntry.damage = damage;
   } else if (spell.type === "thornward") {
-    currentCombat.activeEffects.push({ kind: "thornward", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, thornedWard: hasChosenPerk(playerCharacter, "pathWild", "thornedWard") });
+    currentCombat.activeEffects.push({ kind: "thornward", rankBonus: 0, roundsRemaining: REACTIVE_WARD_DURATION, thornedWard: hasChosenPerk(playerCharacter, "pathWild", "thornedWard") });
+    setSpellCooldown(playerCharacter, spell.id, REACTIVE_WARD_COOLDOWN);
   } else if (spell.type === "fortify") {
     let bonusAmount = rollDamage(tierBefore);
     const isAncestorsVigor = skillId === "ancestralAverick" && spell.name === "Ancestor's Vigor";
@@ -2811,7 +2815,8 @@ function performPlayerCast(skillId, spell, target) {
     currentCombat.activeEffects.push({ kind: "playerAttackBonus", rankBonus: bothRank, roundsRemaining: SPELL_EFFECT_DURATION, spellName: spell.name });
     currentCombat.activeEffects.push({ kind: "enemyDebuff", rankBonus: -bothRank, roundsRemaining: SPELL_EFFECT_DURATION });
   } else if (spell.type === "curseBack") {
-    currentCombat.activeEffects.push({ kind: "curseBack", rankBonus: 0, roundsRemaining: SPELL_EFFECT_DURATION, hasFortuneReversed: hasChosenPerk(playerCharacter, "runeCurse", "fortuneReversed") });
+    currentCombat.activeEffects.push({ kind: "curseBack", rankBonus: 0, roundsRemaining: REACTIVE_WARD_DURATION, hasFortuneReversed: hasChosenPerk(playerCharacter, "runeCurse", "fortuneReversed") });
+    setSpellCooldown(playerCharacter, spell.id, REACTIVE_WARD_COOLDOWN);
   } else if (spell.type === "cooldownBuff") {
     if (getSpellCooldownRemaining(playerCharacter, spell.id) > 0) {
       logEntry.onCooldown = true;

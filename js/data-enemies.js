@@ -2865,5 +2865,49 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Old Ore"]
+  },
+  theBellKeeper: {
+    id: "theBellKeeper",
+    name: "The Bell-Keeper",
+    description: "Rings the warning bell every cycle without fail, hands stained dark from decades on the same worn rope, skin gone the color of old ash.",
+    image: "assets/images/enemies/the-bell-keeper.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theGrainWarden: {
+    id: "theGrainWarden",
+    name: "The Grain Warden",
+    description: "Guards what's left of the village's stores, red dye smeared thin over skin gone hollow and grey from a fear that's never once let up.",
+    image: "assets/images/enemies/the-grain-warden.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theDepthEel: {
+    id: "theDepthEel",
+    name: "The Depth Eel",
+    description: "Eyeless and massive, coiled somewhere the light doesn't reach until it decides you're worth the effort of surfacing.",
+    image: "assets/images/enemies/the-depth-eel.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theCorpseLight: {
+    id: "theCorpseLight",
+    name: "The Corpse Light",
+    description: "A pale, drifting flame that's led plenty of people toward the water and never once led anyone back out of it.",
+    image: "assets/images/enemies/the-corpse-light.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
   }
 };

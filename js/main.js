@@ -3584,73 +3584,58 @@ function renderCraftDetailScreen(category) {
   cardEl.appendChild(card);
 }
 
+const ENCHANT_SLOT_LABELS = { weapon: "Weapon", head: "Head", chest: "Chest", legs: "Legs", gloves: "Gloves", boots: "Boots" };
+const ENCHANT_FIELD_BY_SLOT = {
+  weapon: "weaponEnchantment", head: "headEnchantment", chest: "chestEnchantment",
+  legs: "legsEnchantment", gloves: "glovesEnchantment", boots: "bootsEnchantment"
+};
+const ENCHANT_ITEM_NAME_FIELD_BY_SLOT = {
+  weapon: "equippedWeaponItemName", head: "equippedHeadItemName", chest: "equippedChestItemName",
+  legs: "equippedLegsItemName", gloves: "equippedGlovesItemName", boots: "equippedBootsItemName"
+};
+
 function renderEnchantSection(list, resultEl) {
   if (!playerCharacter.skills.enchanting) {
     resultEl.innerHTML = "You haven't trained Enchanting — nothing to do here yet.";
     return;
   }
 
-  if (!craftingEnchantSlotPending) {
-    const weaponCard = document.createElement("div");
-    weaponCard.className = "cc-card";
-    const currentWeaponEnchant = playerCharacter.weaponEnchantment ? playerCharacter.weaponEnchantment.name : "None";
-    const equippedWeaponImage = playerCharacter.equippedWeaponItemName ? getItemImagePath(playerCharacter.equippedWeaponItemName) : null;
-    weaponCard.innerHTML = `
-      <div class="cc-card-name">Enchant Weapon</div>
-      <div class="cc-card-desc">Current: ${currentWeaponEnchant}</div>
+  Object.keys(ENCHANT_SLOT_LABELS).forEach((slotName) => {
+    const enchantField = ENCHANT_FIELD_BY_SLOT[slotName];
+    const current = playerCharacter[enchantField];
+    const equippedItemName = playerCharacter[ENCHANT_ITEM_NAME_FIELD_BY_SLOT[slotName]];
+    const equippedImage = equippedItemName ? getItemImagePath(equippedItemName) : null;
+
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    card.innerHTML = `
+      <div class="cc-card-name">Enchant ${ENCHANT_SLOT_LABELS[slotName]}</div>
+      <div class="cc-card-desc">Current: ${current ? current.name : "None"}</div>
       <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
-      ${equippedWeaponImage ? `<div class="cc-card-image" style="background-image: url('${equippedWeaponImage}')"></div>` : ""}
+      ${equippedImage ? `<div class="cc-card-image" style="background-image: url('${equippedImage}')"></div>` : ""}
     `;
-    weaponCard.addEventListener("click", () => {
-      craftingEnchantSlotPending = "weapon";
-      renderEnchantSection(
-        document.getElementById("craft-enchant-list"),
-        document.getElementById("craft-enchant-result")
-      );
+    card.addEventListener("click", () => {
+      goToEnchantDetailScreen(slotName);
     });
-    list.appendChild(weaponCard);
+    list.appendChild(card);
+  });
+}
 
-    const armorSlotLabels = { head: "Head", chest: "Chest", legs: "Legs", gloves: "Gloves", boots: "Boots" };
-    const armorEnchantFields = {
-      head: "headEnchantment", chest: "chestEnchantment", legs: "legsEnchantment",
-      gloves: "glovesEnchantment", boots: "bootsEnchantment"
-    };
-    const armorItemNameFields = {
-      head: "equippedHeadItemName", chest: "equippedChestItemName", legs: "equippedLegsItemName",
-      gloves: "equippedGlovesItemName", boots: "equippedBootsItemName"
-    };
-    Object.keys(armorSlotLabels).forEach((slotName) => {
-      const enchantField = armorEnchantFields[slotName];
-      const current = playerCharacter[enchantField];
-      const slotCard = document.createElement("div");
-      slotCard.className = "cc-card";
-      const equippedSlotItemName = playerCharacter[armorItemNameFields[slotName]];
-      const equippedSlotImage = equippedSlotItemName ? getItemImagePath(equippedSlotItemName) : null;
-      slotCard.innerHTML = `
-        <div class="cc-card-name">Enchant ${armorSlotLabels[slotName]}</div>
-        <div class="cc-card-desc">Current: ${current ? current.name : "None"}</div>
-        <div class="cc-card-desc">Requires: ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL}</div>
-        ${equippedSlotImage ? `<div class="cc-card-image" style="background-image: url('${equippedSlotImage}')"></div>` : ""}
-      `;
-      slotCard.addEventListener("click", () => {
-        craftingEnchantSlotPending = slotName;
-        renderEnchantSection(
-          document.getElementById("craft-enchant-list"),
-          document.getElementById("craft-enchant-result")
-        );
-      });
-      list.appendChild(slotCard);
-    });
-    return;
-  }
+function goToEnchantDetailScreen(slotName) {
+  craftingEnchantSlotPending = slotName;
+  document.getElementById("craft-enchant-detail-label").textContent = `Enchant ${ENCHANT_SLOT_LABELS[slotName]}`;
+  showScreen("screen-craft-enchant-detail");
+  renderEnchantDetailScreen();
+}
 
-  const armorEnchantFieldsLookup = {
-    head: "headEnchantment", chest: "chestEnchantment", legs: "legsEnchantment",
-    gloves: "glovesEnchantment", boots: "bootsEnchantment"
-  };
-  const currentEnchantment = craftingEnchantSlotPending === "weapon"
-    ? playerCharacter.weaponEnchantment
-    : playerCharacter[armorEnchantFieldsLookup[craftingEnchantSlotPending]];
+function renderEnchantDetailScreen() {
+  const slotName = craftingEnchantSlotPending;
+  const listEl = document.getElementById("craft-enchant-detail-list");
+  const resultEl = document.getElementById("craft-enchant-detail-result");
+  listEl.innerHTML = "";
+  resultEl.innerHTML = "";
+
+  const currentEnchantment = playerCharacter[ENCHANT_FIELD_BY_SLOT[slotName]];
   const currentTypeId = currentEnchantment ? currentEnchantment.type : null;
 
   Object.values(ENCHANTMENT_TYPES).forEach((type) => {
@@ -3669,11 +3654,11 @@ function renderEnchantSection(list, resultEl) {
       card.style.cursor = "not-allowed";
     } else {
       card.addEventListener("click", () => {
-        attemptEnchant(craftingEnchantSlotPending, type.id);
+        attemptEnchant(slotName, type.id);
       });
     }
 
-    list.appendChild(card);
+    listEl.appendChild(card);
   });
 }
 
@@ -3716,10 +3701,10 @@ const ARMOR_ENCHANT_FIELD_BY_SLOT = {
 };
 
 function attemptEnchant(slot, typeId) {
-  const enchantField = slot === "weapon" ? "weaponEnchantment" : ARMOR_ENCHANT_FIELD_BY_SLOT[slot];
+  const enchantField = ENCHANT_FIELD_BY_SLOT[slot];
   const currentEnchantment = playerCharacter[enchantField];
   if (currentEnchantment && currentEnchantment.type === typeId) {
-    document.getElementById("craft-enchant-result").innerHTML =
+    document.getElementById("craft-enchant-detail-result").innerHTML =
       `<span class="craft-result-fail">This item is already ${ENCHANTMENT_TYPES[typeId].name}-Enchanted — choose a different type to change it.</span>`;
     return;
   }
@@ -3727,7 +3712,7 @@ function attemptEnchant(slot, typeId) {
   const have = countMaterial(ENCHANT_MATERIAL);
 
   if (have < ENCHANT_MATERIAL_COST) {
-    document.getElementById("craft-enchant-result").innerHTML =
+    document.getElementById("craft-enchant-detail-result").innerHTML =
       `<span class="craft-result-fail">You need ${ENCHANT_MATERIAL_COST} &times; ${ENCHANT_MATERIAL} to attempt this — you only have ${have}.</span>`;
     return;
   }
@@ -3751,12 +3736,8 @@ function attemptEnchant(slot, typeId) {
     resultMessage = `<span class="craft-result-fail">The enchantment fails to take hold. No materials lost — but you've learned something from the mistake.</span>`;
   }
 
-  craftingEnchantSlotPending = null;
-  renderEnchantSection(
-    document.getElementById("craft-enchant-list"),
-    document.getElementById("craft-enchant-result")
-  );
-  document.getElementById("craft-enchant-result").innerHTML = resultMessage;
+  renderEnchantDetailScreen();
+  document.getElementById("craft-enchant-detail-result").innerHTML = resultMessage;
   saveGameState();
 }
 
@@ -4035,6 +4016,7 @@ document.getElementById("btn-craft-enchant").addEventListener("click", goToCraft
 document.getElementById("btn-craft-weapons-back").addEventListener("click", goToCraftingScreen);
 document.getElementById("btn-craft-armor-back").addEventListener("click", goToCraftingScreen);
 document.getElementById("btn-craft-enchant-back").addEventListener("click", goToCraftingScreen);
+document.getElementById("btn-craft-enchant-detail-back").addEventListener("click", goToCraftEnchantScreen);
 document.getElementById("btn-craft-weapon-detail-back").addEventListener("click", goToCraftWeaponsScreen);
 document.getElementById("btn-craft-armor-detail-back").addEventListener("click", goToCraftArmorScreen);
 document.getElementById("btn-growth-summary-continue").addEventListener("click", goToHomebaseScreen);

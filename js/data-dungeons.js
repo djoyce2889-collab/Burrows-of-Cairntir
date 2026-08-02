@@ -3301,7 +3301,11 @@ const DUNGEON_CONTENT = {
       roadLoot: {
         text: "A small shrine along the road holds old, half-burned offerings — something worth taking, if the village won't miss it tonight.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "bellFight" }]
+      },
+      bellFight: {
+        text: "Someone stands rigid beside the warning bell, hands stained dark from a rope they've never once let go of, ready to ring it the moment you get any closer.",
+        choices: [{ type: "combat", label: "Fight the Bell-Keeper", enemyId: "theBellKeeper", target: "fork" }]
       },
       fork: {
         text: "The road splits ahead — one way toward the village square, painted red top to bottom, the other toward a row of shuttered homes.",
@@ -3320,7 +3324,11 @@ const DUNGEON_CONTENT = {
       },
       convergeVillage: {
         text: "Both paths lead to the village well, red string and old talismans tied around its rim, everything here built to keep one specific thing away.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "grainFight" }]
+      },
+      grainFight: {
+        text: "Someone stands between you and the last of the village's stores, red dye smeared thin over skin gone hollow, refusing to move an inch.",
+        choices: [{ type: "combat", label: "Fight the Grain Warden", enemyId: "theGrainWarden", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A faded scroll is tucked into the well's stonework, an old technique recorded by someone who once tried something other than fire and red dye.",
@@ -3380,7 +3388,11 @@ const DUNGEON_CONTENT = {
       shoreLoot: {
         text: "An old set of pipes lies abandoned in the reeds, mid-tune, as though set down mid-note and never picked back up.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "eelFight" }]
+      },
+      eelFight: {
+        text: "The water breaks just off the reeds, something long and eyeless surfacing far too quickly for how still the loch has been so far.",
+        choices: [{ type: "combat", label: "Fight the Depth Eel", enemyId: "theDepthEel", target: "fork" }]
       },
       fork: {
         text: "The shore splits ahead — one way toward a rocky outcrop, the other along a stretch of waterlogged grazing fields.",
@@ -3399,7 +3411,11 @@ const DUNGEON_CONTENT = {
       },
       convergeLoch: {
         text: "Both paths lead to a quiet inlet, old wedding flowers scattered along the waterline, long since gone to rot.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "lightFight" }]
+      },
+      lightFight: {
+        text: "A pale light drifts low over the water ahead, patient, unhurried, clearly in no rush at all to lead anywhere good.",
+        choices: [{ type: "combat", label: "Fight the Corpse Light", enemyId: "theCorpseLight", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered stone marker stands half-submerged, an old technique carved into its face, still legible after all this time.",
@@ -5010,10 +5026,12 @@ const ROOM_IMAGES = {
     mainRoad: "assets/images/nians-village/main-road.png",
     keeperFight: "assets/images/nians-village/keeper-fight.png",
     roadLoot: "assets/images/nians-village/road-loot.png",
+    bellFight: "assets/images/nians-village/bell-fight.png",
     fork: "assets/images/nians-village/fork.png",
     villageSquare: "assets/images/nians-village/village-square.png",
     shutteredHomes: "assets/images/nians-village/shuttered-homes.png",
     convergeVillage: "assets/images/nians-village/converge-village.png",
+    grainFight: "assets/images/nians-village/grain-fight.png",
     discoverRoom: "assets/images/nians-village/discover-room.png",
     deeperVillage: "assets/images/nians-village/deeper-village.png",
     lanternFight: "assets/images/nians-village/lantern-fight.png",
@@ -5028,10 +5046,12 @@ const ROOM_IMAGES = {
     shorePath: "assets/images/kelpies-loch/shore-path.png",
     fishermanFight: "assets/images/kelpies-loch/fisherman-fight.png",
     shoreLoot: "assets/images/kelpies-loch/shore-loot.png",
+    eelFight: "assets/images/kelpies-loch/eel-fight.png",
     fork: "assets/images/kelpies-loch/fork.png",
     rockyOutcrop: "assets/images/kelpies-loch/rocky-outcrop.png",
     grazingFields: "assets/images/kelpies-loch/grazing-fields.png",
     convergeLoch: "assets/images/kelpies-loch/converge-loch.png",
+    lightFight: "assets/images/kelpies-loch/light-fight.png",
     discoverRoom: "assets/images/kelpies-loch/discover-room.png",
     deeperLoch: "assets/images/kelpies-loch/deeper-loch.png",
     brideFight: "assets/images/kelpies-loch/bride-fight.png",
