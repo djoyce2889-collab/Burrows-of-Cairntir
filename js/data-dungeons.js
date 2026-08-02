@@ -4170,7 +4170,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "Caught in a low bramble, a scrap of hide has been snagged there long enough to stop being fresh.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "headlessFight" }]
+      },
+      headlessFight: {
+        text: "The Headless Traveler stumbles into the path ahead, shoulders still square, gait still steady, entirely undeterred by the part of it that's missing.",
+        choices: [{ type: "combat", label: "Fight the Headless Traveler", enemyId: "theHeadlessTraveler", target: "fork" }]
       },
       fork: {
         text: "The path splits ahead — one way threading beneath web strung far too high between the trees, the other cutting through a stretch of torn, root-churned ground.",
@@ -4189,7 +4193,11 @@ const DUNGEON_CONTENT = {
       },
       forestConverge: {
         text: "Both paths open onto a wide hollow, moss-thick stones arranged in a rough circle at its center, clearly placed rather than fallen.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "centipedeFight" }]
+      },
+      centipedeFight: {
+        text: "The Ōmukade uncoils from beneath the moss-thick stones, segmented plating catching the little light that makes it through the canopy.",
+        choices: [{ type: "combat", label: "Fight the Ōmukade", enemyId: "theOmukade", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered charm hangs from a low branch here, old and yokai-warded, swaying though there's no wind to move it.",
@@ -4249,7 +4257,11 @@ const DUNGEON_CONTENT = {
       canopyLoot: {
         text: "Tangled in a low root, a scrap of hide has been there long enough to stop smelling like anything at all.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "leopardFight" }]
+      },
+      leopardFight: {
+        text: "The Night-Striped Leopard is already mid-leap before the undergrowth even finishes rustling behind it.",
+        choices: [{ type: "combat", label: "Fight the Night-Striped Leopard", enemyId: "theNightStripedLeopard", target: "fork" }]
       },
       fork: {
         text: "The path splits ahead — one way beneath a thick overhang alive with wingbeats, the other along a wide, half-swallowed game trail.",
@@ -4268,7 +4280,11 @@ const DUNGEON_CONTENT = {
       },
       reachConverge: {
         text: "Both paths open onto a wide clearing floored in old bone and bramble, the canopy overhead thinning just enough to see how far up it actually goes.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "antFight" }]
+      },
+      antFight: {
+        text: "The Giant Jungle Ant rears up out of the bone-scattered floor, mandibles spread wide, easily large enough to matter on its own.",
+        choices: [{ type: "combat", label: "Fight the Giant Jungle Ant", enemyId: "theGiantJungleAnt", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A carved wooden totem stands here, old protective rites cut deep into weathered wood.",
@@ -4328,7 +4344,11 @@ const DUNGEON_CONTENT = {
       mireLoot: {
         text: "Half-buried in the mud, a scrap of old ore has sat undisturbed since long before the water claimed this ground.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "mournerFight" }]
+      },
+      mournerFight: {
+        text: "The Drowned Mourner rises from the shallows still clutching what she carried to someone else's burial, never her own.",
+        choices: [{ type: "combat", label: "Fight the Drowned Mourner", enemyId: "theDrownedMourner", target: "fork" }]
       },
       fork: {
         text: "The swamp splits ahead — one way toward a cluster of sunken grave-markers, the other into a dense stand of reeds.",
@@ -4347,7 +4367,11 @@ const DUNGEON_CONTENT = {
       },
       swampConverge: {
         text: "Both paths open onto a wider stretch of mire, dozens of old grave-markers scattered across it, none of them facing the same direction.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "keeperFight2" }]
+      },
+      keeperFight2: {
+        text: "The Silt-Fused Shrine-Keeper pulls free of the mire itself, half the swamp still clinging to a shape that stopped being fully human a long time ago.",
+        choices: [{ type: "combat", label: "Fight the Silt-Fused Shrine-Keeper", enemyId: "theSiltFusedShrineKeeper", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered ancestral totem stands half-sunk at the mire's edge, old protective carvings barely visible beneath the moss.",
@@ -5282,10 +5306,12 @@ const ROOM_IMAGES = {
     duskPath: "assets/images/yamaubas-wood/dusk-path.png",
     wolfFight: "assets/images/yamaubas-wood/wolf-fight.png",
     pathLoot: "assets/images/yamaubas-wood/path-loot.png",
+    headlessFight: "assets/images/yamaubas-wood/headless-fight.png",
     fork: "assets/images/yamaubas-wood/fork.png",
     webThicket: "assets/images/yamaubas-wood/web-thicket.png",
     hollowRoots: "assets/images/yamaubas-wood/hollow-roots.png",
     forestConverge: "assets/images/yamaubas-wood/forest-converge.png",
+    centipedeFight: "assets/images/yamaubas-wood/centipede-fight.png",
     discoverRoom: "assets/images/yamaubas-wood/discover-room.png",
     deeperWood: "assets/images/yamaubas-wood/deeper-wood.png",
     owlFight: "assets/images/yamaubas-wood/owl-fight.png",
@@ -5300,10 +5326,12 @@ const ROOM_IMAGES = {
     hangingVines: "assets/images/sasabonsams-reach/hanging-vines.png",
     stalkerFight: "assets/images/sasabonsams-reach/stalker-fight.png",
     canopyLoot: "assets/images/sasabonsams-reach/canopy-loot.png",
+    leopardFight: "assets/images/sasabonsams-reach/leopard-fight.png",
     fork: "assets/images/sasabonsams-reach/fork.png",
     batOverhang: "assets/images/sasabonsams-reach/bat-overhang.png",
     serpentTrail: "assets/images/sasabonsams-reach/serpent-trail.png",
     reachConverge: "assets/images/sasabonsams-reach/reach-converge.png",
+    antFight: "assets/images/sasabonsams-reach/ant-fight.png",
     discoverRoom: "assets/images/sasabonsams-reach/discover-room.png",
     deeperCanopy: "assets/images/sasabonsams-reach/deeper-canopy.png",
     hyenaFight: "assets/images/sasabonsams-reach/hyena-fight.png",
@@ -5318,10 +5346,12 @@ const ROOM_IMAGES = {
     mirePath: "assets/images/unburied-swamp/mire-path.png",
     wandererFight: "assets/images/unburied-swamp/wanderer-fight.png",
     mireLoot: "assets/images/unburied-swamp/mire-loot.png",
+    mournerFight: "assets/images/unburied-swamp/mourner-fight.png",
     fork: "assets/images/unburied-swamp/fork.png",
     sunkenGraves: "assets/images/unburied-swamp/sunken-graves.png",
     reedThicket: "assets/images/unburied-swamp/reed-thicket.png",
     swampConverge: "assets/images/unburied-swamp/swamp-converge.png",
+    keeperFight2: "assets/images/unburied-swamp/keeper-fight.png",
     discoverRoom: "assets/images/unburied-swamp/discover-room.png",
     deeperSwamp: "assets/images/unburied-swamp/deeper-swamp.png",
     elderFight: "assets/images/unburied-swamp/elder-fight.png",

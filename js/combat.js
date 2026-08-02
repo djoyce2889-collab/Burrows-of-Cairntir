@@ -1764,7 +1764,7 @@ function performFollowerShieldBash(follower) {
   setSpellCooldown(follower, SHIELD_BASH_ID, 3);
   currentCombat.log.push({
     actor: "follower",
-    follower: follower,
+    followerName: follower.name,
     action: "shieldBash",
     hit: hit,
     damage: damage,
@@ -1795,7 +1795,7 @@ function performFollowerBackstab(follower) {
   setSpellCooldown(follower, BACKSTAB_ID, 2);
   currentCombat.log.push({
     actor: "follower",
-    follower: follower,
+    followerName: follower.name,
     action: "backstab",
     hit: hit,
     damage: damage
@@ -3044,7 +3044,17 @@ function describeLogEntry(entry) {
     if (entry.action === "heal") {
       return `${entry.followerName} calls on healing magic, restoring ${entry.healAmount} Hit Points to ${entry.targetName}.`;
     }
-    if (entry.action === "cast") {
+    if (entry.action === "shieldBash") {
+if (!entry.hit) return `${entry.followerName} slams her shield forward, but their foe twists away.`;
+return entry.stunned
+  ? `${entry.followerName} slams her shield into their foe for ${entry.damage}, knocking them senseless!`
+  : `${entry.followerName} slams her shield into their foe for ${entry.damage}.`;
+}
+if (entry.action === "backstab") {
+if (!entry.hit) return `${entry.followerName} slips in for an opening, but their foe turns just in time.`;
+return `${entry.followerName} finds an opening and drives the blade home for ${entry.damage}.`;
+}
+if (entry.action === "cast") {
       if (entry.castKind === "ward") {
         return `${entry.followerName} calls on ${entry.spellName}, and a silent ward settles over her — ready to answer the next blow.`;
       }

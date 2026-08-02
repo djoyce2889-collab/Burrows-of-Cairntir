@@ -3063,5 +3063,71 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theHeadlessTraveler: {
+    id: "theHeadlessTraveler",
+    name: "The Headless Traveler",
+    description: "One of Yamauba's, a long time ago. Still walking the same stretch of wood it never actually left, head gone and clearly not needed anymore.",
+    image: "assets/images/enemies/the-headless-traveler.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theOmukade: {
+    id: "theOmukade",
+    name: "The Ōmukade",
+    description: "A centipede the size of a fallen log, segmented plating catching what little light makes it through the canopy.",
+    image: "assets/images/enemies/the-omukade.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theNightStripedLeopard: {
+    id: "theNightStripedLeopard",
+    name: "The Night-Striped Leopard",
+    description: "Moves without sound through undergrowth that should be loud enough to give anything away, stripes catching what little light reaches this deep.",
+    image: "assets/images/enemies/the-night-striped-leopard.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theGiantJungleAnt: {
+    id: "theGiantJungleAnt",
+    name: "The Giant Jungle Ant",
+    description: "Mandibles alone are the size of a forearm, carapace cracked and weeping something dark, moving with a wrongness that has nothing to do with its size.",
+    image: "assets/images/enemies/the-giant-jungle-ant.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theDrownedMourner: {
+    id: "theDrownedMourner",
+    name: "The Drowned Mourner",
+    description: "Died mid-rite, burying someone else, and never once got the same courtesy in return. Still carries what she was holding at the time.",
+    image: "assets/images/enemies/the-drowned-mourner.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  theSiltFusedShrineKeeper: {
+    id: "theSiltFusedShrineKeeper",
+    name: "The Silt-Fused Shrine-Keeper",
+    description: "Tended the family shrine for as long as anyone remembered. Nobody's tended it back, and the swamp's had a long time to finish the job.",
+    image: "assets/images/enemies/the-silt-fused-shrine-keeper.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence", "Old Ore"]
   }
 };

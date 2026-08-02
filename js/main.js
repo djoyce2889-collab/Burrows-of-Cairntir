@@ -3759,9 +3759,13 @@ function getRecipeImageSlug(recipeId) {
     .replace(/([A-Z])/g, (match, letter, offset) => (offset > 0 ? "-" : "") + letter.toLowerCase());
 }
 
-function getPerkImagePath(skillId) {
+function getPerkImagePath(skillId, perkId) {
   const culture = Object.values(CULTURES).find((c) => c.magicSkillIds && c.magicSkillIds.includes(skillId));
-  if (culture) return `assets/images/perks/${culture.id}-magic.png`;
+  if (culture) {
+    const spellId = PERK_SPELL_ID[skillId] && PERK_SPELL_ID[skillId][perkId];
+    if (spellId) return `assets/images/spells/${culture.id}/${spellId}.png`;
+    return `assets/images/perks/${culture.id}-magic.png`;
+  }
   return getSkillImagePath(skillId);
 }
 
