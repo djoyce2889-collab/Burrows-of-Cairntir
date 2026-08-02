@@ -1606,9 +1606,13 @@ const DUNGEON_CONTENT = {
       sideGrotto: {
         text: "A quiet grotto, untouched by the storm above. Something ancient is carved into the wet stone here.",
         choices: [
-          { type: "discover", label: "Study the carving (Path of the Grove)", skillId: "pathGrove", spellId: "venomstrike", target: "blightHall" },
-          { type: "goto", label: "Leave it and move on", target: "blightHall" }
+          { type: "discover", label: "Study the carving (Path of the Grove)", skillId: "pathGrove", spellId: "venomstrike", target: "netcasterFight" },
+          { type: "goto", label: "Leave it and move on", target: "netcasterFight" }
         ]
+      },
+      netcasterFight: {
+        text: "A weighted net cuts through the air before you've even registered the shape that threw it, already closing in behind the throw.",
+        choices: [{ type: "combat", label: "Fight the Fomorian Netcaster", enemyId: "fomorianNetcaster", target: "blightHall" }]
       },
       blightHall: {
         text: "A wide hall opens ahead, the water itself sick and discolored, faintly glowing where it shouldn't.",
@@ -1698,7 +1702,11 @@ const DUNGEON_CONTENT = {
       hiddenNiche: {
         text: "A small niche is carved into the mountainside here, sheltered from the worst of the wind — easy to miss unless you're looking for it.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "risingPath" }]
+        choices: [{ type: "goto", label: "Continue", target: "wildcatFight" }]
+      },
+      wildcatFight: {
+        text: "The Storm-Wracked Wildcat drops from an outcrop above, ice cracking along its spine with the impact, eyes fixed and hungry.",
+        choices: [{ type: "combat", label: "Fight the Storm-Wracked Wildcat", enemyId: "theStormWrackedWildcat", target: "risingPath" }]
       },
       risingPath: {
         text: "The trail climbs steeply now, the air growing thinner and colder with every step. Storm clouds press close overhead.",
@@ -4787,21 +4795,22 @@ const ROOM_IMAGES = {
   fomorianDepths: {
     shoreEntrance: "assets/images/fomorian-depths/shore-entrance.png",
     tidalCave: "assets/images/fomorian-depths/tidal-cave.png",
-    raiderAmbush: "assets/images/fomorian-depths/tidal-cave.png",
+    raiderAmbush: "assets/images/fomorian-depths/raider-ambush.png",
     wreckageLoot: "assets/images/fomorian-depths/wreckage-loot.png",
     driftwoodCache: "assets/images/fomorian-depths/driftwood-cache.png",
     deeperCave: "assets/images/fomorian-depths/deeper-cave.png",
-    bruteFight: "assets/images/fomorian-depths/deeper-cave.png",
+    bruteFight: "assets/images/fomorian-depths/brute-fight.png",
     sideGrotto: "assets/images/fomorian-depths/side-grotto.png",
+    netcasterFight: "assets/images/fomorian-depths/netcaster-fight.png",
     blightHall: "assets/images/fomorian-depths/blight-hall.png",
-    casterEncounter: "assets/images/fomorian-depths/blight-hall.png",
+    casterEncounter: "assets/images/fomorian-depths/caster-encounter.png",
     bonePileChamber: "assets/images/fomorian-depths/bone-pile-chamber.png",
     fork: "assets/images/fomorian-depths/fork.png",
     tidepoolPath: "assets/images/fomorian-depths/tidepool-path.png",
     sunkenPassage: "assets/images/fomorian-depths/sunken-passage.png",
     converge: "assets/images/fomorian-depths/converge.png",
     preBoss: "assets/images/fomorian-depths/pre-boss.png",
-    extraFight: "assets/images/fomorian-depths/pre-boss.png",
+    extraFight: "assets/images/fomorian-depths/extra-fight.png",
     bossDoor: "assets/images/fomorian-depths/boss-door.png",
     lidkeeperFight: "assets/images/fomorian-depths/lidkeeper-fight.png",
     bossRoom: "assets/images/fomorian-depths/boss-room.png",
@@ -4810,22 +4819,23 @@ const ROOM_IMAGES = {
   cailleachsReach: {
     mountainPassEntrance: "assets/images/cailleachs-reach/mountain-pass-entrance.png",
     windsweptTrail: "assets/images/cailleachs-reach/windswept-trail.png",
-    reiverAmbush: "assets/images/cailleachs-reach/windswept-trail.png",
+    reiverAmbush: "assets/images/cailleachs-reach/reiver-ambush.png",
     cairnLoot: "assets/images/cailleachs-reach/cairn-loot.png",
     hiddenNiche: "assets/images/cailleachs-reach/hidden-niche.png",
+    wildcatFight: "assets/images/cailleachs-reach/wildcat-fight.png",
     risingPath: "assets/images/cailleachs-reach/rising-path.png",
-    wightEncounter: "assets/images/cailleachs-reach/rising-path.png",
+    wightEncounter: "assets/images/cailleachs-reach/wight-encounter.png",
     shelteredHollow: "assets/images/cailleachs-reach/sheltered-hollow.png",
     stormRidge: "assets/images/cailleachs-reach/storm-ridge.png",
-    handmaidenFight: "assets/images/cailleachs-reach/storm-ridge.png",
+    handmaidenFight: "assets/images/cailleachs-reach/handmaiden-fight.png",
     boneCairn: "assets/images/cailleachs-reach/bone-cairn.png",
     fork: "assets/images/cailleachs-reach/fork.png",
     icyLedge: "assets/images/cailleachs-reach/icy-ledge.png",
     hiddenCave: "assets/images/cailleachs-reach/hidden-cave.png",
-    stalkerFight: "assets/images/cailleachs-reach/hidden-cave.png",
+    stalkerFight: "assets/images/cailleachs-reach/stalker-fight.png",
     converge: "assets/images/cailleachs-reach/converge.png",
     preBoss: "assets/images/cailleachs-reach/pre-boss.png",
-    extraFight: "assets/images/cailleachs-reach/pre-boss.png",
+    extraFight: "assets/images/cailleachs-reach/extra-fight.png",
     bossDoor: "assets/images/cailleachs-reach/boss-door.png",
     championFight: "assets/images/cailleachs-reach/champion-fight.png",
     bossRoom: "assets/images/cailleachs-reach/boss-room.png",

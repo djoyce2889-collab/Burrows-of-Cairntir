@@ -3228,5 +3228,27 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence"]
+  },
+  fomorianNetcaster: {
+    id: "fomorianNetcaster",
+    name: "The Fomorian Netcaster",
+    description: "Doesn't rush in like the others. Waits until the weighted net is already airborne before it even bothers closing the distance.",
+    image: "assets/images/enemies/fomorian-netcaster.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theStormWrackedWildcat: {
+    id: "theStormWrackedWildcat",
+    name: "The Storm-Wracked Wildcat",
+    description: "Frost has crept so deep into its fur that ice cracks along its spine with every stride. Doesn't seem to notice, or care.",
+    image: "assets/images/enemies/the-storm-wracked-wildcat.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
   }
 };
