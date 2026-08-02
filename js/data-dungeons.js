@@ -1831,7 +1831,11 @@ const DUNGEON_CONTENT = {
       hiddenGrove: {
         text: "A smaller grove sits tucked out of sight here, dappled light filtering through, something useful left half-hidden among the roots.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "deeperGrove" }]
+        choices: [{ type: "goto", label: "Continue", target: "baboonFight" }]
+      },
+      baboonFight: {
+        text: "The Root-Bound Baboon crashes down from the branches above, dragging a length of living root behind it, teeth already bared.",
+        choices: [{ type: "combat", label: "Fight the Root-Bound Baboon", enemyId: "theRootBoundBaboon", target: "deeperGrove" }]
       },
       deeperGrove: {
         text: "The trees grow denser now, the canopy nearly blotting out the sky. Light barely reaches the humid ground below.",
@@ -1928,9 +1932,13 @@ const DUNGEON_CONTENT = {
         text: "A dry alcove sits tucked above the waterline, something useful left half-hidden in the shadows.",
         loot: ["Old Ore"],
         choices: [
-          { type: "discover", label: "Study the carvings (Rite of Protection)", skillId: "riteProtection", spellId: "mercysTouch", target: "deeperWaters" },
-          { type: "goto", label: "Leave it and move on", target: "deeperWaters" }
+          { type: "discover", label: "Study the carvings (Rite of Protection)", skillId: "riteProtection", spellId: "mercysTouch", target: "eelFight" },
+          { type: "goto", label: "Leave it and move on", target: "eelFight" }
         ]
+      },
+      eelFight: {
+        text: "The water beside you breaks without warning, the Silt-Finned Eel surging up, eyeless and enormous, already coiling to strike.",
+        choices: [{ type: "combat", label: "Fight the Silt-Finned Eel", enemyId: "theSiltFinnedEel", target: "deeperWaters" }]
       },
       deeperWaters: {
         text: "The passage deepens, water rising past the knee, a gentle current pulling steadily at your legs.",
@@ -1942,7 +1950,11 @@ const DUNGEON_CONTENT = {
       },
       stillPool: {
         text: "A pool of water sits unnervingly still ahead, its surface reflecting nothing back at all.",
-        choices: [{ type: "goto", label: "Continue", target: "driftwoodPile" }]
+        choices: [{ type: "goto", label: "Continue", target: "acolyteFight" }]
+      },
+      acolyteFight: {
+        text: "The Shell-Bound Acolyte kneels at the pool's edge, cowrie shells rattling faintly as it turns, still murmuring rites no one's left to hear.",
+        choices: [{ type: "combat", label: "Fight the Shell-Bound Acolyte", enemyId: "theShellBoundAcolyte", target: "driftwoodPile" }]
       },
       driftwoodPile: {
         text: "Driftwood and old debris are piled against a crumbling wall, tangled with river reeds.",
@@ -2041,7 +2053,14 @@ const DUNGEON_CONTENT = {
         text: "Both paths converge in a circular chamber. At its center, a stone well reaches down into darkness. A narrow doorway opposite suggests the maze continues deeper.",
         loot: ["Grave Essence"],
         choices: [
-          { label: "Continue deeper", type: "goto", target: "deeperCorridor" }
+          { label: "Continue deeper", type: "goto", target: "priestFight" }
+        ]
+      },
+
+      priestFight: {
+        text: "A figure in ash-stained robes kneels beside the well, murmuring a rite to a household that stopped listening centuries ago — until it notices you.",
+        choices: [
+          { label: "Fight", type: "combat", enemyId: "theAshRobedPriest", target: "deeperCorridor" }
         ]
       },
 
@@ -4844,11 +4863,12 @@ const ROOM_IMAGES = {
   restlessBaobab: {
     groveEntrance: "assets/images/restless-baobab/grove-entrance.png",
     innerPath: "assets/images/restless-baobab/inner-path.png",
-    ancestorAmbush: "assets/images/restless-baobab/inner-path.png",
+    ancestorAmbush: "assets/images/restless-baobab/ancestor-ambush.png",
     rootHollow: "assets/images/restless-baobab/root-hollow.png",
     hiddenGrove: "assets/images/restless-baobab/hidden-grove.png",
+    baboonFight: "assets/images/restless-baobab/baboon-fight.png",
     deeperGrove: "assets/images/restless-baobab/deeper-grove.png",
-    guardianEncounter: "assets/images/restless-baobab/deeper-grove.png",
+    guardianEncounter: "assets/images/restless-baobab/guardian-encounter.png",
     whisperingClearing: "assets/images/restless-baobab/whispering-clearing.png",
     boneScatter: "assets/images/restless-baobab/bone-scatter.png",
     fork: "assets/images/restless-baobab/fork.png",
@@ -4856,7 +4876,7 @@ const ROOM_IMAGES = {
     mistyThicket: "assets/images/restless-baobab/misty-thicket.png",
     converge: "assets/images/restless-baobab/converge.png",
     preBoss: "assets/images/restless-baobab/pre-boss.png",
-    extraFight: "assets/images/restless-baobab/pre-boss.png",
+    extraFight: "assets/images/restless-baobab/extra-fight.png",
     bossDoor: "assets/images/restless-baobab/boss-door.png",
     kinFight: "assets/images/restless-baobab/kin-fight.png",
     bossRoom: "assets/images/restless-baobab/boss-room.png",
@@ -4865,19 +4885,21 @@ const ROOM_IMAGES = {
   drownedShrine: {
     shrineApproach: "assets/images/drowned-shrine/shrine-approach.png",
     floodedSteps: "assets/images/drowned-shrine/flooded-steps.png",
-    guardianAmbush: "assets/images/drowned-shrine/flooded-steps.png",
+    guardianAmbush: "assets/images/drowned-shrine/guardian-ambush.png",
     submergedOffering: "assets/images/drowned-shrine/submerged-offering.png",
     hiddenAlcove: "assets/images/drowned-shrine/hidden-alcove.png",
+    eelFight: "assets/images/drowned-shrine/eel-fight.png",
     deeperWaters: "assets/images/drowned-shrine/deeper-waters.png",
-    wardenEncounter: "assets/images/drowned-shrine/deeper-waters.png",
+    wardenEncounter: "assets/images/drowned-shrine/warden-encounter.png",
     stillPool: "assets/images/drowned-shrine/still-pool.png",
+    acolyteFight: "assets/images/drowned-shrine/acolyte-fight.png",
     driftwoodPile: "assets/images/drowned-shrine/driftwood-pile.png",
     fork: "assets/images/drowned-shrine/fork.png",
     sunkenHall: "assets/images/drowned-shrine/sunken-hall.png",
     risingCurrent: "assets/images/drowned-shrine/rising-current.png",
     converge: "assets/images/drowned-shrine/converge.png",
     preBoss: "assets/images/drowned-shrine/pre-boss.png",
-    extraFight: "assets/images/drowned-shrine/pre-boss.png",
+    extraFight: "assets/images/drowned-shrine/extra-fight.png",
     bossDoor: "assets/images/drowned-shrine/boss-door.png",
     stagnantFight: "assets/images/drowned-shrine/stagnant-fight.png",
     bossRoom: "assets/images/drowned-shrine/boss-room.png",
@@ -4890,6 +4912,7 @@ const ROOM_IMAGES = {
     mazeRight: "assets/images/forsaken-manor/maze-right.png",
     mazeStraight: "assets/images/forsaken-manor/maze-straight.png",
     mazeMeeting: "assets/images/forsaken-manor/maze-meeting.png",
+    priestFight: "assets/images/forsaken-manor/priest-fight.png",
     deeperCorridor: "assets/images/forsaken-manor/deeper-corridor.png",
     mazeExit: "assets/images/forsaken-manor/maze-exit.png",
     castleHall: "assets/images/forsaken-manor/castle-hall.png",

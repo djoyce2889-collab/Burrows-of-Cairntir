@@ -3250,5 +3250,49 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Hide"]
+  },
+  theRootBoundBaboon: {
+    id: "theRootBoundBaboon",
+    name: "The Root-Bound Baboon",
+    description: "Roots have grown so deep into its limbs that it drags half a branch behind it with every lunge. Doesn't slow it down much.",
+    image: "assets/images/enemies/the-root-bound-baboon.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theSiltFinnedEel: {
+    id: "theSiltFinnedEel",
+    name: "The Silt-Finned Eel",
+    description: "Massive, eyeless, and entirely at home in water this dark. Doesn't need to see you to find you.",
+    image: "assets/images/enemies/the-silt-finned-eel.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theShellBoundAcolyte: {
+    id: "theShellBoundAcolyte",
+    name: "The Shell-Bound Acolyte",
+    description: "Cowrie shells sewn thick into waterlogged robes, still murmuring rites to a shrine that stopped needing tending a long time ago.",
+    image: "assets/images/enemies/the-shell-bound-acolyte.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  theAshRobedPriest: {
+    id: "theAshRobedPriest",
+    name: "The Ash-Robed Priest",
+    description: "Bound to the manor's own shrine long before the Daimyo's corruption spread, still tending rites to a household that stopped listening centuries ago.",
+    image: "assets/images/enemies/the-ash-robed-priest.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
   }
 };
