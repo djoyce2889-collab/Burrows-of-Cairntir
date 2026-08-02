@@ -3327,5 +3327,38 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence"]
+  },
+  theSpearBearer: {
+    id: "theSpearBearer",
+    name: "The Spear-Bearer",
+    description: "Trained the discipline into muscle memory centuries before dying, and never once had reason to unlearn it.",
+    image: "assets/images/enemies/the-spear-bearer.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theWatchingHawk: {
+    id: "theWatchingHawk",
+    name: "The Watching Hawk",
+    description: "Marks anyone who enters the grove long before they know they're being marked, and reports back to something that's always listening.",
+    image: "assets/images/enemies/the-watching-hawk.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theSerpentSpawn: {
+    id: "theSerpentSpawn",
+    name: "The Serpent-Spawn",
+    description: "A smaller offshoot of the same corruption coiled deeper in the valley, scaled hide catching what little light reaches the water.",
+    image: "assets/images/enemies/the-serpent-spawn.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
   }
 };

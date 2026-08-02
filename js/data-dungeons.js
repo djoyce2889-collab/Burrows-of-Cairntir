@@ -2706,7 +2706,11 @@ const DUNGEON_CONTENT = {
       approachLoot: {
         text: "A weapon-rack stands along the wall, old but well-tended — the einherjar clearly still take pride in their gear.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "spearFight" }]
+      },
+      spearFight: {
+        text: "The Spear-Bearer sets his stance without a word, discipline settled into muscle memory centuries before you were ever born.",
+        choices: [{ type: "combat", label: "Fight the Spear-Bearer", enemyId: "theSpearBearer", target: "fork" }]
       },
       fork: {
         text: "The hall splits ahead — one path crosses a frozen strait that shouldn't exist this deep underground, the other circles a ring of oath-stones.",
@@ -2789,7 +2793,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "A cluster of old, carefully-placed stones marks a small cache — left here deliberately, long ago, for someone worthy of finding it.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "hawkFight" }]
+      },
+      hawkFight: {
+        text: "The Watching Hawk dives from the canopy without warning, having marked you the moment you set foot on the path.",
+        choices: [{ type: "combat", label: "Fight the Watching Hawk", enemyId: "theWatchingHawk", target: "fork" }]
       },
       fork: {
         text: "The trail splits ahead — one way winds through a dense thicket, the other along a quiet, sunlit clearing.",
@@ -2872,7 +2880,11 @@ const DUNGEON_CONTENT = {
       riverLoot: {
         text: "An old offering shrine sits half-collapsed by the water, most of its tributes long since rotted — but something remains worth taking.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "spawnFight" }]
+      },
+      spawnFight: {
+        text: "The Serpent-Spawn breaks the water's surface without warning, scaled hide catching the dim light, already coiling to strike.",
+        choices: [{ type: "combat", label: "Fight the Serpent-Spawn", enemyId: "theSerpentSpawn", target: "fork" }]
       },
       fork: {
         text: "The valley splits ahead — one path climbs toward an old shrine, the other cuts through dense forest along the water's edge.",
@@ -5049,17 +5061,18 @@ const ROOM_IMAGES = {
   sigrunsThreshold: {
     thresholdEntrance: "assets/images/sigruns-threshold/threshold-entrance.png",
     hallApproach: "assets/images/sigruns-threshold/hall-approach.png",
-    shieldSplitterFight: "assets/images/sigruns-threshold/hall-approach.png",
+    shieldSplitterFight: "assets/images/sigruns-threshold/shield-splitter-fight.png",
     approachLoot: "assets/images/sigruns-threshold/approach-loot.png",
+    spearFight: "assets/images/sigruns-threshold/spear-fight.png",
     fork: "assets/images/sigruns-threshold/fork.png",
     frozenStrait: "assets/images/sigruns-threshold/frozen-strait.png",
     oathStoneCircle: "assets/images/sigruns-threshold/oath-stone-circle.png",
     convergeHall: "assets/images/sigruns-threshold/converge-hall.png",
     discoverRoom: "assets/images/sigruns-threshold/discover-room.png",
     deeperHall: "assets/images/sigruns-threshold/deeper-hall.png",
-    unyieldingFight: "assets/images/sigruns-threshold/deeper-hall.png",
+    unyieldingFight: "assets/images/sigruns-threshold/unyielding-fight.png",
     vigilCheck: "assets/images/sigruns-threshold/vigil-check.png",
-    extraFight: "assets/images/sigruns-threshold/vigil-check.png",
+    extraFight: "assets/images/sigruns-threshold/extra-fight.png",
     preBoss: "assets/images/sigruns-threshold/pre-boss.png",
     chosenFight: "assets/images/sigruns-threshold/chosen-fight.png",
     bossRoom: "assets/images/sigruns-threshold/boss-room.png",
@@ -5068,17 +5081,18 @@ const ROOM_IMAGES = {
   oldSpiritGrove: {
     groveEntrance: "assets/images/old-spirit-grove/grove-entrance.png",
     grovePath: "assets/images/old-spirit-grove/grove-path.png",
-    groveBoundFight: "assets/images/old-spirit-grove/grove-path.png",
+    groveBoundFight: "assets/images/old-spirit-grove/grove-bound-fight.png",
     pathLoot: "assets/images/old-spirit-grove/path-loot.png",
+    hawkFight: "assets/images/old-spirit-grove/hawk-fight.png",
     fork: "assets/images/old-spirit-grove/fork.png",
     denseThicket: "assets/images/old-spirit-grove/dense-thicket.png",
     sunlitClearing: "assets/images/old-spirit-grove/sunlit-clearing.png",
     convergeGrove: "assets/images/old-spirit-grove/converge-grove.png",
     discoverRoom: "assets/images/old-spirit-grove/discover-room.png",
     deeperGrove: "assets/images/old-spirit-grove/deeper-grove.png",
-    elderTrackerFight: "assets/images/old-spirit-grove/deeper-grove.png",
+    elderTrackerFight: "assets/images/old-spirit-grove/elder-tracker-fight.png",
     vigilCheck: "assets/images/old-spirit-grove/vigil-check.png",
-    extraFight: "assets/images/old-spirit-grove/vigil-check.png",
+    extraFight: "assets/images/old-spirit-grove/extra-fight.png",
     preBoss: "assets/images/old-spirit-grove/pre-boss.png",
     bondedFight: "assets/images/old-spirit-grove/bonded-fight.png",
     bossRoom: "assets/images/old-spirit-grove/boss-room.png",
@@ -5087,17 +5101,18 @@ const ROOM_IMAGES = {
   orochisValley: {
     valleyEntrance: "assets/images/orochis-valley/valley-entrance.png",
     riverPath: "assets/images/orochis-valley/river-path.png",
-    riverCursedFight: "assets/images/orochis-valley/river-path.png",
+    riverCursedFight: "assets/images/orochis-valley/river-cursed-fight.png",
     riverLoot: "assets/images/orochis-valley/river-loot.png",
+    spawnFight: "assets/images/orochis-valley/spawn-fight.png",
     fork: "assets/images/orochis-valley/fork.png",
     oldShrine: "assets/images/orochis-valley/old-shrine.png",
     forestedBank: "assets/images/orochis-valley/forested-bank.png",
     convergeValley: "assets/images/orochis-valley/converge-valley.png",
     discoverRoom: "assets/images/orochis-valley/discover-room.png",
     deeperValley: "assets/images/orochis-valley/deeper-valley.png",
-    drownedWatcherFight: "assets/images/orochis-valley/deeper-valley.png",
+    drownedWatcherFight: "assets/images/orochis-valley/drowned-watcher-fight.png",
     vigilCheck: "assets/images/orochis-valley/vigil-check.png",
-    extraFight: "assets/images/orochis-valley/vigil-check.png",
+    extraFight: "assets/images/orochis-valley/extra-fight.png",
     preBoss: "assets/images/orochis-valley/pre-boss.png",
     sacrificeFight: "assets/images/orochis-valley/sacrifice-fight.png",
     bossRoom: "assets/images/orochis-valley/boss-room.png",
