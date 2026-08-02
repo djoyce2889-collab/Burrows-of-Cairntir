@@ -3475,7 +3475,11 @@ const DUNGEON_CONTENT = {
       tidewrackLoot: {
         text: "Tangled in a mat of kelp and rope, a scrap of old ore glints where the tide left it behind.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "fishermanFight" }]
+      },
+      fishermanFight: {
+        text: "Something wades in from the shallows, swollen far past anything a body should hold, still dragging an empty net behind it.",
+        choices: [{ type: "combat", label: "Fight the Brine-Bloated Fisherman", enemyId: "theBrineBloatedFisherman", target: "fork" }]
       },
       fork: {
         text: "The coastline splits ahead — a half-collapsed pier stretching out over dark water, or a scatter of rocks half-swallowed by the tide.",
@@ -3494,7 +3498,11 @@ const DUNGEON_CONTENT = {
       },
       coilConverge: {
         text: "Both paths end at a wide tidal flat, the sand here scored with a groove far too large and far too deliberate to be natural.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "netcasterFight" }]
+      },
+      netcasterFight: {
+        text: "Someone stands lashed fast to a length of driftwood rigging, rope worn deep into his own skin, straining toward the water despite it.",
+        choices: [{ type: "combat", label: "Fight the Rope-Bound Netcaster", enemyId: "theRopeBoundNetcaster", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered rune-stone stands half-buried at the flat's edge, its carving still sharp despite the salt and years.",
@@ -3554,7 +3562,11 @@ const DUNGEON_CONTENT = {
       moorLoot: {
         text: "Half-buried beneath a fallen banner, a scrap of old ore catches what little light makes it through the crow-thick sky.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "shieldmanFight" }]
+      },
+      shieldmanFight: {
+        text: "A lone figure holds a line that hasn't needed holding in centuries, shield raised, refusing to acknowledge the battle's long since over.",
+        choices: [{ type: "combat", label: "Fight the Last Shieldman", enemyId: "theLastShieldman", target: "fork" }]
       },
       fork: {
         text: "The moor splits ahead — a shallow ford crossing a slow, dark stream, or a low cairn rising out of the grass.",
@@ -3573,7 +3585,11 @@ const DUNGEON_CONTENT = {
       },
       reckoningConverge: {
         text: "Both paths lead to a wide hollow in the moor, the grass here flattened in a rough circle, as if something enormous once stood exactly here and waited.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "riderFight" }]
+      },
+      riderFight: {
+        text: "Hoofbeats sound from nowhere in particular, and then a mounted shape resolves out of the mist, charging a line that stopped mattering a long time ago.",
+        choices: [{ type: "combat", label: "Fight the Riding Wraith", enemyId: "theRidingWraith", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered standing stone rises from the hollow, old storm-and-battle wardings carved deep into its face.",
@@ -3633,7 +3649,11 @@ const DUNGEON_CONTENT = {
       clearingLoot: {
         text: "Wrapped neatly in silk and left in plain sight, as if placed there on purpose, a bundle of hide waits to be found.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "spinnerFight" }]
+      },
+      spinnerFight: {
+        text: "Something enormous shifts in the canopy above, thread already spooling loose in preparation for whatever comes next.",
+        choices: [{ type: "combat", label: "Fight the Web-Spinner", enemyId: "theWebSpinner", target: "fork" }]
       },
       fork: {
         text: "The threads split ahead — one line leading to an abandoned trader's stall, the other into a hollow tree strung thick with web.",
@@ -3652,7 +3672,11 @@ const DUNGEON_CONTENT = {
       },
       gambitConverge: {
         text: "Both paths open onto a wide web-strung glade, threads crossing overhead in a pattern too deliberate to be accidental.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "impFight" }]
+      },
+      impFight: {
+        text: "A small shape chatters from a nearby branch, voice shifting between half a dozen people who all, coincidentally, want to make you a deal.",
+        choices: [{ type: "combat", label: "Fight the Whispering Imp", enemyId: "theWhisperingImp", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A carved wooden totem stands at the glade's center, old unmaking-rites etched along its length.",
@@ -5066,10 +5090,12 @@ const ROOM_IMAGES = {
     driftwoodPath: "assets/images/jormungandrs-coil/driftwood-path.png",
     sailorFight: "assets/images/jormungandrs-coil/sailor-fight.png",
     tidewrackLoot: "assets/images/jormungandrs-coil/tidewrack-loot.png",
+    fishermanFight: "assets/images/jormungandrs-coil/fisherman-fight.png",
     fork: "assets/images/jormungandrs-coil/fork.png",
     brokenPier: "assets/images/jormungandrs-coil/broken-pier.png",
     sunkenRocks: "assets/images/jormungandrs-coil/sunken-rocks.png",
     coilConverge: "assets/images/jormungandrs-coil/coil-converge.png",
+    netcasterFight: "assets/images/jormungandrs-coil/netcaster-fight.png",
     discoverRoom: "assets/images/jormungandrs-coil/discover-room.png",
     deeperCoil: "assets/images/jormungandrs-coil/deeper-coil.png",
     priestFight: "assets/images/jormungandrs-coil/priest-fight.png",
@@ -5084,10 +5110,12 @@ const ROOM_IMAGES = {
     moorPath: "assets/images/morrigans-reckoning/moor-path.png",
     scoutFight: "assets/images/morrigans-reckoning/scout-fight.png",
     moorLoot: "assets/images/morrigans-reckoning/moor-loot.png",
+    shieldmanFight: "assets/images/morrigans-reckoning/shieldman-fight.png",
     fork: "assets/images/morrigans-reckoning/fork.png",
     theFord: "assets/images/morrigans-reckoning/the-ford.png",
     cairnRise: "assets/images/morrigans-reckoning/cairn-rise.png",
     reckoningConverge: "assets/images/morrigans-reckoning/reckoning-converge.png",
+    riderFight: "assets/images/morrigans-reckoning/rider-fight.png",
     discoverRoom: "assets/images/morrigans-reckoning/discover-room.png",
     deeperMoor: "assets/images/morrigans-reckoning/deeper-moor.png",
     championFight: "assets/images/morrigans-reckoning/champion-fight.png",
@@ -5102,10 +5130,12 @@ const ROOM_IMAGES = {
     threadPath: "assets/images/anansis-gambit/thread-path.png",
     servantFight: "assets/images/anansis-gambit/servant-fight.png",
     clearingLoot: "assets/images/anansis-gambit/clearing-loot.png",
+    spinnerFight: "assets/images/anansis-gambit/spinner-fight.png",
     fork: "assets/images/anansis-gambit/fork.png",
     traderStall: "assets/images/anansis-gambit/trader-stall.png",
     hollowTree: "assets/images/anansis-gambit/hollow-tree.png",
     gambitConverge: "assets/images/anansis-gambit/gambit-converge.png",
+    impFight: "assets/images/anansis-gambit/imp-fight.png",
     discoverRoom: "assets/images/anansis-gambit/discover-room.png",
     deeperWeb: "assets/images/anansis-gambit/deeper-web.png",
     judgeFight: "assets/images/anansis-gambit/judge-fight.png",

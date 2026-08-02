@@ -2909,5 +2909,71 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence"]
+  },
+  theBrineBloatedFisherman: {
+    id: "theBrineBloatedFisherman",
+    name: "The Brine-Bloated Fisherman",
+    description: "Swollen with seawater far past anything a body should hold, still moving, still hungry for whatever it was he used to fish for.",
+    image: "assets/images/enemies/the-brine-bloated-fisherman.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theRopeBoundNetcaster: {
+    id: "theRopeBoundNetcaster",
+    name: "The Rope-Bound Netcaster",
+    description: "Lashed himself to the rigging to keep from throwing himself into the water. Hasn't cut himself free since, and doesn't seem to want to.",
+    image: "assets/images/enemies/the-rope-bound-netcaster.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  theLastShieldman: {
+    id: "theLastShieldman",
+    name: "The Last Shieldman",
+    description: "Still holding a line that broke centuries ago, oath-bound to a battle everyone else has long since stopped fighting.",
+    image: "assets/images/enemies/the-last-shieldman.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Hide"]
+  },
+  theRidingWraith: {
+    id: "theRidingWraith",
+    name: "The Riding Wraith",
+    description: "Mounted on something that stopped being a horse a long time ago, still riding a charge that ended before either of them noticed.",
+    image: "assets/images/enemies/the-riding-wraith.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theWebSpinner: {
+    id: "theWebSpinner",
+    name: "The Web-Spinner",
+    description: "A genuine spider, enormous and patient, spinning thread for a master who's never once had to lift a leg himself.",
+    image: "assets/images/enemies/the-web-spinner.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theWhisperingImp: {
+    id: "theWhisperingImp",
+    name: "The Whispering Imp",
+    description: "Small, silk-bound, and endlessly talkative — mimics every voice it's ever heard offer a bad deal, and it's heard quite a few.",
+    image: "assets/images/enemies/the-whispering-imp.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
   }
 };
