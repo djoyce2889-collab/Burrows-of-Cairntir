@@ -3294,5 +3294,38 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence"]
+  },
+  theCinderWingedVulture: {
+    id: "theCinderWingedVulture",
+    name: "The Cinder-Winged Vulture",
+    description: "Feathers scorched black and brittle, circling long before anything's actually died yet. Doesn't seem inclined to wait this time.",
+    image: "assets/images/enemies/the-cinder-winged-vulture.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theForgeBoundSmith: {
+    id: "theForgeBoundSmith",
+    name: "The Forge-Bound Smith",
+    description: "Still working an empty forge, hammer falling on stone that stopped being metal centuries before anyone alive was born.",
+    image: "assets/images/enemies/the-forge-bound-smith.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  theSilentFiddler: {
+    id: "theSilentFiddler",
+    name: "The Silent Fiddler",
+    description: "Played at the wedding that never finished, and still draws the bow across broken strings, no sound left in either.",
+    image: "assets/images/enemies/the-silent-fiddler.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
   }
 };

@@ -2338,7 +2338,11 @@ const DUNGEON_CONTENT = {
       hiddenCache: {
         text: "A small cache is tucked into a scorched crevice, shielded from the worst of the outcrop's heat.",
         loot: ["Grave Essence"],
-        choices: [{ type: "goto", label: "Continue", target: "smolderingPassage" }]
+        choices: [{ type: "goto", label: "Continue", target: "vultureFight" }]
+      },
+      vultureFight: {
+        text: "The Cinder-Winged Vulture drops from the heat-shimmering sky, scorched black feathers catching the light, circling far too early to be waiting for anything already dead.",
+        choices: [{ type: "combat", label: "Fight the Cinder-Winged Vulture", enemyId: "theCinderWingedVulture", target: "smolderingPassage" }]
       },
       smolderingPassage: {
         text: "The rock passage narrows, faint smoke curling from fissures in the stone. The heat grows more intense with every step.",
@@ -2528,7 +2532,11 @@ const DUNGEON_CONTENT = {
       corridorLoot: {
         text: "A side alcove holds what's left of the hall's old stores, mostly rot and rust — but something is still worth taking.",
         loot: ["Grave Essence"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "smithFight" }]
+      },
+      smithFight: {
+        text: "A hammer falls again and again in the dark ahead, striking stone that stopped being metal centuries ago, the Forge-Bound Smith never once pausing to notice it's cold.",
+        choices: [{ type: "combat", label: "Fight the Forge-Bound Smith", enemyId: "theForgeBoundSmith", target: "fork" }]
       },
       fork: {
         text: "The corridor splits ahead: one way leads through a collapsed nave, the other through what were once the hall's kitchens.",
@@ -2611,7 +2619,11 @@ const DUNGEON_CONTENT = {
       mistLoot: {
         text: "A cluster of pale grave-flowers grows undisturbed here — and something else worth taking, half-buried beneath them.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "fiddlerFight" }]
+      },
+      fiddlerFight: {
+        text: "The Silent Fiddler draws a bow across broken strings, no sound left in either, the motion far more threatening than the silence should allow.",
+        choices: [{ type: "combat", label: "Fight the Silent Fiddler", enemyId: "theSilentFiddler", target: "fork" }]
       },
       fork: {
         text: "The mist thins into two paths ahead — one toward a ruined chapel, the other into a quiet, overgrown glen.",
@@ -4956,6 +4968,7 @@ const ROOM_IMAGES = {
     blackenedPath: "assets/images/ember-scarred-outcrop/blackened-path.png",
     ashStrewnLedge: "assets/images/ember-scarred-outcrop/ash-strewn-ledge.png",
     hiddenCache: "assets/images/ember-scarred-outcrop/hidden-cache.png",
+    vultureFight: "assets/images/ember-scarred-outcrop/vulture-fight.png",
     smolderingPassage: "assets/images/ember-scarred-outcrop/smoldering-passage.png",
     emberField: "assets/images/ember-scarred-outcrop/ember-field.png",
     scorchedShrine: "assets/images/ember-scarred-outcrop/scorched-shrine.png",
@@ -4964,7 +4977,7 @@ const ROOM_IMAGES = {
     highLedge: "assets/images/ember-scarred-outcrop/high-ledge.png",
     converge: "assets/images/ember-scarred-outcrop/converge.png",
     preBoss: "assets/images/ember-scarred-outcrop/pre-boss.png",
-    extraFight: "assets/images/ember-scarred-outcrop/pre-boss.png",
+    extraFight: "assets/images/ember-scarred-outcrop/extra-fight.png",
     bossDoor: "assets/images/ember-scarred-outcrop/boss-door.png",
     judgedFight: "assets/images/ember-scarred-outcrop/judged-fight.png",
     bossRoom: "assets/images/ember-scarred-outcrop/boss-room.png",
@@ -4996,17 +5009,18 @@ const ROOM_IMAGES = {
   sunderedThrone: {
     throneHallEntrance: "assets/images/sundered-throne/throne-hall-entrance.png",
     longCorridor: "assets/images/sundered-throne/long-corridor.png",
-    stewardFight: "assets/images/sundered-throne/long-corridor.png",
+    stewardFight: "assets/images/sundered-throne/steward-fight.png",
     corridorLoot: "assets/images/sundered-throne/corridor-loot.png",
+    smithFight: "assets/images/sundered-throne/smith-fight.png",
     fork: "assets/images/sundered-throne/fork.png",
     collapsedNave: "assets/images/sundered-throne/collapsed-nave.png",
     oldKitchens: "assets/images/sundered-throne/old-kitchens.png",
     convergeHall: "assets/images/sundered-throne/converge-hall.png",
     discoverRoom: "assets/images/sundered-throne/discover-room.png",
     deeperHall: "assets/images/sundered-throne/deeper-hall.png",
-    corpseFight: "assets/images/sundered-throne/deeper-hall.png",
+    corpseFight: "assets/images/sundered-throne/corpse-fight.png",
     vigilCheck: "assets/images/sundered-throne/vigil-check.png",
-    extraFight: "assets/images/sundered-throne/vigil-check.png",
+    extraFight: "assets/images/sundered-throne/extra-fight.png",
     preBoss: "assets/images/sundered-throne/pre-boss.png",
     kinFight: "assets/images/sundered-throne/kin-fight.png",
     bossRoom: "assets/images/sundered-throne/boss-room.png",
@@ -5015,17 +5029,18 @@ const ROOM_IMAGES = {
   widowsHollow: {
     hollowEntrance: "assets/images/widows-hollow/hollow-entrance.png",
     mistPath: "assets/images/widows-hollow/mist-path.png",
-    officiantFight: "assets/images/widows-hollow/mist-path.png",
+    officiantFight: "assets/images/widows-hollow/officiant-fight.png",
     mistLoot: "assets/images/widows-hollow/mist-loot.png",
+    fiddlerFight: "assets/images/widows-hollow/fiddler-fight.png",
     fork: "assets/images/widows-hollow/fork.png",
     oldChapel: "assets/images/widows-hollow/old-chapel.png",
     suitorsGlen: "assets/images/widows-hollow/suitors-glen.png",
     convergeHollow: "assets/images/widows-hollow/converge-hollow.png",
     discoverRoom: "assets/images/widows-hollow/discover-room.png",
     deeperHollow: "assets/images/widows-hollow/deeper-hollow.png",
-    gravWardenFight: "assets/images/widows-hollow/deeper-hollow.png",
+    gravWardenFight: "assets/images/widows-hollow/grav-warden-fight.png",
     vigilCheck: "assets/images/widows-hollow/vigil-check.png",
-    extraFight: "assets/images/widows-hollow/vigil-check.png",
+    extraFight: "assets/images/widows-hollow/extra-fight.png",
     preBoss: "assets/images/widows-hollow/pre-boss.png",
     goBetweenFight: "assets/images/widows-hollow/go-between-fight.png",
     bossRoom: "assets/images/widows-hollow/boss-room.png",
