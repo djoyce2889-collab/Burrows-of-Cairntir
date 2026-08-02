@@ -3823,7 +3823,11 @@ const DUNGEON_CONTENT = {
       slopeLoot: {
         text: "Wedged into a crack in the rock, a scrap of old ore has weathered better than most things up here.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "slingerFight" }]
+      },
+      slingerFight: {
+        text: "A boulder cracks against the rock beside you before you've even seen where it came from, the second one already in hand.",
+        choices: [{ type: "combat", label: "Fight the Boulder-Slinger", enemyId: "theBoulderSlinger", target: "fork" }]
       },
       fork: {
         text: "The path splits around a frozen outcrop — one way along an ice-slicked ledge, the other through a narrow, wind-battered gap.",
@@ -3842,7 +3846,11 @@ const DUNGEON_CONTENT = {
       },
       holdConverge: {
         text: "Both paths meet at the mouth of the hold proper, a carved stone archway easily five times your height, old and deliberately built to intimidate.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "chainedFight" }]
+      },
+      chainedFight: {
+        text: "A massive figure steps out from behind the archway's shadow, blocking the only way through without a word of explanation.",
+        choices: [{ type: "combat", label: "Fight the Hollow-Fisted Giant", enemyId: "theHollowFistedGiant", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered rune-stone stands just inside the archway, carved deep enough to have survived weather that's worn everything else smooth.",
@@ -3902,7 +3910,11 @@ const DUNGEON_CONTENT = {
       roadLoot: {
         text: "Half-sunk in the verge grass, a scrap of old ore has clearly been here since well before tonight.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "silentFight" }]
+      },
+      silentFight: {
+        text: "The Silent Rider is already beside you before you register the hoofbeats that never actually came.",
+        choices: [{ type: "combat", label: "Fight the Silent Rider", enemyId: "theSilentRider", target: "fork" }]
       },
       fork: {
         text: "The road splits around an old hedgerow — one way threading through the hedge itself, the other toward a weathered druid temple.",
@@ -3921,7 +3933,11 @@ const DUNGEON_CONTENT = {
       },
       rideConverge: {
         text: "Both paths meet where the road widens into an old market green, hoofprints scarring the grass in a pattern that doesn't match anything with four legs.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "doubledFight" }]
+      },
+      doubledFight: {
+        text: "The Doubled Rider flickers at the green's edge, one shape and then two and then one again, never settling long enough to be sure which.",
+        choices: [{ type: "combat", label: "Fight the Doubled Rider", enemyId: "theDoubledRider", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered barrow-stone stands at the green's edge, old ward-carvings cut deep enough to have outlasted whatever they were meant to keep out.",
@@ -4067,7 +4083,11 @@ const DUNGEON_CONTENT = {
       courtLoot: {
         text: "Tucked beneath a fallen lantern, a scrap of old ore has sat undisturbed by the endless procession passing it by.",
         loot: ["Old Ore"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "dancerFight" }]
+      },
+      dancerFight: {
+        text: "The Turning Dancer spins into the path ahead, sleeves trailing through the same sequence of steps she's clearly performed longer than you've been alive.",
+        choices: [{ type: "combat", label: "Fight the Turning Dancer", enemyId: "theTurningDancer", target: "fork" }]
       },
       fork: {
         text: "The path splits toward the theater proper — one way through the seated audience hall, the other around the backstage passage.",
@@ -4086,7 +4106,11 @@ const DUNGEON_CONTENT = {
       },
       theaterConverge: {
         text: "Both paths meet at the theater's central stage, the boards worn smooth by feet that stopped needing to breathe a long time ago.",
-        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+        choices: [{ type: "goto", label: "Continue", target: "keeperFight" }]
+      },
+      keeperFight: {
+        text: "The Mask-Keeper steps out from behind a rack of masks, cradling them protectively, in no mood to let you any closer.",
+        choices: [{ type: "combat", label: "Fight the Mask-Keeper", enemyId: "theMaskKeeper", target: "discoverRoom" }]
       },
       discoverRoom: {
         text: "A weathered exorcism scroll hangs at the stage's edge, old warding script inked deep enough to have outlasted everything around it.",
@@ -5178,10 +5202,12 @@ const ROOM_IMAGES = {
     outerSlope: "assets/images/thryms-hold/outer-slope.png",
     thrallFight: "assets/images/thryms-hold/thrall-fight.png",
     slopeLoot: "assets/images/thryms-hold/slope-loot.png",
+    slingerFight: "assets/images/thryms-hold/slinger-fight.png",
     fork: "assets/images/thryms-hold/fork.png",
     icyLedge: "assets/images/thryms-hold/icy-ledge.png",
     windGap: "assets/images/thryms-hold/wind-gap.png",
     holdConverge: "assets/images/thryms-hold/hold-converge.png",
+    chainedFight: "assets/images/thryms-hold/chained-fight.png",
     discoverRoom: "assets/images/thryms-hold/discover-room.png",
     deeperHold: "assets/images/thryms-hold/deeper-hold.png",
     bruteFight: "assets/images/thryms-hold/brute-fight.png",
@@ -5196,10 +5222,12 @@ const ROOM_IMAGES = {
     crossroadsPath: "assets/images/dullahans-ride/crossroads-path.png",
     foremostFight: "assets/images/dullahans-ride/foremost-fight.png",
     roadLoot: "assets/images/dullahans-ride/road-loot.png",
+    silentFight: "assets/images/dullahans-ride/silent-fight.png",
     fork: "assets/images/dullahans-ride/fork.png",
     hedgerowPath: "assets/images/dullahans-ride/hedgerow-path.png",
     druidTemple: "assets/images/dullahans-ride/druid-temple.png",
     rideConverge: "assets/images/dullahans-ride/ride-converge.png",
+    doubledFight: "assets/images/dullahans-ride/doubled-fight.png",
     discoverRoom: "assets/images/dullahans-ride/discover-room.png",
     deeperRoad: "assets/images/dullahans-ride/deeper-road.png",
     flankFight: "assets/images/dullahans-ride/flank-fight.png",
@@ -5234,10 +5262,12 @@ const ROOM_IMAGES = {
     approachPath: "assets/images/hoichis-requiem/approach-path.png",
     drummerFight: "assets/images/hoichis-requiem/drummer-fight.png",
     courtLoot: "assets/images/hoichis-requiem/court-loot.png",
+    dancerFight: "assets/images/hoichis-requiem/dancer-fight.png",
     fork: "assets/images/hoichis-requiem/fork.png",
     audienceHall: "assets/images/hoichis-requiem/audience-hall.png",
     backstageHall: "assets/images/hoichis-requiem/backstage-hall.png",
     theaterConverge: "assets/images/hoichis-requiem/theater-converge.png",
+    keeperFight: "assets/images/hoichis-requiem/keeper-fight.png",
     discoverRoom: "assets/images/hoichis-requiem/discover-room.png",
     deeperTheater: "assets/images/hoichis-requiem/deeper-theater.png",
     sentinelFight: "assets/images/hoichis-requiem/sentinel-fight.png",

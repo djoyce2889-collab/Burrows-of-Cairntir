@@ -2997,5 +2997,71 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Hide", "Old Ore"]
+  },
+  theBoulderSlinger: {
+    id: "theBoulderSlinger",
+    name: "The Boulder-Slinger",
+    description: "Doesn't bother closing the distance when there's perfectly good rock lying around to throw instead.",
+    image: "assets/images/enemies/the-boulder-slinger.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  theHollowFistedGiant: {
+    id: "theHollowFistedGiant",
+    name: "The Hollow-Fisted Giant",
+    description: "Doesn't guard anything in particular, doesn't answer to anyone in particular. Just happens to be standing exactly where you need to walk.",
+    image: "assets/images/enemies/the-hollow-fisted-giant.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theSilentRider: {
+    id: "theSilentRider",
+    name: "The Silent Rider",
+    description: "Makes no sound at all, not hoofbeats, not breath, not even the wind moving past it. The quiet is somehow worse than the Wailing Rider's grief.",
+    image: "assets/images/enemies/the-silent-rider.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theDoubledRider: {
+    id: "theDoubledRider",
+    name: "The Doubled Rider",
+    description: "Flickers between one shape and two without ever settling on which, like the host couldn't decide how many of it this one was supposed to be.",
+    image: "assets/images/enemies/the-doubled-rider.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theTurningDancer: {
+    id: "theTurningDancer",
+    name: "The Turning Dancer",
+    description: "Repeats the same sequence of steps without variation, without rest, sleeves trailing through movements that stopped meaning anything to her a long time ago.",
+    image: "assets/images/enemies/the-turning-dancer.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theMaskKeeper: {
+    id: "theMaskKeeper",
+    name: "The Mask-Keeper",
+    description: "Still carries the troupe's masks, and still won't let anyone near them — not the audience, not the other performers, not you.",
+    image: "assets/images/enemies/the-mask-keeper.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
   }
 };
