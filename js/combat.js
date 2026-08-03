@@ -368,7 +368,8 @@ function getEffectivePlayerSpellDamageTier(baseTierName) {
   const traitBonus = (playerCharacter.traits && playerCharacter.traits.includes("arcaneGift")) ? TRAIT_SPELL_DAMAGE_RANK_BONUS.arcaneGift : 0;
   const songBonus = getEffectRankSum("spellDamageBuff");
   const clothBonus = (playerCharacter.equippedArmorSkill === "clothArmor" && hasChosenPerk(playerCharacter, "clothArmor", "practicedCasting")) ? 1 : 0;
-  return shiftTierByRank(baseAttackTier, spellBonus + songBonus + traitBonus + clothBonus);
+  const talismanBonus = playerCharacter.equippedAmulet === "The Onmyoji's Talisman" ? 1 : 0;
+  return shiftTierByRank(baseAttackTier, spellBonus + songBonus + traitBonus + clothBonus + talismanBonus);
 }
 
 function getEffectivePlayerHealTier(baseTierName) {
@@ -633,9 +634,11 @@ function getDefendingTierName(attackType, character) {
       if (hasChosenPerk(character, "clothArmor", "lightBearing")) armorDodgeBonus += 1;
     }
   }
-  const generalBonus = getEffectRankSum("playerDefenseBonus", character) + equipBonus + styleBonus;
+  const shopDefenseBonus = (character.equippedChestItemName === "The Fomorian Ward" || character.equippedChestItemName === "The Draugr's Reforged Mail" || character.equippedChestItemName === "The Chief's Shade's Aegis" || character.equippedWeaponItemName === "The Bridgeward Troll's Maul") ? 1 : 0;
+const generalBonus = getEffectRankSum("playerDefenseBonus", character) + equipBonus + styleBonus + shopDefenseBonus;
   acTierName = shiftTierByRank(acTierName, generalBonus + getEffectRankSum("acBuff", character) + armorAcBonus);
-  dodgeTierName = shiftTierByRank(dodgeTierName, generalBonus + getEffectRankSum("dodgeBuff", character) + armorDodgeBonus);
+  const legsDodgeBonus = character.equippedLegsItemName === "The Sasabonsam's Grip" ? 1 : 0;
+dodgeTierName = shiftTierByRank(dodgeTierName, generalBonus + getEffectRankSum("dodgeBuff", character) + armorDodgeBonus + legsDodgeBonus);
 
   return getTierRank(acTierName) >= getTierRank(dodgeTierName) ? acTierName : dodgeTierName;
 }
@@ -1555,6 +1558,9 @@ function resolveEnemyAttack() {
 
   const targetHasGuaranteedDodge = currentCombat.activeEffects.some((e) => e.kind === "guaranteedDodge" && e.target === target);
   let hit = targetHasGuaranteedDodge ? (consumeGuaranteedEffectFor(target) ? false : rollSuccess(enemyEffectiveTier, defenderTier, adjustment)) : rollSuccess(enemyEffectiveTier, defenderTier, adjustment);
+if (hit && target === playerCharacter && playerCharacter.equippedChestItemName === "The Chief's Shade's Aegis" && Math.random() < 0.2) {
+  hit = false;
+}
 
   if (hit && isPlayerTarget) {
     const armor = playerCharacter.equippedArmorSkill;
@@ -1821,7 +1827,8 @@ function performBackstab() {
   const stealthRankByTier = { Untrained: 0, Novice: 0, Adept: 1, Expert: 2, Master: 3, Grandmaster: 4 };
   const stealthBonusRank = stealthRankByTier[stealthTierName] || 0;
   const armorStealthBonus = ARMOR_STEALTH_BONUS[playerCharacter.equippedArmorSkill] || 0;
-  const attackTier = shiftTierByRank(getEffectivePlayerAttackTier(tierBefore), stealthBonusRank + armorStealthBonus);
+  const silkThreadedBonus = playerCharacter.equippedWeaponItemName === "The Silk-Threaded Edge" ? 1 : 0;
+  const attackTier = shiftTierByRank(getEffectivePlayerAttackTier(tierBefore), stealthBonusRank + armorStealthBonus + silkThreadedBonus);
   const enemyTier = getEffectiveEnemyTier();
   const hit = rollSuccess(attackTier, enemyTier);
   let damage = 0;
@@ -1835,7 +1842,8 @@ function performBackstab() {
     }
   }
   const backstabCooldown = hasChosenPerk(playerCharacter, "daggers", "oneWithShadows") ? 1 : 2;
-  setSpellCooldown(playerCharacter, BACKSTAB_ID, backstabCooldown);
+  const needleBonus = playerCharacter.equippedWeaponItemName === "The Bound Performer's Needle" ? 1 : 0;
+  setSpellCooldown(playerCharacter, BACKSTAB_ID, Math.max(1, backstabCooldown - needleBonus));
   currentCombat.log.push({
     actor: "player",
     action: "backstab",
@@ -1913,6 +1921,12 @@ function performShieldBash() {
   return currentCombat;
 }
 
+function getEquippedShopItem() {
+  const name = playerCharacter.equippedWeaponItemName;
+  if (!name) return null;
+  return Object.values(SHOP_ITEMS).find((item) => item.name === name) || null;
+}
+
 function performPlayerAction(skillId) {
   if (!currentCombat || currentCombat.result) return currentCombat;
 
@@ -1927,6 +1941,28 @@ function performPlayerAction(skillId) {
   if (skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "steadyAim")) weaponAccuracyBonus += 1;
   if (playerCharacter.equippedArmorSkill === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "quietStep") && !currentCombat.firstAttackUsed) {
     weaponAccuracyBonus += 1;
+  }
+  const equippedShopItem = getEquippedShopItem();
+  if (equippedShopItem && equippedShopItem.effectId === "flatAccuracyBonus") {
+    weaponAccuracyBonus += 1;
+  }
+  if (equippedShopItem && equippedShopItem.effectId === "heavyDamageAccuracyTradeoff") {
+    weaponAccuracyBonus -= 1;
+  }
+  if (playerCharacter.equippedHeadItemName === "The Morrígan's Crow-Mask") {
+    weaponAccuracyBonus += 1;
+  }
+  if (playerCharacter.equippedGlovesItemName === "The Ashen Piper's Gauntlets") {
+    weaponAccuracyBonus += 1;
+  }
+  if (playerCharacter.equippedChestItemName === "The Battle-Bound Wraith's Shroud") {
+    weaponAccuracyBonus += 1;
+  }
+  if (playerCharacter.equippedRing === "The Oath-Broken Champion's Band") {
+    weaponAccuracyBonus += 1;
+  }
+  if (playerCharacter.equippedWeaponItemName === "The Watcher Owl's Eye") {
+    weaponAccuracyBonus += 2;
   }
   const accuracyTier = shiftTierByRank(attackTier, (isArcherShot ? 2 : 0) + keenSensesBonus + getNightsightBonus() + weaponAccuracyBonus);
   let enemyTier = getEffectiveEnemyTier();
@@ -1959,9 +1995,15 @@ function performPlayerAction(skillId) {
   if (hit) {
     let baseDamage = rollDamage(attackTier);
     if (hasRecklessPower || hasCalledShot) baseDamage = Math.round(baseDamage * 1.3);
+    if (equippedShopItem && equippedShopItem.effectId === "heavyDamageAccuracyTradeoff") baseDamage = Math.round(baseDamage * 1.4);
     damage = applyDamageToEnemy(baseDamage);
     if (skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "honedEdge")) {
       const bonusDmg = Math.max(1, Math.round(damage * 0.15));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "defenseBypassOnHit") {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.2));
       damage += bonusDmg;
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
     }
@@ -1976,6 +2018,21 @@ function performPlayerAction(skillId) {
       currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
     }
     const woundedPctForWeapon = 1 - currentCombat.enemyCurrentHP / currentCombat.enemyMaxHP;
+    if (equippedShopItem && equippedShopItem.effectId === "bonusDamageVsWounded" && woundedPctForWeapon >= 0.5) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.3));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "bonusDamageVsFullHealth" && woundedPctForWeapon < 0.05) {f
+      const bonusDmg = Math.max(1, Math.round(damage * 0.3));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "executeOnWoundedHit" && woundedPctForWeapon >= 0.3) {
+      const bonusDmg = Math.max(1, Math.round(damage * (1 + woundedPctForWeapon * 1.5)));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
     if (skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "practicedCut") && woundedPctForWeapon >= 0.5) {
       const bonusDmg = Math.max(1, Math.round(damage * 0.25));
       damage += bonusDmg;
@@ -2011,8 +2068,36 @@ function performPlayerAction(skillId) {
     if (skillId === "axes" && hasChosenPerk(playerCharacter, "axes", "sunderingBlow") && Math.random() < 0.3) {
       currentCombat.activeEffects.push({ kind: "defenseDebuff", rankBonus: -1, roundsRemaining: SPELL_EFFECT_DURATION });
     }
+    if (equippedShopItem && equippedShopItem.effectId === "bonusCriticalDamage" && Math.random() < 0.3) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.5));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "stunChanceOnHit" && Math.random() < 0.25) {
+      currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "defenseShredOnHit" && Math.random() < 0.4) {
+      currentCombat.activeEffects.push({ kind: "defenseDebuff", rankBonus: -2, roundsRemaining: SPELL_EFFECT_DURATION });
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "bonusDamageFirstStrike" && isFirstAttack) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.4));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "lifestealOnHit") {
+      const healAmount = Math.max(1, Math.round(damage * 0.4));
+      const maxHP = getHitPoints(playerCharacter);
+      playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + healAmount);
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "healOnHit") {
+      const maxHP = getHitPoints(playerCharacter);
+      playerCharacter.currentHP = Math.min(maxHP, playerCharacter.currentHP + 6);
+    }
     if (skillId === "unarmedCombat" && hasChosenPerk(playerCharacter, "unarmedCombat", "pressurePointStrike") && Math.random() < 0.25) {
       currentCombat.activeEffects.push({ kind: "stun", rankBonus: 0, roundsRemaining: 1 });
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "fearOnHit" && Math.random() < 0.3) {
+      currentCombat.activeEffects.push({ kind: "fear", target: "enemy", rankBonus: 0, roundsRemaining: 2 });
     }
     if (skillId === "swords" && hasChosenPerk(playerCharacter, "swords", "blademastersReflex") && Math.random() < 0.25) {
       const echoDamage = applyDamageToEnemy(rollDamage(attackTier));
@@ -2021,6 +2106,11 @@ function performPlayerAction(skillId) {
     if (skillId === "archery" && hasChosenPerk(playerCharacter, "archery", "rainOfArrows") && Math.random() < 0.25) {
       const echoDamage = applyDamageToEnemy(rollDamage(attackTier));
       currentCombat.log.push({ actor: "effect", kind: "ancestralEcho", damage: echoDamage });
+    }
+    if (equippedShopItem && equippedShopItem.effectId === "bonusAttackAtLowHp" && playerCharacter.currentHP < getHitPoints(playerCharacter) * 0.4) {
+      const bonusDmg = Math.max(1, Math.round(damage * 0.3));
+      damage += bonusDmg;
+      currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
     }
     if (hasChosenPerk(playerCharacter, "runeBlade", "berserkersGift") && playerCharacter.currentHP < getHitPoints(playerCharacter) * 0.5) {
       const bonusDmg = Math.max(1, Math.round(damage * 0.2));
@@ -2048,6 +2138,19 @@ function performPlayerAction(skillId) {
     }
   }
 
+  if (equippedShopItem && equippedShopItem.effectId === "stackingDamageOnConsecutiveHits") {
+    if (hit) {
+      currentCombat.lesserGrudgeStreak = (currentCombat.lesserGrudgeStreak || 0) + 1;
+      const streakStacks = Math.min(3, currentCombat.lesserGrudgeStreak - 1);
+      if (streakStacks > 0) {
+        const bonusDmg = Math.max(1, Math.round(damage * streakStacks * 0.05));
+        damage += bonusDmg;
+        currentCombat.enemyCurrentHP = Math.max(0, currentCombat.enemyCurrentHP - bonusDmg);
+      }
+    } else {
+      currentCombat.lesserGrudgeStreak = 0;
+    }
+  }
   if (characterHasLegendary(playerCharacter, "Ivarr's Grudge")) {
     if (hit) {
       currentCombat.ivarrStreak = (currentCombat.ivarrStreak || 0) + 1;
@@ -2930,7 +3033,8 @@ function performPlayerFlee() {
   const dodgeTier = getAdvantageTier(playerCharacter, "dodge").name;
   const faeCunningBonus = playerCharacter.traits && playerCharacter.traits.includes("faeCunning") ? 0.15 : 0;
   const leatherFleeBonus = (playerCharacter.equippedArmorSkill === "leatherArmor" && hasChosenPerk(playerCharacter, "leatherArmor", "practicedMobility")) ? 0.15 : 0;
-  const success = rollSuccess(dodgeTier, currentCombat.enemyThreatTier, faeCunningBonus + leatherFleeBonus);
+  const nineTailedBonus = playerCharacter.equippedAmulet === "The Nine-Tailed Ward" ? 0.15 : 0;
+  const success = rollSuccess(dodgeTier, currentCombat.enemyThreatTier, faeCunningBonus + leatherFleeBonus + nineTailedBonus);
   currentCombat.log.push({ actor: "player", action: "flee", success: success });
 
   if (success) {
@@ -2952,6 +3056,9 @@ function claimVictoryLoot() {
       playerCharacter.inventory.push(itemName);
     }
   });
+  const currencyGained = rollEnemyCurrencyDrop(currentCombat.enemyId);
+  addCurrency(playerCharacter, currencyGained);
+  currentCombat.currencyGained = currencyGained;
   return loot;
 }
 

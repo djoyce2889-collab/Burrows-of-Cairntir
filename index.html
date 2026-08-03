@@ -188,6 +188,7 @@
           <button class="choice-button has-banner-icon" id="btn-go-to-give-items"><img class="choice-button-icon" src="assets/images/icons/icon-give-items.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Give Items to a Follower</span></button>
           <button class="choice-button has-banner-icon" id="btn-your-spells"><img class="choice-button-icon" src="assets/images/icons/icon-your-spells.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Your Spells</span></button>
           <button class="choice-button has-banner-icon" id="btn-mastery"><img class="choice-button-icon" src="assets/images/icons/icon-mastery.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Mastery</span></button>
+          <button class="choice-button has-banner-icon" id="btn-go-to-shop"><img class="choice-button-icon" src="assets/images/icons/icon-shop.png?v=2" alt="" /><span style="position: relative; z-index: 1;">The Wandering Trader</span></button>
           <button class="choice-button has-banner-icon" id="btn-continue-to-dungeon-select"><img class="choice-button-icon" src="assets/images/icons/icon-set-out-dungeon.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Set Out to a Dungeon</span></button>
           <button class="choice-button has-banner-icon" id="btn-training-grounds"><img class="choice-button-icon" src="assets/images/icons/icon-grand-arena.png?v=2" alt="" /><span style="position: relative; z-index: 1;">The Grand Arena</span></button>
           <button class="choice-button has-banner-icon" id="btn-start-another-game"><img class="choice-button-icon" src="assets/images/icons/icon-start-another-game.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Start Another Game</span></button>
@@ -243,6 +244,24 @@
         <div id="mastery-list"></div>
         <div id="choices">
           <button class="choice-button" id="btn-mastery-back">Return to Homebase</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-shop" class="screen">
+      <div id="viewport">
+        <img src="assets/images/shop-viewport.png" alt="A traveling merchant's stall, weapons and charms laid across a weathered cloth, lantern light flickering." />
+      </div>
+      <div id="panel">
+        <span class="cc-label">The Wandering Trader</span>
+        <div id="shop-currency" class="cc-skill-count"></div>
+        <div class="cc-skill-count">A fresh selection appears after every dungeon or arena run.</div>
+        <div id="shop-buy-list" class="cc-grid"></div>
+        <div class="cc-category-heading">Sell Your Gear</div>
+        <div id="shop-sell-list" class="cc-grid"></div>
+        <div id="shop-result" class="cc-skill-count"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-shop-back">Return to Homebase</button>
         </div>
       </div>
     </section>

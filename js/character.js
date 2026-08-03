@@ -346,7 +346,8 @@ function getHitPoints(character) {
     if (hasChosenPerk(character, "plateArmor", "heavyBearing")) armorMasteryHpBonus += 8;
     if (hasChosenPerk(character, "plateArmor", "fortressStance")) armorMasteryHpBonus += 12;
   }
-  return hpAdvantage.base + bonus + chronicleBonus + armorMasteryHpBonus;
+  const shopArmorHpBonus = (character.equippedChestItemName === "Ochre-Painted Hide" || character.equippedChestItemName === "The Stone-Father's Slab" || character.equippedHeadItemName === "The Grave-Warden's Cowl") ? 20 : 0;
+  return hpAdvantage.base + bonus + chronicleBonus + armorMasteryHpBonus + shopArmorHpBonus;
 }
 
 /**
@@ -376,6 +377,13 @@ function getManaPoolMax(character) {
   let armorBonus = 0;
   if (magicSkillIds.length > 0 && character.equippedArmorSkill) {
     armorBonus = ARMOR_MANA_BONUS[character.equippedArmorSkill] || 0;
+  }
+  let amuletManaBonus = 0;
+  if (character.equippedAmulet === "The Tuath's Binding Coin") {
+    amuletManaBonus = 15;
+  }
+  if (character.equippedHeadItemName === "The Silt-Fused Crown") {
+    amuletManaBonus += 15;
   }
 
   let clothMasteryBonus = 0;

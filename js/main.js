@@ -1656,6 +1656,8 @@ function goToSkillsScreen() {
 }
 
 function goToGrowthSummaryScreen() {
+  playerCharacter.needsShopRestock = true;
+
   const hasMasteryAlerts = playerCharacter.pendingMasteryAlerts && playerCharacter.pendingMasteryAlerts.length > 0;
   const hasSpellChoices = playerCharacter.pendingSpellChoices && playerCharacter.pendingSpellChoices.length > 0;
   if (!hasMasteryAlerts && !hasSpellChoices) {
@@ -1731,6 +1733,123 @@ function renderGrowthSummaryScreen() {
 function goToMasteryScreen() {
   showScreen("screen-mastery");
   renderMasteryScreen();
+}
+
+function goToShopScreen() {
+  showScreen("screen-shop");
+  renderShopScreen();
+}
+
+function restockShopIfNeeded() {
+  if (!playerCharacter.needsShopRestock && playerCharacter.shopStock && playerCharacter.shopStock.length > 0) {
+    return;
+  }
+  playerCharacter.needsShopRestock = false;
+
+  const allIds = Object.keys(SHOP_ITEMS);
+  const previousStock = playerCharacter.shopStock || [];
+  const shuffled = previousStock.slice().sort(() => Math.random() - 0.5);
+  const kept = shuffled.slice(0, SHOP_STOCK_KEEP_COUNT);
+
+  const remainingIds = allIds.filter((id) => !kept.includes(id));
+  const shuffledRemaining = remainingIds.sort(() => Math.random() - 0.5);
+  const newPicks = shuffledRemaining.slice(0, SHOP_STOCK_SIZE - kept.length);
+
+  playerCharacter.shopStock = kept.concat(newPicks);
+}
+
+function attemptBuyShopItem(itemId) {
+  const item = SHOP_ITEMS[itemId];
+  const resultEl = document.getElementById("shop-result");
+  if (!trySpendCurrency(playerCharacter, item.price)) {
+    resultEl.textContent = `You can't afford ${item.name} (${formatCurrency(item.price)}).`;
+    return;
+  }
+  playerCharacter.inventory.push(item.name);
+  resultEl.textContent = `You bought ${item.name}.`;
+  renderShopScreen();
+  saveGameState();
+}
+
+function getSellableCraftedItems() {
+  const knownMaterials = ["Old Ore", "Hide", "Grave Essence"];
+  return playerCharacter.inventory.filter((itemName) => {
+    if (knownMaterials.includes(itemName)) return false;
+    const recipe = Object.values(CRAFTING_RECIPES).find((r) => itemName.startsWith(`${r.name} (`));
+    return !!recipe;
+  });
+}
+
+function getCraftedItemSellValue(itemName) {
+  const recipe = Object.values(CRAFTING_RECIPES).find((r) => itemName.startsWith(`${r.name} (`));
+  if (!recipe) return 0;
+  const tierMatch = itemName.match(/\((\w+)-crafted\)/);
+  const tierName = tierMatch ? tierMatch[1] : "Novice";
+  const tierValues = { Untrained: 5, Novice: 10, Adept: 20, Expert: 35, Master: 55, Grandmaster: 80 };
+  return (tierValues[tierName] || 10) * recipe.materialCost;
+}
+
+function attemptSellItem(itemName) {
+  const resultEl = document.getElementById("shop-result");
+  const idx = playerCharacter.inventory.indexOf(itemName);
+  if (idx === -1) {
+    resultEl.textContent = "That item is no longer available.";
+    renderShopScreen();
+    return;
+  }
+  const value = getCraftedItemSellValue(itemName);
+  playerCharacter.inventory.splice(idx, 1);
+  addCurrency(playerCharacter, value);
+  resultEl.textContent = `You sold ${itemName} for ${formatCurrency(value)}.`;
+  renderShopScreen();
+  saveGameState();
+}
+
+function renderShopScreen() {
+  restockShopIfNeeded();
+
+  const currencyEl = document.getElementById("shop-currency");
+  currencyEl.textContent = `You carry: ${formatCurrency(playerCharacter.currency || 0)}`;
+
+  const buyList = document.getElementById("shop-buy-list");
+  const sellList = document.getElementById("shop-sell-list");
+  buyList.innerHTML = "";
+  sellList.innerHTML = "";
+
+  (playerCharacter.shopStock || []).forEach((itemId) => {
+    const item = SHOP_ITEMS[itemId];
+    if (!item) return;
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    card.innerHTML = `
+      <div class="cc-card-name">${item.name}</div>
+      <div class="cc-card-desc">${item.description}</div>
+      <div class="cc-card-desc"><em>${SHOP_ITEM_EFFECT_TEXT[item.id] || ""}</em></div>
+      <div class="cc-card-desc">${formatCurrency(item.price)}</div>
+      <div class="cc-card-image" style="background-image: url('assets/images/shop/${item.id}.png')"></div>
+    `;
+    card.addEventListener("click", () => attemptBuyShopItem(itemId));
+    buyList.appendChild(card);
+  });
+
+  const sellableItems = [...new Set(getSellableCraftedItems())];
+  if (sellableItems.length === 0) {
+    sellList.innerHTML = '<div class="cc-skill-count">Nothing craftable to sell right now.</div>';
+  } else {
+    sellableItems.forEach((itemName) => {
+      const value = getCraftedItemSellValue(itemName);
+      const card = document.createElement("div");
+      card.className = "cc-card";
+      const itemImage = getItemImagePath(itemName);
+      card.innerHTML = `
+        <div class="cc-card-name">${itemName}</div>
+        <div class="cc-card-desc">Sell for ${formatCurrency(value)}</div>
+        ${itemImage ? `<div class="cc-card-image" style="background-image: url('${itemImage}')"></div>` : ""}
+      `;
+      card.addEventListener("click", () => attemptSellItem(itemName));
+      sellList.appendChild(card);
+    });
+  }
 }
 
 function renderMasteryScreen() {
@@ -2009,6 +2128,20 @@ const TROPHY_DESCRIPTIONS = {
  * unequipped. Unlike Shield/Offhand, these aren't gated by
  * combat style, since any character can wear jewelry.
  */
+function getRingOrAmuletDescription(name) {
+  if (TROPHY_DESCRIPTIONS[name]) return TROPHY_DESCRIPTIONS[name];
+  const shopItem = Object.values(SHOP_ITEMS).find((item) => item.name === name);
+  return shopItem ? shopItem.description : "";
+}
+
+function getShopRingNames() {
+  return Object.values(SHOP_ITEMS).filter((item) => item.slot === "ring").map((item) => item.name);
+}
+
+function getShopAmuletNames() {
+  return Object.values(SHOP_ITEMS).filter((item) => item.slot === "amulet").map((item) => item.name);
+}
+
 function renderRingAmuletSections() {
   const ringSection = document.getElementById("equip-ring-section");
   const amuletSection = document.getElementById("equip-amulet-section");
@@ -2017,8 +2150,10 @@ function renderRingAmuletSections() {
   ringGrid.innerHTML = "";
   amuletGrid.innerHTML = "";
 
-  const ownedRings = RING_ITEMS.filter((name) => playerCharacter.inventory.includes(name));
-  const ownedAmulets = AMULET_ITEMS.filter((name) => playerCharacter.inventory.includes(name));
+  const allRingNames = RING_ITEMS.concat(getShopRingNames());
+  const allAmuletNames = AMULET_ITEMS.concat(getShopAmuletNames());
+  const ownedRings = allRingNames.filter((name) => playerCharacter.inventory.includes(name));
+  const ownedAmulets = allAmuletNames.filter((name) => playerCharacter.inventory.includes(name));
 
   ringSection.style.display = ownedRings.length > 0 ? "block" : "none";
   amuletSection.style.display = ownedAmulets.length > 0 ? "block" : "none";
@@ -2030,7 +2165,7 @@ function renderRingAmuletSections() {
     if (isEquipped) card.classList.add("selected");
     card.innerHTML = `
       <div class="cc-card-name">${name}</div>
-      <div class="cc-card-desc">${TROPHY_DESCRIPTIONS[name] || ""}</div>
+      <div class="cc-card-desc">${getRingOrAmuletDescription(name)}</div>
       <div class="cc-card-desc"><em>${isEquipped ? "Equipped" : "Not equipped"}</em></div>
     `;
     card.addEventListener("click", () => {
@@ -2048,7 +2183,7 @@ function renderRingAmuletSections() {
     if (isEquipped) card.classList.add("selected");
     card.innerHTML = `
       <div class="cc-card-name">${name}</div>
-      <div class="cc-card-desc">${TROPHY_DESCRIPTIONS[name] || ""}</div>
+      <div class="cc-card-desc">${getRingOrAmuletDescription(name)}</div>
       <div class="cc-card-desc"><em>${isEquipped ? "Equipped" : "Not equipped"}</em></div>
     `;
     card.addEventListener("click", () => {
@@ -2598,6 +2733,12 @@ function attemptDiscoverOrLearn(room, choice) {
     if (playerCharacter.traits && playerCharacter.traits.includes("honeyedTongue")) {
       adjustment = 0.15;
     }
+    if (playerCharacter.equippedRing === "The Anansi Knot") {
+      adjustment += 0.15;
+    }
+    if (playerCharacter.equippedAmulet === "The Whispering Imp's Bell") {
+      adjustment += 0.15;
+    }
   } else {
     tierName = "Untrained";
     difficulty = "Novice";
@@ -2693,7 +2834,11 @@ function buildRoomChoices(room) {
           playerCharacter.traits && playerCharacter.traits.includes("surefooted");
         const hasHoneyedTongue = choice.skillId === "persuasion" &&
           playerCharacter.traits && playerCharacter.traits.includes("honeyedTongue");
-        const bonus = (hasSureFooted || hasHoneyedTongue) ? 0.15 : 0;
+        const hasKelpiesBridle = choice.skillId === "survival" &&
+          playerCharacter.equippedAmulet === "The Kelpie's Bridle";
+        const hasWebSpinnersThread = choice.skillId === "stealth" &&
+          playerCharacter.equippedRing === "The Web-Spinner's Thread";
+        const bonus = (hasSureFooted || hasHoneyedTongue || hasKelpiesBridle || hasWebSpinnersThread) ? 0.15 : 0;
         const success = rollSuccess(tierBeforeName, choice.difficulty, bonus);
         renderDungeonRoom(success ? choice.successTarget : choice.failureTarget);
       });
@@ -3399,6 +3544,7 @@ function renderCombatOutcome() {
       storyEl.innerHTML = `
         <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
         You recover: ${loot.join(", ") || "nothing of note"}, plus ${bonusLoot.join(", ")}.<br />
+        You find: ${formatCurrency(currentCombat.currencyGained || 0)}.<br />
         Enemies defeated: ${newDefeatCount}
       `;
 
@@ -3452,7 +3598,8 @@ function renderCombatOutcome() {
     } else {
       storyEl.innerHTML = `
         <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
-        You recover: ${loot.join(", ") || "nothing of note"}.
+        You recover: ${loot.join(", ") || "nothing of note"}.<br />
+        You find: ${formatCurrency(currentCombat.currencyGained || 0)}.
       `;
       addChoiceButton(choicesEl, "Continue", () => {
         currentCombat = null;
@@ -3784,7 +3931,8 @@ function attemptEnchant(slot, typeId) {
   const craftingTierBefore = getCharacterSkillTier(playerCharacter, "enchanting").name;
   useSkill(playerCharacter, "enchanting");
 
-  const success = rollSuccess(craftingTierBefore, "Adept");
+  const griotsBonus = playerCharacter.equippedRing === "Griot's Memory Band" ? 0.15 : 0;
+  const success = rollSuccess(craftingTierBefore, "Adept", griotsBonus);
   const typeInfo = ENCHANTMENT_TYPES[typeId];
   let resultMessage;
 
@@ -3815,6 +3963,11 @@ function getItemRequiredSkill(itemName) {
     itemName.startsWith(`${recipe.name} (`)
   );
   if (recipeMatch) return recipeMatch.linkedSkill;
+
+  const shopMatch = Object.values(SHOP_ITEMS).find((item) =>
+    item.name === itemName && (item.slot === "weapon" || item.slot === "armor")
+  );
+  if (shopMatch) return shopMatch.linkedSkill;
 
   return null;
 }
@@ -3873,6 +4026,11 @@ function getItemImagePath(itemName) {
   );
   if (recipeMatch) {
     return `assets/images/items/${getRecipeImageSlug(recipeMatch.id)}.png`;
+  }
+
+  const shopMatch = Object.values(SHOP_ITEMS).find((item) => item.name === itemName);
+  if (shopMatch) {
+    return `assets/images/shop/${shopMatch.id}.png`;
   }
 
   return null;
@@ -4083,6 +4241,8 @@ document.getElementById("btn-manage-party").addEventListener("click", goToPartyS
 
 document.getElementById("btn-go-to-skills").addEventListener("click", goToSkillsScreen);
 document.getElementById("btn-mastery").addEventListener("click", goToMasteryScreen);
+document.getElementById("btn-go-to-shop").addEventListener("click", goToShopScreen);
+document.getElementById("btn-shop-back").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-craft-weapons").addEventListener("click", goToCraftWeaponsScreen);
 document.getElementById("btn-craft-armor").addEventListener("click", goToCraftArmorScreen);
 document.getElementById("btn-craft-enchant").addEventListener("click", goToCraftEnchantScreen);

@@ -454,3 +454,55 @@ const ARCHETYPES = [
   { id: "twoHanded", name: "Two-Handed", fileSlug: "two-handed" },
   { id: "stealth", name: "Stealth", fileSlug: "stealth" }
 ];
+
+// ------------------------------------------------------------
+// CURRENCY
+// Stored internally as a single integer (total copper) to avoid
+// carrying/rounding issues — only converted to Gold/Silver/Copper
+// for display. 10 Copper = 1 Silver, 10 Silver = 1 Gold (so 1 Gold
+// = 100 Copper total).
+// ------------------------------------------------------------
+const COPPER_PER_SILVER = 10;
+const SILVER_PER_GOLD = 10;
+const COPPER_PER_GOLD = COPPER_PER_SILVER * SILVER_PER_GOLD;
+
+function formatCurrency(totalCopper) {
+  const gold = Math.floor(totalCopper / COPPER_PER_GOLD);
+  const silver = Math.floor((totalCopper % COPPER_PER_GOLD) / COPPER_PER_SILVER);
+  const copper = totalCopper % COPPER_PER_SILVER;
+  const parts = [];
+  if (gold > 0) parts.push(`${gold} Gold`);
+  if (silver > 0) parts.push(`${silver} Silver`);
+  if (copper > 0 || parts.length === 0) parts.push(`${copper} Copper`);
+  return parts.join(", ");
+}
+
+function addCurrency(character, amount) {
+  character.currency = (character.currency || 0) + amount;
+}
+
+function trySpendCurrency(character, amount) {
+  if ((character.currency || 0) < amount) return false;
+  character.currency -= amount;
+  return true;
+}
+
+const CURRENCY_DROP_BY_TIER = {
+  Novice: [2, 6],
+  Adept: [5, 12],
+  Expert: [10, 22],
+  Master: [18, 35],
+  Grandmaster: [30, 55]
+};
+const BOSS_CURRENCY_MULTIPLIER = 3;
+
+function rollEnemyCurrencyDrop(enemyId) {
+  const template = ENEMIES[enemyId];
+  if (!template) return 0;
+  const range = CURRENCY_DROP_BY_TIER[template.threatTier] || CURRENCY_DROP_BY_TIER.Master;
+  let amount = range[0] + Math.floor(Math.random() * (range[1] - range[0] + 1));
+  if (getBossEnemyIds().has(enemyId)) {
+    amount *= BOSS_CURRENCY_MULTIPLIER;
+  }
+  return amount;
+}
