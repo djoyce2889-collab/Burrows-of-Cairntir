@@ -226,6 +226,23 @@ const TRAITS = {
   arcaneGift: { id: "arcaneGift", name: "Arcane Gift", description: "A natural affinity for raw magic, sharpening the force behind every spell you cast — permanently increases your spell damage." }
 };
 
+const TRAIT_EFFECT_TEXT = {
+  keenSenses: "+2 accuracy on your first attack of every fight.",
+  thickHide: "Reduces incoming physical damage by 2 on every hit.",
+  predatorInstinct: "25% bonus damage against enemies below half health.",
+  faeCunning: "+15% success chance to flee combat.",
+  adaptable: "Gains +1 bonus progress toward the next skill tier every time you use a trained skill.",
+  ironWill: "Roughly halves the enemy's chance to inflict a status effect on hit.",
+  honeyedTongue: "+15% success chance on Persuasion checks.",
+  surefooted: "+15% success chance on Survival checks.",
+  nightsight: "+1 accuracy, but only inside dark dungeons (Frosthollow Vault, Blackforge Deep).",
+  beastkinship: "+1 to the effectiveness of any summoned companion.",
+  quickfooted: "A permanent boost to your Dodge.",
+  deepWell: "+15 maximum Mana.",
+  weightedStrike: "+1 to your physical weapon damage.",
+  arcaneGift: "+1 to your spell damage."
+};
+
 const TRAIT_SELECTION_MIN = 2;
 const TRAIT_SELECTION_MAX = 3;
 const MAX_FOLLOWERS = 2;

@@ -1470,6 +1470,7 @@ function renderTraitGrid() {
     card.innerHTML = `
       <div class="cc-card-name">${trait.name}</div>
       <div class="cc-card-desc">${trait.description}</div>
+      <div class="cc-card-desc"><em>${TRAIT_EFFECT_TEXT[trait.id] || ""}</em></div>
       <div class="cc-card-image" style="background-image: url('${getTraitImagePath(trait.id)}')"></div>
     `;
 
