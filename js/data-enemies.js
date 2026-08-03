@@ -3393,5 +3393,27 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Hide", "Grave Essence"]
+  },
+  thePatientInnkeeper: {
+    id: "thePatientInnkeeper",
+    name: "The Patient Innkeeper",
+    description: "Has welcomed everyone who's ever come through that door, warmly, without exception — and never once asked why nobody's left again.",
+    image: "assets/images/enemies/the-patient-innkeeper.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theWhiteGuard: {
+    id: "theWhiteGuard",
+    name: "The White Guard",
+    description: "One of the two who escort the newly dead — tall hat, pale face, and a ledger that always, eventually, gets the name it's looking for.",
+    image: "assets/images/enemies/the-white-guard.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
   }
 };

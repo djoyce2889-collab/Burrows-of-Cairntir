@@ -3141,7 +3141,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "A cache of old, glittering trinkets sits abandoned beneath a hollow root — something worth taking, if you don't mind wondering what it once cost someone else.",
         loot: ["Grave Essence"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "houndFight" }]
+      },
+      houndFight: {
+        text: "The Bramble-Fanged Hound breaks from the thorned vines without a sound, thorns grown in place of fur, teeth far too long for anything that used to be a dog.",
+        choices: [{ type: "combat", label: "Fight the Bramble-Fanged Hound", enemyId: "theBrambleFangedHound", target: "fork" }]
       },
       fork: {
         text: "The path splits ahead — one way winds toward a ring of blackened standing stones, the other through a grove gone entirely silent.",
@@ -3224,7 +3228,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "An unattended stall holds a few small goods, untouched despite sitting out in plain view all day.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "innkeeperFight" }]
+      },
+      innkeeperFight: {
+        text: "The Patient Innkeeper waves you toward his door with the same warm smile he's given everyone who's ever walked through it, and none of them ever left again.",
+        choices: [{ type: "combat", label: "Fight the Patient Innkeeper", enemyId: "thePatientInnkeeper", target: "fork" }]
       },
       fork: {
         text: "The path splits ahead — one way toward the village's quiet row of homes, the other toward the birthing-house at its edge.",
@@ -3307,7 +3315,11 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "A small offering-shrine sits along the path, coins and trinkets left by souls long since processed and moved on.",
         loot: ["Grave Essence"],
-        choices: [{ type: "goto", label: "Continue", target: "fork" }]
+        choices: [{ type: "goto", label: "Continue", target: "whiteGuardFight" }]
+      },
+      whiteGuardFight: {
+        text: "The White Guard consults his ledger without looking up, tall hat casting a long shadow, and finds your name exactly where he expected it to be.",
+        choices: [{ type: "combat", label: "Fight the White Guard", enemyId: "theWhiteGuard", target: "fork" }]
       },
       fork: {
         text: "The path splits ahead — one way winds past a field of chained, wailing spirits, the other through a hall of endless empty banquet tables.",
@@ -5169,17 +5181,18 @@ const ROOM_IMAGES = {
   unseelieCourt: {
     courtEntrance: "assets/images/unseelie-court/court-entrance.png",
     courtPath: "assets/images/unseelie-court/court-path.png",
-    heraldFight: "assets/images/unseelie-court/court-path.png",
+    heraldFight: "assets/images/unseelie-court/herald-fight.png",
     pathLoot: "assets/images/unseelie-court/path-loot.png",
+    houndFight: "assets/images/unseelie-court/hound-fight.png",
     fork: "assets/images/unseelie-court/fork.png",
     blackenedStones: "assets/images/unseelie-court/blackened-stones.png",
     silentGrove: "assets/images/unseelie-court/silent-grove.png",
     convergeCourt: "assets/images/unseelie-court/converge-court.png",
     discoverRoom: "assets/images/unseelie-court/discover-room.png",
     deeperCourt: "assets/images/unseelie-court/deeper-court.png",
-    bargainBreakerFight: "assets/images/unseelie-court/deeper-court.png",
+    bargainBreakerFight: "assets/images/unseelie-court/bargain-breaker-fight.png",
     vigilCheck: "assets/images/unseelie-court/vigil-check.png",
-    extraFight: "assets/images/unseelie-court/vigil-check.png",
+    extraFight: "assets/images/unseelie-court/extra-fight.png",
     preBoss: "assets/images/unseelie-court/pre-boss.png",
     shadowFight: "assets/images/unseelie-court/shadow-fight.png",
     bossRoom: "assets/images/unseelie-court/boss-room.png",
@@ -5188,17 +5201,18 @@ const ROOM_IMAGES = {
   hollowFaced: {
     villageEntrance: "assets/images/hollow-faced/village-entrance.png",
     villagePath: "assets/images/hollow-faced/village-path.png",
-    elderFight: "assets/images/hollow-faced/village-path.png",
+    elderFight: "assets/images/hollow-faced/elder-fight.png",
     pathLoot: "assets/images/hollow-faced/path-loot.png",
+    innkeeperFight: "assets/images/hollow-faced/innkeeper-fight.png",
     fork: "assets/images/hollow-faced/fork.png",
     quietRow: "assets/images/hollow-faced/quiet-row.png",
     birthingHouse: "assets/images/hollow-faced/birthing-house.png",
     convergeVillage: "assets/images/hollow-faced/converge-village.png",
     discoverRoom: "assets/images/hollow-faced/discover-room.png",
     deeperVillage: "assets/images/hollow-faced/deeper-village.png",
-    fireflyFight: "assets/images/hollow-faced/deeper-village.png",
+    fireflyFight: "assets/images/hollow-faced/firefly-fight.png",
     vigilCheck: "assets/images/hollow-faced/vigil-check.png",
-    extraFight: "assets/images/hollow-faced/vigil-check.png",
+    extraFight: "assets/images/hollow-faced/extra-fight.png",
     preBoss: "assets/images/hollow-faced/pre-boss.png",
     healerFight: "assets/images/hollow-faced/healer-fight.png",
     bossRoom: "assets/images/hollow-faced/boss-room.png",
@@ -5207,17 +5221,18 @@ const ROOM_IMAGES = {
   diyusJudgment: {
     diyuEntrance: "assets/images/diyus-judgment/diyu-entrance.png",
     diyuPath: "assets/images/diyus-judgment/diyu-path.png",
-    niutouFight: "assets/images/diyus-judgment/diyu-path.png",
+    niutouFight: "assets/images/diyus-judgment/niutou-fight.png",
     pathLoot: "assets/images/diyus-judgment/path-loot.png",
+    whiteGuardFight: "assets/images/diyus-judgment/white-guard-fight.png",
     fork: "assets/images/diyus-judgment/fork.png",
     chainedField: "assets/images/diyus-judgment/chained-field.png",
     banquetHall: "assets/images/diyus-judgment/banquet-hall.png",
     convergeDiyu: "assets/images/diyus-judgment/converge-diyu.png",
     discoverRoom: "assets/images/diyus-judgment/discover-room.png",
     deeperDiyu: "assets/images/diyus-judgment/deeper-diyu.png",
-    corpseFight: "assets/images/diyus-judgment/deeper-diyu.png",
+    corpseFight: "assets/images/diyus-judgment/corpse-fight.png",
     vigilCheck: "assets/images/diyus-judgment/vigil-check.png",
-    extraFight: "assets/images/diyus-judgment/vigil-check.png",
+    extraFight: "assets/images/diyus-judgment/extra-fight.png",
     preBoss: "assets/images/diyus-judgment/pre-boss.png",
     scribeFight: "assets/images/diyus-judgment/scribe-fight.png",
     bossRoom: "assets/images/diyus-judgment/boss-room.png",
