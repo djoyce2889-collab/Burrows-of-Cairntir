@@ -25,9 +25,11 @@ const creationState = {
 
 const CREATION_STEP_SCREENS = [
   "screen-creation-step1",
+  "screen-creation-portrait",
+  "screen-creation-spell-culture",
+  "screen-creation-step3b",
   "screen-creation-step5",
   "screen-creation-step3",
-  "screen-creation-step3b",
   "screen-creation-step4",
   "screen-creation-chronicle",
   "screen-creation-review"
@@ -785,6 +787,15 @@ function renderCombatStyleGrid() {
 
 function goToCreationStep(index) {
   showScreen(CREATION_STEP_SCREENS[index]);
+  if (CREATION_STEP_SCREENS[index] === "screen-creation-portrait") {
+    renderPortraitGrid();
+  }
+  if (CREATION_STEP_SCREENS[index] === "screen-creation-spell-culture") {
+    renderSpellCultureGrid();
+  }
+  if (CREATION_STEP_SCREENS[index] === "screen-creation-step3b") {
+    renderStartingSpellsGrid();
+  }
   if (CREATION_STEP_SCREENS[index] === "screen-creation-step3") {
     renderSkillGrid();
   }
@@ -1006,6 +1017,7 @@ function resetCreationState(mode) {
   creationState.combatStyle = "single";
   creationState.portraitImage = null;
   creationState.startingSpellIds = [];
+  spellsViewCultureId = null;
   document.getElementById("cc-name").value = "";
   document.getElementById("cc-error-step1").textContent = "";
   document.getElementById("cc-error-step3").textContent = "";
@@ -1337,39 +1349,47 @@ function syncDerivedMagicSkills() {
  */
 let spellsViewCultureId = null;
 
+function getCultureIdList() {
+  return Object.keys(CULTURES);
+}
+
+function renderSpellCultureGrid() {
+  const grid = document.getElementById("cc-spell-culture-grid");
+  const countLabel = document.getElementById("cc-spell-count");
+  grid.innerHTML = "";
+  countLabel.textContent = `Chosen ${creationState.startingSpellIds.length} / 4`;
+  countLabel.classList.toggle("limit-reached", creationState.startingSpellIds.length >= 4);
+
+  Object.values(CULTURES).forEach((culture) => {
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    card.style.setProperty("--card-accent", culture.accentColor);
+    card.innerHTML = `
+      <div class="cc-card-name">${culture.name}</div>
+      <div class="cc-card-desc">${culture.magicName}</div>
+      <div class="cc-card-image" style="background-image: url('assets/images/cultures/${culture.id}-icon.png?v=2')"></div>
+    `;
+    card.addEventListener("click", () => {
+      spellsViewCultureId = culture.id;
+      goToCreationStep(CREATION_STEP_SCREENS.indexOf("screen-creation-step3b"));
+    });
+    grid.appendChild(card);
+  });
+}
+
 function renderStartingSpellsGrid() {
   const container = document.getElementById("cc-spell-grid");
-  const countLabel = document.getElementById("cc-spell-count");
   container.innerHTML = "";
 
   const atLimit = creationState.startingSpellIds.length >= 4;
-  countLabel.textContent = `Chosen ${creationState.startingSpellIds.length} / 4`;
-  countLabel.classList.toggle("limit-reached", atLimit);
 
   if (!spellsViewCultureId || !CULTURES[spellsViewCultureId]) {
-    spellsViewCultureId = Object.keys(CULTURES)[0];
+    spellsViewCultureId = getCultureIdList()[0];
   }
 
-  const cultureTabsRow = document.createElement("div");
-  cultureTabsRow.className = "cc-grid";
-  cultureTabsRow.style.marginBottom = "18px";
-  Object.values(CULTURES).forEach((culture) => {
-    const tabCard = document.createElement("div");
-    tabCard.className = "cc-card";
-    if (spellsViewCultureId === culture.id) tabCard.classList.add("selected");
-    tabCard.style.setProperty("--card-accent", culture.accentColor);
-    tabCard.innerHTML = `
-      <div class="cc-card-name">${culture.name}</div>
-      <div class="cc-card-desc"><em>Click to explore</em></div>
-      <div class="cc-card-image" style="background-image: url('assets/images/cultures/${culture.id}-icon.png?v=2')"></div>
-    `;
-    tabCard.addEventListener("click", () => {
-      spellsViewCultureId = culture.id;
-      renderStartingSpellsGrid();
-    });
-    cultureTabsRow.appendChild(tabCard);
-  });
-  container.appendChild(cultureTabsRow);
+  const activeCulture = CULTURES[spellsViewCultureId];
+  const labelEl = document.getElementById("cc-spell-culture-label");
+  if (labelEl) labelEl.textContent = `${activeCulture.name} Spells`;
 
   const culture = CULTURES[spellsViewCultureId];
 
@@ -3541,9 +3561,10 @@ function renderCombatOutcome() {
         bonusLoot.push(material);
       }
 
+      const lootDisplayList = loot.concat(currentCombat.currencyGained ? [formatCurrency(currentCombat.currencyGained)] : []);
       storyEl.innerHTML = `
         <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
-        You recover: ${loot.join(", ") || "nothing of note"}, plus ${bonusLoot.join(", ")}.<br />
+        You recover: ${lootDisplayList.join(", ") || "nothing of note"}, plus ${bonusLoot.join(", ")}.<br />
         You find: ${formatCurrency(currentCombat.currencyGained || 0)}.<br />
         Enemies defeated: ${newDefeatCount}
       `;
@@ -3596,9 +3617,10 @@ function renderCombatOutcome() {
         addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
       }
     } else {
+      const lootDisplayList = loot.concat(currentCombat.currencyGained ? [formatCurrency(currentCombat.currencyGained)] : []);
       storyEl.innerHTML = `
         <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
-        You recover: ${loot.join(", ") || "nothing of note"}.<br />
+        You recover: ${lootDisplayList.join(", ") || "nothing of note"}.<br />
         You find: ${formatCurrency(currentCombat.currencyGained || 0)}.
       `;
       addChoiceButton(choicesEl, "Continue", () => {
@@ -4190,12 +4212,26 @@ document.getElementById("btn-step1-next").addEventListener("click", () => {
   goToCreationStep(1);
 });
 
-document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(0));
-document.getElementById("btn-step5-next").addEventListener("click", () => {
+document.getElementById("btn-portrait-back").addEventListener("click", () => goToCreationStep(0));
+document.getElementById("btn-portrait-next").addEventListener("click", () => {
+  const errorEl = document.getElementById("cc-error-portrait");
+  if (!creationState.portraitImage) {
+    errorEl.textContent = "Choose a portrait.";
+    return;
+  }
+  errorEl.textContent = "";
   goToCreationStep(2);
 });
 
-document.getElementById("btn-step3-back").addEventListener("click", () => goToCreationStep(1));
+document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(1));
+document.getElementById("btn-step5-next").addEventListener("click", () => {
+  goToCreationStep(3);
+});
+
+document.getElementById("btn-step5-back").addEventListener("click", () => goToCreationStep(2));
+document.getElementById("btn-step5-next").addEventListener("click", () => goToCreationStep(5));
+
+document.getElementById("btn-step3-back").addEventListener("click", () => goToCreationStep(4));
 document.getElementById("btn-step3-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step3");
   if (creationState.skills.length === 0) {
@@ -4208,15 +4244,16 @@ document.getElementById("btn-step3-next").addEventListener("click", () => {
     return;
   }
   errorEl.textContent = "";
-  goToCreationStep(3);
+  goToCreationStep(6);
 });
 
-document.getElementById("btn-step3b-back").addEventListener("click", () => goToCreationStep(2));
-document.getElementById("btn-step3b-next").addEventListener("click", () => {
-  goToCreationStep(4);
+document.getElementById("btn-spell-culture-back").addEventListener("click", () => goToCreationStep(1));
+document.getElementById("btn-spell-culture-next").addEventListener("click", () => goToCreationStep(4));
+document.getElementById("btn-step3b-back").addEventListener("click", () => {
+  goToCreationStep(CREATION_STEP_SCREENS.indexOf("screen-creation-spell-culture"));
 });
 
-document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(3));
+document.getElementById("btn-step4-back").addEventListener("click", () => goToCreationStep(5));
 document.getElementById("btn-step4-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step4");
   if (creationState.traits.length < TRAIT_SELECTION_MIN) {
@@ -4224,10 +4261,10 @@ document.getElementById("btn-step4-next").addEventListener("click", () => {
     return;
   }
   errorEl.textContent = "";
-  goToCreationStep(5);
+  goToCreationStep(7);
 });
 
-document.getElementById("btn-review-back").addEventListener("click", () => goToCreationStep(4));
+document.getElementById("btn-review-back").addEventListener("click", () => goToCreationStep(6));
 document.getElementById("btn-confirm-character").addEventListener("click", attemptConfirmCharacter);
 
 document.getElementById("btn-add-follower").addEventListener("click", () => {

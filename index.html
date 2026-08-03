@@ -57,7 +57,7 @@
 
     <section id="screen-creation-step1" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 1 of 6 &mdash; Name, Race &amp; Portrait</span>
+        <span class="cc-label">Step 1 of 7 &mdash; Name &amp; Race</span>
 
         <div class="cc-section">
           <label class="cc-label" for="cc-name">Name</label>
@@ -69,11 +69,6 @@
           <div id="cc-race-grid" class="cc-grid"></div>
         </div>
 
-        <div class="cc-section">
-          <span class="cc-label">Choose Your Hero</span>
-          <div id="cc-portrait-grid" class="cc-grid"></div>
-        </div>
-
         <div id="cc-error-step1"></div>
 
         <div id="choices">
@@ -82,18 +77,38 @@
       </div>
     </section>
 
+    <section id="screen-creation-portrait" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 2 of 7 &mdash; Choose Your Hero</span>
+        <div id="cc-portrait-grid" class="cc-grid"></div>
+        <div id="cc-error-portrait"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-portrait-back">Back</button>
+          <button class="choice-button" id="btn-portrait-next">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-creation-spell-culture" class="screen">
+      <div id="panel">
+        <span class="cc-label">Step 2 of 7 &mdash; Starting Spells</span>
+        <div class="cc-skill-count">Choose freely from all five peoples' magic. Any magic skill you invest in grows faster, strengthens your resistance to magical harm, and expands your mana pool.</div>
+        <div id="cc-spell-count" class="cc-skill-count"></div>
+        <div id="cc-spell-culture-grid" class="cc-grid"></div>
+        <div id="choices">
+          <button class="choice-button" id="btn-spell-culture-back">Back</button>
+          <button class="choice-button" id="btn-spell-culture-next">Next</button>
+        </div>
+      </div>
+    </section>
+
     <section id="screen-creation-step3b" class="screen">
       <div id="panel">
-        <span class="cc-label">Step 2 of 6 &mdash; Starting Spells</span>
-        <div id="story-text">
-          Choose freely from all five peoples' magic — Deveran, Drakvarr, Gaeldrim, Vandiri, and Yorenshi alike. Any magic skill you invest in grows faster than a weapon or armor skill, strengthens your resistance to magical harm, and expands your mana pool.
-        </div>
-        <div id="cc-spell-count" class="cc-skill-count"></div>
+        <span class="cc-label" id="cc-spell-culture-label">Starting Spells</span>
         <div id="cc-spell-grid"></div>
         <div id="cc-error-step3b"></div>
         <div id="choices">
-          <button class="choice-button" id="btn-step3b-back">Back</button>
-          <button class="choice-button" id="btn-step3b-next">Next</button>
+          <button class="choice-button" id="btn-step3b-back">Back to Cultures</button>
         </div>
       </div>
     </section>
