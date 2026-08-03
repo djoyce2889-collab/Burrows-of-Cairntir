@@ -785,6 +785,9 @@ function renderCombatStyleGrid() {
 
 function goToCreationStep(index) {
   showScreen(CREATION_STEP_SCREENS[index]);
+  if (CREATION_STEP_SCREENS[index] === "screen-creation-step3") {
+    renderSkillGrid();
+  }
   if (CREATION_STEP_SCREENS[index] === "screen-creation-chronicle") {
     creationState.chronicleIndex = 0;
     creationState.chronicleAnswers = [];
@@ -1173,12 +1176,65 @@ function selectPortrait(path) {
   });
 }
 
+const WEAPON_SKILLS_BY_COMBAT_STYLE = {
+  single: ["swords", "axes", "daggers", "archery", "unarmedCombat"],
+  swordShield: ["swords"],
+  axeShield: ["axes"],
+  dual: ["swords", "axes", "daggers"],
+  archer: ["archery"],
+  twoHanded: ["twoHanded"],
+  caster: ["swords", "axes", "daggers"],
+  healer: ["swords", "axes", "daggers"],
+  bard: ["swords", "axes", "daggers"]
+};
+
+const WEAPON_REQUIREMENTS = {
+  single: { count: 1, message: "Choose exactly 1 weapon skill." },
+  swordShield: { exact: ["swords", "shields"], message: "Choose Sword and Shield." },
+  axeShield: { exact: ["axes", "shields"], message: "Choose Axe and Shield." },
+  dual: { count: 2, message: "Choose exactly 2 different one-handed weapon skills." },
+  archer: { exact: ["archery"], message: "Choose Archery." },
+  twoHanded: { exact: ["twoHanded"], message: "Choose Two-Handed." },
+  caster: { count: 1, message: "Choose exactly 1 one-handed weapon skill." },
+  healer: { count: 1, message: "Choose exactly 1 one-handed weapon skill." },
+  bard: { count: 1, message: "Choose exactly 1 one-handed weapon skill." }
+};
+
+function checkWeaponRequirementMet() {
+  const req = WEAPON_REQUIREMENTS[creationState.combatStyle];
+  if (!req) return true;
+  if (req.exact) {
+    return req.exact.every((id) => creationState.skills.includes(id));
+  }
+  const weaponCount = creationState.skills.filter((id) => SKILLS[id].category === "Weapon").length;
+  return weaponCount === req.count;
+}
+
 function renderSkillGrid() {
   const container = document.getElementById("cc-skill-grid");
   const countLabel = document.getElementById("cc-skill-count");
   container.innerHTML = "";
 
-  const availableSkills = Object.values(SKILLS).filter((s) => s.category !== "Magic");
+  const weaponReq = WEAPON_REQUIREMENTS[creationState.combatStyle];
+  if (weaponReq) {
+    const noticeEl = document.createElement("div");
+    noticeEl.className = "cc-skill-count";
+    noticeEl.textContent = weaponReq.message;
+    container.appendChild(noticeEl);
+  }
+
+  const allowedWeaponIds = WEAPON_SKILLS_BY_COMBAT_STYLE[creationState.combatStyle] || null;
+  const shieldStyles = ["swordShield", "axeShield"];
+  const availableSkills = Object.values(SKILLS).filter((s) => {
+    if (s.category === "Magic") return false;
+    if (s.category === "Weapon" && allowedWeaponIds) {
+      return allowedWeaponIds.includes(s.id);
+    }
+    if (s.id === "shields") {
+      return shieldStyles.includes(creationState.combatStyle);
+    }
+    return true;
+  });
 
   const nonMagicChosenCount = creationState.skills.filter((id) => SKILLS[id].category !== "Magic").length;
   const atLimit = nonMagicChosenCount >= MAX_STARTING_SKILLS;
@@ -1198,6 +1254,16 @@ function renderSkillGrid() {
     card.addEventListener("click", () => {
       const currentlySelected = creationState.skills.includes(skill.id);
       const currentlyAtLimit = creationState.skills.filter((id) => SKILLS[id].category !== "Magic").length >= MAX_STARTING_SKILLS;
+
+      if (skill.category === "Weapon" && !currentlySelected) {
+        const weaponReq = WEAPON_REQUIREMENTS[creationState.combatStyle];
+        const weaponMax = weaponReq && !weaponReq.exact ? weaponReq.count : 1;
+        const currentWeaponCount = creationState.skills.filter((id) => SKILLS[id].category === "Weapon").length;
+        if (currentWeaponCount >= weaponMax) {
+          return;
+        }
+      }
+
       if (currentlySelected) {
         creationState.skills = creationState.skills.filter((id) => id !== skill.id);
       } else if (!currentlyAtLimit) {
@@ -3976,6 +4042,11 @@ document.getElementById("btn-step3-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step3");
   if (creationState.skills.length === 0) {
     errorEl.textContent = "Choose at least one starting skill or spell.";
+    return;
+  }
+  if (!checkWeaponRequirementMet()) {
+    const req = WEAPON_REQUIREMENTS[creationState.combatStyle];
+    errorEl.textContent = req ? req.message : "Your weapon choices don't match your combat style yet.";
     return;
   }
   errorEl.textContent = "";
