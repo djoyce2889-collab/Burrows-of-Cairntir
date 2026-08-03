@@ -4619,7 +4619,7 @@ const DUNGEON_CONTENT = {
       pathLoot: {
         text: "Wedged into a crack in the tunnel wall, a scrap of hide has been there long enough to stop smelling like anything at all.",
         loot: ["Hide"],
-        choices: [{ type: "goto", label: "Continue", target: "earSplitFight" }]
+        choices: [{ type: "goto", label: "Continue", target: "rushFight" }]
       },
       rushFight: {
         text: "The Rush Troll is already closing the moment it sees you, no hesitation, no circling, straight down the tunnel at full speed.",
