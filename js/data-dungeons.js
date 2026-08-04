@@ -590,6 +590,18 @@ const DUNGEONS = {
     image: "assets/images/thinning-veil.png",
     description:
       "Every Samhain, the boundary thins for one night and closes again by dawn. This year, it never closed — and the village on the other side of it is still burning."
+  },
+  ancestralNeglect: {
+    id: "ancestralNeglect",
+    name: "The Forgotten Line",
+    difficulty: "Master",
+    musicSrc: "assets/audio/ancestral-neglect.mp3",
+    hotspotColor: "#b5651d",
+    mapHotspot: { top: "55%", left: "45%" },
+    culture: "vandiri",
+    image: "assets/images/ancestral-neglect.png",
+    description:
+      "The rites stopped, one generation at a time, until no one left remembered the names they were meant to honor. The ancestors haven't stopped waiting."
   }
 };
 
@@ -4968,6 +4980,89 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  ancestralNeglect: {
+    startRoomId: "shrineApproach",
+    rooms: {
+      shrineApproach: {
+        text: "The path winds through dusty ochre-red twilight that never quite becomes day, faded cloth banners hanging still along carved wooden posts.",
+        choices: [{ type: "goto", label: "Approach the shrine grounds", target: "outerRow" }]
+      },
+      outerRow: {
+        text: "A row of totems lines the path, several toppled, none of them tended in longer than anyone living could say. A shape stirs beside one of them.",
+        choices: [{ type: "goto", label: "Continue", target: "namelessFight" }]
+      },
+      namelessFight: {
+        text: "The Nameless Ancestor rises to meet you, faded past recognition, holding it against you before you've said a single word.",
+        choices: [{ type: "combat", label: "Fight the Nameless Ancestor", enemyId: "theNamelessAncestor", target: "rowLoot" }]
+      },
+      rowLoot: {
+        text: "A cracked clay offering-bowl sits undisturbed beside a fallen totem, whatever it once held long since dried to nothing.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "keeperFight" }]
+      },
+      keeperFight: {
+        text: "The Neglected Shrine-Keeper is already at work, still tending a shrine no one's brought an offering to in generations.",
+        choices: [{ type: "combat", label: "Fight the Neglected Shrine-Keeper", enemyId: "theNeglectedShrineKeeper", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way toward a silent drum-circle, the other along a dry cattle-path lined with sun-baked clay walls.",
+        choices: [
+          { type: "goto", label: "Toward the drum-circle", target: "drumCircle" },
+          { type: "goto", label: "Along the cattle-path", target: "cattlePath" }
+        ]
+      },
+      drumCircle: {
+        text: "A ring of old drums sits untouched, one of them still moving faintly, keeping a rhythm no living hand is playing.",
+        choices: [{ type: "combat", label: "Fight the Silenced Drum-Caller", enemyId: "theSilencedDrumCaller", target: "converge" }]
+      },
+      cattlePath: {
+        text: "Bones line the dry path in a pattern too deliberate to be scattered, something lean and hungry watching from among them.",
+        choices: [{ type: "combat", label: "Fight the Starving Cattle-Herd Spirit", enemyId: "theStarvingCattleHerdSpirit", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide shrine courtyard, dying cook-fires scattered across it, none of them ever quite going out.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A carved storytelling-stone stands at the courtyard's edge, half its symbols worn smooth from telling and retelling.",
+        choices: [
+          { type: "discover", label: "Study the stone (Rite of Protection)", skillId: "riteProtection", spellId: "mothersCircle", target: "deeperShrine" },
+          { type: "goto", label: "Move on", target: "deeperShrine" }
+        ]
+      },
+      deeperShrine: {
+        text: "The shrine grounds narrow toward an inner courtyard, a lone figure pacing restlessly at its edge, muttering a story with no ending.",
+        choices: [{ type: "goto", label: "Press onward", target: "griotFight" }]
+      },
+      griotFight: {
+        text: "The Griot's Unfinished Tale turns toward you mid-sentence, still trying to reach a conclusion it never got the chance to find.",
+        choices: [{ type: "combat", label: "Fight the Griot's Unfinished Tale", enemyId: "theGriotsUnfinishedTale", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The path narrows toward the inner shrine, something mask-bound and patient watching from just past the threshold — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The Bride Unclaimed steps into view, still dressed for rites that were never finished, waiting for them even now.",
+        choices: [{ type: "combat", label: "Fight the Bride Unclaimed", enemyId: "theBrideUnclaimed", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The inner shrine opens ahead, a ceremonial mask mounted above its entrance, still faintly warm despite the neglect all around it.",
+        choices: [{ type: "combat", label: "Fight the Mask-Bound Elder", enemyId: "theMaskBoundElder", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "At the heart of the shrine, the First Ancestor of the Line rises from a seat of woven cloth and worn wood, forgotten first, forgotten longest, and entirely done waiting for that to be corrected.",
+        choices: [{ type: "combat", label: "Face the First Ancestor", enemyId: "theFirstAncestor", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The dusty twilight finally begins to lift. Somewhere beyond the shrine, someone has already started speaking a name that hasn't been spoken in a very long time.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -5874,6 +5969,25 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/thinning-veil/pre-boss.png",
     bossRoom: "assets/images/thinning-veil/boss-room.png",
     epilogue: "assets/images/thinning-veil/epilogue.png"
+  },
+  ancestralNeglect: {
+    shrineApproach: "assets/images/ancestral-neglect/shrine-approach.png",
+    outerRow: "assets/images/ancestral-neglect/outer-row.png",
+    namelessFight: "assets/images/ancestral-neglect/nameless-fight.png",
+    rowLoot: "assets/images/ancestral-neglect/row-loot.png",
+    keeperFight: "assets/images/ancestral-neglect/keeper-fight.png",
+    fork: "assets/images/ancestral-neglect/fork.png",
+    drumCircle: "assets/images/ancestral-neglect/drum-circle.png",
+    cattlePath: "assets/images/ancestral-neglect/cattle-path.png",
+    converge: "assets/images/ancestral-neglect/converge.png",
+    discoverRoom: "assets/images/ancestral-neglect/discover-room.png",
+    deeperShrine: "assets/images/ancestral-neglect/deeper-shrine.png",
+    griotFight: "assets/images/ancestral-neglect/griot-fight.png",
+    vigilCheck: "assets/images/ancestral-neglect/vigil-check.png",
+    extraFight: "assets/images/ancestral-neglect/extra-fight.png",
+    preBoss: "assets/images/ancestral-neglect/pre-boss.png",
+    bossRoom: "assets/images/ancestral-neglect/boss-room.png",
+    epilogue: "assets/images/ancestral-neglect/epilogue.png"
   }
 };
 

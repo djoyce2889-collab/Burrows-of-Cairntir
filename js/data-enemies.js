@@ -3679,5 +3679,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Grave Essence"]
+  },
+  theNamelessAncestor: {
+    id: "theNamelessAncestor",
+    name: "The Nameless Ancestor",
+    description: "The first name to stop being spoken was his. He faded fastest, and he's held it against every visitor since.",
+    image: "assets/images/enemies/the-nameless-ancestor.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theNeglectedShrineKeeper: {
+    id: "theNeglectedShrineKeeper",
+    name: "The Neglected Shrine-Keeper",
+    description: "Kept the rites faithfully until there was no one left to keep them for. Never once stopped anyway.",
+    image: "assets/images/enemies/the-neglected-shrine-keeper.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theSilencedDrumCaller: {
+    id: "theSilencedDrumCaller",
+    name: "The Silenced Drum-Caller",
+    description: "The rhythm that used to call the ancestors home went quiet a long time ago. It's calling something else now.",
+    image: "assets/images/enemies/the-silenced-drum-caller.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theGriotsUnfinishedTale: {
+    id: "theGriotsUnfinishedTale",
+    name: "The Griot's Unfinished Tale",
+    description: "Died mid-story, and the story never got told the rest of the way. It's still trying.",
+    image: "assets/images/enemies/the-griots-unfinished-tale.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theStarvingCattleHerdSpirit: {
+    id: "theStarvingCattleHerdSpirit",
+    name: "The Starving Cattle-Herd Spirit",
+    description: "Watched over the herds once, fed by offerings that stopped coming a long time ago. It's still watching. It's just hungrier now.",
+    image: "assets/images/enemies/the-starving-cattle-herd-spirit.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theMaskBoundElder: {
+    id: "theMaskBoundElder",
+    name: "The Mask-Bound Elder",
+    description: "Bound into the ceremonial mask generations ago. Nobody left remembers how the honoring part was supposed to go.",
+    image: "assets/images/enemies/the-mask-bound-elder.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theBrideUnclaimed: {
+    id: "theBrideUnclaimed",
+    name: "The Bride Unclaimed",
+    description: "Died before the rites that would have made her one of the honored dead were finished. She's still waiting for them.",
+    image: "assets/images/enemies/the-bride-unclaimed.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theFirstAncestor: {
+    id: "theFirstAncestor",
+    name: "The First Ancestor of the Line",
+    description: "Every rite ever spoken here was meant for him first. He's been forgotten longest, and he intends for that to matter.",
+    image: "assets/images/enemies/the-first-ancestor.png",
+    hitPoints: 70,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence"]
   }
 };
