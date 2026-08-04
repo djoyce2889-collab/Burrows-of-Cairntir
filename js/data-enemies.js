@@ -3591,5 +3591,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
+  },
+  theCorruptedGuiser: {
+    id: "theCorruptedGuiser",
+    name: "The Corrupted Guiser",
+    description: "The mask was supposed to hide him from whatever crossed over tonight. Somewhere along the way, it stopped being his choice to wear it.",
+    image: "assets/images/enemies/the-corrupted-guiser.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theVeilWalker: {
+    id: "theVeilWalker",
+    name: "The Veil-Walker",
+    description: "Doesn't belong to any story anyone's ever told. It just found the thin place and walked through, and now it's hunting the same way anything hungry does.",
+    image: "assets/images/enemies/the-veil-walker.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theSluaghRider: {
+    id: "theSluaghRider",
+    name: "The Sluagh Rider",
+    description: "One of the host, riding low over the rooftops tonight, looking for a door left open a moment too long.",
+    image: "assets/images/enemies/the-sluagh-rider.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theReturnedAncestor: {
+    id: "theReturnedAncestor",
+    name: "The Returned Ancestor",
+    description: "Given one night back, same as always. This year, something came back with him.",
+    image: "assets/images/enemies/the-returned-ancestor.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theRestlessReveler: {
+    id: "theRestlessReveler",
+    name: "The Restless Reveler",
+    description: "Never left the celebration the night the veil first thinned. Everyone else did, a very long time ago.",
+    image: "assets/images/enemies/the-restless-reveler.png",
+    hitPoints: 38,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "zombie",
+    lootTable: ["Grave Essence"]
+  },
+  theWispSwarm: {
+    id: "theWispSwarm",
+    name: "The Will-o'-the-Wisp Swarm",
+    description: "Meant to lead travelers home, once. Tonight they're leading somewhere else entirely.",
+    image: "assets/images/enemies/the-wisp-swarm.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theCorruptedBonfireKeeper: {
+    id: "theCorruptedBonfireKeeper",
+    name: "The Corrupted Bonfire Keeper",
+    description: "Tended the warding fire every Samhain of his life. Tonight, for the first time, something else is tending it through him.",
+    image: "assets/images/enemies/the-corrupted-bonfire-keeper.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theSluaghsLeader: {
+    id: "theSluaghsLeader",
+    name: "The Sluagh's Leader",
+    description: "Leads the host tonight, and every night the veil thins enough to let it. Doesn't need a reason. Never has.",
+    image: "assets/images/enemies/the-sluaghs-leader.png",
+    hitPoints: 70,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence"]
   }
 };

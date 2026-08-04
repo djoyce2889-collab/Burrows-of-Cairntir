@@ -566,6 +566,30 @@ const DUNGEONS = {
     image: "assets/images/corrupted-tir-na-nog.png",
     description:
       "A shore that should not still be reachable, golden and eternal and gently, terribly wrong. Time no longer moves here the way it should, and neither does anything that's ever crossed over."
+  },
+  niflhel: {
+    id: "niflhel",
+    name: "Niflhel",
+    difficulty: "Master",
+    musicSrc: "assets/audio/niflhel.mp3",
+    hotspotColor: "#1a1a1a",
+    mapHotspot: { top: "85%", left: "35%" },
+    culture: "drakvarr",
+    image: "assets/images/niflhel.png",
+    description:
+      "The deepest, darkest part of Helheim, reserved for oathbreakers and the truly wicked. The venom never stops falling, and neither does the hunger waiting at the bottom of it."
+  },
+  thinningVeil: {
+    id: "thinningVeil",
+    name: "The Thinning Veil",
+    difficulty: "Master",
+    musicSrc: "assets/audio/thinning-veil.mp3",
+    hotspotColor: "#e8912d",
+    mapHotspot: { top: "40%", left: "18%" },
+    culture: "deveran",
+    image: "assets/images/thinning-veil.png",
+    description:
+      "Every Samhain, the boundary thins for one night and closes again by dawn. This year, it never closed — and the village on the other side of it is still burning."
   }
 };
 
@@ -4861,6 +4885,89 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  thinningVeil: {
+    startRoomId: "villageOutskirts",
+    rooms: {
+      villageOutskirts: {
+        text: "Smoke rises from the village ahead against a sky that shouldn't still be this dark this close to dawn. The bonfires were supposed to have kept the night contained by now.",
+        choices: [{ type: "goto", label: "Enter the village", target: "burningStreet" }]
+      },
+      burningStreet: {
+        text: "A house burns quietly on the corner, no one rushing to put it out. A figure in a worn straw mask stands motionless in the street ahead.",
+        choices: [{ type: "goto", label: "Continue", target: "guiserFight" }]
+      },
+      guiserFight: {
+        text: "The Corrupted Guiser turns toward you all at once, the mask no longer looking like something he's wearing by choice.",
+        choices: [{ type: "combat", label: "Fight the Corrupted Guiser", enemyId: "theCorruptedGuiser", target: "streetLoot" }]
+      },
+      streetLoot: {
+        text: "A dropped satchel lies half-burned in the road, its owner nowhere in sight.",
+        loot: ["Hide"],
+        choices: [{ type: "goto", label: "Continue", target: "veilWalkerFight" }]
+      },
+      veilWalkerFight: {
+        text: "Something moves at the edge of your vision that doesn't belong to any story you've ever been told, tracking you the way a hound tracks a scent.",
+        choices: [{ type: "combat", label: "Fight the Veil-Walker", enemyId: "theVeilWalker", target: "fork" }]
+      },
+      fork: {
+        text: "The street splits ahead — one way toward the village square, the other along the low stone wall marking the old graveyard's edge.",
+        choices: [
+          { type: "goto", label: "Toward the square", target: "villageSquare" },
+          { type: "goto", label: "Along the graveyard wall", target: "graveyardWall" }
+        ]
+      },
+      villageSquare: {
+        text: "Hoofbeats sound from directly overhead, and there's no explaining how that's possible before the rider drops into the square in front of you.",
+        choices: [{ type: "combat", label: "Fight the Sluagh Rider", enemyId: "theSluaghRider", target: "converge" }]
+      },
+      graveyardWall: {
+        text: "A figure stands among the headstones, familiar in a way that takes a moment too long to place — someone's grandfather, given one night back, same as every year.",
+        choices: [{ type: "combat", label: "Fight the Returned Ancestor", enemyId: "theReturnedAncestor", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto the village well, cold water rippling though nothing's touched it, the sky overhead still refusing to lighten.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "An old warding stone stands beside the well, its carved knotwork still faintly glowing despite everything.",
+        choices: [
+          { type: "discover", label: "Study the warding stone (Line of Averick)", skillId: "ancestralAverick", spellId: "flametouchedBlade", target: "innerVillage" },
+          { type: "goto", label: "Move on", target: "innerVillage" }
+        ]
+      },
+      innerVillage: {
+        text: "Deeper into the village, doors hang open on empty homes, one restless shape lingering in the road ahead.",
+        choices: [{ type: "goto", label: "Press onward", target: "villagerFight" }]
+      },
+      villagerFight: {
+        text: "The Restless Reveler turns at your approach, still dressed for a celebration that ended for everyone else a very long time ago.",
+        choices: [{ type: "combat", label: "Fight the Restless Reveler", enemyId: "theRestlessReveler", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The road narrows toward the old bonfire green, pale lights drifting restlessly just past the bend — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The Will-o'-the-Wisp Swarm drifts into the road, lights that were meant to lead travelers home now leading somewhere else entirely.",
+        choices: [{ type: "combat", label: "Fight the Will-o'-the-Wisp Swarm", enemyId: "theWispSwarm", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The bonfire green opens ahead, the warding fire still burning, someone standing far too close to it and not being burned at all.",
+        choices: [{ type: "combat", label: "Fight the Corrupted Bonfire Keeper", enemyId: "theCorruptedBonfireKeeper", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Past the fire, the sky itself seems to open, and the host descends in full — the Sluagh's Leader at the front of it, already certain the village belongs to them now.",
+        choices: [{ type: "combat", label: "Face the Sluagh's Leader", enemyId: "theSluaghsLeader", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The sky finally begins to lighten, the host scattering back into whatever gap they came through. The bonfire holds steady again, exactly as it should.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -5748,6 +5855,25 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/niflhel/pre-boss.png",
     bossRoom: "assets/images/niflhel/boss-room.png",
     epilogue: "assets/images/niflhel/epilogue.png"
+  },
+  thinningVeil: {
+    villageOutskirts: "assets/images/thinning-veil/village-outskirts.png",
+    burningStreet: "assets/images/thinning-veil/burning-street.png",
+    guiserFight: "assets/images/thinning-veil/guiser-fight.png",
+    streetLoot: "assets/images/thinning-veil/street-loot.png",
+    veilWalkerFight: "assets/images/thinning-veil/veil-walker-fight.png",
+    fork: "assets/images/thinning-veil/fork.png",
+    villageSquare: "assets/images/thinning-veil/village-square.png",
+    graveyardWall: "assets/images/thinning-veil/graveyard-wall.png",
+    converge: "assets/images/thinning-veil/converge.png",
+    discoverRoom: "assets/images/thinning-veil/discover-room.png",
+    innerVillage: "assets/images/thinning-veil/inner-village.png",
+    villagerFight: "assets/images/thinning-veil/villager-fight.png",
+    vigilCheck: "assets/images/thinning-veil/vigil-check.png",
+    extraFight: "assets/images/thinning-veil/extra-fight.png",
+    preBoss: "assets/images/thinning-veil/pre-boss.png",
+    bossRoom: "assets/images/thinning-veil/boss-room.png",
+    epilogue: "assets/images/thinning-veil/epilogue.png"
   }
 };
 
