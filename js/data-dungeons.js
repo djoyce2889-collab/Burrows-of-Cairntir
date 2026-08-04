@@ -4778,6 +4778,89 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  niflhel: {
+    startRoomId: "descentThreshold",
+    rooms: {
+      descentThreshold: {
+        text: "The path down narrows into true dark, cold enough to burn, a wet dripping sound echoing from somewhere far ahead that isn't quite water.",
+        choices: [{ type: "goto", label: "Descend", target: "houndPath" }]
+      },
+      houndPath: {
+        text: "Claw-scored stone lines the passage, and something low growls from just past the edge of what you can see.",
+        choices: [{ type: "goto", label: "Continue", target: "houndFight" }]
+      },
+      houndFight: {
+        text: "Garmr's Lesser Kin lunges from the dark, blood-stained and utterly certain you don't belong here.",
+        choices: [{ type: "combat", label: "Fight Garmr's Lesser Kin", enemyId: "garmrsLesserKin", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "Something glints faintly in a crack in the stone, untouched by whatever's been dripping down these walls.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "oathbreakerFight" }]
+      },
+      oathbreakerFight: {
+        text: "A figure staggers into view, drenched head to foot in something dark and slick, muttering a promise it clearly stopped believing centuries ago.",
+        choices: [{ type: "combat", label: "Fight the Venom-Slicked Oathbreaker", enemyId: "theVenomSlickedOathbreaker", target: "fork" }]
+      },
+      fork: {
+        text: "The passage splits — one way toward a hall lined floor to ceiling in woven serpent-backs, the other along a narrow ledge above a black drop.",
+        choices: [
+          { type: "goto", label: "Toward the serpent hall", target: "serpentHall" },
+          { type: "goto", label: "Along the ledge", target: "blackLedge" }
+        ]
+      },
+      serpentHall: {
+        text: "The walls here move, faintly, everywhere at once, venom running down them in slow, deliberate streaks.",
+        choices: [{ type: "combat", label: "Fight the Rune-Bound Warden", enemyId: "theRuneBoundWarden", target: "converge" }]
+      },
+      blackLedge: {
+        text: "Someone stands at the ledge's far end, shield raised out of pure old habit, guarding a drop that leads nowhere anyone would want to go.",
+        choices: [{ type: "combat", label: "Fight the Cast-Out Shieldmaiden", enemyId: "theCastOutShieldmaiden", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide black hollow, the venom-rain falling steadily here, hissing faintly where it lands.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A rune-scarred stone stands half-swallowed by the dark, its carvings old enough to have been here before the venom started falling.",
+        choices: [
+          { type: "discover", label: "Study the rune-stone (Runes of the Blade)", skillId: "runeBlade", spellId: "hexbind", target: "deeperNiflhel" },
+          { type: "goto", label: "Move on", target: "deeperNiflhel" }
+        ]
+      },
+      deeperNiflhel: {
+        text: "The hollow narrows toward a passage where the venom-rain falls harder, something barely holding a shape drifting just ahead.",
+        choices: [{ type: "goto", label: "Press onward", target: "wraithFight" }]
+      },
+      wraithFight: {
+        text: "The Venom-Wraith turns toward you, what's left of its face dissolving a little further with every word it tries and fails to say.",
+        choices: [{ type: "combat", label: "Fight the Venom-Wraith", enemyId: "theVenomWraith", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The passage narrows further toward a frost-rimed archway, something cold and patient pacing just past it — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The Frost-Cursed Murderer's Shade steps out of the frost-rimed dark, colder than anything else this deep has any right to be.",
+        choices: [{ type: "combat", label: "Fight the Frost-Cursed Shade", enemyId: "theFrostCursedShade", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The passage opens onto a vast cavern of bone, a hunched shape gnawing patiently at something half-buried in the pile.",
+        choices: [{ type: "combat", label: "Fight the Corpse-Gnawing Draug", enemyId: "theCorpseGnawingDraug", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "The cavern opens onto Náströnd itself, walls woven entirely from serpents, venom raining steadily down — and coiled at the roots of something far too large to be a tree, Níðhöggr lifts its head toward you.",
+        choices: [{ type: "combat", label: "Face Níðhöggr", enemyId: "nidhoggr", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The venom-rain slows to nothing, the serpent-woven walls falling still. Whatever Níðhöggr keeps feeding on down here, it won't be you.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -5646,6 +5729,25 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/corrupted-tir-na-nog/pre-boss.png",
     bossRoom: "assets/images/corrupted-tir-na-nog/boss-room.png",
     epilogue: "assets/images/corrupted-tir-na-nog/epilogue.png"
+  },
+  niflhel: {
+    descentThreshold: "assets/images/niflhel/descent-threshold.png",
+    houndPath: "assets/images/niflhel/hound-path.png",
+    houndFight: "assets/images/niflhel/hound-fight.png",
+    pathLoot: "assets/images/niflhel/path-loot.png",
+    oathbreakerFight: "assets/images/niflhel/oathbreaker-fight.png",
+    fork: "assets/images/niflhel/fork.png",
+    serpentHall: "assets/images/niflhel/serpent-hall.png",
+    blackLedge: "assets/images/niflhel/black-ledge.png",
+    converge: "assets/images/niflhel/converge.png",
+    discoverRoom: "assets/images/niflhel/discover-room.png",
+    deeperNiflhel: "assets/images/niflhel/deeper-niflhel.png",
+    wraithFight: "assets/images/niflhel/wraith-fight.png",
+    vigilCheck: "assets/images/niflhel/vigil-check.png",
+    extraFight: "assets/images/niflhel/extra-fight.png",
+    preBoss: "assets/images/niflhel/pre-boss.png",
+    bossRoom: "assets/images/niflhel/boss-room.png",
+    epilogue: "assets/images/niflhel/epilogue.png"
   }
 };
 

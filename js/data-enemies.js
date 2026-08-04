@@ -3503,5 +3503,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Grave Essence"]
+  },
+  garmrsLesserKin: {
+    id: "garmrsLesserKin",
+    name: "Garmr's Lesser Kin",
+    description: "Blood-stained since before you arrived, guarding a threshold no living thing was ever meant to cross.",
+    image: "assets/images/enemies/garmrs-lesser-kin.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theVenomSlickedOathbreaker: {
+    id: "theVenomSlickedOathbreaker",
+    name: "The Venom-Slicked Oathbreaker",
+    description: "Drenched head to foot in what drips from the walls here, condemned for a promise broken so long ago even they've stopped defending it.",
+    image: "assets/images/enemies/the-venom-slicked-oathbreaker.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theRuneBoundWarden: {
+    id: "theRuneBoundWarden",
+    name: "The Rune-Bound Warden",
+    description: "Bound by old runes to keep the wicked exactly where they've been put. Doesn't much distinguish between the wicked and anyone else who wanders in.",
+    image: "assets/images/enemies/the-rune-bound-warden.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theCastOutShieldmaiden: {
+    id: "theCastOutShieldmaiden",
+    name: "The Cast-Out Shieldmaiden",
+    description: "Failed one duty, once, and was never given another chance to make up for it. Still fights like the chance might still come.",
+    image: "assets/images/enemies/the-cast-out-shieldmaiden.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theVenomWraith: {
+    id: "theVenomWraith",
+    name: "The Venom-Wraith",
+    description: "Barely holds a shape anymore, poison having eaten through whatever it used to be long before you arrived.",
+    image: "assets/images/enemies/the-venom-wraith.png",
+    hitPoints: 36,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theFrostCursedShade: {
+    id: "theFrostCursedShade",
+    name: "The Frost-Cursed Murderer's Shade",
+    description: "Died wicked and stayed wicked, ice creeping through whatever's left of it, colder than the rest of this place has any right to be.",
+    image: "assets/images/enemies/the-frost-cursed-shade.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Hide"]
+  },
+  theCorpseGnawingDraug: {
+    id: "theCorpseGnawingDraug",
+    name: "The Corpse-Gnawing Draug",
+    description: "Feeds because it's always fed, here, and sees no reason a living visitor should be any different.",
+    image: "assets/images/enemies/the-corpse-gnawing-draug.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Grave Essence"]
+  },
+  nidhoggr: {
+    id: "nidhoggr",
+    name: "Níðhöggr",
+    description: "Gnaws at roots older than the world above will ever know, and has never once had trouble finding something fresh to feed on down here.",
+    image: "assets/images/enemies/nidhoggr.png",
+    hitPoints: 90,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   }
 };
