@@ -554,6 +554,18 @@ const DUNGEONS = {
     image: "assets/images/troll-warren.png",
     description:
       "Every generation loses a few travelers to this mountain and calls it bad luck. It has never once been bad luck."
+  },
+  corruptedTirNaNog: {
+    id: "corruptedTirNaNog",
+    name: "The Unaging Shore",
+    difficulty: "Master",
+    musicSrc: "assets/audio/corrupted-tir-na-nog.mp3",
+    hotspotColor: "#d4af37",
+    mapHotspot: { top: "20%", left: "72%" },
+    culture: "gaeldrim",
+    image: "assets/images/corrupted-tir-na-nog.png",
+    description:
+      "A shore that should not still be reachable, golden and eternal and gently, terribly wrong. Time no longer moves here the way it should, and neither does anything that's ever crossed over."
   }
 };
 
@@ -4687,6 +4699,85 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  corruptedTirNaNog: {
+    startRoomId: "shoreArrival",
+    rooms: {
+      shoreArrival: {
+        text: "The western sea gives way to a golden shore, ring-forts of pale stone rising beyond it, wrapped in ivy that never seems to fade. Something about the light here has no source at all.",
+        choices: [{ type: "goto", label: "Step onto the shore", target: "wardenPath" }]
+      },
+      wardenPath: {
+        text: "A carved stone path winds inland, spiral knotwork worn smooth by feet that stopped counting the years long ago. Someone stands at its center, unmoving.",
+        choices: [{ type: "goto", label: "Continue", target: "wardenFight" }]
+      },
+      wardenFight: {
+        text: "The Forgotten Warden turns toward you slowly, as if trying to recall whether turning toward strangers is even still his duty.",
+        choices: [{ type: "combat", label: "Fight the Forgotten Warden", enemyId: "theForgottenWarden", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A small offering sits undisturbed at the path's edge, left by someone who never came back to claim it.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "oisinFight" }]
+      },
+      oisinFight: {
+        text: "A figure kneels in the orchard grass, young and then suddenly ancient and then young again, caught mid-breath in a moment that won't finish happening.",
+        choices: [{ type: "combat", label: "Fight the Corrupted Oisín", enemyId: "theCorruptedOisin", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way toward a tidepool ringed in pale stone, the other toward an orchard where a single faint melody never quite stops playing.",
+        choices: [
+          { type: "goto", label: "Toward the tidepool", target: "tidepool" },
+          { type: "goto", label: "Toward the orchard", target: "orchard" }
+        ]
+      },
+      tidepool: {
+        text: "The water here doesn't ripple the way water should. Something beneath the surface is watching regardless.",
+        choices: [{ type: "combat", label: "Fight the Twisted Sea-Guardian", enemyId: "theTwistedSeaGuardian", target: "converge" }]
+      },
+      orchard: {
+        text: "Something moves between the ever-blooming trees, shifting shape with every step, wearing whatever face seems most likely to make you follow.",
+        choices: [{ type: "combat", label: "Fight the Corrupted Púca", enemyId: "theCorruptedPuca", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide green, ring-stones standing in a loose circle at its center, gold light pooling low across the grass.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered stone bears old spiral carvings, still faintly warm to the touch.",
+        choices: [
+          { type: "discover", label: "Study the carving (Line of Emyrs)", skillId: "ancestralEmyrs", spellId: "arcaneCataclysm", target: "harperGreen" },
+          { type: "goto", label: "Move on", target: "harperGreen" }
+        ]
+      },
+      harperGreen: {
+        text: "A faint melody carries across the green, seven notes repeating, never resolving, never once changing.",
+        choices: [{ type: "combat", label: "Fight the Time-Looped Harper", enemyId: "theTimeLoopedHarper", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The path narrows toward the ring-fort's inner gate, something ancient and unraveling pacing just past the threshold — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The Unraveling Danann turns toward you mid-flicker, immortal and coming apart at once, no longer entirely sure which of those it currently is.",
+        choices: [{ type: "combat", label: "Fight the Unraveling Danann", enemyId: "theUnravelingDanann", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The inner gate opens onto a golden hall, a silver branch mounted above its threshold, still glowing faintly despite everything.",
+        choices: [{ type: "combat", label: "Fight the Silver-Branch Guardian", enemyId: "theSilverBranchGuardian", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Niamh rises from a golden seat at the hall's center, radiant and unbearably sad, already certain of why you've come and already certain she won't allow it.",
+        choices: [{ type: "combat", label: "Face Niamh", enemyId: "niamhCorrupted", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The golden light finally begins to move the way light should. Somewhere out past the shore, the sea remembers how to keep proper time again.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -5537,6 +5628,24 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/troll-warren/pre-boss.png",
     bossRoom: "assets/images/troll-warren/boss-room.png",
     epilogue: "assets/images/troll-warren/epilogue.png"
+  },
+  corruptedTirNaNog: {
+    shoreArrival: "assets/images/corrupted-tir-na-nog/shore-arrival.png",
+    wardenPath: "assets/images/corrupted-tir-na-nog/warden-path.png",
+    wardenFight: "assets/images/corrupted-tir-na-nog/warden-fight.png",
+    pathLoot: "assets/images/corrupted-tir-na-nog/path-loot.png",
+    oisinFight: "assets/images/corrupted-tir-na-nog/oisin-fight.png",
+    fork: "assets/images/corrupted-tir-na-nog/fork.png",
+    tidepool: "assets/images/corrupted-tir-na-nog/tidepool.png",
+    orchard: "assets/images/corrupted-tir-na-nog/orchard.png",
+    converge: "assets/images/corrupted-tir-na-nog/converge.png",
+    discoverRoom: "assets/images/corrupted-tir-na-nog/discover-room.png",
+    harperGreen: "assets/images/corrupted-tir-na-nog/harper-green.png",
+    vigilCheck: "assets/images/corrupted-tir-na-nog/vigil-check.png",
+    extraFight: "assets/images/corrupted-tir-na-nog/extra-fight.png",
+    preBoss: "assets/images/corrupted-tir-na-nog/pre-boss.png",
+    bossRoom: "assets/images/corrupted-tir-na-nog/boss-room.png",
+    epilogue: "assets/images/corrupted-tir-na-nog/epilogue.png"
   }
 };
 

@@ -3415,5 +3415,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence"]
+  },
+  theForgottenWarden: {
+    id: "theForgottenWarden",
+    name: "The Forgotten Warden",
+    description: "Has guarded this crossing so long he's stopped remembering what he's guarding it from — or whether there was ever anyone to relieve him.",
+    image: "assets/images/enemies/the-forgotten-warden.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theCorruptedOisin: {
+    id: "theCorruptedOisin",
+    name: "The Corrupted Oisín",
+    description: "Ages a hundred years and sheds them again with every breath, caught in the exact moment he never should have touched mortal ground.",
+    image: "assets/images/enemies/the-corrupted-oisin.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theTwistedSeaGuardian: {
+    id: "theTwistedSeaGuardian",
+    name: "The Twisted Sea-Guardian",
+    description: "One of Manannán's own, once. The time-sickness reached the sea long before it reached the shore.",
+    image: "assets/images/enemies/the-twisted-sea-guardian.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theCorruptedPuca: {
+    id: "theCorruptedPuca",
+    name: "The Corrupted Púca",
+    description: "Wears whatever shape earns your trust fastest. The ride that follows was never meant to end well, even before all this.",
+    image: "assets/images/enemies/the-corrupted-puca.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theTimeLoopedHarper: {
+    id: "theTimeLoopedHarper",
+    name: "The Time-Looped Harper",
+    description: "Plays the same seven notes, has for longer than anyone's counted. Can't remember how the song was supposed to end.",
+    image: "assets/images/enemies/the-time-looped-harper.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theUnravelingDanann: {
+    id: "theUnravelingDanann",
+    name: "The Unraveling Danann",
+    description: "One of the eternal folk themselves, coming apart from the inside — immortality was never built to survive this.",
+    image: "assets/images/enemies/the-unraveling-danann.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theSilverBranchGuardian: {
+    id: "theSilverBranchGuardian",
+    name: "The Silver-Branch Guardian",
+    description: "Bound to a branch that should have granted one crossing, not endless ones. It's still opening doors that were never meant to stay open.",
+    image: "assets/images/enemies/the-silver-branch-guardian.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  niamhCorrupted: {
+    id: "niamhCorrupted",
+    name: "Niamh, Golden-Haired and Grieving",
+    description: "She lost one love to a single broken promise. She has decided, with everything she has left, that it will never happen again — to anyone, ever, no matter what it costs the realm itself.",
+    image: "assets/images/enemies/niamh-corrupted.png",
+    hitPoints: 65,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence"]
   }
 };
