@@ -3943,5 +3943,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
+  },
+  gatekeeperOfTara: {
+    id: "gatekeeperOfTara",
+    name: "The Gatekeeper of Tara",
+    description: "Asks the same question he's asked every arrival since the court was founded: what can you offer that no one else here already can?",
+    image: "assets/images/enemies/gatekeeper-of-tara.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  masterSmithOfTheCourt: {
+    id: "masterSmithOfTheCourt",
+    name: "The Master Smith of the Court",
+    description: "Was the finest smith in Tara until someone proved he wasn't the only one who could claim that. Never quite let it go.",
+    image: "assets/images/enemies/master-smith-of-the-court.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  masterHarperOfTheCourt: {
+    id: "masterHarperOfTheCourt",
+    name: "The Master Harper of the Court",
+    description: "Once the finest musician at Tara, and still testing anyone who dares suggest otherwise.",
+    image: "assets/images/enemies/master-harper-of-the-court.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  masterSorcererOfTheCourt: {
+    id: "masterSorcererOfTheCourt",
+    name: "The Master Sorcerer of the Court",
+    description: "Held the title of Tara's greatest sorcerer for exactly as long as it took someone better to arrive and take it from him.",
+    image: "assets/images/enemies/master-sorcerer-of-the-court.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  tailteannChampion: {
+    id: "tailteannChampion",
+    name: "A Tailteann Champion",
+    description: "Trains for the games every year of his life, whether or not the games are actually being held that year.",
+    image: "assets/images/enemies/tailteann-champion.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  spearTrialKeeper: {
+    id: "spearTrialKeeper",
+    name: "The Spear-Trial Keeper",
+    description: "Guards the precision trial with a spear of his own, patterned after one whose reputation he's spent his whole life trying to live up to.",
+    image: "assets/images/enemies/spear-trial-keeper.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  riddleJudgeOfTheGames: {
+    id: "riddleJudgeOfTheGames",
+    name: "The Riddle-Judge of the Games",
+    description: "Tests wit as seriously as anyone else here tests strength. Doesn't consider one lesser than the other.",
+    image: "assets/images/enemies/riddle-judge-of-the-games.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  lughOfTheLongArm: {
+    id: "lughOfTheLongArm",
+    name: "Lugh of the Long Arm",
+    description: "Proved himself master of every skill in this court, one at a time, until there was no argument left to make. He expects the same of you.",
+    image: "assets/images/enemies/lugh-of-the-long-arm.png",
+    hitPoints: 75,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   }
 };

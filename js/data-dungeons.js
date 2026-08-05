@@ -626,6 +626,18 @@ const DUNGEONS = {
     image: "assets/images/ragnarok.png",
     description:
       "The end of the world was already written. Odin has spent every age since seeking a name that wasn't in the prophecy — and he has finally found one worth the risk."
+  },
+  taraTrials: {
+    id: "taraTrials",
+    name: "The Trials of Tara",
+    difficulty: "Master",
+    musicSrc: "assets/audio/tara-trials.mp3",
+    hotspotColor: "#c9a227",
+    mapHotspot: { top: "30%", left: "60%" },
+    culture: "gaeldrim",
+    image: "assets/images/tara-trials.png",
+    description:
+      "Lugh proved himself master of every skill this court could offer, one specialist at a time, until the gates simply had no argument left to make. He's still testing anyone who claims to be worth his time."
   }
 };
 
@@ -5253,6 +5265,89 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  taraTrials: {
+    startRoomId: "taraGates",
+    rooms: {
+      taraGates: {
+        text: "The gates of Tara stand open, golden light spilling out from within. A voice calls from beyond them, not unfriendly, but entirely unwilling to let anyone through without earning it. \"Every soul in this court has already proven what they're worth. What have you brought that we don't already have?\"",
+        choices: [{ type: "goto", label: "Answer the challenge", target: "gatekeeperPath" }]
+      },
+      gatekeeperPath: {
+        text: "The path beyond the gate winds through neatly kept grounds, warriors and craftsmen sparring and working openly on every side, none of them paying you any mind yet.",
+        choices: [{ type: "goto", label: "Continue", target: "gatekeeperFight" }]
+      },
+      gatekeeperFight: {
+        text: "The Gatekeeper of Tara steps into your path, asking the same question he's asked every arrival since the court was founded: what can you offer that no one here already can?",
+        choices: [{ type: "combat", label: "Fight the Gatekeeper of Tara", enemyId: "gatekeeperOfTara", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A finely made tool lies set aside on a workbench, clearly abandoned mid-project by someone who left in a hurry.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "smithFight" }]
+      },
+      smithFight: {
+        text: "The Master Smith of the Court sizes you up without a word, hammer already in hand, entirely ready to prove his title still means something.",
+        choices: [{ type: "combat", label: "Fight the Master Smith of the Court", enemyId: "masterSmithOfTheCourt", target: "fork" }]
+      },
+      fork: {
+        text: "The grounds split ahead — one way toward a hall filled with music, the other toward a chamber humming faintly with old magic.",
+        choices: [
+          { type: "goto", label: "Toward the music hall", target: "harpHall" },
+          { type: "goto", label: "Toward the magic chamber", target: "sorcererChamber" }
+        ]
+      },
+      harpHall: {
+        text: "The Master Harper of the Court plays without looking up, testing you the same way he's tested every challenger — by seeing what you do when the music tries to decide your mood for you.",
+        choices: [{ type: "combat", label: "Fight the Master Harper of the Court", enemyId: "masterHarperOfTheCourt", target: "converge" }]
+      },
+      sorcererChamber: {
+        text: "The Master Sorcerer of the Court doesn't bother with introductions, simply raises a hand and lets the test begin on its own terms.",
+        choices: [{ type: "combat", label: "Fight the Master Sorcerer of the Court", enemyId: "masterSorcererOfTheCourt", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide training green, the sound of competition ringing out from every direction at once.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A carved trial-stone stands at the green's edge, old instructions for a contest long since etched into its face.",
+        choices: [
+          { type: "discover", label: "Study the trial-stone (Line of Averick)", skillId: "ancestralAverick", spellId: "flametouchedBlade", target: "deeperTrials" },
+          { type: "goto", label: "Move on", target: "deeperTrials" }
+        ]
+      },
+      deeperTrials: {
+        text: "The green narrows toward the games-grounds proper, a lone figure warming up alone, entirely undistracted by anything around him.",
+        choices: [{ type: "goto", label: "Press onward", target: "championFight" }]
+      },
+      championFight: {
+        text: "A Tailteann Champion turns to face you, training for the games every year of his life, whether or not the games are actually being held.",
+        choices: [{ type: "combat", label: "Fight the Tailteann Champion", enemyId: "tailteannChampion", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The path narrows toward the precision range, someone testing throws with careful, exacting focus just ahead — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The Riddle-Judge of the Games steps into your path, testing wit as seriously as anyone else here tests strength, and considering neither lesser than the other.",
+        choices: [{ type: "combat", label: "Fight the Riddle-Judge of the Games", enemyId: "riddleJudgeOfTheGames", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The precision range opens ahead, a lone spear-thrower guarding it, patterned after a weapon whose reputation he's spent his whole life trying to live up to.",
+        choices: [{ type: "combat", label: "Fight the Spear-Trial Keeper", enemyId: "spearTrialKeeper", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "At the heart of Tara, Lugh waits exactly where every real challenger eventually finds him — patient, genuinely curious, and entirely certain that whatever you've proven so far, there's still one test left worth taking seriously.",
+        choices: [{ type: "combat", label: "Face Lugh", enemyId: "lughOfTheLongArm", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The golden light of Tara settles into something calmer. Somewhere behind you, Lugh's voice carries, neither triumphant nor disappointed — just satisfied that the court's standards still mean something.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -6216,6 +6311,25 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/ragnarok/pre-boss.png",
     bossRoom: "assets/images/ragnarok/boss-room.png",
     epilogue: "assets/images/ragnarok/epilogue.png"
+  },
+  taraTrials: {
+    taraGates: "assets/images/tara-trials/tara-gates.png",
+    gatekeeperPath: "assets/images/tara-trials/gatekeeper-path.png",
+    gatekeeperFight: "assets/images/tara-trials/gatekeeper-fight.png",
+    pathLoot: "assets/images/tara-trials/path-loot.png",
+    smithFight: "assets/images/tara-trials/smith-fight.png",
+    fork: "assets/images/tara-trials/fork.png",
+    harpHall: "assets/images/tara-trials/harp-hall.png",
+    sorcererChamber: "assets/images/tara-trials/sorcerer-chamber.png",
+    converge: "assets/images/tara-trials/converge.png",
+    discoverRoom: "assets/images/tara-trials/discover-room.png",
+    deeperTrials: "assets/images/tara-trials/deeper-trials.png",
+    championFight: "assets/images/tara-trials/champion-fight.png",
+    vigilCheck: "assets/images/tara-trials/vigil-check.png",
+    extraFight: "assets/images/tara-trials/extra-fight.png",
+    preBoss: "assets/images/tara-trials/pre-boss.png",
+    bossRoom: "assets/images/tara-trials/boss-room.png",
+    epilogue: "assets/images/tara-trials/epilogue.png"
   }
 };
 
