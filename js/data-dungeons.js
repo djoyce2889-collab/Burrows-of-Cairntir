@@ -5223,11 +5223,11 @@ const DUNGEON_CONTENT = {
     startRoomId: "riftArrival",
     rooms: {
       riftArrival: {
-        text: "The sky tears open without warning, and a single voice cuts through the noise beyond it — old, tired, and utterly certain of what it's asking. \"Your name reached me. Today, that matters more than it ever has before.\" You're pulled through before you can answer.",
+        text: "The sky tears open without warning, distant war-horns and screaming steel already carrying through the gap. A single voice cuts through the noise — old, tired, and utterly certain of what it's asking. \"Your name reached me. Today, that matters more than it ever has before.\" You're pulled through before you can answer.",
         choices: [{ type: "goto", label: "Step through", target: "battlefieldEdge" }]
       },
       battlefieldEdge: {
-        text: "Vígríðr stretches out ahead, the field where the prophecy said everything ends. An einherjar fights alone nearby, holding a line that clearly isn't holding much longer without help.",
+        text: "Vígríðr stretches out ahead, the field where the prophecy said everything ends — and everywhere you look, it's already happening. Einherjar clash with giants across the snow, a knot of warriors driving spears into something serpentine in the distance. An einherjar fights alone nearby, holding a line that clearly isn't holding much longer without help.",
         choices: [{ type: "goto", label: "Join the line", target: "vanguardFight" }]
       },
       vanguardFight: {
@@ -5235,69 +5235,69 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "combat", label: "Fight the Einherjar Vanguard", enemyId: "einherjarVanguard", target: "fieldLoot" }]
       },
       fieldLoot: {
-        text: "A fallen warrior's kit lies half-buried in the churned earth, still worth taking before the ground swallows it entirely.",
+        text: "A fallen warrior's kit lies half-buried in the churned earth, the battle raging on all around you, still worth taking before the ground swallows it entirely.",
         loot: ["Old Ore"],
         choices: [{ type: "goto", label: "Continue", target: "fenrirFight" }]
       },
       fenrirFight: {
-        text: "The chain that was supposed to hold until this exact day finally gives, and Fenrir moves for Odin with a hunger centuries in the making.",
+        text: "The chain that was supposed to hold until this exact day finally gives, and Fenrir moves for Odin with a hunger centuries in the making, warriors scattering out of its path on every side.",
         choices: [{ type: "combat", label: "Fight Fenrir", enemyId: "fenrirBreakingFree", target: "fork" }]
       },
       fork: {
-        text: "The field splits ahead — one way through a wall of advancing frost-giants, the other where a lone fire-giant scout burns a path of its own.",
+        text: "The field splits ahead — one way through a wall of advancing frost-giants locked in combat with lines of einherjar, the other where a lone fire-giant scout burns a path through a separate cluster of warriors.",
         choices: [
           { type: "goto", label: "Through the frost-giants", target: "frostLine" },
           { type: "goto", label: "Toward the fire-scout", target: "fireLine" }
         ]
       },
       frostLine: {
-        text: "A Frost-Giant Vanguard marches straight for you, unbothered by anything in its path, including you.",
+        text: "A Frost-Giant Vanguard marches straight for you, unbothered by anything in its path, including you, while einherjar battle its kin in the churned snow behind it.",
         choices: [{ type: "combat", label: "Fight the Frost-Giant Vanguard", enemyId: "frostGiantVanguard", target: "converge" }]
       },
       fireLine: {
-        text: "Surtr's Herald burns a line clear ahead of the fire-giant king himself, and doesn't intend to let anyone stand in that line.",
+        text: "Surtr's Herald burns a line clear ahead of the fire-giant king himself, warriors fighting through smoke and flame all around him, and doesn't intend to let anyone stand in that line.",
         choices: [{ type: "combat", label: "Fight Surtr's Herald", enemyId: "surtrsHerald", target: "converge" }]
       },
       converge: {
-        text: "Both paths open onto a wider stretch of the battlefield, the sky above it torn in a dozen places now, each tear showing a different piece of the ending.",
+        text: "Both paths open onto a wider stretch of the battlefield, the sky above it torn in a dozen places now, each tear showing a different piece of the ending — and beneath every one of them, warriors locked in combat with giants, serpents, and things that shouldn't exist outside the prophecy at all.",
         choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
       },
       discoverRoom: {
-        text: "A rune-carved shield lies abandoned on the field, still humming faintly with whatever protection its bearer never got the chance to use.",
+        text: "A rune-carved shield lies abandoned on the field, the sounds of distant combat never quite fading, still humming faintly with whatever protection its bearer never got the chance to use.",
         choices: [
           { type: "discover", label: "Study the shield (Runes of the Blade)", skillId: "runeBlade", spellId: "ironruneGuard", target: "deeperField" },
           { type: "goto", label: "Move on", target: "deeperField" }
         ]
       },
       deeperField: {
-        text: "Deeper into Vígríðr, a low growl rises from somewhere close, patient and enormous.",
+        text: "Deeper into Vígríðr, the fighting rages in every direction — einherjar locked blade to blade with frost-giants in the swirling snow, a distant knot of warriors driving spears into something serpentine and massive. Somewhere close, beneath all of it, a low growl rises — patient, enormous, and clearly not finished waiting.",
         choices: [{ type: "goto", label: "Press onward", target: "garmrFight" }]
       },
       garmrFight: {
-        text: "Garmr is finally off the leash, exactly as the prophecy always said he would be, exactly when it said it would matter.",
+        text: "Garmr is finally off the leash, exactly as the prophecy always said he would be, exactly when it said it would matter, warriors nearby already breaking off other fights to deal with wolves of their own.",
         choices: [{ type: "combat", label: "Fight Garmr", enemyId: "garmrUnleashed", target: "vigilCheck" }]
       },
       vigilCheck: {
-        text: "The field narrows toward a ridge, something shifting and uncertain in shape just past it — a chance to slip by, if you're careful.",
+        text: "The field narrows toward a ridge, the battle thinning out around it, something shifting and uncertain in shape just past it — a chance to slip by, if you're careful.",
         choices: [
           { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
           { type: "goto", label: "Push through directly", target: "extraFight" }
         ]
       },
       extraFight: {
-        text: "A Loki-Fetch peels away from the ridge's shadow, wearing a shape close enough to the real thing to matter, sent on ahead to see what you're made of.",
+        text: "A Loki-Fetch peels away from the ridge's shadow, wearing a shape close enough to the real thing to matter, sent on ahead to see what you're made of — and behind it, warriors nearby seem to be fighting shadows of their own that were never really there.",
         choices: [{ type: "combat", label: "Fight the Loki-Fetch", enemyId: "theLokiFetch", target: "preBoss" }]
       },
       preBoss: {
-        text: "The ridge opens onto a wide stretch of sky-torn field, two enormous wolves closing in from opposite directions — the sun and moon's oldest pursuers, finally about to catch something.",
+        text: "The ridge opens onto a wide stretch of sky-torn field, the fighting here thickest of all, two enormous wolves closing in from opposite directions — the sun and moon's oldest pursuers, finally about to catch something.",
         choices: [{ type: "combat", label: "Fight Sköll and Hati", enemyId: "skollOrHati", target: "bossRoom" }]
       },
       bossRoom: {
-        text: "At the heart of Vígríðr, Loki stands entirely unbothered by any of it — freed, exactly as he always said he would be, and entirely certain that everything since has gone precisely according to his plan. He looks at you like the one detail he never accounted for.",
+        text: "At the heart of Vígríðr, the battle has gone strangely quiet around one figure. Loki stands entirely unbothered by any of it — freed, exactly as he always said he would be, and entirely certain that everything since has gone precisely according to his plan. He looks at you like the one detail he never accounted for.",
         choices: [{ type: "combat", label: "Face Loki", enemyId: "lokiRagnarok", target: "epilogue" }]
       },
       epilogue: {
-        text: "The sky over Vígríðr finally begins to close. Somewhere behind you, Odin's voice carries one last time — not victory, not quite, but something the prophecy never had a word for either.",
+        text: "The sky over Vígríðr finally begins to close, and somewhere across the field, the fighting itself seems to be losing its urgency. Somewhere behind you, Odin's voice carries one last time — not victory, not quite, but something the prophecy never had a word for either.",
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
