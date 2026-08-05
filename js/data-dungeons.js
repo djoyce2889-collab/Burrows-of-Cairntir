@@ -602,6 +602,18 @@ const DUNGEONS = {
     image: "assets/images/ancestral-neglect.png",
     description:
       "The rites stopped, one generation at a time, until no one left remembered the names they were meant to honor. The ancestors haven't stopped waiting."
+  },
+  yomi: {
+    id: "yomi",
+    name: "Yomi",
+    difficulty: "Master",
+    musicSrc: "assets/audio/yomi.mp3",
+    hotspotColor: "#4a4a4a",
+    mapHotspot: { top: "65%", left: "82%" },
+    culture: "yorenshi",
+    image: "assets/images/yomi.png",
+    description:
+      "The land of the dead, sealed shut by a single broken promise. She asked not to be seen as she was. She was seen anyway, and she has never once forgiven it."
   }
 };
 
@@ -5063,6 +5075,89 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  yomi: {
+    startRoomId: "toriiApproach",
+    rooms: {
+      toriiApproach: {
+        text: "A half-collapsed wooden torii gate marks the edge of the land of the dead, sunless ash-grey haze pressing close on every side. This is Yomi, and it was sealed shut for a reason.",
+        choices: [{ type: "goto", label: "Pass through the gate", target: "hazePath" }]
+      },
+      hazePath: {
+        text: "The mist here never clears, and something is already moving through it, unhurried, entirely certain you don't belong.",
+        choices: [{ type: "goto", label: "Continue", target: "hagFight" }]
+      },
+      hagFight: {
+        text: "The Hag of the Threshold emerges from the haze, sent long ago to hunt down anyone who crosses in without being called.",
+        choices: [{ type: "combat", label: "Fight the Hag of the Threshold", enemyId: "theHagOfTheThreshold", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "Something glints faintly beneath rotted tatami matting, undisturbed by the mist that's settled over everything else here.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "attendantFight" }]
+      },
+      attendantFight: {
+        text: "A figure shuffles into view, still dressed for a court that stopped holding business the moment the seal went up, decay having taken the rest of what that meant.",
+        choices: [{ type: "combat", label: "Fight the Maggot-Touched Attendant", enemyId: "theMaggotTouchedAttendant", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way through a broken lattice screen crackling faintly with storm-light, the other toward a ruined court hall.",
+        choices: [
+          { type: "goto", label: "Through the lattice screen", target: "stormScreen" },
+          { type: "goto", label: "Toward the court hall", target: "courtHall" }
+        ]
+      },
+      stormScreen: {
+        text: "Lightning flickers behind the broken lattice with no thunder to follow it, born from this place itself rather than any sky.",
+        choices: [{ type: "combat", label: "Fight the Thunder-Born Guardian", enemyId: "theThunderBornGuardian", target: "converge" }]
+      },
+      courtHall: {
+        text: "A servant still attends an empty hall, going through motions for a court that has had no business to conduct in longer than anyone down here can remember.",
+        choices: [{ type: "combat", label: "Fight the Servant of the Underworld Court", enemyId: "theUnderworldCourtServant", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide clearing in the haze, the mist here thinner, as if something is trying hard to be seen despite everything.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A cracked ceremonial comb lies half-buried in the ash, the very kind said to have once been set alight and used to see something better left in the dark.",
+        choices: [
+          { type: "discover", label: "Study the comb (Way of the Onmyoji)", skillId: "wayOnmyoji", spellId: "onryosWrath", target: "deeperYomi" },
+          { type: "goto", label: "Move on", target: "deeperYomi" }
+        ]
+      },
+      deeperYomi: {
+        text: "The haze thickens again as the path descends, something drifting toward you that used to be a promise between two people who loved each other.",
+        choices: [{ type: "goto", label: "Press onward", target: "wraithFight" }]
+      },
+      wraithFight: {
+        text: "The Broken-Vow Wraith reaches for you, still shaped by the exact moment it was shattered — a single glimpse, taken when it was asked not to be.",
+        choices: [{ type: "combat", label: "Fight the Broken-Vow Wraith", enemyId: "theBrokenVowWraith", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The path narrows toward a great sealed boulder, something patient counting under its breath just past it — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "The Death-Counting Herald doesn't look up from its tally, one thousand owed to this place every single day, without fail, without exception.",
+        choices: [{ type: "combat", label: "Fight the Death-Counting Herald", enemyId: "theDeathCountingHerald", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The great sealing boulder looms ahead, exactly where it was placed the day this place was shut for good — and something is still standing guard over it, all these ages later.",
+        choices: [{ type: "combat", label: "Fight the Boulder-Threshold Warden", enemyId: "theBoulderThresholdWarden", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Past the boulder, Izanami waits exactly where she's waited since the day her husband broke his one promise and looked upon her as she truly was. She has had a very long time to be furious about it.",
+        choices: [{ type: "combat", label: "Face Izanami", enemyId: "izanamiCorrupted", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The ash-grey haze finally begins to settle. Somewhere far above, the living world goes on entirely unaware of the promise that was almost broken twice.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -5988,6 +6083,25 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/ancestral-neglect/pre-boss.png",
     bossRoom: "assets/images/ancestral-neglect/boss-room.png",
     epilogue: "assets/images/ancestral-neglect/epilogue.png"
+  },
+  yomi: {
+    toriiApproach: "assets/images/yomi/torii-approach.png",
+    hazePath: "assets/images/yomi/haze-path.png",
+    hagFight: "assets/images/yomi/hag-fight.png",
+    pathLoot: "assets/images/yomi/path-loot.png",
+    attendantFight: "assets/images/yomi/attendant-fight.png",
+    fork: "assets/images/yomi/fork.png",
+    stormScreen: "assets/images/yomi/storm-screen.png",
+    courtHall: "assets/images/yomi/court-hall.png",
+    converge: "assets/images/yomi/converge.png",
+    discoverRoom: "assets/images/yomi/discover-room.png",
+    deeperYomi: "assets/images/yomi/deeper-yomi.png",
+    wraithFight: "assets/images/yomi/wraith-fight.png",
+    vigilCheck: "assets/images/yomi/vigil-check.png",
+    extraFight: "assets/images/yomi/extra-fight.png",
+    preBoss: "assets/images/yomi/pre-boss.png",
+    bossRoom: "assets/images/yomi/boss-room.png",
+    epilogue: "assets/images/yomi/epilogue.png"
   }
 };
 

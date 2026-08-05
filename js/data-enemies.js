@@ -3767,5 +3767,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Grave Essence"]
+  },
+  theHagOfTheThreshold: {
+    id: "theHagOfTheThreshold",
+    name: "The Hag of the Threshold",
+    description: "Sent after anyone who crosses in without being called. Doesn't stop, doesn't tire, doesn't ask why you came.",
+    image: "assets/images/enemies/the-hag-of-the-threshold.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theMaggotTouchedAttendant: {
+    id: "theMaggotTouchedAttendant",
+    name: "The Maggot-Touched Attendant",
+    description: "Once served the court here properly. Decay took the rest of what that meant a very long time ago.",
+    image: "assets/images/enemies/the-maggot-touched-attendant.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theThunderBornGuardian: {
+    id: "theThunderBornGuardian",
+    name: "The Thunder-Born Guardian",
+    description: "Born from death itself, the old telling goes, and it's never once had reason to doubt that telling.",
+    image: "assets/images/enemies/the-thunder-born-guardian.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theUnderworldCourtServant: {
+    id: "theUnderworldCourtServant",
+    name: "A Servant of the Underworld Court",
+    description: "Still attends a court that hasn't held proper business in longer than anyone down here can remember.",
+    image: "assets/images/enemies/the-underworld-court-servant.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theBoulderThresholdWarden: {
+    id: "theBoulderThresholdWarden",
+    name: "The Boulder-Threshold Warden",
+    description: "Guards the great stone that seals this place shut, and has taken every attempt to move it personally.",
+    image: "assets/images/enemies/the-boulder-threshold-warden.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theBrokenVowWraith: {
+    id: "theBrokenVowWraith",
+    name: "The Broken-Vow Wraith",
+    description: "A promise between two people who once loved each other, shattered the moment one of them looked when they were asked not to.",
+    image: "assets/images/enemies/the-broken-vow-wraith.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  theDeathCountingHerald: {
+    id: "theDeathCountingHerald",
+    name: "The Death-Counting Herald",
+    description: "Keeps a tally of everyone owed to this place today. Never once loses count. Never once stops.",
+    image: "assets/images/enemies/the-death-counting-herald.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  izanamiCorrupted: {
+    id: "izanamiCorrupted",
+    name: "Izanami, Queen of the Dead, Corrupted by Grief and Rage",
+    description: "She died, and asked for one single promise in return — not to be seen as she was. It was broken anyway, and she has never once stopped being furious about it.",
+    image: "assets/images/enemies/izanami-corrupted.png",
+    hitPoints: 75,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence"]
   }
 };
