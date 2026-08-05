@@ -4031,5 +4031,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
+  },
+  fiannaSentinel: {
+    id: "fiannaSentinel",
+    name: "A Fianna Sentinel",
+    description: "Stands the first watch for every candidate who comes through, and has never once let a poor showing slide by out of kindness.",
+    image: "assets/images/enemies/fianna-sentinel.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  swiftnessTrialKeeper: {
+    id: "swiftnessTrialKeeper",
+    name: "The Swiftness Trial-Keeper",
+    description: "Tests the same thing the forest itself once tested — whether you can move fast enough that nothing gets the chance to catch you.",
+    image: "assets/images/enemies/swiftness-trial-keeper.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theOllamhsChallenge: {
+    id: "theOllamhsChallenge",
+    name: "The Ollamh's Challenge",
+    description: "A master poet of the old rank, testing candidates the way words have always tested people — by seeing what's actually left once the confidence runs out.",
+    image: "assets/images/enemies/the-ollamhs-challenge.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  shieldWallChampion: {
+    id: "shieldWallChampion",
+    name: "A Shield-Wall Champion",
+    description: "Has held the same ground against every challenger sent his way, and sees no particular reason today should be any different.",
+    image: "assets/images/enemies/shield-wall-champion.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  stormCallerOfTheFianna: {
+    id: "stormCallerOfTheFianna",
+    name: "A Storm-Caller of the Fianna",
+    description: "Tests composure the same way a real storm would — by giving you no say in when it starts or how hard it hits.",
+    image: "assets/images/enemies/storm-caller-of-the-fianna.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  twinBladeDuelist: {
+    id: "twinBladeDuelist",
+    name: "A Twin-Blade Duelist",
+    description: "Fights with a blade in each hand and has never once needed to explain why that's a fair fight.",
+    image: "assets/images/enemies/twin-blade-duelist.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  keeperOfTheOldSongs: {
+    id: "keeperOfTheOldSongs",
+    name: "The Keeper of the Old Songs",
+    description: "Sings the same songs the Fianna have always marched to, and tests whether a challenger's resolve can survive hearing them sung at you instead of beside you.",
+    image: "assets/images/enemies/keeper-of-the-old-songs.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  fingalMacCumhaill: {
+    id: "fingalMacCumhaill",
+    name: "Fingal",
+    description: "Led the Fianna through trials just like these, once, and has never once forgotten what it actually takes to be worth standing beside.",
+    image: "assets/images/enemies/fingal-mac-cumhaill.png",
+    hitPoints: 75,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore", "Hide"]
   }
 };

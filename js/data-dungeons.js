@@ -638,6 +638,18 @@ const DUNGEONS = {
     image: "assets/images/tara-trials.png",
     description:
       "Lugh proved himself master of every skill this court could offer, one specialist at a time, until the gates simply had no argument left to make. He's still testing anyone who claims to be worth his time."
+  },
+  fingalsTrial: {
+    id: "fingalsTrial",
+    name: "Fingal's Trial",
+    difficulty: "Master",
+    musicSrc: "assets/audio/fingals-trial.mp3",
+    hotspotColor: "#4a7c3f",
+    mapHotspot: { top: "45%", left: "22%" },
+    culture: "deveran",
+    image: "assets/images/fingals-trial.png",
+    description:
+      "The Fianna never let anyone in without proving themselves first. Word of your name reached the old chief himself — and he wants to see if it holds up."
   }
 };
 
@@ -5348,6 +5360,89 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  fingalsTrial: {
+    startRoomId: "fiannaCamp",
+    rooms: {
+      fiannaCamp: {
+        text: "Woodsmoke and morning light greet you at the edge of the Fianna's camp, warriors sparring openly in the clearing ahead. An old voice carries over the noise. \"Word of you reached even here. Let's find out if it was worth the telling.\"",
+        choices: [{ type: "goto", label: "Enter the camp", target: "sentinelPath" }]
+      },
+      sentinelPath: {
+        text: "The path into camp is watched closely, every arrival sized up long before they're greeted.",
+        choices: [{ type: "goto", label: "Continue", target: "sentinelFight" }]
+      },
+      sentinelFight: {
+        text: "A Fianna Sentinel steps into your path, standing the first watch he's stood for every candidate who's ever come through, and never once letting a poor showing slide by out of kindness.",
+        choices: [{ type: "combat", label: "Fight the Fianna Sentinel", enemyId: "fiannaSentinel", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A well-kept training weapon rests against a nearby tree, left out for anyone willing to prove themselves worthy of using it.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "swiftnessFight" }]
+      },
+      swiftnessFight: {
+        text: "The Swiftness Trial-Keeper doesn't wait for you to catch your breath, testing the same thing the forest itself always has — whether you're fast enough that nothing gets the chance to catch you.",
+        choices: [{ type: "combat", label: "Fight the Swiftness Trial-Keeper", enemyId: "swiftnessTrialKeeper", target: "fork" }]
+      },
+      fork: {
+        text: "The camp splits ahead — one way toward a circle where a poet holds court, the other toward a training yard ringed with shields.",
+        choices: [
+          { type: "goto", label: "Toward the poet's circle", target: "poetsCircle" },
+          { type: "goto", label: "Toward the shield-yard", target: "shieldYard" }
+        ]
+      },
+      poetsCircle: {
+        text: "The Ollamh's Challenge waits at the center of the circle, testing candidates the way words have always tested people — by seeing what's actually left once the confidence runs out.",
+        choices: [{ type: "combat", label: "Fight the Ollamh's Challenge", enemyId: "theOllamhsChallenge", target: "converge" }]
+      },
+      shieldYard: {
+        text: "A Shield-Wall Champion holds the same ground he's held against every challenger sent his way, seeing no particular reason today should be any different.",
+        choices: [{ type: "combat", label: "Fight the Shield-Wall Champion", enemyId: "shieldWallChampion", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide clearing at the camp's heart, the sound of drilling and sparring ringing from every direction.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A weathered training-post stands marked with old scoring notches, generations of trials counted into its wood.",
+        choices: [
+          { type: "discover", label: "Study the post (Line of Siuloir)", skillId: "ancestralSiuloir", spellId: "layOfMending", target: "deeperCamp" },
+          { type: "goto", label: "Move on", target: "deeperCamp" }
+        ]
+      },
+      deeperCamp: {
+        text: "The clearing narrows toward the deeper camp, clouds gathering unnaturally fast overhead for no reason the sky itself can explain.",
+        choices: [{ type: "goto", label: "Press onward", target: "stormFight" }]
+      },
+      stormFight: {
+        text: "A Storm-Caller of the Fianna tests composure the same way a real storm would — by giving you no say in when it starts or how hard it hits.",
+        choices: [{ type: "combat", label: "Fight the Storm-Caller of the Fianna", enemyId: "stormCallerOfTheFianna", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The path narrows toward the dueling ring, a warrior spinning twin blades through careful, exacting drills just ahead — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A Twin-Blade Duelist turns to face you, fighting with a blade in each hand, never once needing to explain why that's a fair fight.",
+        choices: [{ type: "combat", label: "Fight the Twin-Blade Duelist", enemyId: "twinBladeDuelist", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The dueling ring opens onto a firelit gathering-place, an old singer waiting there, testing whether resolve can survive hearing the old songs sung at you instead of beside you.",
+        choices: [{ type: "combat", label: "Fight the Keeper of the Old Songs", enemyId: "keeperOfTheOldSongs", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "At the heart of the camp, Fingal himself stands waiting, exactly where he's waited for every worthy challenger before you — genuinely curious, entirely respectful, and utterly certain this last test is the one that matters most.",
+        choices: [{ type: "combat", label: "Face Fingal", enemyId: "fingalMacCumhaill", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The camp settles into quiet satisfaction around you. Fingal's voice carries one last time, warm and genuinely approving — not victory exactly, but something that's clearly meant just as much.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -6330,6 +6425,25 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/tara-trials/pre-boss.png",
     bossRoom: "assets/images/tara-trials/boss-room.png",
     epilogue: "assets/images/tara-trials/epilogue.png"
+  },
+  fingalsTrial: {
+    fiannaCamp: "assets/images/fingals-trial/fianna-camp.png",
+    sentinelPath: "assets/images/fingals-trial/sentinel-path.png",
+    sentinelFight: "assets/images/fingals-trial/sentinel-fight.png",
+    pathLoot: "assets/images/fingals-trial/path-loot.png",
+    swiftnessFight: "assets/images/fingals-trial/swiftness-fight.png",
+    fork: "assets/images/fingals-trial/fork.png",
+    poetsCircle: "assets/images/fingals-trial/poets-circle.png",
+    shieldYard: "assets/images/fingals-trial/shield-yard.png",
+    converge: "assets/images/fingals-trial/converge.png",
+    discoverRoom: "assets/images/fingals-trial/discover-room.png",
+    deeperCamp: "assets/images/fingals-trial/deeper-camp.png",
+    stormFight: "assets/images/fingals-trial/storm-fight.png",
+    vigilCheck: "assets/images/fingals-trial/vigil-check.png",
+    extraFight: "assets/images/fingals-trial/extra-fight.png",
+    preBoss: "assets/images/fingals-trial/pre-boss.png",
+    bossRoom: "assets/images/fingals-trial/boss-room.png",
+    epilogue: "assets/images/fingals-trial/epilogue.png"
   }
 };
 
