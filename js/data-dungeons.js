@@ -650,6 +650,30 @@ const DUNGEONS = {
     image: "assets/images/fingals-trial.png",
     description:
       "The Fianna never let anyone in without proving themselves first. Word of your name reached the old chief himself — and he wants to see if it holds up."
+  },
+  thunderKingsDomain: {
+    id: "thunderKingsDomain",
+    name: "The Thunder King's Domain",
+    difficulty: "Master",
+    musicSrc: "assets/audio/thunder-kings-domain.mp3",
+    hotspotColor: "#c0392b",
+    mapHotspot: { top: "50%", left: "50%" },
+    culture: "vandiri",
+    image: "assets/images/thunder-kings-domain.png",
+    description:
+      "Sango ruled once as a king, and rules now as something far larger. Storm, fire, and judgment answer to him directly — and he has never once needed a reason to test who else might."
+  },
+  theHiddenSun: {
+    id: "theHiddenSun",
+    name: "The Hidden Sun",
+    difficulty: "Master",
+    musicSrc: "assets/audio/the-hidden-sun.mp3",
+    hotspotColor: "#8b6f3f",
+    mapHotspot: { top: "35%", left: "88%" },
+    culture: "yorenshi",
+    image: "assets/images/the-hidden-sun.png",
+    description:
+      "Amaterasu sealed herself away after her own brother's rampage, and the world has stayed dark ever since. Something down here has grown fond of that darkness — and has no intention of letting the sun come back."
   }
 };
 
@@ -5443,6 +5467,172 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  thunderKingsDomain: {
+    startRoomId: "stormThreshold",
+    rooms: {
+      stormThreshold: {
+        text: "Thunder rolls without a cloud in sight, the air itself charged and heavy. A voice carries on it, deep and unhurried. \"You've drawn attention I don't give lightly. Let's see if it was earned.\"",
+        choices: [{ type: "goto", label: "Step forward", target: "warriorPath" }]
+      },
+      warriorPath: {
+        text: "Scorched stone lines the path ahead, old lightning-scars burned deep into rock that's clearly taken this kind of punishment before.",
+        choices: [{ type: "goto", label: "Continue", target: "warriorFight" }]
+      },
+      warriorFight: {
+        text: "A Storm-Marked Warrior blocks your path, lightning-scarred as proof of his chosen status, and never once letting anyone forget what that means.",
+        choices: [{ type: "combat", label: "Fight the Storm-Marked Warrior", enemyId: "stormMarkedWarrior", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "Something glints among the scorched stones, untouched by whatever burned everything else around it.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "sentinelFight" }]
+      },
+      sentinelFight: {
+        text: "A Fire-Wreathed Sentinel guards the way forward, flame answering to no command but his own.",
+        choices: [{ type: "combat", label: "Fight the Fire-Wreathed Sentinel", enemyId: "fireWreathedSentinel", target: "fork" }]
+      },
+      fork: {
+        text: "The path splits ahead — one way toward a hall ringing with distant thunder, the other toward a yard scattered with double-headed axes.",
+        choices: [
+          { type: "goto", label: "Toward the thunder hall", target: "thunderHall" },
+          { type: "goto", label: "Toward the axe yard", target: "axeYard" }
+        ]
+      },
+      thunderHall: {
+        text: "A Thunder-Voiced Herald announces your arrival the way it's always been announced, loud enough that no one here ever mistakes it for weather.",
+        choices: [{ type: "combat", label: "Fight the Thunder-Voiced Herald", enemyId: "thunderVoicedHerald", target: "converge" }]
+      },
+      axeYard: {
+        text: "A Double-Axe Champion trains alone, wielding a weapon patterned after the real thing, fighting like he intends to earn the comparison someday.",
+        choices: [{ type: "combat", label: "Fight the Double-Axe Champion", enemyId: "doubleAxeChampion", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide courtyard, the air here thick with the smell of ozone and old smoke.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A cracked stone altar stands at the courtyard's edge, old offerings scattered around its base, none of them recent.",
+        choices: [
+          { type: "discover", label: "Study the altar (Rite of the Thunder-Wrath)", skillId: "riteThunderWrath", spellId: "arcaneCataclysm", target: "deeperDomain" },
+          { type: "goto", label: "Move on", target: "deeperDomain" }
+        ]
+      },
+      deeperDomain: {
+        text: "The courtyard narrows toward an inner hall, a lightning-marked figure standing perfectly still at its threshold.",
+        choices: [{ type: "goto", label: "Press onward", target: "judgeFight" }]
+      },
+      judgeFight: {
+        text: "A Lightning-Struck Judge was marked once for a judgment that never got explained, and has been passing judgment of his own ever since.",
+        choices: [{ type: "combat", label: "Fight the Lightning-Struck Judge", enemyId: "lightningStruckJudge", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The hall narrows toward the throne approach, an old guard standing rigid at his post just past it — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A Royal Guard of the Old Court served a king before that king became something more than a king, and never once stopped standing the same post.",
+        choices: [{ type: "combat", label: "Fight the Royal Guard of the Old Court", enemyId: "royalGuardOfTheOldCourt", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The throne approach opens ahead, flame rising unbidden from cracks in the floor, someone standing calmly within it.",
+        choices: [{ type: "combat", label: "Fight the Flame-Caller", enemyId: "theFlameCaller", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Sango waits at the heart of his domain, a king before he was anything larger, entirely certain that whatever drew you this far deserves one final, honest test.",
+        choices: [{ type: "combat", label: "Face Sango", enemyId: "sangoTheThunderKing", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The charged air finally settles, thunder fading into ordinary silence. Somewhere behind you, Sango's voice carries once more, satisfied rather than triumphant — a king who's just found someone worth remembering.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
+  },
+  theHiddenSun: {
+    startRoomId: "darkenedApproach",
+    rooms: {
+      darkenedApproach: {
+        text: "No sun has risen in longer than anyone can properly say. A gathering waits ahead in the endless dusk, all of them focused on one sealed cave — but something is clearly working against them.",
+        choices: [{ type: "goto", label: "Approach the gathering", target: "gatheringPath" }]
+      },
+      gatheringPath: {
+        text: "The crowd here should be louder, more hopeful. Instead it's subdued, uneasy, watched from somewhere just out of sight.",
+        choices: [{ type: "goto", label: "Continue", target: "wraithFight" }]
+      },
+      wraithFight: {
+        text: "A Darkness-Fattened Wraith wasn't much of anything before the sun disappeared. It's had plenty of time since to become something worth worrying about.",
+        choices: [{ type: "combat", label: "Fight the Darkness-Fattened Wraith", enemyId: "darknessFattenedWraith", target: "pathLoot" }]
+      },
+      pathLoot: {
+        text: "A dropped ceremonial offering lies undisturbed in the dark, meant for a celebration that hasn't been able to happen yet.",
+        loot: ["Grave Essence"],
+        choices: [{ type: "goto", label: "Continue", target: "silencerFight" }]
+      },
+      silencerFight: {
+        text: "A Silencer of the Gathering moves quietly through the crowd, making sure everyone here stays too afraid, too quiet, too unconvincing to draw any real attention.",
+        choices: [{ type: "combat", label: "Fight the Silencer of the Gathering", enemyId: "silencerOfTheGathering", target: "fork" }]
+      },
+      fork: {
+        text: "The gathering splits ahead — one way toward where the sacred mirror is being prepared, the other toward the roosts where the roosters are kept.",
+        choices: [
+          { type: "goto", label: "Toward the mirror", target: "mirrorSite" },
+          { type: "goto", label: "Toward the roosts", target: "roostSite" }
+        ]
+      },
+      mirrorSite: {
+        text: "A Mirror-Shatterer has only one purpose here: make sure the sacred mirror never gets the chance to do what it was made for.",
+        choices: [{ type: "combat", label: "Fight the Mirror-Shatterer", enemyId: "mirrorShatterer", target: "converge" }]
+      },
+      roostSite: {
+        text: "A Rooster-Silencer hunts down anything whose crowing might call the dawn back before it's ready to come.",
+        choices: [{ type: "combat", label: "Fight the Rooster-Silencer", enemyId: "roosterSilencer", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wide clearing before the sealed cave itself, the darkness here somehow deeper than anywhere else nearby.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "An old shrine stone stands at the clearing's edge, carved symbols still faintly visible despite the dark.",
+        choices: [
+          { type: "discover", label: "Study the shrine stone (Way of the Onmyoji)", skillId: "wayOnmyoji", spellId: "onryosWrath", target: "deeperDark" },
+          { type: "goto", label: "Move on", target: "deeperDark" }
+        ]
+      },
+      deeperDark: {
+        text: "The clearing narrows toward the cave's threshold, something binding and permanent taking shape just ahead in the dark.",
+        choices: [{ type: "goto", label: "Press onward", target: "sealerFight" }]
+      },
+      sealerFight: {
+        text: "A Cave-Sealer isn't interested in prying the entrance open. It's here to make sure it never opens again.",
+        choices: [{ type: "combat", label: "Fight the Cave-Sealer", enemyId: "caveSealer", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The path narrows toward the cave's very entrance, something feeding quietly in the dark just past it — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A Despair-Given-Form feeds on exactly what the endless dark keeps producing, and the longer this lasts, the better fed it gets.",
+        choices: [{ type: "combat", label: "Fight the Despair-Given-Form", enemyId: "despairGivenForm", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "At the cave's very entrance, a quiet voice works patiently at the seal itself, whispering something meant only for the one hidden inside.",
+        choices: [{ type: "combat", label: "Fight the Doubt-Whisperer", enemyId: "doubtWhisperer", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "Deep within, Susanoo stands guard over his sister's hiding place, storm-wreathed and furious — not at you, but at a truth he's spent every day since refusing to face.",
+        choices: [{ type: "combat", label: "Face Susanoo", enemyId: "susanooCorrupted", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "Far above, the faintest hint of light finally breaks the endless dusk. Somewhere behind you, the gathering's voices rise together for the first time in longer than anyone can say.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -6444,6 +6634,44 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/fingals-trial/pre-boss.png",
     bossRoom: "assets/images/fingals-trial/boss-room.png",
     epilogue: "assets/images/fingals-trial/epilogue.png"
+  },
+  thunderKingsDomain: {
+    stormThreshold: "assets/images/thunder-kings-domain/storm-threshold.png",
+    warriorPath: "assets/images/thunder-kings-domain/warrior-path.png",
+    warriorFight: "assets/images/thunder-kings-domain/warrior-fight.png",
+    pathLoot: "assets/images/thunder-kings-domain/path-loot.png",
+    sentinelFight: "assets/images/thunder-kings-domain/sentinel-fight.png",
+    fork: "assets/images/thunder-kings-domain/fork.png",
+    thunderHall: "assets/images/thunder-kings-domain/thunder-hall.png",
+    axeYard: "assets/images/thunder-kings-domain/axe-yard.png",
+    converge: "assets/images/thunder-kings-domain/converge.png",
+    discoverRoom: "assets/images/thunder-kings-domain/discover-room.png",
+    deeperDomain: "assets/images/thunder-kings-domain/deeper-domain.png",
+    judgeFight: "assets/images/thunder-kings-domain/judge-fight.png",
+    vigilCheck: "assets/images/thunder-kings-domain/vigil-check.png",
+    extraFight: "assets/images/thunder-kings-domain/extra-fight.png",
+    preBoss: "assets/images/thunder-kings-domain/pre-boss.png",
+    bossRoom: "assets/images/thunder-kings-domain/boss-room.png",
+    epilogue: "assets/images/thunder-kings-domain/epilogue.png"
+  },
+  theHiddenSun: {
+    darkenedApproach: "assets/images/the-hidden-sun/darkened-approach.png",
+    gatheringPath: "assets/images/the-hidden-sun/gathering-path.png",
+    wraithFight: "assets/images/the-hidden-sun/wraith-fight.png",
+    pathLoot: "assets/images/the-hidden-sun/path-loot.png",
+    silencerFight: "assets/images/the-hidden-sun/silencer-fight.png",
+    fork: "assets/images/the-hidden-sun/fork.png",
+    mirrorSite: "assets/images/the-hidden-sun/mirror-site.png",
+    roostSite: "assets/images/the-hidden-sun/roost-site.png",
+    converge: "assets/images/the-hidden-sun/converge.png",
+    discoverRoom: "assets/images/the-hidden-sun/discover-room.png",
+    deeperDark: "assets/images/the-hidden-sun/deeper-dark.png",
+    sealerFight: "assets/images/the-hidden-sun/sealer-fight.png",
+    vigilCheck: "assets/images/the-hidden-sun/vigil-check.png",
+    extraFight: "assets/images/the-hidden-sun/extra-fight.png",
+    preBoss: "assets/images/the-hidden-sun/pre-boss.png",
+    bossRoom: "assets/images/the-hidden-sun/boss-room.png",
+    epilogue: "assets/images/the-hidden-sun/epilogue.png"
   }
 };
 

@@ -4119,5 +4119,181 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "physical",
     lootTable: ["Old Ore", "Old Ore", "Hide"]
+  },
+  stormMarkedWarrior: {
+    id: "stormMarkedWarrior",
+    name: "A Storm-Marked Warrior",
+    description: "Chosen personally, lightning-scarred as proof of it, and has never once let anyone forget what that means.",
+    image: "assets/images/enemies/storm-marked-warrior.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  fireWreathedSentinel: {
+    id: "fireWreathedSentinel",
+    name: "A Fire-Wreathed Sentinel",
+    description: "Guards this domain the way it's always been guarded — with flame that answers to no one else's command.",
+    image: "assets/images/enemies/fire-wreathed-sentinel.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  thunderVoicedHerald: {
+    id: "thunderVoicedHerald",
+    name: "A Thunder-Voiced Herald",
+    description: "Announces what's coming the same way it's always been announced, loud enough that no one down here ever mistakes it for weather.",
+    image: "assets/images/enemies/thunder-voiced-herald.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  doubleAxeChampion: {
+    id: "doubleAxeChampion",
+    name: "A Double-Axe Champion",
+    description: "Carries a weapon patterned after the real thing, and fights like he intends to earn the comparison someday.",
+    image: "assets/images/enemies/double-axe-champion.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  lightningStruckJudge: {
+    id: "lightningStruckJudge",
+    name: "A Lightning-Struck Judge",
+    description: "Was marked once, for a judgment that never got explained, and has been passing judgment of his own ever since.",
+    image: "assets/images/enemies/lightning-struck-judge.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  royalGuardOfTheOldCourt: {
+    id: "royalGuardOfTheOldCourt",
+    name: "A Royal Guard of the Old Court",
+    description: "Served a king before that king became something more than a king, and never once stopped standing the same post.",
+    image: "assets/images/enemies/royal-guard-of-the-old-court.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  theFlameCaller: {
+    id: "theFlameCaller",
+    name: "The Flame-Caller",
+    description: "Commands fire directly, the way it's said he once did himself, before he became something the fire answered to instead.",
+    image: "assets/images/enemies/the-flame-caller.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  sangoTheThunderKing: {
+    id: "sangoTheThunderKing",
+    name: "Sango, the Thunder King",
+    description: "Ruled once as a king, and rules now as something far larger — storm, fire, judgment, and a temper that has never once needed provoking twice.",
+    image: "assets/images/enemies/sango-the-thunder-king.png",
+    hitPoints: 78,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
+  },
+  darknessFattenedWraith: {
+    id: "darknessFattenedWraith",
+    name: "A Darkness-Fattened Wraith",
+    description: "Wasn't much of anything before the sun disappeared. It's had plenty of time since to become something worth worrying about.",
+    image: "assets/images/enemies/darkness-fattened-wraith.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  silencerOfTheGathering: {
+    id: "silencerOfTheGathering",
+    name: "A Silencer of the Gathering",
+    description: "Moves quietly through the crowd outside the cave, making sure the gathering stays too afraid, too quiet, too unconvincing to draw any real attention.",
+    image: "assets/images/enemies/silencer-of-the-gathering.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  mirrorShatterer: {
+    id: "mirrorShatterer",
+    name: "A Mirror-Shatterer",
+    description: "Has one purpose here: make sure the sacred mirror never gets the chance to do what it was made for.",
+    image: "assets/images/enemies/mirror-shatterer.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  roosterSilencer: {
+    id: "roosterSilencer",
+    name: "A Rooster-Silencer",
+    description: "Hunts down anything whose crowing might call the dawn back before it's ready to come.",
+    image: "assets/images/enemies/rooster-silencer.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  caveSealer: {
+    id: "caveSealer",
+    name: "A Cave-Sealer",
+    description: "Isn't interested in prying the entrance open. It's here to make sure it never opens again.",
+    image: "assets/images/enemies/cave-sealer.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
+  despairGivenForm: {
+    id: "despairGivenForm",
+    name: "A Despair-Given-Form",
+    description: "Feeds on exactly what the endless dark keeps producing, and the longer this lasts, the better fed it gets.",
+    image: "assets/images/enemies/despair-given-form.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  doubtWhisperer: {
+    id: "doubtWhisperer",
+    name: "The Doubt-Whisperer",
+    description: "Works directly on her, patiently, endlessly, giving her one more reason every single day to believe the cave is safer than coming back out.",
+    image: "assets/images/enemies/doubt-whisperer.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  susanooCorrupted: {
+    id: "susanooCorrupted",
+    name: "Susanoo, Corrupted by Guilt and Denial",
+    description: "Caused all of this himself, once, in a rage he's never once owned up to. Easier, it turns out, to keep the whole world dark than admit that.",
+    image: "assets/images/enemies/susanoo-corrupted.png",
+    hitPoints: 80,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   }
 };
