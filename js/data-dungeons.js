@@ -614,6 +614,18 @@ const DUNGEONS = {
     image: "assets/images/yomi.png",
     description:
       "The land of the dead, sealed shut by a single broken promise. She asked not to be seen as she was. She was seen anyway, and she has never once forgiven it."
+  },
+  ragnarok: {
+    id: "ragnarok",
+    name: "Ragnarök",
+    difficulty: "Master",
+    musicSrc: "assets/audio/ragnarok.mp3",
+    hotspotColor: "#7a1f1f",
+    mapHotspot: { top: "10%", left: "50%" },
+    culture: "drakvarr",
+    image: "assets/images/ragnarok.png",
+    description:
+      "The end of the world was already written. Odin has spent every age since seeking a name that wasn't in the prophecy — and he has finally found one worth the risk."
   }
 };
 
@@ -5158,6 +5170,89 @@ const DUNGEON_CONTENT = {
         choices: [{ type: "end", label: "Return to Homebase" }]
       }
     }
+  },
+  ragnarok: {
+    startRoomId: "riftArrival",
+    rooms: {
+      riftArrival: {
+        text: "The sky tears open without warning, and a single voice cuts through the noise beyond it — old, tired, and utterly certain of what it's asking. \"Your name reached me. Today, that matters more than it ever has before.\" You're pulled through before you can answer.",
+        choices: [{ type: "goto", label: "Step through", target: "battlefieldEdge" }]
+      },
+      battlefieldEdge: {
+        text: "Vígríðr stretches out ahead, the field where the prophecy said everything ends. An einherjar fights alone nearby, holding a line that clearly isn't holding much longer without help.",
+        choices: [{ type: "goto", label: "Join the line", target: "vanguardFight" }]
+      },
+      vanguardFight: {
+        text: "The Einherjar Vanguard doesn't question why a stranger just appeared beside him. There's no time left for questions like that today.",
+        choices: [{ type: "combat", label: "Fight the Einherjar Vanguard", enemyId: "einherjarVanguard", target: "fieldLoot" }]
+      },
+      fieldLoot: {
+        text: "A fallen warrior's kit lies half-buried in the churned earth, still worth taking before the ground swallows it entirely.",
+        loot: ["Old Ore"],
+        choices: [{ type: "goto", label: "Continue", target: "fenrirFight" }]
+      },
+      fenrirFight: {
+        text: "The chain that was supposed to hold until this exact day finally gives, and Fenrir moves for Odin with a hunger centuries in the making.",
+        choices: [{ type: "combat", label: "Fight Fenrir", enemyId: "fenrirBreakingFree", target: "fork" }]
+      },
+      fork: {
+        text: "The field splits ahead — one way through a wall of advancing frost-giants, the other where a lone fire-giant scout burns a path of its own.",
+        choices: [
+          { type: "goto", label: "Through the frost-giants", target: "frostLine" },
+          { type: "goto", label: "Toward the fire-scout", target: "fireLine" }
+        ]
+      },
+      frostLine: {
+        text: "A Frost-Giant Vanguard marches straight for you, unbothered by anything in its path, including you.",
+        choices: [{ type: "combat", label: "Fight the Frost-Giant Vanguard", enemyId: "frostGiantVanguard", target: "converge" }]
+      },
+      fireLine: {
+        text: "Surtr's Herald burns a line clear ahead of the fire-giant king himself, and doesn't intend to let anyone stand in that line.",
+        choices: [{ type: "combat", label: "Fight Surtr's Herald", enemyId: "surtrsHerald", target: "converge" }]
+      },
+      converge: {
+        text: "Both paths open onto a wider stretch of the battlefield, the sky above it torn in a dozen places now, each tear showing a different piece of the ending.",
+        choices: [{ type: "goto", label: "Continue", target: "discoverRoom" }]
+      },
+      discoverRoom: {
+        text: "A rune-carved shield lies abandoned on the field, still humming faintly with whatever protection its bearer never got the chance to use.",
+        choices: [
+          { type: "discover", label: "Study the shield (Runes of the Blade)", skillId: "runeBlade", spellId: "ironruneGuard", target: "deeperField" },
+          { type: "goto", label: "Move on", target: "deeperField" }
+        ]
+      },
+      deeperField: {
+        text: "Deeper into Vígríðr, a low growl rises from somewhere close, patient and enormous.",
+        choices: [{ type: "goto", label: "Press onward", target: "garmrFight" }]
+      },
+      garmrFight: {
+        text: "Garmr is finally off the leash, exactly as the prophecy always said he would be, exactly when it said it would matter.",
+        choices: [{ type: "combat", label: "Fight Garmr", enemyId: "garmrUnleashed", target: "vigilCheck" }]
+      },
+      vigilCheck: {
+        text: "The field narrows toward a ridge, something shifting and uncertain in shape just past it — a chance to slip by, if you're careful.",
+        choices: [
+          { type: "check", label: "Move carefully (Stealth)", skillId: "stealth", difficulty: "Master", successTarget: "preBoss", failureTarget: "extraFight" },
+          { type: "goto", label: "Push through directly", target: "extraFight" }
+        ]
+      },
+      extraFight: {
+        text: "A Loki-Fetch peels away from the ridge's shadow, wearing a shape close enough to the real thing to matter, sent on ahead to see what you're made of.",
+        choices: [{ type: "combat", label: "Fight the Loki-Fetch", enemyId: "theLokiFetch", target: "preBoss" }]
+      },
+      preBoss: {
+        text: "The ridge opens onto a wide stretch of sky-torn field, two enormous wolves closing in from opposite directions — the sun and moon's oldest pursuers, finally about to catch something.",
+        choices: [{ type: "combat", label: "Fight Sköll and Hati", enemyId: "skollOrHati", target: "bossRoom" }]
+      },
+      bossRoom: {
+        text: "At the heart of Vígríðr, Loki stands entirely unbothered by any of it — freed, exactly as he always said he would be, and entirely certain that everything since has gone precisely according to his plan. He looks at you like the one detail he never accounted for.",
+        choices: [{ type: "combat", label: "Face Loki", enemyId: "lokiRagnarok", target: "epilogue" }]
+      },
+      epilogue: {
+        text: "The sky over Vígríðr finally begins to close. Somewhere behind you, Odin's voice carries one last time — not victory, not quite, but something the prophecy never had a word for either.",
+        choices: [{ type: "end", label: "Return to Homebase" }]
+      }
+    }
   }
 };
 
@@ -6102,6 +6197,25 @@ const ROOM_IMAGES = {
     preBoss: "assets/images/yomi/pre-boss.png",
     bossRoom: "assets/images/yomi/boss-room.png",
     epilogue: "assets/images/yomi/epilogue.png"
+  },
+  ragnarok: {
+    riftArrival: "assets/images/ragnarok/rift-arrival.png",
+    battlefieldEdge: "assets/images/ragnarok/battlefield-edge.png",
+    vanguardFight: "assets/images/ragnarok/vanguard-fight.png",
+    fieldLoot: "assets/images/ragnarok/field-loot.png",
+    fenrirFight: "assets/images/ragnarok/fenrir-fight.png",
+    fork: "assets/images/ragnarok/fork.png",
+    frostLine: "assets/images/ragnarok/frost-line.png",
+    fireLine: "assets/images/ragnarok/fire-line.png",
+    converge: "assets/images/ragnarok/converge.png",
+    discoverRoom: "assets/images/ragnarok/discover-room.png",
+    deeperField: "assets/images/ragnarok/deeper-field.png",
+    garmrFight: "assets/images/ragnarok/garmr-fight.png",
+    vigilCheck: "assets/images/ragnarok/vigil-check.png",
+    extraFight: "assets/images/ragnarok/extra-fight.png",
+    preBoss: "assets/images/ragnarok/pre-boss.png",
+    bossRoom: "assets/images/ragnarok/boss-room.png",
+    epilogue: "assets/images/ragnarok/epilogue.png"
   }
 };
 

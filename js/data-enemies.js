@@ -3855,5 +3855,93 @@ theUnyieldingFlame: {
     threatTier: "Master",
     soundCategory: "spectral",
     lootTable: ["Grave Essence", "Grave Essence"]
+  },
+  einherjarVanguard: {
+    id: "einherjarVanguard",
+    name: "An Einherjar Vanguard",
+    description: "Chosen for exactly this day, centuries ago. Finally getting to fight the battle he was chosen for.",
+    image: "assets/images/enemies/einherjar-vanguard.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  fenrirBreakingFree: {
+    id: "fenrirBreakingFree",
+    name: "Fenrir, Breaking Free",
+    description: "The chain that was supposed to hold until the end of the world has finally reached the end of the world.",
+    image: "assets/images/enemies/fenrir-breaking-free.png",
+    hitPoints: 55,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  frostGiantVanguard: {
+    id: "frostGiantVanguard",
+    name: "A Frost-Giant Vanguard",
+    description: "Marched out of Jötunheim the moment the horn sounded, and hasn't slowed down since.",
+    image: "assets/images/enemies/frost-giant-vanguard.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Old Ore"]
+  },
+  surtrsHerald: {
+    id: "surtrsHerald",
+    name: "Surtr's Herald",
+    description: "Sent on ahead to burn a path clear. Surtr himself is still coming.",
+    image: "assets/images/enemies/surtrs-herald.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence"]
+  },
+  garmrUnleashed: {
+    id: "garmrUnleashed",
+    name: "Garmr, Unleashed",
+    description: "Hel's own hound, finally off the leash for the one day it was always going to matter.",
+    image: "assets/images/enemies/garmr-unleashed.png",
+    hitPoints: 46,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theLokiFetch: {
+    id: "theLokiFetch",
+    name: "A Loki-Fetch",
+    description: "Not Loki himself. Just something he sent ahead wearing a shape close enough to matter.",
+    image: "assets/images/enemies/the-loki-fetch.png",
+    hitPoints: 40,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  skollOrHati: {
+    id: "skollOrHati",
+    name: "Sköll and Hati",
+    description: "Been chasing the sun and moon since before the world had a name for either. Today, they finally catch something.",
+    image: "assets/images/enemies/skoll-or-hati.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  lokiRagnarok: {
+    id: "lokiRagnarok",
+    name: "Loki",
+    description: "Freed at last, exactly as he always said he would be. Everything since has gone precisely according to his plan.",
+    image: "assets/images/enemies/loki-ragnarok.png",
+    hitPoints: 80,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   }
 };
