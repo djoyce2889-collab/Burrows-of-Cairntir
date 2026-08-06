@@ -2619,7 +2619,7 @@ const MONSTER_HUNT_LOCATIONS = {
       "assets/images/deveran-highlands-searching-4.png"
     ],
     musicSrc: "assets/audio/deveran-highlands-hunt.mp3",
-    enemyIds: ["highlandFellWolf", "moonriseWerewolf", "brambleFangedLoper", "frostCursedWerewolf", "bloodHowlAlpha"],
+    enemyIds: ["highlandFellWolf", "moonriseWerewolf", "brambleFangedLoper", "frostCursedWerewolf", "bloodHowlAlpha", "greyManedWerewolf", "stormChasedWolf"],
     explorationLines: [
       "The heather thins ahead, claw-marks scored deep into a fallen stone.",
       "Fresh tracks cut across the frost, too large to belong to anything ordinary.",
@@ -2639,7 +2639,7 @@ const MONSTER_HUNT_LOCATIONS = {
       "assets/images/drakvarr-vampire-den-searching-4.png"
     ],
     musicSrc: "assets/audio/drakvarr-vampire-den-hunt.mp3",
-    enemyIds: ["theBloodJarl", "draugrFangedReaver", "thePaleSkald", "runeMarkedBloodkin", "theIceVeiledShieldmaiden"],
+    enemyIds: ["theBloodJarl", "draugrFangedReaver", "thePaleSkald", "runeMarkedBloodkin", "theIceVeiledShieldmaiden", "theFrostbittenThegn", "theHollowVolva"],
     explorationLines: [
       "The passage narrows, old runes carved deep into stone slick with something dark.",
       "A torch gutters low in its sconce, though there's no draft here to explain it.",
@@ -2659,7 +2659,7 @@ const MONSTER_HUNT_LOCATIONS = {
       "assets/images/gaeldrim-forests-searching-4.png"
     ],
     musicSrc: "assets/audio/gaeldrim-forests-hunt.mp3",
-    enemyIds: ["barkSkinnedWretch", "thornboundStalker", "mossGrownEnt", "hollowBarkedWanderer", "vineChokedSentinel"],
+    enemyIds: ["barkSkinnedWretch", "thornboundStalker", "mossGrownEnt", "hollowBarkedWanderer", "vineChokedSentinel", "vineWrappedCharger", "splinterClawedStalker"],
     explorationLines: [
       "The trees here grow too close together, roots knotting across the path deliberately.",
       "The undergrowth thins into a clearing that feels far too quiet.",
@@ -2679,7 +2679,7 @@ const MONSTER_HUNT_LOCATIONS = {
       "assets/images/vandiri-savanna-searching-4.png"
     ],
     musicSrc: "assets/audio/vandiri-savanna-hunt.mp3",
-    enemyIds: ["nightStripedLeopardHunt", "giantJungleAntHunt", "savannaRhinoBeast", "tuskedGroveBreaker", "venomStripedHyena"],
+    enemyIds: ["nightStripedLeopardHunt", "giantJungleAntHunt", "savannaRhinoBeast", "tuskedGroveBreaker", "venomStripedHyena", "ironHidedWarthog", "screamingVultureBeast"],
     explorationLines: [
       "Tall grass parts ahead, disturbed by something moving low and fast.",
       "Broken brush marks a trail too wide for anything ordinary to have made it.",
@@ -2699,7 +2699,7 @@ const MONSTER_HUNT_LOCATIONS = {
       "assets/images/yorenshi-peaks-searching-4.png"
     ],
     musicSrc: "assets/audio/yorenshi-peaks-hunt.mp3",
-    enemyIds: ["youngDragonHunt", "wyvernHunt", "fireDrakeHunt", "deepCoiledLeviathan", "fjordSerpentHunt"],
+    enemyIds: ["youngDragonHunt", "wyvernHunt", "fireDrakeHunt", "deepCoiledLeviathan", "fjordSerpentHunt", "frostboundDragon", "stormCoiledSerpent"],
     explorationLines: [
       "The air grows warm ahead, an acrid smell of smoke drifting down from higher ground.",
       "The path opens onto a wide ledge, scorched black in a wide, deliberate ring.",

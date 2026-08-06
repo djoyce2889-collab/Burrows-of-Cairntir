@@ -4570,5 +4570,115 @@ theUnyieldingFlame: {
     threatTier: "Expert",
     soundCategory: "physical",
     lootTable: ["Hide"]
+  },
+  greyManedWerewolf: {
+    id: "greyManedWerewolf",
+    name: "Grey-Maned Werewolf",
+    description: "Older and more scarred than any wolf running with it, having survived more full moons than most manage to count.",
+    image: "assets/images/enemies/grey-maned-werewolf.png",
+    hitPoints: 44,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  stormChasedWolf: {
+    id: "stormChasedWolf",
+    name: "Storm-Chased Wolf",
+    description: "Hunts fastest in the worst weather, moving like the storm itself is driving it forward.",
+    image: "assets/images/enemies/storm-chased-wolf.png",
+    hitPoints: 34,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  theFrostbittenThegn: {
+    id: "theFrostbittenThegn",
+    name: "The Frostbitten Thegn",
+    description: "Ruled as a nobleman once, cold and calculating even in life. Death only sharpened both.",
+    image: "assets/images/enemies/the-frostbitten-thegn.png",
+    hitPoints: 40,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence", "Old Ore"]
+  },
+  theHollowVolva: {
+    id: "theHollowVolva",
+    name: "The Hollow Völva",
+    description: "Once a genuine Norse seeress, trusted with real sight into the future. Whatever she became after death has never once stopped seeing.",
+    image: "assets/images/enemies/the-hollow-volva.png",
+    hitPoints: 38,
+    attackType: "magic",
+    threatTier: "Adept",
+    soundCategory: "spectral",
+    lootTable: ["Grave Essence"]
+  },
+  vineWrappedCharger: {
+    id: "vineWrappedCharger",
+    name: "Vine-Wrapped Charger",
+    description: "Fast and aggressive, loose trailing vines whipping behind it as it closes distance in sudden bursts.",
+    image: "assets/images/enemies/vine-wrapped-charger.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Old Ore"]
+  },
+  splinterClawedStalker: {
+    id: "splinterClawedStalker",
+    name: "Splinter-Clawed Stalker",
+    description: "Sharp-limbed and built for close ambush, moving in fast before anything's had a chance to notice.",
+    image: "assets/images/enemies/splinter-clawed-stalker.png",
+    hitPoints: 34,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  ironHidedWarthog: {
+    id: "ironHidedWarthog",
+    name: "Iron-Hided Warthog",
+    description: "Heavily armored and aggressive, tusks lowered the instant it senses anything nearby.",
+    image: "assets/images/enemies/iron-hided-warthog.png",
+    hitPoints: 42,
+    attackType: "physical",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Hide", "Old Ore"]
+  },
+  screamingVultureBeast: {
+    id: "screamingVultureBeast",
+    name: "Screaming Vulture-Beast",
+    description: "A massive scavenger bird that's stopped waiting for anything to die first.",
+    image: "assets/images/enemies/screaming-vulture-beast.png",
+    hitPoints: 36,
+    attackType: "physical",
+    threatTier: "Adept",
+    soundCategory: "physical",
+    lootTable: ["Hide"]
+  },
+  frostboundDragon: {
+    id: "frostboundDragon",
+    name: "The Frostbound Dragon",
+    description: "Fully grown and utterly merciless, ice cracking along every scale with each breath it takes.",
+    image: "assets/images/enemies/frostbound-dragon.png",
+    hitPoints: 48,
+    attackType: "magic",
+    threatTier: "Master",
+    soundCategory: "physical",
+    lootTable: ["Old Ore", "Grave Essence"]
+  },
+  stormCoiledSerpent: {
+    id: "stormCoiledSerpent",
+    name: "Storm-Coiled Serpent",
+    description: "A sea-serpent that channels real lightning through the water around it, striking without ever fully surfacing.",
+    image: "assets/images/enemies/storm-coiled-serpent.png",
+    hitPoints: 42,
+    attackType: "magic",
+    threatTier: "Expert",
+    soundCategory: "physical",
+    lootTable: ["Grave Essence", "Old Ore"]
   }
 };
