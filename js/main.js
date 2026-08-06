@@ -2526,8 +2526,13 @@ let pendingDungeon = null;
 
 function selectDungeon(dungeon) {
   pendingDungeon = dungeon;
-  showScreen("screen-dungeon-difficulty");
-  renderDungeonDifficultyScreen();
+  selectedDungeonId = dungeon.id;
+  resetDungeonCompanionState();
+  if (DUNGEON_CONTENT[dungeon.id]) {
+    enterDungeon(dungeon.id);
+  } else {
+    enterPlaceholderDungeon(dungeon);
+  }
 }
 
 function renderDungeonDifficultyScreen() {
@@ -2724,8 +2729,7 @@ function enterDungeon(dungeonId) {
     document.getElementById("dungeon-intro-img").alt = dungeonMeta.name;
     document.getElementById("btn-dungeon-intro-back").onclick = () => {
       playMusic(MAIN_THEME_SRC);
-      showScreen("screen-dungeon-difficulty");
-      renderDungeonDifficultyScreen();
+      goToDungeonSelectScreen();
     };
     document.getElementById("btn-dungeon-intro-enter").onclick = () => {
       renderDungeonRoom(dungeonData.startRoomId);

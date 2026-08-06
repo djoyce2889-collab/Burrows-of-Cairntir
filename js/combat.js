@@ -384,9 +384,43 @@ function getEffectivePlayerSupportTier(baseTierName) {
 
 const BASELINE_ENEMY_TIER = "Adept";
 
+function getPlayerPowerLevel() {
+  let highestRank = getTierRank("Untrained");
+  Object.keys(playerCharacter.skills || {}).forEach((skillId) => {
+    const skill = SKILLS[skillId];
+    if (!skill || (skill.category !== "Weapon" && skill.category !== "Magic")) return;
+    const tier = getCharacterSkillTier(playerCharacter, skillId);
+    const rank = getTierRank(tier.name);
+    if (rank > highestRank) highestRank = rank;
+  });
+  return highestRank;
+}
+
+function getDungeonScalingShift(overrideTierName) {
+  const dungeonTierName = overrideTierName || currentCombat.enemyThreatTier || BASELINE_ENEMY_TIER;
+  const dungeonRank = getTierRank(dungeonTierName);
+  const playerRank = getPlayerPowerLevel();
+  let shift = playerRank - dungeonRank;
+  const downCap = dungeonTierName === "Master" ? -1 : -2;
+  if (shift > 2) shift = 2;
+  if (shift < downCap) shift = downCap;
+  return shift;
+}
+
+function getScaledEnemyTierName() {
+  return shiftTierByRank(BASELINE_ENEMY_TIER, getDungeonScalingShift());
+}
+
+function getScaledEnemyMaxHP(baseHitPoints, dungeonTierName) {
+  const shift = getDungeonScalingShift(dungeonTierName);
+  const multiplierPerRank = 0.18;
+  const multiplier = 1 + (shift * multiplierPerRank);
+  return Math.max(1, Math.round(baseHitPoints * multiplier));
+}
+
 function getEffectiveEnemyTier() {
   return shiftTierByRank(
-    BASELINE_ENEMY_TIER,
+    getScaledEnemyTierName(),
     getEffectRankSum("enemyDebuff") + getEffectRankSum("defenseDebuff")
   );
 }
@@ -399,7 +433,7 @@ function getEffectiveEnemyTier() {
  */
 function getEnemyAttackTier() {
   return shiftTierByRank(
-    BASELINE_ENEMY_TIER,
+    getScaledEnemyTierName(),
     getEffectRankSum("enemyDebuff") + getEffectRankSum("accuracyDebuff")
   );
 }
@@ -646,10 +680,11 @@ dodgeTierName = shiftTierByRank(dodgeTierName, generalBonus + getEffectRankSum("
 function startCombat(enemyId) {
   const enemyTemplate = ENEMIES[enemyId];
   const diff = getCurrentDifficultySettings();
-  const scaledMaxHP = Math.max(
+  const difficultyScaledHP = Math.max(
     1,
     Math.round(enemyTemplate.hitPoints * diff.enemyHpMultiplier)
   );
+  const scaledMaxHP = getScaledEnemyMaxHP(difficultyScaledHP, enemyTemplate.threatTier);
 
   const maxHP = getHitPoints(playerCharacter);
   if (playerCharacter.currentHP === undefined || playerCharacter.currentHP === null) {

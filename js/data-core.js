@@ -516,7 +516,8 @@ const BOSS_CURRENCY_MULTIPLIER = 3;
 function rollEnemyCurrencyDrop(enemyId) {
   const template = ENEMIES[enemyId];
   if (!template) return 0;
-  const range = CURRENCY_DROP_BY_TIER[template.threatTier] || CURRENCY_DROP_BY_TIER.Master;
+  const scaledTierName = typeof getScaledEnemyTierName === "function" ? getScaledEnemyTierName() : template.threatTier;
+  const range = CURRENCY_DROP_BY_TIER[scaledTierName] || CURRENCY_DROP_BY_TIER.Master;
   let amount = range[0] + Math.floor(Math.random() * (range[1] - range[0] + 1));
   if (getBossEnemyIds().has(enemyId)) {
     amount *= BOSS_CURRENCY_MULTIPLIER;
