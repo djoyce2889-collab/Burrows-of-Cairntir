@@ -793,13 +793,6 @@ body {
   .cc-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  #screen-creation-portrait {
-    background-image: url('assets/images/character-creation-backdrop.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
 }
 /* ------------------------------------------------------------
    HEALTH BARS

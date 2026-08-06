@@ -908,10 +908,11 @@ function renderChronicleSummary() {
   const bonusEl = document.createElement("div");
   bonusEl.className = "cc-skill-count";
   bonusEl.style.marginTop = "12px";
+  const ownerLabel = creationState.mode === "player" ? `${creationState.name} (You)` : `${creationState.name} (Follower)`;
   if (earnedLines.length > 0) {
-    bonusEl.innerHTML = `<strong>Permanent bonuses earned:</strong><br>${earnedLines.join("<br>")}`;
+    bonusEl.innerHTML = `<strong>Permanent bonuses earned — ${ownerLabel}:</strong><br>${earnedLines.join("<br>")}`;
   } else {
-    bonusEl.textContent = "No permanent bonuses earned from this Chronicle.";
+    bonusEl.textContent = `${ownerLabel}: No permanent bonuses earned from this Chronicle.`;
   }
   storyEl.after(bonusEl);
 
@@ -4216,8 +4217,6 @@ function getRecipeImageSlug(recipeId) {
 function getPerkImagePath(skillId, perkId) {
   const culture = Object.values(CULTURES).find((c) => c.magicSkillIds && c.magicSkillIds.includes(skillId));
   if (culture) {
-    const spellId = PERK_SPELL_ID[skillId] && PERK_SPELL_ID[skillId][perkId];
-    if (spellId) return `assets/images/spells/${culture.id}/${spellId}.png`;
     return `assets/images/perks/${culture.id}-magic.png`;
   }
   return getSkillImagePath(skillId);
