@@ -163,7 +163,7 @@ function getSpellSfxPath(spellName) {
   if (/fire|flame|ember|burn|blaze/.test(text)) return "assets/audio/sfx/fire-cast.mp3";
   if (/frost|ice|chill|freeze|winter/.test(text)) return "assets/audio/sfx/frost-cast.mp3";
   if (/storm|thunder|lightning|spark|bolt|shock/.test(text)) return "assets/audio/sfx/lightning-cast.mp3";
-  if (/poison|venom|toxin|blight|rot/.test(text)) return "assets/audio/sfx/poison-cast.mp3";
+  if (/poison|venom|toxin|blight|rot|wither|decay|plague|curse|grave|essence/.test(text)) return "assets/audio/sfx/poison-cast.mp3";
   return null;
 }
 
@@ -1921,7 +1921,7 @@ function renderMasteryScreen() {
         card.innerHTML = `
           <div class="cc-card-name">${perk.name}</div>
           <div class="cc-card-desc">${perk.description}</div>
-          <div class="cc-card-image" style="background-image: url('${getPerkImagePath(skillId)}')"></div>
+          <div class="cc-card-image" style="background-image: url('${getPerkImagePath(skillId, perk.id)}')"></div>
         `;
         card.addEventListener("click", () => {
           setMasteryPick(playerCharacter, skillId, tier, perk.id);

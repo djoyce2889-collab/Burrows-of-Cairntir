@@ -3941,7 +3941,7 @@ theUnyieldingFlame: {
     hitPoints: 80,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   },
   gatekeeperOfTara: {
