@@ -3974,7 +3974,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   masterSorcererOfTheCourt: {
@@ -3985,7 +3985,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   tailteannChampion: {
@@ -4018,7 +4018,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   lughOfTheLongArm: {
@@ -4029,7 +4029,7 @@ theUnyieldingFlame: {
     hitPoints: 75,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   },
   fiannaSentinel: {
@@ -4062,7 +4062,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   shieldWallChampion: {
@@ -4084,7 +4084,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   twinBladeDuelist: {
@@ -4106,7 +4106,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   fingalMacCumhaill: {
