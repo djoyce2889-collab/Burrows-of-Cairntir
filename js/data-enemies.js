@@ -12,7 +12,7 @@ const ENEMIES = {
     hitPoints: 22,
     attackType: "physical",
     threatTier: "Novice",
-    soundCategory: "wolf",
+    soundCategory: "spectral",
     lootTable: ["Old Ore", "Grave Essence"]
   },
   wailingWraith: {
@@ -998,7 +998,7 @@ theUnyieldingFlame: {
     hitPoints: 30,
     attackType: "magic",
     threatTier: "Expert",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
 
@@ -1035,7 +1035,7 @@ theUnyieldingFlame: {
     hitPoints: 62,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Sōjōbō's Feather", "Grave Essence", "Grave Essence"]
   },
   theWindBrokenDisciple: {
@@ -1058,7 +1058,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Hide", "Grave Essence"]
   },
   theLostSuitor: {
@@ -1069,7 +1069,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Hide"]
   },
   theLatestBloom: {
@@ -1080,7 +1080,7 @@ theUnyieldingFlame: {
     hitPoints: 34,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theGraveWarden: {
@@ -1091,7 +1091,7 @@ theUnyieldingFlame: {
     hitPoints: 44,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Hide", "Hide"]
   },
   theSilentWatcher: {
@@ -1102,7 +1102,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theWidow: {
@@ -1114,7 +1114,7 @@ theUnyieldingFlame: {
     hitPoints: 85,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Widow's Red Thorn", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theGoBetween: {
@@ -1125,7 +1125,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Hide", "Grave Essence"]
   },
 
@@ -1295,7 +1295,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theBoneLitteredServant: {
@@ -1306,7 +1306,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Hide", "Grave Essence"]
   },
   theTwistedStag: {
@@ -1328,7 +1328,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theBrokenGuard: {
@@ -1339,7 +1339,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Old Ore"]
   },
   yamataNoOrochi: {
@@ -1362,7 +1362,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence"]
   },
 
@@ -1588,7 +1588,7 @@ theUnyieldingFlame: {
     hitPoints: 85,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Unseelie Crown Shard", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theQueensOwnShadow: {
@@ -1599,7 +1599,7 @@ theUnyieldingFlame: {
     hitPoints: 46,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
 
@@ -1611,7 +1611,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theWatchfulMidwife: {
@@ -1622,7 +1622,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theQuietNeighbor: {
@@ -1644,7 +1644,7 @@ theUnyieldingFlame: {
     hitPoints: 34,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theGrievingMother: {
@@ -1655,7 +1655,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theWitchOfTheHollow: {
@@ -1667,7 +1667,7 @@ theUnyieldingFlame: {
     hitPoints: 85,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Witch's Hollow Charm", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theTrustedHealer: {
@@ -1746,7 +1746,7 @@ theUnyieldingFlame: {
     hitPoints: 85,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Yanluo's Seal of Judgment", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theCourtScribe: {
@@ -1757,7 +1757,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theFirecrackerKeeper: {
@@ -1779,7 +1779,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theDevouredWatchman: {
@@ -1801,7 +1801,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theScarredSurvivor: {
@@ -1891,7 +1891,7 @@ theUnyieldingFlame: {
     hitPoints: 85,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Kelpie's Bridle", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theCoilTouchedSailor: {
@@ -1924,7 +1924,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theStormWrackedSailor: {
@@ -1935,7 +1935,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theScaleMarkedPriest: {
@@ -2104,7 +2104,7 @@ theUnyieldingFlame: {
     hitPoints: 88,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Feather of the Morrígan", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theThreadBoundDebtor: {
@@ -2126,7 +2126,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theWebCaughtWanderer: {
@@ -2148,7 +2148,7 @@ theUnyieldingFlame: {
     hitPoints: 44,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Hide"]
   },
   theSilkThreadedWatcher: {
@@ -2171,7 +2171,7 @@ theUnyieldingFlame: {
     hitPoints: 85,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Anansi's Silk Thread", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theThornStruckWarden: {
@@ -2517,7 +2517,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "wolf",
     lootTable: ["Grave Essence"]
   },
   theSecondVoice: {
@@ -2528,7 +2528,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "wolf",
     lootTable: ["Grave Essence"]
   },
   theMarkedOne: {
@@ -2539,7 +2539,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "wolf",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theTrailingShape: {
@@ -2550,7 +2550,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "wolf",
     lootTable: ["Grave Essence", "Hide"]
   },
   theThirdCry: {
@@ -2561,7 +2561,7 @@ theUnyieldingFlame: {
     hitPoints: 44,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "wolf",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theWinterBornMatriarch: {
@@ -2573,7 +2573,7 @@ theUnyieldingFlame: {
     hitPoints: 90,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "wolf",
     lootTable: ["The Matriarch's Frost-Shard", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theBlightWing: {
@@ -2885,7 +2885,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theDepthEel: {
@@ -3413,7 +3413,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theForgottenWarden: {
@@ -3523,7 +3523,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theRuneBoundWarden: {
@@ -3534,7 +3534,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theCastOutShieldmaiden: {
@@ -3545,7 +3545,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theVenomWraith: {
@@ -3556,7 +3556,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theFrostCursedShade: {
@@ -3633,7 +3633,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theRestlessReveler: {
@@ -3666,7 +3666,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theSluaghsLeader: {
@@ -3688,7 +3688,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theNeglectedShrineKeeper: {
@@ -3765,7 +3765,7 @@ theUnyieldingFlame: {
     hitPoints: 70,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence"]
   },
   theHagOfTheThreshold: {
@@ -3776,7 +3776,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theMaggotTouchedAttendant: {
@@ -3842,7 +3842,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   izanamiCorrupted: {
@@ -3853,7 +3853,7 @@ theUnyieldingFlame: {
     hitPoints: 75,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence"]
   },
   einherjarVanguard: {
@@ -3919,7 +3919,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   skollOrHati: {
@@ -4205,7 +4205,7 @@ theUnyieldingFlame: {
     hitPoints: 78,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   },
   darknessFattenedWraith: {
@@ -4260,7 +4260,7 @@ theUnyieldingFlame: {
     hitPoints: 44,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Old Ore", "Grave Essence"]
   },
   despairGivenForm: {
@@ -4293,7 +4293,7 @@ theUnyieldingFlame: {
     hitPoints: 80,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence", "Old Ore"]
   }
 };
