@@ -18,7 +18,9 @@ const DUNGEONS = {
       "An abandoned Deveran castle on a fog-bound hill, empty since " +
       "the chief's line died out under circumstances the clans still " +
       "won't speak of plainly. The gates stand open. Nothing living " +
-      "has gone in and come back out to say why."
+      "has gone in and come back out to say why.",
+    introText:
+      "Duncairn Keep once belonged to a Deveran chief's line, but that line ended abruptly, in circumstances no local clan will discuss plainly to this day. The castle has stood empty ever since — gates open, halls quiet, nothing living has gone in and returned to explain what actually happened here. Whatever's left inside has had a very long time to wait for someone to finally ask."
   },
   sunkenLonghall: {
     id: "sunkenLonghall",
@@ -35,7 +37,9 @@ const DUNGEONS = {
       "Black water laps at the entrance where a war-fleet once " +
       "launched. The runes overhead still glow faintly at night — no " +
       "one left alive to carve new ones, and no one left alive to " +
-      "ask why the old ones still burn."
+      "ask why the old ones still burn.",
+    introText:
+      "This Drakvarr longhall once launched a proud war-fleet, back when the ground beneath it was solid. A rising bog has swallowed it half-under since, and the shaman-runes carved into its rafters still glow faintly after dark — despite there being no one left alive who knows how to carve new ones, or why the old ones have never gone out. Whoever carved them clearly meant for something to keep listening."
   },
   wychrootGrove: {
     id: "wychrootGrove",
@@ -51,7 +55,9 @@ const DUNGEONS = {
       "where the Path of the Barrow is said to still answer, if you " +
       "know how to ask. Sunlight barely reaches the ground here " +
       "anymore. The trees are old enough to remember who's buried " +
-      "beneath them, and they haven't forgotten."
+      "beneath them, and they haven't forgotten.",
+    introText:
+      "This Gaeldrim grove grew up around old grave-mounds generations ago, its roots winding thick through the earth surrounding the dead. Local tradition holds that the Path of the Barrow — a druidic tradition connected to these very mounds — can still be reached here, if you know how to ask. Sunlight barely touches the ground anymore. The trees themselves are old enough to remember exactly who's buried beneath them, and they haven't forgotten a single name."
   },
   hollowmereCairn: {
     id: "hollowmereCairn",
@@ -66,7 +72,9 @@ const DUNGEONS = {
       "A burial-mound complex out on the moors where several Deveran " +
       "clans' dead lie together. The old ancestral magic here has " +
       "gone wrong, tinged with something wilder and less patient than " +
-      "any bloodline gift should be."
+      "any bloodline gift should be.",
+    introText:
+      "Several Deveran clans share this burial-mound complex out on the moors, their dead laid to rest together across generations. The ancestral bloodline magic tied to this place has always run strong here — but something in it has gone wrong, taking on a wilder, far less patient edge than any bloodline gift is meant to carry. Whatever's stirring beneath these mounds doesn't answer to any single clan anymore."
   },
   frosthollowVault: {
     id: "frosthollowVault",
@@ -81,7 +89,9 @@ const DUNGEONS = {
       "An ice-cave forge-vault where the Drakvarr's greatest " +
       "rune-smiths were buried beside their finest work. The runes " +
       "here run colder and stranger than any spoken aloud in living " +
-      "memory — and the smiths seem to still be finishing something."
+      "memory — and the smiths seem to still be finishing something.",
+    introText:
+      "The Drakvarr once buried their greatest rune-smiths in this ice-cave forge-vault, laid to rest beside the finest work of their lives. The runes carved throughout run colder and stranger than anything spoken of in living memory. And the smiths themselves, by every account, still haven't finished whatever they were working on when they died — the anvils inside have never once gone fully quiet."
   },
   hollowVale: {
     id: "hollowVale",
@@ -95,7 +105,9 @@ const DUNGEONS = {
     description:
       "A ring of standing stones where the Túath once gathered to " +
       "decide as one. Something answers in their place now, and it " +
-      "has no interest in consensus."
+      "has no interest in consensus.",
+    introText:
+      "This ring of standing stones once served as a gathering place for the Túath — the old Gaeldrim tradition of settling every dispute together, as one collective voice. That practice of consensus is long gone now. Something else answers from within the stones in its place, something that has fused many voices into one and no longer has any patience left for compromise or disagreement."
   },
   blackforgeDeep: {
     id: "blackforgeDeep",
@@ -108,7 +120,9 @@ const DUNGEONS = {
     image: "assets/images/blackforge-deep.png",
     description:
       "An ancient dwarven stronghold, overrun from below by something " +
-      "wearing the shape of its own kin."
+      "wearing the shape of its own kin.",
+    introText:
+      "This ancient dwarven stronghold was once a thriving underground kingdom, its halls carved deep into the mountain by generations of skilled hands. Something has since overrun it from below — creatures wearing the shape of the dwarves who once called this place home, corrupted into something no longer recognizably kin to anyone. Whatever's ruling down there now claims the throne through force, not birthright."
   },
   fomorianDepths: {
     id: "fomorianDepths",
@@ -122,7 +136,9 @@ const DUNGEONS = {
     description:
       "A sea-cave older than the Tuatha Dé Danann themselves, home to " +
       "something that came before even the old gods — and never fully " +
-      "left."
+      "left.",
+    introText:
+      "Long before the Tuatha Dé Danann rose to prominence in Irish myth, an older, monstrous people called the Fomorians held dominion over these lands and seas. This sea-cave predates even that ancient rivalry — home to something that came before any of the old gods took their thrones, and that never fully withdrew when the newer powers arrived. It's still down there, and it's never once needed the Tuatha Dé Danann's permission to stay."
   },
   cailleachsReach: {
     id: "cailleachsReach",
@@ -136,7 +152,9 @@ const DUNGEONS = {
     description:
       "A storm-lashed Highland peak, older than any Deveran clan, home " +
       "to the winter goddess herself — and the mountain remembers her " +
-      "far better than it remembers you."
+      "far better than it remembers you.",
+    introText:
+      "The Cailleach is a genuine winter goddess in Scottish and Highland folklore, a primordial hag-figure said to shape mountains and bring storms with a mere gesture. This storm-lashed peak predates every Deveran clan that's ever called these Highlands home, and she has ruled it since long before any of them arrived. The mountain remembers her intimately. It has never once had reason to remember anyone else."
   },
   restlessBaobab: {
     id: "restlessBaobab",
@@ -151,7 +169,9 @@ const DUNGEONS = {
     description:
       "A tropical grove of ancient baobab trees, once tended in " +
       "quiet reverence — the ancestors who watched over it have " +
-      "grown resentful of the living, and no longer watch kindly."
+      "grown resentful of the living, and no longer watch kindly.",
+    introText:
+      "This grove of ancient baobab trees was once tended in quiet reverence, a place where the ancestral spirits watching over it and the living who honored them shared a peaceful, mutual understanding. That balance has broken down. The ancestors here have grown resentful of the living — whether from neglect, grief, or something else entirely — and their watchful presence no longer means the safety it once did."
   },
   dragonShrine: {
     id: "dragonShrine",
@@ -165,7 +185,9 @@ const DUNGEONS = {
     description:
       "An ancient island shrine, mist-wrapped and timeless, " +
       "devoted to a dragon older than any Yorenshi name — " +
-      "and the dragon has not forgotten its worshippers."
+      "and the dragon has not forgotten its worshippers.",
+    introText:
+      "This mist-wrapped island shrine has stood for longer than any Yorenshi name attached to it, devoted since its founding to a dragon far older than the people who came to worship it. Generations of devotion passed down through this shrine's priesthood, one believer after another giving themselves fully to the dragon's service. The dragon itself has never once forgotten a single one of them — and it still expects the same reverence from anyone who enters now."
   },
 
   theForsakenManor: {
@@ -180,7 +202,9 @@ const DUNGEONS = {
     description:
       "An isolated manor hidden deep in mountain valleys, " +
       "where a corrupted Daimyo's will still commands the halls — " +
-      "and the spirits trapped within have forgotten what freedom feels like."
+      "and the spirits trapped within have forgotten what freedom feels like.",
+    introText:
+      "This isolated manor once belonged to a noble Daimyo, hidden deep in mountain valleys far from any prying eyes. Whatever corruption eventually took hold of him has never released its grip — his will still commands every hall and every spirit bound within these walls. Those trapped inside have served him for so long now that most of them have genuinely forgotten what it ever felt like to be free of him."
   },
 
   drownedShrine: {
@@ -197,9 +221,9 @@ const DUNGEONS = {
       "A riverside shrine once devoted to the old water-spirits, " +
       "now flooded and turned hostile — whatever protected this " +
       "place has forgotten how to do anything but guard it against " +
-      "everyone."
-
-  
+      "everyone.",
+    introText:
+      "This riverside shrine was once a peaceful place of devotion to the old water-spirits, tended faithfully for generations. Something has since flooded it and turned its guardian spirits hostile — whatever protective instinct once kept this shrine safe has curdled into something that no longer distinguishes friend from threat. Everyone who approaches now gets treated exactly the same way: as an enemy to guard against."
   },
   emberScarredOutcrop: {
     id: "emberScarredOutcrop",
@@ -215,7 +239,9 @@ const DUNGEONS = {
       "A shrine of righteous fire and judgment, burned and left " +
       "smoldering — whatever justice this place once served, it " +
       "no longer distinguishes the guilty from anyone else who " +
-      "wanders in."
+      "wanders in.",
+    introText:
+      "This shrine once served righteous fire and judgment, a place where the truly guilty were held accountable through sacred flame. Something has burned it and left it permanently smoldering since — and the judgment it once passed carefully now falls indiscriminately on anyone who wanders in, guilty or not. Whatever sense of fairness once governed this place is long gone."
   },
   crowWindDojo: {
     id: "crowWindDojo",
@@ -223,6 +249,7 @@ const DUNGEONS = {
     culture: "yorenshi",
     difficulty: "Expert",
     description: "A mountain dojo where an unnatural wind has spent years twisting its once-disciplined guardian spirits into something feral and territorial.",
+    introText: "This mountain dojo once trained disciplined tengu warrior-spirits in genuine mastery of wind and combat, a place of order and control. An unnatural wind has spent years working against that discipline, twisting even the most controlled among them into something feral and fiercely territorial. What used to be a place of teaching has become a place where every guardian defends its ground on pure instinct alone.",
     image: "assets/images/crow-wind-dojo.png",
     musicSrc: "assets/audio/crow-wind-dojo.mp3",
     mapHotspot: { top: "40%", left: "80%" },
@@ -240,7 +267,9 @@ const DUNGEONS = {
     description:
       "Deeper than Cailleach's Reach ever led lies the first hall the clans ever raised — " +
       "and the throne of the ancestor every Deveran still claims blood from. Only Averick's " +
-      "name got carved into the old songs. Someone else was standing right beside him when they carved it."
+      "name got carved into the old songs. Someone else was standing right beside him when they carved it.",
+    introText:
+      "Buried even deeper than Cailleach's Reach lies the very first hall the Deveran clans ever raised, and the throne of Averick — the ancestor every Deveran bloodline still claims descent from today. But only Averick's name made it into the old songs passed down through generations. Someone else stood right beside him the entire time, present for everything, and history simply never carved that second name in."
   },
   widowsHollow: {
     id: "widowsHollow",
@@ -254,7 +283,9 @@ const DUNGEONS = {
     description:
       "Past the last marked grave, an overgrown hollow waits — mist-choked, far older than any headstone above ever admitted. " +
       "A bride forced into a marriage that killed her has been mourning down here ever since, and everyone who was ever " +
-      "complicit in it seems to be mourning right alongside her."
+      "complicit in it seems to be mourning right alongside her.",
+    introText:
+      "Past the very last marked grave in the cemetery above, an overgrown, mist-choked hollow waits — far older than any of those headstones ever let on. A bride was forced into a marriage that ultimately killed her, and she has been mourning down here in this hollow ever since. She isn't alone in her grief. Everyone who was ever complicit in what happened to her seems to be mourning right alongside her now, whether they want to or not."
   },
   sigrunsThreshold: {
     id: "sigrunsThreshold",
@@ -268,7 +299,9 @@ const DUNGEONS = {
     description:
       "Deep beneath the hold, the barrow grows thin enough to touch the edge of something far greater. " +
       "A Valkyrie keeps her ancient watch here, and the legendary dead she's gathered over centuries " +
-      "test anyone bold enough to reach her — mortal, fae, living, or something else entirely."
+      "test anyone bold enough to reach her — mortal, fae, living, or something else entirely.",
+    introText:
+      "Deep beneath the hold, the barrow's walls grow thin enough to brush against something far greater than this world alone — a genuine threshold into Valhalla's own halls. The Valkyrie Sigrun keeps ancient watch over this crossing, and the legendary einherjar warriors she's gathered across the centuries stand ready to test anyone bold enough to seek her out. She doesn't care what you are — mortal, fae, or something else entirely — only whether you're actually worthy."
   },
   oldSpiritGrove: {
     id: "oldSpiritGrove",
@@ -282,7 +315,9 @@ const DUNGEONS = {
     description:
       "Deep in the bush where no path leads, the first spirit-society still keeps its old grove — " +
       "the very source the Leopard-kin themselves claim descent from. Nothing here is hostile by nature. " +
-      "Everything here is testing whether you're worthy to know what's left of the old ways."
+      "Everything here is testing whether you're worthy to know what's left of the old ways.",
+    introText:
+      "Deep in the bush, far from any marked path, the very first spirit-society still keeps its ancestral grove — the true origin the Leopard-kin themselves trace their entire lineage back to. Nothing living here is hostile by nature or intent. Every guardian spirit within is simply testing whether you're genuinely worthy of learning what little remains of these old, closely guarded ways."
   },
   orochisValley: {
     id: "orochisValley",
@@ -295,7 +330,9 @@ const DUNGEONS = {
     image: "assets/images/orochis-valley.png",
     description:
       "Along the Hii River, in the valley of ancient Izumo, an eight-headed serpent has demanded a sacrifice " +
-      "every season for as long as anyone can remember. The valley remembers everyone it's ever taken."
+      "every season for as long as anyone can remember. The valley remembers everyone it's ever taken.",
+    introText:
+      "Along the Hii River, in the ancient valley of Izumo, an eight-headed, eight-tailed serpent named Yamata-no-Orochi has terrorized the surrounding villages for longer than anyone alive can properly recall. Every season without fail, it has demanded a fresh sacrifice, and every season the villages have complied rather than risk its wrath. The valley itself remembers every single person it's ever taken — the count has never once been forgotten."
   },
   gordonsDue: {
     id: "gordonsDue",
@@ -309,7 +346,9 @@ const DUNGEONS = {
     description:
       "Generations ago, Clan Gordon was exiled for backing the wrong claim to Duncairn's throne — and with it, " +
       "cut off from their promised share of the founding hoard. Their patience has finally run out, and they've " +
-      "come to take back what they've always believed was theirs."
+      "come to take back what they've always believed was theirs.",
+    introText:
+      "Generations ago, Clan Gordon backed the losing side in a dispute over Duncairn's throne, and was exiled for it — cut off entirely from their originally promised share of the founding hoard. That grievance has been passed down through the clan ever since, growing sharper with every generation that never saw a coin of it. Their patience has finally run out completely, and Chief Malcolm Gordon has led his people back to claim what they've always genuinely believed belonged to them."
   },
   wolfCoatsCurse: {
     id: "wolfCoatsCurse",
@@ -323,7 +362,9 @@ const DUNGEONS = {
     description:
       "Generations ago, a warband of wolf-coat warriors pushed the old ritual too far, too many times, chasing " +
       "the battle-madness until the wolf never let go again. They never stopped fighting. They just stopped " +
-      "being entirely themselves."
+      "being entirely themselves.",
+    introText:
+      "The wolf-coat warriors — úlfhéðnar in the old tongue — were Drakvarr fighters who ritually channeled the ferocity of wolves into genuine battle-madness. It was meant to be temporary, always released once the fighting ended. This particular warband pushed that ritual too far, too many times, chasing the madness past the point of ever letting it go again. They never stopped fighting after that. They simply stopped being entirely themselves in between the fights."
   },
   unseelieCourt: {
     id: "unseelieCourt",
@@ -337,7 +378,9 @@ const DUNGEONS = {
     description:
       "The Sídhe strike bargains as easily as they break them — but even among their own kind, one court has " +
       "abandoned fairness entirely, keeping only the cruelty. What was once merely uncanny has become something " +
-      "genuinely dangerous."
+      "genuinely dangerous.",
+    introText:
+      "In Gaeldrim folklore, the fae — the Sídhe — have always struck bargains as readily as they've broken them, uncanny and unpredictable by nature. But even within their own kind, courts are traditionally divided between those who at least maintain some pretense of fairness and those who don't bother at all. This particular court has abandoned fairness entirely, keeping only the cruelty that always lurked beneath the old bargains. What was once merely dangerous to deal with has become genuinely lethal to encounter."
   },
   hollowFaced: {
     id: "hollowFaced",
@@ -350,7 +393,9 @@ const DUNGEONS = {
     image: "assets/images/hollow-faced.png",
     description:
       "The village looks ordinary enough from the road — familiar faces, familiar routines. But something has " +
-      "been moving through it for years, unnoticed, claiming a few more of its people every season."
+      "been moving through it for years, unnoticed, claiming a few more of its people every season.",
+    introText:
+      "From the road, this village looks entirely ordinary — familiar faces going about familiar routines, nothing outwardly wrong at all. But a Witch of the Hollow has been moving unnoticed through it for years, quietly enthralling a few more of its people every single season. The trusted elder, the midwife, the neighbor no one thinks twice about — none of them are entirely who they seem to be anymore, and the village has no idea how much of itself it's already lost."
   },
   diyusJudgment: {
     id: "diyusJudgment",
@@ -363,7 +408,9 @@ const DUNGEONS = {
     image: "assets/images/diyus-judgment.png",
     description:
       "Somewhere the ground gives way entirely, and the path down leads somewhere no living soul is meant to " +
-      "walk. Diyu keeps its own ledger, and Yanluo Wang has never once made an exception for the living."
+      "walk. Diyu keeps its own ledger, and Yanluo Wang has never once made an exception for the living.",
+    introText:
+      "Diyu is the Chinese underworld, a bureaucratic realm of judgment where every soul is weighed and processed according to a ledger kept meticulously by its court. Niutou and Mamian — the Ox-Guardian and Horse-Guardian — traditionally escort the newly dead to face that judgment before Yanluo Wang, the underworld's presiding king. He has never once made an exception for the living wandering in uninvited, and his court intends to keep it that way."
   },
   niansVillage: {
     id: "niansVillage",
@@ -376,7 +423,9 @@ const DUNGEONS = {
     image: "assets/images/nians-village.png",
     description:
       "Every year, the village survives the same night through ritual, red dye, and firecrackers older than " +
-      "anyone can remember making. This year, the beast has come early — and the old defenses aren't holding."
+      "anyone can remember making. This year, the beast has come early — and the old defenses aren't holding.",
+    introText:
+      "According to the old telling, a monstrous Nian Beast emerges once a year to terrorize villages, driven off only by loud noise, bright fire, and the color red — traditions that eventually became the roots of Lunar New Year celebrations. This particular village has survived that same night, year after year, through ritual, red dye, and firecrackers older than anyone can remember first making. This year, the beast has come early, and the old defenses that have always held before aren't holding anymore."
   },
   kelpiesLoch: {
     id: "kelpiesLoch",
@@ -389,7 +438,9 @@ const DUNGEONS = {
     image: "assets/images/kelpies-loch.png",
     description:
       "The loch has always been beautiful, and beautiful things have always drawn travelers to its edge. " +
-      "Not all of them have ever been seen to leave."
+      "Not all of them have ever been seen to leave.",
+    introText:
+      "In Highland folklore, a kelpie is a shapeshifting water-spirit, most often appearing as a beautiful horse to lure unsuspecting travelers close before dragging them into the water for good. This particular loch has always been beautiful, and beautiful things have always drawn travelers right to its edge, generation after generation. Not all of them have ever been seen to leave again, and the kelpie itself has never once shown any interest in letting a single one go."
   },
   jormungandrsCoil: {
     id: "jormungandrsCoil",
@@ -402,7 +453,9 @@ const DUNGEONS = {
     image: "assets/images/jormungandrs-coil.png",
     description:
       "The World Serpent's coils have wrapped this stretch of coastline since before anyone living can remember, " +
-      "patient enough to wait out empires. Thor never finished the fight. Someone else will have to."
+      "patient enough to wait out empires. Thor never finished the fight. Someone else will have to.",
+    introText:
+      "Jörmungandr, the World Serpent, is fated in Norse myth to be Thor's oldest and most persistent enemy, its coils vast enough to encircle the whole of Midgard. This particular stretch of coastline has been wrapped in those coils since before anyone living can remember, patient enough to simply outlast empires that have risen and fallen around it. Thor never got the chance to finish that fight himself here. Someone else is going to have to pick it back up."
   },
   morrigansReckoning: {
     id: "morrigansReckoning",
@@ -415,7 +468,9 @@ const DUNGEONS = {
     image: "assets/images/morrigans-reckoning.png",
     description:
       "The battle here ended centuries ago, but the crows never left, and neither did she. " +
-      "She doesn't cause the losing. She just never misses a chance to watch one happen."
+      "She doesn't cause the losing. She just never misses a chance to watch one happen.",
+    introText:
+      "The Morrígan is the Phantom Queen of Irish myth, a goddess of war and fate who traditionally appears — often in crow form — whenever a battle is about to be lost, never to intervene, only to witness. A real battle was fought and lost on this exact ground centuries ago. The crows that gathered to watch it never actually left afterward, and neither did she. She has never once caused anyone's defeat. She simply never misses the chance to be present for one."
   },
   anansisGambit: {
     id: "anansisGambit",
@@ -428,7 +483,9 @@ const DUNGEONS = {
     image: "assets/images/anansis-gambit.png",
     description:
       "Everyone who enters believes they're the one clever enough to outwit him. " +
-      "Anansi has never once minded being underestimated. It's usually the whole game."
+      "Anansi has never once minded being underestimated. It's usually the whole game.",
+    introText:
+      "Anansi is the great trickster-spider of West African and Akan folklore, a figure whose entire mythology is built around outwitting stronger, more powerful beings through pure cunning rather than force. Everyone who has ever entered his domain believes, without exception, that they're the one clever enough to finally outwit him in return. Anansi has never once minded being underestimated that way. Letting someone think they've got the upper hand is usually the entire opening move of his game."
   },
   ghillieDhusHollow: {
     id: "ghillieDhusHollow",
@@ -441,7 +498,9 @@ const DUNGEONS = {
     image: "assets/images/ghillie-dhus-hollow.png",
     description:
       "The wood's always been sacred, and travelers have always known to tread carefully in it, the old stories say why. " +
-      "Something's gotten in anyway. Nobody's figured out how."
+      "Something's gotten in anyway. Nobody's figured out how.",
+    introText:
+      "The Ghillie Dhu is a solitary guardian spirit of Highland folklore, said to protect a particular stretch of wood and its trees fiercely, tolerating polite travelers but punishing anyone who does harm within its domain. This wood has always been considered sacred, and local travelers have always known to tread carefully within it, the old stories explaining exactly why. Something has gotten in past that protection anyway, corrupting what was meant to guard it. Nobody local has yet figured out how."
   },
   thrymsHold: {
     id: "thrymsHold",
@@ -453,7 +512,9 @@ const DUNGEONS = {
     culture: "drakvarr",
     image: "assets/images/thryms-hold.png",
     description:
-      "Thrym took what wasn't his once and got away clean. He's been waiting for someone to come try their luck getting it back."
+      "Thrym took what wasn't his once and got away clean. He's been waiting for someone to come try their luck getting it back.",
+    introText:
+      "Thrym is the king of the frost giants in Norse myth, most famous for stealing Thor's own hammer and demanding the goddess Freyja's hand in marriage as ransom for its return. This particular Thrym took what wasn't his once, and got away with it cleanly, retreating to his mountain hold with the spoils intact. He's spent every day since perfectly content, and more than a little curious whether anyone will ever actually work up the nerve to come try their luck taking it back."
   },
   dullahansRide: {
     id: "dullahansRide",
@@ -466,7 +527,9 @@ const DUNGEONS = {
     image: "assets/images/dullahans-ride.png",
     description:
       "The road's always been bad luck after dark, and everyone local knows to be indoors well before the moon's fully up. " +
-      "Nobody's ever agreed on why. They've just always known to listen."
+      "Nobody's ever agreed on why. They've just always known to listen.",
+    introText:
+      "The Dullahan is a headless rider of Irish folklore, said to carry his own severed head under one arm and ride at the front of a ghostly host, an omen of death for anyone who crosses his path after dark. This particular road has always carried a reputation for bad luck once night falls, and every local knows to be safely indoors well before the moon rises fully. Nobody's ever quite agreed on the precise reason why. They've simply always known, generation after generation, to listen and stay inside."
   },
   caveOfCruachan: {
     id: "caveOfCruachan",
@@ -479,7 +542,9 @@ const DUNGEONS = {
     image: "assets/images/cave-of-cruachan.png",
     description:
       "Every Samhain, something comes up out of Oweynagat that shouldn't. Most years, it goes back down on its own. " +
-      "This year, somebody has to make sure of it."
+      "This year, somebody has to make sure of it.",
+    introText:
+      "Oweynagat — the Cave of Cats — is a genuine site in Irish mythology, considered one of the traditional entrances to the Otherworld and closely tied to Samhain, when the boundary between worlds grows thin. Every year on that same night, something comes up out of the cave that shouldn't be walking free in the world above. Most years, whatever it is eventually goes back down entirely on its own accord. This year, that hasn't happened yet, and somebody needs to make certain it actually does."
   },
   hoichisRequiem: {
     id: "hoichisRequiem",
@@ -492,7 +557,9 @@ const DUNGEONS = {
     image: "assets/images/hoichis-requiem.png",
     description:
       "The fleet sank centuries ago, and the court still hasn't accepted the story's over. " +
-      "Every night, somebody's made to sing it again. Tonight, that somebody is you."
+      "Every night, somebody's made to sing it again. Tonight, that somebody is you.",
+    introText:
+      "This story draws on the old Japanese tale of Hoichi the Earless, a blind biwa-playing musician summoned nightly by ghostly spirits to perform the tragic story of a fleet's final destruction, unaware for a long while that his audience was already dead. This particular sunken fleet's court has never once accepted that their story actually ended, centuries after the battle that sank them. Every single night since, somebody has been compelled to sing the requiem again from the beginning. Tonight, for reasons the court hasn't bothered explaining, that somebody is you."
   },
   yamaubasWood: {
     id: "yamaubasWood",
@@ -504,7 +571,9 @@ const DUNGEONS = {
     culture: "yorenshi",
     image: "assets/images/yamaubas-wood.png",
     description:
-      "Every animal in this wood is exactly as dangerous as it needs to be, and not one degree more. That's not luck. That's management."
+      "Every animal in this wood is exactly as dangerous as it needs to be, and not one degree more. That's not luck. That's management.",
+    introText:
+      "Yamauba is a mountain witch of Japanese folklore, a figure said to command the wilderness itself and everything living within it, sometimes benevolent, often genuinely dangerous depending on the telling. Every animal in this particular wood is exactly as dangerous as it needs to be to serve her purposes, and not one degree more than that. That precision has never been luck. It's deliberate management, and she's the one doing the managing."
   },
   sasabonsamsReach: {
     id: "sasabonsamsReach",
@@ -516,7 +585,9 @@ const DUNGEONS = {
     culture: "vandiri",
     image: "assets/images/sasabonsams-reach.png",
     description:
-      "Everything under this canopy hunts the same way — quiet, patient, and from somewhere well above where you thought to look."
+      "Everything under this canopy hunts the same way — quiet, patient, and from somewhere well above where you thought to look.",
+    introText:
+      "Sasabonsam is a forest-dwelling monster of Akan folklore, said to hang from the highest branches of the canopy on massive claws, patiently waiting for prey to wander beneath before striking from directly above. Everything living under this particular stretch of canopy has learned to hunt the exact same way it does — quiet, patient, and always from somewhere well above wherever you'd naturally think to look. That's not coincidence. Everything here has learned from the same teacher."
   },
   unburiedSwamp: {
     id: "unburiedSwamp",
@@ -528,7 +599,9 @@ const DUNGEONS = {
     culture: "vandiri",
     image: "assets/images/unburied-swamp.png",
     description:
-      "Every one of them was owed proper rites and never got them. The swamp's been holding that debt for longer than anyone still living can account for."
+      "Every one of them was owed proper rites and never got them. The swamp's been holding that debt for longer than anyone still living can account for.",
+    introText:
+      "In this tradition, proper burial rites are essential to a soul finding real rest — without them, the dead remain restless, unable to properly move on. Every single person resting in this swamp was owed those proper rites at the time of their death, and never received them, for reasons lost to history. The swamp itself has been holding that unpaid debt for far longer than anyone still living today can actually account for, and it hasn't forgotten a single name owed."
   },
   theHowlingFrost: {
     id: "theHowlingFrost",
@@ -541,7 +614,9 @@ const DUNGEONS = {
     image: "assets/images/the-howling-frost.png",
     description:
       "Three barks mean a death is close, the old telling goes, and the pass has never once gone quiet after the first. " +
-      "The frost here never fully thaws, not even in high summer. Nobody local asks why anymore."
+      "The frost here never fully thaws, not even in high summer. Nobody local asks why anymore.",
+    introText:
+      "Local Highland tradition holds that three barks from the Cù Sìth — the great fairy hound — mean a death is drawing near, and that once the first bark sounds, nothing quiets it until the third. This particular mountain pass has never once gone silent after that first warning cry. The frost here never fully thaws either, not even at the height of summer, unnaturally persistent year-round. Nobody local bothers asking why anymore. They've simply learned to expect it."
   },
   trollWarren: {
     id: "trollWarren",
@@ -553,7 +628,9 @@ const DUNGEONS = {
     culture: "drakvarr",
     image: "assets/images/troll-warren.png",
     description:
-      "Every generation loses a few travelers to this mountain and calls it bad luck. It has never once been bad luck."
+      "Every generation loses a few travelers to this mountain and calls it bad luck. It has never once been bad luck.",
+    introText:
+      "This mountain has a long-standing reputation among local Drakvarr travelers for claiming a few unlucky souls every generation, always chalked up afterward to nothing more than bad luck or poor timing. It has never once genuinely been either of those things. A whole warren of trolls has made this mountain their home for generations, and every single one of those disappearances has had a very real, very deliberate explanation the survivors simply never lived to share."
   },
   corruptedTirNaNog: {
     id: "corruptedTirNaNog",
@@ -565,7 +642,9 @@ const DUNGEONS = {
     culture: "gaeldrim",
     image: "assets/images/corrupted-tir-na-nog.png",
     description:
-      "A shore that should not still be reachable, golden and eternal and gently, terribly wrong. Time no longer moves here the way it should, and neither does anything that's ever crossed over."
+      "A shore that should not still be reachable, golden and eternal and gently, terribly wrong. Time no longer moves here the way it should, and neither does anything that's ever crossed over.",
+    introText:
+      "Long ago, a mortal named Oisín was led across the western sea into Tír na nÓg, a paradise where nothing ages and nothing dies, by a woman named Niamh who loved him. He was warned never to touch mortal soil again — and when he finally broke that promise, centuries of missed age caught up to him in an instant. Niamh never recovered from losing him. Rather than risk that grief a second time, she has decided that no one who crosses into her realm will ever be allowed to leave again — and the paradise itself has begun unraveling under the weight of that refusal."
   },
   niflhel: {
     id: "niflhel",
@@ -577,7 +656,9 @@ const DUNGEONS = {
     culture: "drakvarr",
     image: "assets/images/niflhel.png",
     description:
-      "The deepest, darkest part of Helheim, reserved for oathbreakers and the truly wicked. The venom never stops falling, and neither does the hunger waiting at the bottom of it."
+      "The deepest, darkest part of Helheim, reserved for oathbreakers and the truly wicked. The venom never stops falling, and neither does the hunger waiting at the bottom of it.",
+    introText:
+      "Not everyone who dies earns a place in Valhalla's glory. Helheim is where the ordinary dead go — but beneath even that lies Niflhel, a deeper, harsher pocket reserved specifically for oathbreakers, murderers, and the truly wicked. At its heart stands Náströnd, the Corpse Shore, its walls woven entirely from serpents whose venom rains down without pause. And coiled at the roots of something far older than the world itself, the great serpent Níðhöggr has fed on the condemned here since before anyone can remember — never once running short of company."
   },
   thinningVeil: {
     id: "thinningVeil",
@@ -589,7 +670,9 @@ const DUNGEONS = {
     culture: "deveran",
     image: "assets/images/thinning-veil.png",
     description:
-      "Every Samhain, the boundary thins for one night and closes again by dawn. This year, it never closed — and the village on the other side of it is still burning."
+      "Every Samhain, the boundary thins for one night and closes again by dawn. This year, it never closed — and the village on the other side of it is still burning.",
+    introText:
+      "Once a year, on the night of Samhain, the boundary between the living world and the Otherworld grows thin enough for spirits, fae, and the restless dead to cross freely — before sealing shut again by dawn. Villages light warding bonfires and wear disguises to blend in and go unnoticed until the crossing closes. This year, dawn never came. The veil stayed open, the host of the Sluagh never withdrew, and a Highland village now stands under active siege from everything that should have gone home hours ago."
   },
   ancestralNeglect: {
     id: "ancestralNeglect",
@@ -601,7 +684,9 @@ const DUNGEONS = {
     culture: "vandiri",
     image: "assets/images/ancestral-neglect.png",
     description:
-      "The rites stopped, one generation at a time, until no one left remembered the names they were meant to honor. The ancestors haven't stopped waiting."
+      "The rites stopped, one generation at a time, until no one left remembered the names they were meant to honor. The ancestors haven't stopped waiting.",
+    introText:
+      "In this tradition, the dead don't rest through judgment or punishment — they rest through being remembered. Rites are performed, names are spoken aloud, and offerings are kept up, generation after generation, so the ancestors stay honored and at peace. But over time, the rites at this particular shrine stopped. The names stopped being spoken. And the ancestors here haven't turned cruel — they've simply grown restless from decades of being forgotten, waiting for someone, anyone, to remember them again."
   },
   yomi: {
     id: "yomi",
@@ -613,7 +698,9 @@ const DUNGEONS = {
     culture: "yorenshi",
     image: "assets/images/yomi.png",
     description:
-      "The land of the dead, sealed shut by a single broken promise. She asked not to be seen as she was. She was seen anyway, and she has never once forgiven it."
+      "The land of the dead, sealed shut by a single broken promise. She asked not to be seen as she was. She was seen anyway, and she has never once forgiven it.",
+    introText:
+      "When the goddess Izanami died, her husband Izanagi followed her into Yomi, the land of the dead, hoping to bring her back. She asked him for one thing: never to look at her as she now was. He broke that promise, saw her decayed form, and fled in horror. Furious and humiliated, Izanami vowed to kill a thousand people every day in the world above as punishment — and Izanagi sealed the entrance to Yomi behind him with a massive boulder, trapping her inside for good. She has been waiting behind that seal ever since, and the boulder has never once needed replacing."
   },
   ragnarok: {
     id: "ragnarok",
@@ -625,7 +712,9 @@ const DUNGEONS = {
     culture: "drakvarr",
     image: "assets/images/ragnarok.png",
     description:
-      "The end of the world was already written. Odin has spent every age since seeking a name that wasn't in the prophecy — and he has finally found one worth the risk."
+      "The end of the world was already written. Odin has spent every age since seeking a name that wasn't in the prophecy — and he has finally found one worth the risk.",
+    introText:
+      "Ragnarök is the prophesied end of the world in Norse myth — a final battle at the field of Vígríðr where the gods face the giants, monsters, and Loki himself, and most of them are fated to die. Odin has spent every age since that prophecy was first spoken seeking any way to see past it or change its outcome. Now, at the very moment the battle begins, he has reached across worlds and pulled a stranger into the fight — someone whose reputation reached even him, someone the prophecy never accounted for at all."
   },
   taraTrials: {
     id: "taraTrials",
@@ -637,7 +726,9 @@ const DUNGEONS = {
     culture: "gaeldrim",
     image: "assets/images/tara-trials.png",
     description:
-      "Lugh proved himself master of every skill this court could offer, one specialist at a time, until the gates simply had no argument left to make. He's still testing anyone who claims to be worth his time."
+      "Lugh proved himself master of every skill this court could offer, one specialist at a time, until the gates simply had no argument left to make. He's still testing anyone who claims to be worth his time.",
+    introText:
+      "Lugh earned his place among the Tuatha Dé Danann by arriving at the court of Tara and proving mastery over every single skill its finest specialists held — smithing, music, sorcery, and more — one challenger at a time, until no one had grounds left to turn him away. This is not a place of danger or corruption. It's a genuine proving ground, and word of your own reputation has reached Tara's gates. Lugh himself is waiting to see whether it holds up — and every challenger you'll face here tests you honestly, the same way he was tested himself."
   },
   fingalsTrial: {
     id: "fingalsTrial",
@@ -649,7 +740,9 @@ const DUNGEONS = {
     culture: "deveran",
     image: "assets/images/fingals-trial.png",
     description:
-      "The Fianna never let anyone in without proving themselves first. Word of your name reached the old chief himself — and he wants to see if it holds up."
+      "The Fianna never let anyone in without proving themselves first. Word of your name reached the old chief himself — and he wants to see if it holds up.",
+    introText:
+      "Fingal (Fionn mac Cumhaill in the old tongue) led a legendary warband called the Fianna, famous across the Highlands for the brutal trials required to join their ranks — tests of speed, strength, wit, and nerve that few ever passed. This isn't a haunting or a threat. It's a genuine, honorable challenge. Word of your own deeds has reached Fingal's camp, and he's issued an invitation: prove yourself the way every one of his own warriors once had to, and see if you're worth standing beside."
   },
   thunderKingsDomain: {
     id: "thunderKingsDomain",
@@ -661,7 +754,9 @@ const DUNGEONS = {
     culture: "vandiri",
     image: "assets/images/thunder-kings-domain.png",
     description:
-      "Sango ruled once as a king, and rules now as something far larger. Storm, fire, and judgment answer to him directly — and he has never once needed a reason to test who else might."
+      "Sango ruled once as a king, and rules now as something far larger. Storm, fire, and judgment answer to him directly — and he has never once needed a reason to test who else might.",
+    introText:
+      "Sango was once a mortal king known for a fierce temper and commanding presence. In death, he became something far greater — an orisha of thunder, lightning, fire, and justice, wielding a double-headed axe called the oshe and answering to no one. He isn't corrupted or wounded like some of the figures you'll meet elsewhere. He's simply exactly what he's always been: a king who ruled through storm and fire, and who has never once needed a reason to test whether a challenger measures up."
   },
   theHiddenSun: {
     id: "theHiddenSun",
@@ -673,7 +768,9 @@ const DUNGEONS = {
     culture: "yorenshi",
     image: "assets/images/the-hidden-sun.png",
     description:
-      "Amaterasu sealed herself away after her own brother's rampage, and the world has stayed dark ever since. Something down here has grown fond of that darkness — and has no intention of letting the sun come back."
+      "Amaterasu sealed herself away after her own brother's rampage, and the world has stayed dark ever since. Something down here has grown fond of that darkness — and has no intention of letting the sun come back.",
+    introText:
+      "After her brother Susanoo, god of storms, went on a destructive rampage through her lands, the sun goddess Amaterasu withdrew into a cave in grief and shame — plunging the entire world into darkness. In the old story, the other gods gathered outside and used music, dance, and a sacred mirror to lure her back out. This time, something is actively working against that effort — creatures that have grown strong feeding on the endless dark, sabotaging the gathering meant to save it. And at the very heart of it, Susanoo himself still refuses to face what his own fury caused."
   }
 };
 

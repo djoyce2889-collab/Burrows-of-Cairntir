@@ -2714,6 +2714,25 @@ function enterDungeon(dungeonId) {
   const dungeonData = DUNGEON_CONTENT[dungeonId];
   setPageBackground(CULTURES[DUNGEONS[dungeonId].culture].backgroundImage);
   playMusic(DUNGEONS[dungeonId].musicSrc);
+
+  const dungeonMeta = DUNGEONS[dungeonId];
+  if (dungeonMeta.introText) {
+    showScreen("screen-dungeon-intro");
+    document.getElementById("dungeon-intro-name").textContent = dungeonMeta.name;
+    document.getElementById("dungeon-intro-text").textContent = dungeonMeta.introText;
+    document.getElementById("dungeon-intro-img").src = dungeonMeta.image;
+    document.getElementById("dungeon-intro-img").alt = dungeonMeta.name;
+    document.getElementById("btn-dungeon-intro-back").onclick = () => {
+      playMusic(MAIN_THEME_SRC);
+      showScreen("screen-dungeon-difficulty");
+      renderDungeonDifficultyScreen();
+    };
+    document.getElementById("btn-dungeon-intro-enter").onclick = () => {
+      renderDungeonRoom(dungeonData.startRoomId);
+    };
+    return;
+  }
+
   renderDungeonRoom(dungeonData.startRoomId);
 }
 

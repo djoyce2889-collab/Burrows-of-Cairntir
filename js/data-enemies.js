@@ -3424,7 +3424,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theCorruptedOisin: {
@@ -3435,7 +3435,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theTwistedSeaGuardian: {
@@ -3446,7 +3446,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theCorruptedPuca: {
@@ -3468,7 +3468,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theUnravelingDanann: {
@@ -3479,7 +3479,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theSilverBranchGuardian: {
@@ -3490,7 +3490,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   niamhCorrupted: {
@@ -3501,7 +3501,7 @@ theUnyieldingFlame: {
     hitPoints: 65,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Grave Essence"]
   },
   garmrsLesserKin: {
