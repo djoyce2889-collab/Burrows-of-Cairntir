@@ -2602,9 +2602,176 @@ function getBossEnemyIds() {
 }
 
 const TRAINING_GROUNDS_ENEMY_IDS = ["arenaMinotaur", "arenaWyvern", "arenaDirewolf", "arenaTroll", "arenaBasilisk"];
-
 function pickRandomTrainingEnemy() {
   return TRAINING_GROUNDS_ENEMY_IDS[Math.floor(Math.random() * TRAINING_GROUNDS_ENEMY_IDS.length)];
+}
+
+const MONSTER_HUNT_LOCATIONS = {
+  deveranHighlands: {
+    id: "deveranHighlands",
+    name: "The Deveran Highlands",
+    image: "assets/images/deveran-highlands-hunt.png",
+    explorationImage: "assets/images/deveran-highlands-searching.png",
+    explorationImages: [
+      "assets/images/deveran-highlands-searching-1.png",
+      "assets/images/deveran-highlands-searching-2.png",
+      "assets/images/deveran-highlands-searching-3.png",
+      "assets/images/deveran-highlands-searching-4.png"
+    ],
+    musicSrc: "assets/audio/deveran-highlands-hunt.mp3",
+    enemyIds: ["highlandFellWolf", "moonriseWerewolf", "brambleFangedLoper", "frostCursedWerewolf", "bloodHowlAlpha"],
+    explorationLines: [
+      "The heather thins ahead, claw-marks scored deep into a fallen stone.",
+      "Fresh tracks cut across the frost, too large to belong to anything ordinary.",
+      "A cairn of piled stones marks the trail, half-collapsed, fur caught in the cracks.",
+      "The wind shifts, and for a moment the whole moor goes completely still."
+    ]
+  },
+  drakvarrVampireDen: {
+    id: "drakvarrVampireDen",
+    name: "The Drakvarr Vampire Den",
+    image: "assets/images/drakvarr-vampire-den-hunt.png",
+    explorationImage: "assets/images/drakvarr-vampire-den-searching.png",
+    explorationImages: [
+      "assets/images/drakvarr-vampire-den-searching-1.png",
+      "assets/images/drakvarr-vampire-den-searching-2.png",
+      "assets/images/drakvarr-vampire-den-searching-3.png",
+      "assets/images/drakvarr-vampire-den-searching-4.png"
+    ],
+    musicSrc: "assets/audio/drakvarr-vampire-den-hunt.mp3",
+    enemyIds: ["theBloodJarl", "draugrFangedReaver", "thePaleSkald", "runeMarkedBloodkin", "theIceVeiledShieldmaiden"],
+    explorationLines: [
+      "The passage narrows, old runes carved deep into stone slick with something dark.",
+      "A torch gutters low in its sconce, though there's no draft here to explain it.",
+      "Something has scratched long marks into the stone floor, dragging toward the dark.",
+      "The silence here has a weight to it, like something is listening."
+    ]
+  },
+  gaeldrimForests: {
+    id: "gaeldrimForests",
+    name: "The Gaeldrim Forests",
+    image: "assets/images/gaeldrim-forests-hunt.png",
+    explorationImage: "assets/images/gaeldrim-forests-searching.png",
+    explorationImages: [
+      "assets/images/gaeldrim-forests-searching-1.png",
+      "assets/images/gaeldrim-forests-searching-2.png",
+      "assets/images/gaeldrim-forests-searching-3.png",
+      "assets/images/gaeldrim-forests-searching-4.png"
+    ],
+    musicSrc: "assets/audio/gaeldrim-forests-hunt.mp3",
+    enemyIds: ["barkSkinnedWretch", "thornboundStalker", "mossGrownEnt", "hollowBarkedWanderer", "vineChokedSentinel"],
+    explorationLines: [
+      "The trees here grow too close together, roots knotting across the path deliberately.",
+      "The undergrowth thins into a clearing that feels far too quiet.",
+      "A hollow trunk stands split open, its inside scored with deep claw-like gouges.",
+      "Moss carpets the ground unnaturally thick, muffling every footstep but your own."
+    ]
+  },
+  vandiriSavanna: {
+    id: "vandiriSavanna",
+    name: "The Vandiri Savanna",
+    image: "assets/images/vandiri-savanna-hunt.png",
+    explorationImage: "assets/images/vandiri-savanna-searching.png",
+    explorationImages: [
+      "assets/images/vandiri-savanna-searching-1.png",
+      "assets/images/vandiri-savanna-searching-2.png",
+      "assets/images/vandiri-savanna-searching-3.png",
+      "assets/images/vandiri-savanna-searching-4.png"
+    ],
+    musicSrc: "assets/audio/vandiri-savanna-hunt.mp3",
+    enemyIds: ["nightStripedLeopardHunt", "giantJungleAntHunt", "savannaRhinoBeast", "tuskedGroveBreaker", "venomStripedHyena"],
+    explorationLines: [
+      "Tall grass parts ahead, disturbed by something moving low and fast.",
+      "Broken brush marks a trail too wide for anything ordinary to have made it.",
+      "A lone acacia tree stands stripped bare, bark torn away in long deliberate claw-marks.",
+      "The dust ahead settles slowly, kicked up by something that's already moved on."
+    ]
+  },
+  yorenshiPeaks: {
+    id: "yorenshiPeaks",
+    name: "The Yorenshi Peaks",
+    image: "assets/images/yorenshi-peaks-hunt.png",
+    explorationImage: "assets/images/yorenshi-peaks-searching.png",
+    explorationImages: [
+      "assets/images/yorenshi-peaks-searching-1.png",
+      "assets/images/yorenshi-peaks-searching-2.png",
+      "assets/images/yorenshi-peaks-searching-3.png",
+      "assets/images/yorenshi-peaks-searching-4.png"
+    ],
+    musicSrc: "assets/audio/yorenshi-peaks-hunt.mp3",
+    enemyIds: ["youngDragonHunt", "wyvernHunt", "fireDrakeHunt", "deepCoiledLeviathan", "fjordSerpentHunt"],
+    explorationLines: [
+      "The air grows warm ahead, an acrid smell of smoke drifting down from higher ground.",
+      "The path opens onto a wide ledge, scorched black in a wide, deliberate ring.",
+      "Loose scree shifts under your feet, disturbed recently by something far heavier than you.",
+      "A deep gouge runs the length of the rock face, still faintly warm to the touch."
+    ]
+  }
+};
+
+let inMonsterHunt = false;
+let monsterHuntLocationId = null;
+
+function pickRandomHuntEnemy(locationId) {
+  const location = MONSTER_HUNT_LOCATIONS[locationId];
+  return location.enemyIds[Math.floor(Math.random() * location.enemyIds.length)];
+}
+
+function startMonsterHunt(locationId) {
+  inMonsterHunt = true;
+  monsterHuntLocationId = locationId;
+  combatReturnRoomId = null;
+  currentCombat = null;
+  const location = MONSTER_HUNT_LOCATIONS[locationId];
+  playMusic(location.musicSrc);
+  showScreen("screen-game");
+  renderMonsterHuntExploration();
+  saveGameState();
+}
+
+function continueMonsterHunt() {
+  const enemyId = pickRandomHuntEnemy(monsterHuntLocationId);
+  startCombat(enemyId);
+  setGameViewportImage(ENEMIES[enemyId].image, ENEMIES[enemyId].name);
+  applyAmbientGlows(true);
+  renderCombatScreen();
+  saveGameState();
+}
+
+function leaveMonsterHunt() {
+  inMonsterHunt = false;
+  monsterHuntLocationId = null;
+  currentCombat = null;
+  goToGrowthSummaryScreen();
+}
+
+function renderMonsterHuntExploration() {
+  const location = MONSTER_HUNT_LOCATIONS[monsterHuntLocationId];
+  const lineIndex = Math.floor(Math.random() * location.explorationLines.length);
+  const line = location.explorationLines[lineIndex];
+  const image = (location.explorationImages && location.explorationImages[lineIndex]) || location.explorationImage || location.image;
+  setGameViewportImage(image, location.name);
+  document.getElementById("game-story-text").textContent = line;
+  const choicesEl = document.getElementById("game-choices");
+  choicesEl.innerHTML = "";
+  addChoiceButton(choicesEl, "Keep Searching", () => continueMonsterHunt());
+  addChoiceButton(choicesEl, "Retreat to Homebase", () => leaveMonsterHunt());
+}
+
+function goToMonsterHuntScreen() {
+  showScreen("screen-monster-hunt");
+  const grid = document.getElementById("monster-hunt-grid");
+  grid.innerHTML = "";
+  Object.values(MONSTER_HUNT_LOCATIONS).forEach((location) => {
+    const card = document.createElement("div");
+    card.className = "cc-card";
+    card.innerHTML = `
+      <div class="cc-card-name">${location.name}</div>
+      <div class="cc-card-image" style="background-image: url('${location.image}')"></div>
+    `;
+    card.addEventListener("click", () => startMonsterHunt(location.id));
+    grid.appendChild(card);
+  });
 }
 
 function startTrainingGauntlet() {
@@ -3640,6 +3807,17 @@ function renderCombatOutcome() {
         addChoiceButton(choicesEl, "Continue Training", continueTrainingGauntlet);
         addChoiceButton(choicesEl, "Retreat to Homebase", leaveTrainingGrounds);
       }
+    } else if (inMonsterHunt) {
+      const lootDisplayList = loot.concat(currentCombat.currencyGained ? [formatCurrency(currentCombat.currencyGained)] : []);
+      storyEl.innerHTML = `
+        <strong>${currentCombat.enemyName}</strong> falls.<br /><br />
+        You recover: ${lootDisplayList.join(", ") || "nothing of note"}.<br />
+        You find: ${formatCurrency(currentCombat.currencyGained || 0)}.
+      `;
+      addChoiceButton(choicesEl, "Continue", () => {
+        currentCombat = null;
+        renderMonsterHuntExploration();
+      });
     } else {
       const lootDisplayList = loot.concat(currentCombat.currencyGained ? [formatCurrency(currentCombat.currencyGained)] : []);
       storyEl.innerHTML = `
@@ -3666,6 +3844,17 @@ function renderCombatOutcome() {
         You wake later, battered but alive, back at Homebase.
       `;
       addChoiceButton(choicesEl, "Return to Homebase", leaveTrainingGrounds);
+    } else if (inMonsterHunt) {
+      storyEl.innerHTML = `
+        Everything goes dark. <strong>${playerCharacter.name}</strong> falls before ${currentCombat.enemyName}.<br /><br />
+        You wake later, battered but alive, back at Homebase.
+      `;
+      addChoiceButton(choicesEl, "Return to Homebase", () => {
+        currentCombat = null;
+        inMonsterHunt = false;
+        monsterHuntLocationId = null;
+        goToHomebaseScreen();
+      });
     } else {
       storyEl.innerHTML = `
         Everything goes dark. <strong>${playerCharacter.name}</strong> falls before ${currentCombat.enemyName}.<br /><br />
@@ -4304,6 +4493,8 @@ document.getElementById("btn-go-to-skills").addEventListener("click", goToSkills
 document.getElementById("btn-mastery").addEventListener("click", goToMasteryScreen);
 document.getElementById("btn-go-to-shop").addEventListener("click", goToShopScreen);
 document.getElementById("btn-shop-back").addEventListener("click", goToHomebaseScreen);
+document.getElementById("btn-monster-hunt").addEventListener("click", goToMonsterHuntScreen);
+document.getElementById("btn-monster-hunt-back").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-craft-weapons").addEventListener("click", goToCraftWeaponsScreen);
 document.getElementById("btn-craft-armor").addEventListener("click", goToCraftArmorScreen);
 document.getElementById("btn-craft-enchant").addEventListener("click", goToCraftEnchantScreen);
