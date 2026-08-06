@@ -384,16 +384,29 @@ function getEffectivePlayerSupportTier(baseTierName) {
 
 const BASELINE_ENEMY_TIER = "Adept";
 
-function getPlayerPowerLevel() {
+function getCharacterHighestCombatRank(character) {
   let highestRank = getTierRank("Untrained");
-  Object.keys(playerCharacter.skills || {}).forEach((skillId) => {
+  Object.keys(character.skills || {}).forEach((skillId) => {
     const skill = SKILLS[skillId];
     if (!skill || (skill.category !== "Weapon" && skill.category !== "Magic")) return;
-    const tier = getCharacterSkillTier(playerCharacter, skillId);
+    const tier = getCharacterSkillTier(character, skillId);
     const rank = getTierRank(tier.name);
     if (rank > highestRank) highestRank = rank;
   });
   return highestRank;
+}
+
+function getFollowerPowerBonus() {
+  const activeFollowers = getActiveFollowers();
+  let bonus = 0;
+  activeFollowers.forEach((follower) => {
+    bonus += Math.floor(getCharacterHighestCombatRank(follower) / 2);
+  });
+  return bonus;
+}
+
+function getPlayerPowerLevel() {
+  return getCharacterHighestCombatRank(playerCharacter) + getFollowerPowerBonus();
 }
 
 function getDungeonScalingShift(overrideTierName) {
