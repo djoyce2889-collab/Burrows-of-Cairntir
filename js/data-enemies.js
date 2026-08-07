@@ -12,7 +12,7 @@ const ENEMIES = {
     hitPoints: 22,
     attackType: "physical",
     threatTier: "Novice",
-    soundCategory: "spectral",
+    soundCategory: "zombie",
     lootTable: ["Old Ore", "Grave Essence"]
   },
   wailingWraith: {
@@ -795,7 +795,7 @@ theUnyieldingFlame: {
     hitPoints: 46,
     attackType: "magic",
     threatTier: "Adept",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Unyielding Ember", "Grave Essence", "Grave Essence"]
   },
   theWronglyJudged: {
@@ -1193,7 +1193,7 @@ theUnyieldingFlame: {
     hitPoints: 85,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Sigrun's Chosen Feather", "Grave Essence", "Grave Essence", "Grave Essence"]
   },
   theLastChosen: {
@@ -1532,7 +1532,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theBargainBreaker: {
@@ -1543,7 +1543,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theThornedHerald: {
@@ -1554,7 +1554,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theHollowKnight: {
@@ -1576,7 +1576,7 @@ theUnyieldingFlame: {
     hitPoints: 34,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theUnseelieQueen: {
@@ -1835,7 +1835,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "zombie",
     lootTable: ["Grave Essence"]
   },
   theDrownedPiper: {
@@ -1846,7 +1846,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "zombie",
     lootTable: ["Grave Essence"]
   },
   theHorseShapedLure: {
@@ -1868,7 +1868,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "zombie",
     lootTable: ["Hide", "Grave Essence"]
   },
   theBoundBride: {
@@ -1879,7 +1879,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "zombie",
     lootTable: ["Grave Essence"]
   },
   theKelpie: {
@@ -2973,7 +2973,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   theRotAntleredStag: {
@@ -3182,7 +3182,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "zombie",
     lootTable: ["Grave Essence"]
   },
   theWeedBoundOarsman: {
@@ -3336,7 +3336,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Old Ore", "Hide"]
   },
   theWatchingHawk: {
@@ -3699,7 +3699,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Master",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theSilencedDrumCaller: {
@@ -4359,7 +4359,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Expert",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   draugrFangedReaver: {
@@ -4370,7 +4370,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "physical",
     threatTier: "Adept",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   thePaleSkald: {
@@ -4381,7 +4381,7 @@ theUnyieldingFlame: {
     hitPoints: 36,
     attackType: "magic",
     threatTier: "Adept",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   runeMarkedBloodkin: {
@@ -4392,7 +4392,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "magic",
     threatTier: "Expert",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theIceVeiledShieldmaiden: {
@@ -4403,7 +4403,7 @@ theUnyieldingFlame: {
     hitPoints: 42,
     attackType: "physical",
     threatTier: "Expert",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Hide"]
   },
   barkSkinnedWretch: {
@@ -4601,7 +4601,7 @@ theUnyieldingFlame: {
     hitPoints: 40,
     attackType: "physical",
     threatTier: "Expert",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence", "Old Ore"]
   },
   theHollowVolva: {
@@ -4612,7 +4612,7 @@ theUnyieldingFlame: {
     hitPoints: 38,
     attackType: "magic",
     threatTier: "Adept",
-    soundCategory: "spectral",
+    soundCategory: "physical",
     lootTable: ["Grave Essence"]
   },
   vineWrappedCharger: {
