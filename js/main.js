@@ -787,6 +787,7 @@ function renderCombatStyleGrid() {
 
 function goToCreationStep(index) {
   showScreen(CREATION_STEP_SCREENS[index]);
+  setPageBackground("assets/images/backgrounds/character-creation-bg.png");
   if (CREATION_STEP_SCREENS[index] === "screen-creation-portrait") {
     renderPortraitGrid();
   }
@@ -1756,6 +1757,11 @@ function goToMasteryScreen() {
   showScreen("screen-mastery");
   renderMasteryScreen();
 }
+function goToCreditsScreen() {
+  showScreen("screen-credits");
+}
+document.getElementById("btn-credits-back").addEventListener("click", goToHomebaseScreen);
+document.getElementById("btn-go-to-credits").addEventListener("click", goToCreditsScreen);
 
 function goToShopScreen() {
   showScreen("screen-shop");
@@ -4109,6 +4115,17 @@ function renderEnchantDetailScreen() {
   });
 }
 
+function getMaterialWasteFraction(tierName) {
+  const wasteByTier = {
+    Untrained: 1,
+    Novice: 1,
+    Adept: 0.5,
+    Expert: 0.5,
+    Master: 0,
+    Grandmaster: 0
+  };
+  return wasteByTier[tierName] !== undefined ? wasteByTier[tierName] : 1;
+}
 function attemptCraft(recipeId, resultId, rerender) {
   const recipe = CRAFTING_RECIPES[recipeId];
   const have = countMaterial(recipe.material);
@@ -4134,7 +4151,14 @@ function attemptCraft(recipeId, resultId, rerender) {
     playerCharacter.inventory.push(craftedName);
     resultMessage = `<span class="craft-result-success">Success! You craft: <strong>${craftedName}</strong>.</span>`;
   } else {
-    resultMessage = `<span class="craft-result-fail">The attempt fails. No materials lost — but you've learned something from the mistake.</span>`;
+    const wasted = Math.ceil(recipe.materialCost * getMaterialWasteFraction(craftingTierBefore));
+    for (let i = 0; i < wasted; i++) {
+      const idx = playerCharacter.inventory.indexOf(recipe.material);
+      if (idx !== -1) playerCharacter.inventory.splice(idx, 1);
+    }
+    resultMessage = wasted > 0
+      ? `<span class="craft-result-fail">The attempt fails, wasting ${wasted} &times; ${recipe.material} — but you've learned something from the mistake.</span>`
+      : `<span class="craft-result-fail">The attempt fails. No materials lost — but you've learned something from the mistake.</span>`;
   }
 
   rerender();
@@ -4181,7 +4205,14 @@ function attemptEnchant(slot, typeId) {
     playerCharacter[enchantField] = enchantment;
     resultMessage = `<span class="craft-result-success">Success! Your ${slot} is now <strong>${typeInfo.name}-Enchanted</strong>.</span>`;
   } else {
-    resultMessage = `<span class="craft-result-fail">The enchantment fails to take hold. No materials lost — but you've learned something from the mistake.</span>`;
+    const wasted = Math.ceil(ENCHANT_MATERIAL_COST * getMaterialWasteFraction(craftingTierBefore));
+    for (let i = 0; i < wasted; i++) {
+      const idx = playerCharacter.inventory.indexOf(ENCHANT_MATERIAL);
+      if (idx !== -1) playerCharacter.inventory.splice(idx, 1);
+    }
+    resultMessage = wasted > 0
+      ? `<span class="craft-result-fail">The enchantment fails to take hold, wasting ${wasted} &times; ${ENCHANT_MATERIAL} — but you've learned something from the mistake.</span>`
+      : `<span class="craft-result-fail">The enchantment fails to take hold. No materials lost — but you've learned something from the mistake.</span>`;
   }
 
   renderEnchantDetailScreen();
@@ -4382,10 +4413,6 @@ function attemptGiveItem(followerIndex) {
   saveGameState();
 }
 
-if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-  document.getElementById("ios-volume-note").style.display = "inline";
-}
-
 document.getElementById("btn-toggle-music").addEventListener("click", () => {
   musicEnabled = !musicEnabled;
   if (musicEnabled) {
@@ -4406,7 +4433,47 @@ document.getElementById("btn-toggle-voice").addEventListener("click", () => {
   saveGameState();
 });
 
-document.getElementById("btn-begin").addEventListener("click", confirmDifficultyAndStartCreation);
+const INTRO_BEATS = [
+  {
+    text: "Beneath the hill of Cairntír, the barrows have never truly slept.",
+    image: "assets/images/intro/intro-1-barrow-hilltop.png"
+  },
+  {
+    text: "Five peoples have carried five different magics down through the centuries — the ancestor-blood of the Deveran, the rune-craft of the Drakvarr, the druidic paths of the Gaeldrim, the rite-songs of the Vandiri, the spirit-ways of the Yorenshi. Each tradition alone against the dark. None of them enough on their own.",
+    image: "assets/images/intro/intro-2-five-traditions.png"
+  },
+  {
+    text: "Something old is stirring beneath the stones — grief that won't rest, gods who won't be ignored, and things that were buried for a reason.",
+    image: "assets/images/intro/intro-3-stirring-dark.png"
+  },
+  {
+    text: "Every tunnel leads somewhere different. No two travelers who venture down ever come back with the same story — if they come back at all.",
+    image: "assets/images/intro/intro-4-fifty-doors.png"
+  },
+  {
+    text: "Choose your people. Choose your path. The barrow is waiting.",
+    image: "assets/images/intro/intro-5-threshold.png"
+  }
+];
+let introBeatIndex = 0;
+function advanceIntroOrBegin() {
+  if (introBeatIndex < INTRO_BEATS.length) {
+    const beat = INTRO_BEATS[introBeatIndex];
+    document.getElementById("story-text").textContent = beat.text;
+    document.getElementById("intro-image").src = beat.image;
+    document.getElementById("btn-begin").textContent =
+      introBeatIndex === INTRO_BEATS.length - 1 ? "Begin your legend" : "Continue";
+    introBeatIndex++;
+    return;
+  }
+  setPageBackground(null);
+  confirmDifficultyAndStartCreation();
+}
+document.getElementById("btn-begin").addEventListener("click", advanceIntroOrBegin);
+document.getElementById("splash-image").addEventListener("click", () => {
+  playMusic(MAIN_THEME_SRC);
+  showScreen("screen-title");
+});
 
 document.getElementById("btn-step1-next").addEventListener("click", () => {
   const errorEl = document.getElementById("cc-error-step1");
@@ -4885,5 +4952,5 @@ if (existingSaveSummaries.length > 0) {
   renderStartingSpellsGrid();
   renderTraitGrid();
   renderCombatStyleGrid();
-  playMusic(MAIN_THEME_SRC);
+  setPageBackground("assets/images/intro/intro-background.png");
 }

@@ -25,19 +25,32 @@
     <div class="cabinet-controls">
       <button id="btn-toggle-voice" class="voice-toggle">🗣</button>
       <button id="btn-toggle-music" class="music-toggle">🔊</button>
-      <span id="ios-volume-note" class="ios-volume-note" style="display: none;">Use your device's volume buttons</span>
     </div>
 
-    <section id="screen-title" class="screen active">
+    <section id="screen-splash" class="screen active">
+      <div id="splash-frame">
+        <img id="splash-image" src="assets/images/splash-title.png" alt="Burrows of Cairntír" />
+        <div class="cabinet-corner corner-tl"></div>
+        <div class="cabinet-corner corner-tr"></div>
+        <div class="cabinet-corner corner-bl"></div>
+        <div class="cabinet-corner corner-br"></div>
+        <div class="cabinet-edge edge-top"></div>
+        <div class="cabinet-edge edge-bottom"></div>
+        <div class="cabinet-edge edge-left"></div>
+        <div class="cabinet-edge edge-right"></div>
+      </div>
+    </section>
+
+    <section id="screen-title" class="screen">
       <div id="viewport">
-        <img src="assets/images/title-cover.png" alt="A ring of ancient standing stones on a moonlit hilltop, one pair forming a barrow entrance glowing with warm rune-light." />
+        <img id="intro-image" src="assets/images/title-cover.png" alt="A ring of ancient standing stones on a moonlit hilltop, one pair forming a barrow entrance glowing with warm rune-light." />
       </div>
       <div id="panel">
         <div id="story-text">
           Five peoples. Five magics. One road into the dark below Cairntír.
         </div>
         <div id="choices">
-          <button class="choice-button" id="btn-begin">Begin your legend</button>
+          <button class="choice-button" id="btn-begin">Tap to begin</button>
         </div>
       </div>
     </section>
@@ -209,6 +222,7 @@
           <button class="choice-button has-banner-icon" id="btn-training-grounds"><img class="choice-button-icon" src="assets/images/icons/icon-grand-arena.png?v=2" alt="" /><span style="position: relative; z-index: 1;">The Grand Arena</span></button>
           <button class="choice-button has-banner-icon" id="btn-start-another-game"><img class="choice-button-icon" src="assets/images/icons/icon-start-another-game.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Start Another Game</span></button>
           <button class="choice-button has-banner-icon" id="btn-delete-game"><img class="choice-button-icon" src="assets/images/icons/icon-delete-game.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Delete Game</span></button>
+          <button class="choice-button has-banner-icon" id="btn-go-to-credits"><img class="choice-button-icon" src="assets/images/icons/icon-credits.png?v=2" alt="" /><span style="position: relative; z-index: 1;">Credits</span></button>
         </div>
       </div>
     </section>
@@ -260,6 +274,23 @@
         <div id="mastery-list"></div>
         <div id="choices">
           <button class="choice-button" id="btn-mastery-back">Return to Homebase</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-credits" class="screen">
+      <div id="viewport">
+        <img src="assets/images/splash-title.png" alt="Burrows of Cairntír" />
+      </div>
+      <div id="panel">
+        <span class="cc-label">Credits</span>
+        <div class="cc-skill-count">Created by David Joyce</div>
+        <div class="cc-skill-count">Artwork generated with ChatGPT</div>
+        <div class="cc-skill-count">Music and sound effects generated with Suno</div>
+        <div class="cc-skill-count">Narration generated with ElevenLabs</div>
+        <div class="cc-skill-count">Fonts: Press Start 2P, VT323, Uncial Antiqua (Google Fonts)</div>
+        <div id="choices">
+          <button class="choice-button" id="btn-credits-back">Return to Homebase</button>
         </div>
       </div>
     </section>
