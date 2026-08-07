@@ -3697,13 +3697,6 @@ const FETCH_ATTACK_LABELS = {
     }
   }
 
-  addChoiceButton(choicesEl, "Flee", () => {
-    const startIndex = currentCombat.log.length;
-    performPlayerFlee();
-    saveGameState();
-    playRoundSequenceThenRender(currentCombat.log.slice(startIndex));
-  }, false, "assets/images/actions/flee.png");
-
   addChoiceButton(choicesEl, "Retreat to Homebase", () => {
     const confirmStoryEl = document.getElementById("game-story-text");
     const confirmChoicesEl = document.getElementById("game-choices");
@@ -4929,7 +4922,22 @@ document.getElementById("btn-teach-skill-back").addEventListener("click", goToPa
 document.getElementById("btn-teach-spell-back").addEventListener("click", goToPartyScreen);
 document.getElementById("btn-dungeon-difficulty-back").addEventListener("click", goToDungeonSelectScreen);
 document.getElementById("btn-dungeon-difficulty-enter").addEventListener("click", confirmEnterDungeon);
-document.getElementById("btn-training-grounds").addEventListener("click", goToTrainingDifficultyScreen);
+document.getElementById("btn-training-grounds").addEventListener("click", goToArenaIntro);
+
+function goToArenaIntro() {
+  showScreen("screen-dungeon-intro");
+  document.getElementById("dungeon-intro-name").textContent = "The Grand Arena";
+  document.getElementById("dungeon-intro-text").textContent = "The crowd is already roaring. One beast after another, without pause, until you fall or choose to retreat. Earn materials with every kill, and a champion's gear on your fifth. Push further on the hardest ground, and something rarer than gear may take notice.";
+  document.getElementById("dungeon-intro-img").src = "assets/images/training-grounds.png";
+  document.getElementById("dungeon-intro-img").alt = "The Grand Arena";
+  document.getElementById("btn-dungeon-intro-back").onclick = () => {
+    playMusic(MAIN_THEME_SRC);
+    goToHomebaseScreen();
+  };
+  document.getElementById("btn-dungeon-intro-enter").onclick = () => {
+    startTrainingGauntlet();
+  };
+}
 document.getElementById("btn-training-difficulty-back").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-dungeon-select-back").addEventListener("click", goToHomebaseScreen);
 document.getElementById("btn-training-difficulty-enter").addEventListener("click", startTrainingGauntlet);
